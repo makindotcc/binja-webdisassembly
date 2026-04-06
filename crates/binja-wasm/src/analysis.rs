@@ -53,8 +53,8 @@ impl WasmModuleAnalysis {
         }
     }
 
-    pub fn analyze_function(&mut self, func_addr: u64, code: &[u8]) {
-        let analysis = analyze_function(code, func_addr);
+    pub fn analyze_function(&mut self, func_addr: u64, code: &[u8], param_count: usize) {
+        let analysis = analyze_function(code, func_addr, param_count);
         self.functions.insert(func_addr, analysis);
     }
 
@@ -80,6 +80,8 @@ impl WasmModuleAnalysis {
 pub struct FunctionAnalysis {
     pub start_address: u64,
     pub end_address: u64,
+    /// Number of function parameters. In WASM, locals 0..param_count are the parameters.
+    pub param_count: usize,
     /// Map of WASM block start address to block end address.
     pub blocks: HashMap<u64, u64>,
     /// Map of branch instruction address to target address
@@ -103,7 +105,7 @@ pub struct FunctionAnalysis {
     pub instruction_stack_depths: HashMap<u64, u32>,
 }
 
-pub fn analyze_function(code: &[u8], base_addr: u64) -> FunctionAnalysis {
+pub fn analyze_function(code: &[u8], base_addr: u64, param_count: usize) -> FunctionAnalysis {
     use tracing::info;
 
     let blocks = resolve_block_indicies(code, base_addr);
@@ -122,6 +124,7 @@ pub fn analyze_function(code: &[u8], base_addr: u64) -> FunctionAnalysis {
     FunctionAnalysis {
         start_address: base_addr,
         end_address: base_addr + code.len() as u64,
+        param_count,
         blocks,
         branch_targets,
         basic_block_starts,
@@ -308,26 +311,34 @@ fn analyze_stack_depths(code: &[u8], base_addr: u64) -> HashMap<u64, u32> {
         // Update depth based on instruction effect
         // Stack effects: (pops, pushes)
         let (pops, pushes): (u32, u32) = match instr.kind {
-            InstrKind::Const => (0, 1),       // push constant
-            InstrKind::LocalGet => (0, 1),    // push local value
-            InstrKind::LocalSet => (1, 0),    // pop into local
-            InstrKind::LocalTee => (1, 1),    // pop, set local, push back (net 0)
-            InstrKind::GlobalGet => (0, 1),   // push global value
-            InstrKind::GlobalSet => (1, 0),   // pop into global
-            InstrKind::Drop => (1, 0),        // pop and discard
-            InstrKind::Select => (3, 1),      // pop cond, val2, val1; push result
-            InstrKind::Load => (1, 1),        // pop addr, push value
-            InstrKind::Store => (2, 0),       // pop value, pop addr
-            InstrKind::BinOp => (2, 1),       // pop 2, push 1
-            InstrKind::UnaryOp => (1, 1),     // pop 1, push 1
-            InstrKind::Compare => (2, 1),     // pop 2, push i32 result
-            InstrKind::Test => (1, 1),        // pop 1, push i32 result
-            InstrKind::CondBranch => (1, 0),  // br_if pops condition
-            InstrKind::BrTable => (1, 0),     // br_table pops index
+            InstrKind::Const => (0, 1),      // push constant
+            InstrKind::LocalGet => (0, 1),   // push local value
+            InstrKind::LocalSet => (1, 0),   // pop into local
+            InstrKind::LocalTee => (1, 1),   // pop, set local, push back (net 0)
+            InstrKind::GlobalGet => (0, 1),  // push global value
+            InstrKind::GlobalSet => (1, 0),  // pop into global
+            InstrKind::Drop => (1, 0),       // pop and discard
+            InstrKind::Select => (3, 1),     // pop cond, val2, val1; push result
+            InstrKind::Load => (1, 1),       // pop addr, push value
+            InstrKind::Store => (2, 0),      // pop value, pop addr
+            InstrKind::BinOp => (2, 1),      // pop 2, push 1
+            InstrKind::UnaryOp => (1, 1),    // pop 1, push 1
+            InstrKind::Compare => (2, 1),    // pop 2, push i32 result
+            InstrKind::Test => (1, 1),       // pop 1, push i32 result
+            InstrKind::CondBranch => (1, 0), // br_if pops condition
+            InstrKind::BrTable => (1, 0),    // br_table pops index
             // Control flow that doesn't affect stack depth calculation linearly
-            InstrKind::Block | InstrKind::Loop | InstrKind::If | InstrKind::Else |
-            InstrKind::End | InstrKind::Branch | InstrKind::Return |
-            InstrKind::Unreachable | InstrKind::Call | InstrKind::Nop | InstrKind::Normal => (0, 0),
+            InstrKind::Block
+            | InstrKind::Loop
+            | InstrKind::If
+            | InstrKind::Else
+            | InstrKind::End
+            | InstrKind::Branch
+            | InstrKind::Return
+            | InstrKind::Unreachable
+            | InstrKind::Call
+            | InstrKind::Nop
+            | InstrKind::Normal => (0, 0),
         };
 
         depth = depth.saturating_sub(pops);

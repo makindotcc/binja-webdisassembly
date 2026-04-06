@@ -13,7 +13,10 @@ use binaryninja::binary_view::BinaryViewBase;
 use binaryninja::calling_convention::CallingConvention;
 use binaryninja::disassembly::{InstructionTextToken, InstructionTextTokenKind};
 use binaryninja::function::Function;
-use binaryninja::low_level_il::{LowLevelILMutableFunction, LowLevelILTempRegister};
+use binaryninja::low_level_il::lifting::LowLevelILLabel;
+use binaryninja::low_level_il::{
+    LowLevelILMutableFunction, LowLevelILRegisterKind, LowLevelILTempRegister,
+};
 use tracing::{debug, info, warn};
 
 pub struct WasmArchitecture {
@@ -35,11 +38,11 @@ impl AsRef<CoreArchitecture> for WasmArchitecture {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WasmRegister {
-    /// Stack pointer (not really used in WASM but required by Binary Ninja)
+    /// Stack pointer (required by Binary Ninja)
     Sp,
     /// Return value register
     Ret,
-    /// Argument registers (WASM locals 0-7)
+    /// Argument/local registers
     Arg0,
     Arg1,
     Arg2,
@@ -48,6 +51,32 @@ pub enum WasmRegister {
     Arg5,
     Arg6,
     Arg7,
+}
+
+impl WasmRegister {
+    pub const ALL: &'static [WasmRegister] = &[
+        WasmRegister::Sp,
+        WasmRegister::Ret,
+        WasmRegister::Arg0,
+        WasmRegister::Arg1,
+        WasmRegister::Arg2,
+        WasmRegister::Arg3,
+        WasmRegister::Arg4,
+        WasmRegister::Arg5,
+        WasmRegister::Arg6,
+        WasmRegister::Arg7,
+    ];
+
+    pub const ARGS: &'static [WasmRegister] = &[
+        WasmRegister::Arg0,
+        WasmRegister::Arg1,
+        WasmRegister::Arg2,
+        WasmRegister::Arg3,
+        WasmRegister::Arg4,
+        WasmRegister::Arg5,
+        WasmRegister::Arg6,
+        WasmRegister::Arg7,
+    ];
 }
 
 impl Register for WasmRegister {
@@ -96,7 +125,7 @@ impl RegisterInfo for WasmRegister {
     }
 
     fn size(&self) -> usize {
-        4
+        4 // All registers are 32-bit in WASM32
     }
 
     fn offset(&self) -> usize {
@@ -106,6 +135,13 @@ impl RegisterInfo for WasmRegister {
     fn implicit_extend(&self) -> ImplicitRegisterExtend {
         ImplicitRegisterExtend::NoExtend
     }
+}
+
+/// Returns the temp register for a WASM local variable.
+/// All locals (including parameters) use temp registers to avoid conflicts
+/// with calling convention registers during function calls.
+fn local_register(raw_idx: u32) -> LowLevelILRegisterKind<WasmRegister> {
+    LowLevelILRegisterKind::Temp(LowLevelILTempRegister::new(raw_idx))
 }
 
 impl Architecture for WasmArchitecture {
@@ -137,7 +173,7 @@ impl Architecture for WasmArchitecture {
     }
 
     fn max_instr_len(&self) -> usize {
-        16
+        32 // BrTable may not fit, but binja aligns disassembly view when i set it to bigger value, so TODO
     }
 
     fn instruction_info(&self, data: &[u8], _addr: u64) -> Option<InstructionInfo> {
@@ -201,6 +237,11 @@ impl Architecture for WasmArchitecture {
     ) -> Option<(usize, bool)> {
         let instr = decode::decode(data)?;
 
+        debug!(
+            "instruction_llil: addr={:#x} name={} kind={:?} operands={:?}",
+            addr, instr.name, instr.kind, instr.operands
+        );
+
         // During linear sweep, function may not exist yet
         let Some(func) = il.function() else {
             return Some((instr.len, false));
@@ -223,13 +264,22 @@ impl Architecture for WasmArchitecture {
             .unwrap_or(0);
         let mut stack = StackState::new(initial_depth);
 
+        // At function entry, copy argument registers to local temp registers
+        // This separates the calling convention (arg0-arg7) from local storage (temp0-temp7)
+        if addr == func_analysis.start_address {
+            for i in 0..func_analysis.param_count.min(WasmRegister::ARGS.len()) {
+                let arg_reg = LowLevelILRegisterKind::Arch(WasmRegister::ARGS[i]);
+                let local_reg = local_register(i as u32);
+                il.set_reg(4, local_reg, il.reg(4, arg_reg)).append();
+            }
+        }
+
         match instr.kind {
             InstrKind::Nop => {
                 il.nop().append();
                 return Some((instr.len, true));
             }
             InstrKind::Block | InstrKind::Loop | InstrKind::If | InstrKind::Else => {
-                // Structural markers - just emit nop
                 il.nop().append();
                 return Some((instr.len, true));
             }
@@ -237,15 +287,13 @@ impl Architecture for WasmArchitecture {
                 let next_addr = addr + instr.len as u64;
                 if next_addr >= func_analysis.end_address {
                     // end at function end = implicit return
-                    // Use temp register for return value
-                    let ret_temp = LowLevelILTempRegister::new(0xFFFE);
-                    // Pop the return value from stack temp register
+                    // Pop the return value from stack and put in ret register
                     let stack_val = stack.pop();
-                    il.set_reg(4, ret_temp, il.reg(4, stack_val)).append();
+                    let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
+                    il.set_reg(4, ret_reg, il.reg(4, stack_val)).append();
                     // Return - LLIL_RET wants return address, use const 0 as dummy
                     il.ret(il.const_int(4, 0)).append();
                 } else {
-                    // end in middle = fall-through
                     il.nop().append();
                 }
                 return Some((instr.len, true));
@@ -255,35 +303,40 @@ impl Architecture for WasmArchitecture {
                 if let Some(&target) = func_analysis.branch_targets.get(&addr) {
                     if let Some(mut label) = il.label_for_address(target) {
                         il.goto(&mut label).append();
-                        return Some((instr.len, true));
+                    } else {
+                        // Label not available yet - emit jump to target as fallback
+                        let target_expr = il.const_ptr(target);
+                        il.jump(target_expr).append();
                     }
+                    return Some((instr.len, true));
                 }
-                il.unimplemented().append();
+                // No branch target - emit nop
+                il.nop().append();
+                return Some((instr.len, true));
             }
             InstrKind::CondBranch => {
                 // br_if N - conditional jump (pops condition)
+                // Pop condition from stack regardless of whether we can resolve the branch
+                let cond_reg = stack.pop();
+
                 if let Some(&target) = func_analysis.branch_targets.get(&addr) {
                     let fall_through = addr + instr.len as u64;
-                    let has_true = il.label_for_address(target).is_some();
-                    let has_false = il.label_for_address(fall_through).is_some();
                     if let (Some(mut true_label), Some(mut false_label)) = (
                         il.label_for_address(target),
                         il.label_for_address(fall_through),
                     ) {
-                        // Condition is top of stack
-                        let cond_reg = stack.pop();
                         let cond = il.reg(4, cond_reg);
                         il.if_expr(cond, &mut true_label, &mut false_label).append();
                         return Some((instr.len, true));
                     }
-                    info!(
-                        "Labels not found: addr={:#x} target={:#x} fall={:#x} has_true={} has_false={}",
-                        addr, target, fall_through, has_true, has_false
-                    );
-                } else {
-                    info!("Branch target not in analysis for {:#x}", addr);
+                    // Labels not available yet - emit jump to target as fallback
+                    let target_expr = il.const_ptr(target);
+                    il.jump(target_expr).append();
+                    return Some((instr.len, true));
                 }
-                il.unimplemented().append();
+                // No branch target found - emit nop as fallback
+                il.nop().append();
+                return Some((instr.len, true));
             }
             InstrKind::BrTable => {
                 // br_table - indirect jump based on stack value
@@ -304,20 +357,11 @@ impl Architecture for WasmArchitecture {
                         let param_count = wasm_func.param_count;
                         let return_count = wasm_func.return_count;
 
-                        // // Pop arguments from value stack and push to call stack
-                        // // Arguments are in left-to-right order on value stack
-                        // // We need to push them in reverse order so first arg is on top
-                        // let mut arg_regs = Vec::new();
-                        // for _ in 0..param_count {
-                        //     arg_regs.push(stack.pop());
-                        // }
-                        // // Push in reverse order (last arg first)
-                        // for &arg_reg in arg_regs.iter() {
-                        //     il.push(4, il.reg(4, arg_reg)).append();
-                        // }
-                        for i in (0..param_count).rev() {
+                        // Pop arguments from value stack and set to arg registers
+                        // Arguments are popped in reverse order so arg0 gets first arg
+                        for i in (0..param_count.min(8)).rev() {
                             let src = stack.pop();
-                            let arg_reg = LowLevelILTempRegister::new(i as u32);
+                            let arg_reg = LowLevelILRegisterKind::Arch(WasmRegister::ARGS[i]);
                             il.set_reg(4, arg_reg, il.reg(4, src)).append();
                         }
 
@@ -331,7 +375,7 @@ impl Architecture for WasmArchitecture {
 
                         // Push return value(s) onto value stack
                         if return_count > 0 {
-                            let ret_reg = LowLevelILTempRegister::new(RET_TEMP_ID);
+                            let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
                             let dest = stack.push();
                             il.set_reg(4, dest, il.reg(4, ret_reg)).append();
                         }
@@ -348,6 +392,9 @@ impl Architecture for WasmArchitecture {
                 il.unimplemented().append();
             }
             InstrKind::Return => {
+                let stack_val = stack.pop();
+                let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
+                il.set_reg(4, ret_reg, il.reg(4, stack_val)).append();
                 il.ret(il.const_int(4, 0)).append();
                 return Some((instr.len, true));
             }
@@ -386,9 +433,9 @@ impl Architecture for WasmArchitecture {
             InstrKind::LocalGet => {
                 // local.get N - push local variable onto stack
                 if let Operands::Index(idx) = instr.operands {
-                    let local_temp = LowLevelILTempRegister::new(idx);
+                    let local_reg = local_register(idx);
                     let dest = stack.push();
-                    il.set_reg(4, dest, il.reg(4, local_temp)).append();
+                    il.set_reg(4, dest, il.reg(4, local_reg)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -396,9 +443,9 @@ impl Architecture for WasmArchitecture {
             InstrKind::LocalSet => {
                 // local.set N - pop stack into local variable
                 if let Operands::Index(idx) = instr.operands {
+                    let local_reg = local_register(idx);
                     let src = stack.pop();
-                    let local_temp = LowLevelILTempRegister::new(idx);
-                    il.set_reg(4, local_temp, il.reg(4, src)).append();
+                    il.set_reg(4, local_reg, il.reg(4, src)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -406,12 +453,11 @@ impl Architecture for WasmArchitecture {
             InstrKind::LocalTee => {
                 // local.tee N - set local and keep value on stack (pop, set, push back)
                 if let Operands::Index(idx) = instr.operands {
+                    let local_reg = local_register(idx);
                     let src = stack.pop();
-                    let local_temp = LowLevelILTempRegister::new(idx);
-                    il.set_reg(4, local_temp, il.reg(4, src)).append();
-                    // Push back - the value stays at the same slot
+                    il.set_reg(4, local_reg.clone(), il.reg(4, src)).append();
                     let dest = stack.push();
-                    il.set_reg(4, dest, il.reg(4, local_temp)).append();
+                    il.set_reg(4, dest, il.reg(4, local_reg)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -427,14 +473,32 @@ impl Architecture for WasmArchitecture {
                 return Some((instr.len, true));
             }
             InstrKind::Select => {
-                // select: [val1, val2, cond] -> [val1 if cond else val2]
-                // For now, simplified implementation
-                let _cond = stack.pop();
-                let _val2 = stack.pop();
+                // select: [val1, val2, cond] -> [cond != 0 ? val1 : val2]
+                let cond = stack.pop();
+                let val2 = stack.pop();
                 let val1 = stack.pop();
                 let dest = stack.push();
-                // TODO: Proper if-then-else, for now just use val1
-                il.set_reg(4, dest, il.reg(4, val1)).append();
+
+                let mut true_label = LowLevelILLabel::new();
+                let mut false_label = LowLevelILLabel::new();
+                let mut end_label = LowLevelILLabel::new();
+
+                // if (cond) goto true_label else goto false_label
+                il.if_expr(il.reg(4, cond), &mut true_label, &mut false_label)
+                    .append();
+
+                // true_label: dest = val1; goto end
+                il.mark_label(&mut true_label);
+                il.set_reg(4, dest.clone(), il.reg(4, val1)).append();
+                il.goto(&mut end_label).append();
+
+                // false_label: dest = val2
+                il.mark_label(&mut false_label);
+                il.set_reg(4, dest, il.reg(4, val2)).append();
+
+                // end_label:
+                il.mark_label(&mut end_label);
+
                 return Some((instr.len, true));
             }
             InstrKind::Load => {
@@ -572,33 +636,11 @@ impl Architecture for WasmArchitecture {
     }
 
     fn registers_all(&self) -> Vec<Self::Register> {
-        vec![
-            WasmRegister::Sp,
-            WasmRegister::Ret,
-            WasmRegister::Arg0,
-            WasmRegister::Arg1,
-            WasmRegister::Arg2,
-            WasmRegister::Arg3,
-            WasmRegister::Arg4,
-            WasmRegister::Arg5,
-            WasmRegister::Arg6,
-            WasmRegister::Arg7,
-        ]
+        WasmRegister::ALL.to_vec()
     }
 
     fn registers_full_width(&self) -> Vec<Self::Register> {
-        vec![
-            WasmRegister::Sp,
-            WasmRegister::Ret,
-            WasmRegister::Arg0,
-            WasmRegister::Arg1,
-            WasmRegister::Arg2,
-            WasmRegister::Arg3,
-            WasmRegister::Arg4,
-            WasmRegister::Arg5,
-            WasmRegister::Arg6,
-            WasmRegister::Arg7,
-        ]
+        WasmRegister::ALL.to_vec()
     }
 
     fn register_from_id(&self, id: RegisterId) -> Option<Self::Register> {
@@ -906,11 +948,12 @@ fn create_basic_blocks(
         }
 
         context.add_basic_block(block);
-        info!(
+        debug!(
             "  added block {:#x}..{:#x}",
             basic_block_start, basic_block_end
         );
     }
+    debug!("create_basic_blocks: all blocks added");
 }
 
 /// WASM calling convention
@@ -918,24 +961,9 @@ fn create_basic_blocks(
 /// - Return value in temp0xFFFE register
 pub struct WasmCallingConvention;
 
-/// Temp register ID used for return value in LLIL
-/// Must match what we use in instruction_llil for End instruction
-const RET_TEMP_ID: u32 = 0xFFFE;
-
 impl CallingConvention for WasmCallingConvention {
     fn caller_saved_registers(&self) -> Vec<RegisterId> {
-        // All temp registers are caller-saved in WASM
-        vec![
-            RegisterId(RET_TEMP_ID | 0x8000_0000), // return register
-            RegisterId(0 | 0x8000_0000),           // temp0
-            RegisterId(1 | 0x8000_0000),           // temp1
-            RegisterId(2 | 0x8000_0000),           // temp2
-            RegisterId(3 | 0x8000_0000),           // temp3
-            RegisterId(4 | 0x8000_0000),           // temp4
-            RegisterId(5 | 0x8000_0000),           // temp5
-            RegisterId(6 | 0x8000_0000),           // temp6
-            RegisterId(7 | 0x8000_0000),           // temp7
-        ]
+        vec![]
     }
 
     fn callee_saved_registers(&self) -> Vec<RegisterId> {
@@ -943,13 +971,11 @@ impl CallingConvention for WasmCallingConvention {
     }
 
     fn int_arg_registers(&self) -> Vec<RegisterId> {
-        // Arguments passed on stack, not in registers
-        // This avoids conflicts with temp registers used for WASM locals
-        vec![]
+        // Real architecture registers for arguments
+        WasmRegister::ARGS.iter().map(|r| r.id()).collect()
     }
 
     fn float_arg_registers(&self) -> Vec<RegisterId> {
-        // Arguments passed on stack, not in registers
         vec![]
     }
 
@@ -970,8 +996,7 @@ impl CallingConvention for WasmCallingConvention {
     }
 
     fn return_int_reg(&self) -> Option<RegisterId> {
-        // Use temp register with high bit set (same as LowLevelILTempRegister::new(RET_TEMP_ID).id())
-        Some(RegisterId(RET_TEMP_ID | 0x8000_0000))
+        Some(WasmRegister::Ret.id())
     }
 
     fn return_hi_int_reg(&self) -> Option<RegisterId> {
@@ -979,8 +1004,7 @@ impl CallingConvention for WasmCallingConvention {
     }
 
     fn return_float_reg(&self) -> Option<RegisterId> {
-        // Use same temp register for float returns
-        Some(RegisterId(RET_TEMP_ID | 0x8000_0000))
+        Some(WasmRegister::Ret.id())
     }
 
     fn global_pointer_reg(&self) -> Option<RegisterId> {
@@ -1032,11 +1056,5 @@ impl StackState {
     fn pop(&mut self) -> LowLevelILTempRegister {
         self.depth = self.depth.saturating_sub(1);
         LowLevelILTempRegister::new(STACK_TEMP_BASE + self.depth)
-    }
-
-    /// Peek at the temp register at a given offset from the top (0 = top of stack).
-    fn peek(&self, offset: u32) -> LowLevelILTempRegister {
-        let idx = self.depth.saturating_sub(1 + offset);
-        LowLevelILTempRegister::new(STACK_TEMP_BASE + idx)
     }
 }

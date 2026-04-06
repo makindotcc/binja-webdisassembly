@@ -1,13 +1,15 @@
 use crate::analysis::{ANALYZED_MODULES, WasmModuleAnalysis};
+use crate::arch::WasmRegister;
 use crate::wasm::{WasmModule, WasmSection};
 use binaryninja::Endianness;
-use binaryninja::architecture::CoreArchitecture;
+use binaryninja::architecture::{CoreArchitecture, Register};
 use binaryninja::binary_view::{BinaryView, BinaryViewBase, BinaryViewExt};
 use binaryninja::confidence::Conf;
 use binaryninja::custom_binary_view::{
     BinaryViewType, BinaryViewTypeBase, CustomBinaryView, CustomBinaryViewType, CustomView,
     CustomViewBuilder,
 };
+use binaryninja::low_level_il::LowLevelILTempRegister;
 use binaryninja::platform::Platform;
 use binaryninja::rc::Ref;
 use binaryninja::section::{Section, Semantics};
@@ -201,7 +203,7 @@ impl WasmView {
                 let addr = func.code_offset as u64;
                 let code = &self.data[func.code_offset..func.code_offset + func.code_size];
 
-                analysis.analyze_function(addr, code);
+                analysis.analyze_function(addr, code, func.param_count);
 
                 self.handle.add_entry_point(addr);
 
@@ -223,14 +225,18 @@ impl WasmView {
                     );
                     let params: Vec<FunctionParameter> = (0..func.param_count)
                         .map(|i| {
-                            let temp_reg_id = (i as i64) | 0x8000_0000;
+                            let reg_id: i64 = if i < WasmRegister::ARGS.len() {
+                                u32::from(WasmRegister::ARGS[i].id()) as i64
+                            } else {
+                                u32::from(LowLevelILTempRegister::new(i as u32).id()) as i64
+                            };
                             FunctionParameter {
                                 ty: Conf::new(i32_type.clone(), 255),
                                 name: format!("arg{}", i),
                                 location: Some(Variable::new(
                                     VariableSourceType::RegisterVariableSourceType,
                                     0,
-                                    temp_reg_id,
+                                    reg_id,
                                 )),
                             }
                         })

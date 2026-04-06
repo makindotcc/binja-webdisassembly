@@ -1,5 +1,6 @@
 //! WASM instruction decoding using wasmparser
 
+use tracing::error;
 use wasmparser::{BinaryReader, Operator};
 
 #[derive(Debug, Clone)]
@@ -62,15 +63,28 @@ pub enum Operands {
     I64(i64),
     F32(f32),
     F64(f64),
-    MemArg { align: u32, offset: u64 },
-    BrTable { labels: Vec<u32>, default: u32 },
+    MemArg {
+        align: u32,
+        offset: u64,
+    },
+    BrTable {
+        labels: Vec<u32>,
+        default: u32,
+    },
 }
 
 pub fn decode(data: &[u8]) -> Option<Instruction> {
     let mut reader = BinaryReader::new(data, 0);
     let pos_before = reader.original_position();
 
-    let op = reader.read_operator().ok()?;
+    let op = match reader.read_operator() {
+        Ok(op) => op,
+        Err(err) if err.message() == "unexpected end-of-file" => {
+            error!("EOF while decoding instruction at offset {pos_before}: {err:?}");
+            return None;
+        }
+        Err(_) => return None,
+    };
     let len = reader.original_position() - pos_before;
 
     let (name, kind, operands) = decode_operator(op);
@@ -100,11 +114,21 @@ fn decode_operator(op: Operator<'_>) -> (&'static str, InstrKind, Operands) {
         Operator::BrIf { relative_depth } => ("br_if", CondBranch, Index(relative_depth)),
         Operator::BrTable { targets } => {
             let labels: Vec<u32> = targets.targets().filter_map(|t| t.ok()).collect();
-            ("br_table", BrTable, Operands::BrTable { labels, default: targets.default() })
+            (
+                "br_table",
+                BrTable,
+                Operands::BrTable {
+                    labels,
+                    default: targets.default(),
+                },
+            )
         }
         Operator::Return => ("return", Return, None),
         Operator::Call { function_index } => ("call", Call, Index(function_index)),
-        Operator::CallIndirect { type_index, table_index } => ("call_indirect", Call, Indexes(type_index, table_index)),
+        Operator::CallIndirect {
+            type_index,
+            table_index,
+        } => ("call_indirect", Call, Indexes(type_index, table_index)),
 
         // Parametric
         Operator::Drop => ("drop", Drop, None),
@@ -119,36 +143,199 @@ fn decode_operator(op: Operator<'_>) -> (&'static str, InstrKind, Operands) {
         Operator::GlobalSet { global_index } => ("global.set", GlobalSet, Index(global_index)),
 
         // Memory load
-        Operator::I32Load { memarg } => ("i32.load", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load { memarg } => ("i64.load", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::F32Load { memarg } => ("f32.load", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::F64Load { memarg } => ("f64.load", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I32Load8S { memarg } => ("i32.load8_s", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I32Load8U { memarg } => ("i32.load8_u", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I32Load16S { memarg } => ("i32.load16_s", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I32Load16U { memarg } => ("i32.load16_u", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load8S { memarg } => ("i64.load8_s", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load8U { memarg } => ("i64.load8_u", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load16S { memarg } => ("i64.load16_s", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load16U { memarg } => ("i64.load16_u", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load32S { memarg } => ("i64.load32_s", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Load32U { memarg } => ("i64.load32_u", Load, MemArg { align: memarg.align as u32, offset: memarg.offset }),
+        Operator::I32Load { memarg } => (
+            "i32.load",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load { memarg } => (
+            "i64.load",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::F32Load { memarg } => (
+            "f32.load",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::F64Load { memarg } => (
+            "f64.load",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I32Load8S { memarg } => (
+            "i32.load8_s",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I32Load8U { memarg } => (
+            "i32.load8_u",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I32Load16S { memarg } => (
+            "i32.load16_s",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I32Load16U { memarg } => (
+            "i32.load16_u",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load8S { memarg } => (
+            "i64.load8_s",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load8U { memarg } => (
+            "i64.load8_u",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load16S { memarg } => (
+            "i64.load16_s",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load16U { memarg } => (
+            "i64.load16_u",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load32S { memarg } => (
+            "i64.load32_s",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Load32U { memarg } => (
+            "i64.load32_u",
+            Load,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
 
         // Memory store
-        Operator::I32Store { memarg } => ("i32.store", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Store { memarg } => ("i64.store", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::F32Store { memarg } => ("f32.store", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::F64Store { memarg } => ("f64.store", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I32Store8 { memarg } => ("i32.store8", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I32Store16 { memarg } => ("i32.store16", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Store8 { memarg } => ("i64.store8", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Store16 { memarg } => ("i64.store16", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
-        Operator::I64Store32 { memarg } => ("i64.store32", Store, MemArg { align: memarg.align as u32, offset: memarg.offset }),
+        Operator::I32Store { memarg } => (
+            "i32.store",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Store { memarg } => (
+            "i64.store",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::F32Store { memarg } => (
+            "f32.store",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::F64Store { memarg } => (
+            "f64.store",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I32Store8 { memarg } => (
+            "i32.store8",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I32Store16 { memarg } => (
+            "i32.store16",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Store8 { memarg } => (
+            "i64.store8",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Store16 { memarg } => (
+            "i64.store16",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
+        Operator::I64Store32 { memarg } => (
+            "i64.store32",
+            Store,
+            MemArg {
+                align: memarg.align as u32,
+                offset: memarg.offset,
+            },
+        ),
 
         // Memory operations
         Operator::MemorySize { mem, .. } => ("memory.size", Normal, Index(mem)),
         Operator::MemoryGrow { mem, .. } => ("memory.grow", Normal, Index(mem)),
-        Operator::MemoryCopy { dst_mem, src_mem } => ("memory.copy", Normal, Indexes(dst_mem, src_mem)),
+        Operator::MemoryCopy { dst_mem, src_mem } => {
+            ("memory.copy", Normal, Indexes(dst_mem, src_mem))
+        }
         Operator::MemoryFill { mem } => ("memory.fill", Normal, Index(mem)),
 
         // Constants
@@ -326,12 +513,19 @@ fn decode_operator(op: Operator<'_>) -> (&'static str, InstrKind, Operands) {
         Operator::TableGrow { table } => ("table.grow", Normal, Index(table)),
         Operator::TableSize { table } => ("table.size", Normal, Index(table)),
         Operator::TableFill { table } => ("table.fill", Normal, Index(table)),
-        Operator::TableCopy { dst_table, src_table } => ("table.copy", Normal, Indexes(dst_table, src_table)),
-        Operator::TableInit { elem_index, table } => ("table.init", Normal, Indexes(elem_index, table)),
+        Operator::TableCopy {
+            dst_table,
+            src_table,
+        } => ("table.copy", Normal, Indexes(dst_table, src_table)),
+        Operator::TableInit { elem_index, table } => {
+            ("table.init", Normal, Indexes(elem_index, table))
+        }
         Operator::ElemDrop { elem_index } => ("elem.drop", Normal, Index(elem_index)),
 
         // Data operations
-        Operator::MemoryInit { data_index, mem } => ("memory.init", Normal, Indexes(data_index, mem)),
+        Operator::MemoryInit { data_index, mem } => {
+            ("memory.init", Normal, Indexes(data_index, mem))
+        }
         Operator::DataDrop { data_index } => ("data.drop", Normal, Index(data_index)),
 
         // Catch-all for other instructions (SIMD, atomics, GC, etc.)
