@@ -468,8 +468,27 @@ impl Architecture for WasmArchitecture {
                 }
                 il.unimplemented().append();
             }
-            InstrKind::GlobalGet | InstrKind::GlobalSet => {
-                // Global access - treat as memory operation
+            InstrKind::GlobalGet => {
+                // global.get N - push global variable onto stack
+                // Use temp registers with offset 0x8000 to avoid conflicts with locals
+                if let Operands::Index(idx) = instr.operands {
+                    let global_reg: LowLevelILRegisterKind<WasmRegister> =
+                        LowLevelILRegisterKind::Temp(LowLevelILTempRegister::new(0x8000 + idx));
+                    let dest = stack.push();
+                    il.set_reg(8, dest, il.reg(8, global_reg)).append();
+                    return Some((instr.len, true));
+                }
+                il.unimplemented().append();
+            }
+            InstrKind::GlobalSet => {
+                // global.set N - pop stack into global variable
+                if let Operands::Index(idx) = instr.operands {
+                    let global_reg: LowLevelILRegisterKind<WasmRegister> =
+                        LowLevelILRegisterKind::Temp(LowLevelILTempRegister::new(0x8000 + idx));
+                    let src = stack.pop();
+                    il.set_reg(8, global_reg, il.reg(8, src)).append();
+                    return Some((instr.len, true));
+                }
                 il.unimplemented().append();
             }
             InstrKind::Drop => {
