@@ -1,0 +1,15 @@
+[package]
+name = "binja-wasm"
+version = "0.1.0"
+edition = "2024"
+build = "build.rs"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+binaryninja = { git = "https://github.com/Vector35/binaryninja-api.git", branch = "dev" }
+binaryninjacore-sys = { git = "https://github.com/Vector35/binaryninja-api.git", branch = "dev" }
+tracing = "0.1"
+wasmparser = "0.227"
+eyre = "0.6"
