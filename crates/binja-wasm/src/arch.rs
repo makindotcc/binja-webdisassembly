@@ -17,7 +17,7 @@ use binaryninja::low_level_il::lifting::LowLevelILLabel;
 use binaryninja::low_level_il::{
     LowLevelILMutableFunction, LowLevelILRegisterKind, LowLevelILTempRegister,
 };
-use tracing::{debug, info, warn};
+use tracing::{debug, error, info, warn};
 
 pub struct WasmArchitecture {
     handle: CustomArchitectureHandle<Self>,
@@ -327,7 +327,7 @@ impl Architecture for WasmArchitecture {
                         il.label_for_address(target),
                         il.label_for_address(fall_through),
                     ) {
-                        let cond = il.reg(4, cond_reg);
+                        let cond = il.reg(8, cond_reg);
                         il.if_expr(cond, &mut true_label, &mut false_label).append();
                         return Some((instr.len, true));
                     }
@@ -343,7 +343,7 @@ impl Architecture for WasmArchitecture {
             InstrKind::BrTable => {
                 // br_table - indirect jump based on stack value
                 let idx_reg = stack.pop();
-                let index = il.reg(4, idx_reg);
+                let index = il.reg(8, idx_reg);
                 il.jump(index).append();
                 return Some((instr.len, true));
             }
@@ -388,7 +388,7 @@ impl Architecture for WasmArchitecture {
                     // call_indirect - indirect call through table
                     // TODO: handle param/return counts from type index
                     let target_reg = stack.pop();
-                    let target = il.reg(4, target_reg);
+                    let target = il.reg(8, target_reg);
                     il.call(target).append();
                     return Some((instr.len, true));
                 }
@@ -409,10 +409,11 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::Const => {
                 // Push constant onto stack temp register
+                // All stack registers are 8 bytes for consistency
                 match instr.operands {
                     Operands::I32(val) => {
                         let dest = stack.push();
-                        il.set_reg(4, dest, il.const_int(4, val as u32 as u64))
+                        il.set_reg(8, dest, il.const_int(8, val as u32 as u64))
                             .append();
                     }
                     Operands::I64(val) => {
@@ -421,7 +422,7 @@ impl Architecture for WasmArchitecture {
                     }
                     Operands::F32(val) => {
                         let dest = stack.push();
-                        il.set_reg(4, dest, il.const_int(4, val.to_bits() as u64))
+                        il.set_reg(8, dest, il.const_int(8, val.to_bits() as u64))
                             .append();
                     }
                     Operands::F64(val) => {
@@ -510,7 +511,7 @@ impl Architecture for WasmArchitecture {
                 let mut end_label = LowLevelILLabel::new();
 
                 // if (cond) goto true_label else goto false_label
-                il.if_expr(il.reg(4, cond), &mut true_label, &mut false_label)
+                il.if_expr(il.reg(8, cond), &mut true_label, &mut false_label)
                     .append();
 
                 // true_label: dest = val1; goto end
@@ -529,36 +530,34 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::Load => {
                 // Memory load: pop address, push value
+                // Use 8 bytes for everything to avoid LLIL size mismatch warnings
                 if let Operands::MemArg { offset, .. } = instr.operands {
                     let addr_reg = stack.pop();
-                    let size = if instr.name.contains("64") { 8 } else { 4 };
                     let loaded = if offset > 0 {
                         let effective_addr =
-                            il.add(4, il.reg(4, addr_reg), il.const_int(4, offset));
-                        il.load(size, effective_addr)
+                            il.add(8, il.reg(8, addr_reg), il.const_int(8, offset));
+                        il.load(8, effective_addr)
                     } else {
-                        il.load(size, il.reg(4, addr_reg))
+                        il.load(8, il.reg(8, addr_reg))
                     };
                     let dest = stack.push();
-                    il.set_reg(size, dest, loaded).append();
+                    il.set_reg(8, dest, loaded).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
             }
             InstrKind::Store => {
                 // Memory store: pop value, pop address
+                // Use 8 bytes for everything to avoid LLIL size mismatch warnings
                 if let Operands::MemArg { offset, .. } = instr.operands {
-                    let size = if instr.name.contains("64") { 8 } else { 4 };
                     let value_reg = stack.pop();
                     let addr_reg = stack.pop();
                     if offset > 0 {
                         let effective_addr =
-                            il.add(4, il.reg(4, addr_reg), il.const_int(4, offset));
-                        il.store(size, effective_addr, il.reg(size, value_reg))
-                            .append();
+                            il.add(8, il.reg(8, addr_reg), il.const_int(8, offset));
+                        il.store(8, effective_addr, il.reg(8, value_reg)).append();
                     } else {
-                        il.store(size, il.reg(4, addr_reg), il.reg(size, value_reg))
-                            .append();
+                        il.store(8, il.reg(8, addr_reg), il.reg(8, value_reg)).append();
                     };
                     return Some((instr.len, true));
                 }
@@ -566,90 +565,87 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::BinOp => {
                 // Binary operation: pop 2, compute, push 1
-                let size = if instr.name.contains("64") { 8 } else { 4 };
+                // Use size 8 consistently to match register size and avoid LLIL warnings
                 let rhs_reg = stack.pop();
                 let lhs_reg = stack.pop();
-                let rhs = il.reg(size, rhs_reg);
-                let lhs = il.reg(size, lhs_reg);
+                let rhs = il.reg(8, rhs_reg);
+                let lhs = il.reg(8, lhs_reg);
                 let result = match instr.name {
-                    "i32.add" | "i64.add" => il.add(size, lhs, rhs),
-                    "i32.sub" | "i64.sub" => il.sub(size, lhs, rhs),
-                    "i32.mul" | "i64.mul" => il.mul(size, lhs, rhs),
-                    "i32.div_s" | "i64.div_s" => il.divs(size, lhs, rhs),
-                    "i32.div_u" | "i64.div_u" => il.divu(size, lhs, rhs),
-                    "i32.rem_s" | "i64.rem_s" => il.mods(size, lhs, rhs),
-                    "i32.rem_u" | "i64.rem_u" => il.modu(size, lhs, rhs),
-                    "i32.and" | "i64.and" => il.and(size, lhs, rhs),
-                    "i32.or" | "i64.or" => il.or(size, lhs, rhs),
-                    "i32.xor" | "i64.xor" => il.xor(size, lhs, rhs),
-                    "i32.shl" | "i64.shl" => il.lsl(size, lhs, rhs),
-                    "i32.shr_s" | "i64.shr_s" => il.asr(size, lhs, rhs),
-                    "i32.shr_u" | "i64.shr_u" => il.lsr(size, lhs, rhs),
-                    "i32.rotl" | "i64.rotl" => il.rol(size, lhs, rhs),
-                    "i32.rotr" | "i64.rotr" => il.ror(size, lhs, rhs),
+                    "i32.add" | "i64.add" => il.add(8, lhs, rhs),
+                    "i32.sub" | "i64.sub" => il.sub(8, lhs, rhs),
+                    "i32.mul" | "i64.mul" => il.mul(8, lhs, rhs),
+                    "i32.div_s" | "i64.div_s" => il.divs(8, lhs, rhs),
+                    "i32.div_u" | "i64.div_u" => il.divu(8, lhs, rhs),
+                    "i32.rem_s" | "i64.rem_s" => il.mods(8, lhs, rhs),
+                    "i32.rem_u" | "i64.rem_u" => il.modu(8, lhs, rhs),
+                    "i32.and" | "i64.and" => il.and(8, lhs, rhs),
+                    "i32.or" | "i64.or" => il.or(8, lhs, rhs),
+                    "i32.xor" | "i64.xor" => il.xor(8, lhs, rhs),
+                    "i32.shl" | "i64.shl" => il.lsl(8, lhs, rhs),
+                    "i32.shr_s" | "i64.shr_s" => il.asr(8, lhs, rhs),
+                    "i32.shr_u" | "i64.shr_u" => il.lsr(8, lhs, rhs),
+                    "i32.rotl" | "i64.rotl" => il.rol(8, lhs, rhs),
+                    "i32.rotr" | "i64.rotr" => il.ror(8, lhs, rhs),
                     // Float ops - just use add as placeholder
-                    _ => il.add(size, lhs, rhs),
+                    _ => il.add(8, lhs, rhs),
                 };
                 let dest = stack.push();
-                il.set_reg(size, dest, result).append();
+                il.set_reg(8, dest, result).append();
                 return Some((instr.len, true));
             }
             InstrKind::UnaryOp => {
                 // Unary operation: pop 1, compute, push 1
-                let size = if instr.name.contains("64") { 8 } else { 4 };
                 let val_reg = stack.pop();
                 let dest = stack.push();
                 match instr.name {
                     "f32.neg" | "f64.neg" => {
-                        let result = il.neg(size, il.reg(size, val_reg));
-                        il.set_reg(size, dest, result).append();
+                        let result = il.neg(8, il.reg(8, val_reg));
+                        il.set_reg(8, dest, result).append();
                     }
                     // No direct LLIL for clz, ctz, popcnt, abs - pass through
                     _ => {
-                        il.set_reg(size, dest, il.reg(size, val_reg)).append();
+                        il.set_reg(8, dest, il.reg(8, val_reg)).append();
                     }
                 };
                 return Some((instr.len, true));
             }
             InstrKind::Compare => {
                 // Comparison: pop 2, compare, push i32 (0 or 1)
-                let size = if instr.name.contains("64") && !instr.name.starts_with("f") {
-                    8
-                } else {
-                    4
-                };
+                // Use size 8 consistently to match register size and avoid LLIL warnings
                 let rhs_reg = stack.pop();
                 let lhs_reg = stack.pop();
-                let rhs = il.reg(size, rhs_reg);
-                let lhs = il.reg(size, lhs_reg);
+                let rhs = il.reg(8, rhs_reg);
+                let lhs = il.reg(8, lhs_reg);
                 let result = match instr.name {
-                    "i32.eq" | "i64.eq" | "f32.eq" | "f64.eq" => il.cmp_e(size, lhs, rhs),
-                    "i32.ne" | "i64.ne" | "f32.ne" | "f64.ne" => il.cmp_ne(size, lhs, rhs),
-                    "i32.lt_s" | "i64.lt_s" | "f32.lt" | "f64.lt" => il.cmp_slt(size, lhs, rhs),
-                    "i32.lt_u" | "i64.lt_u" => il.cmp_ult(size, lhs, rhs),
-                    "i32.gt_s" | "i64.gt_s" | "f32.gt" | "f64.gt" => il.cmp_sgt(size, lhs, rhs),
-                    "i32.gt_u" | "i64.gt_u" => il.cmp_ugt(size, lhs, rhs),
-                    "i32.le_s" | "i64.le_s" | "f32.le" | "f64.le" => il.cmp_sle(size, lhs, rhs),
-                    "i32.le_u" | "i64.le_u" => il.cmp_ule(size, lhs, rhs),
-                    "i32.ge_s" | "i64.ge_s" | "f32.ge" | "f64.ge" => il.cmp_sge(size, lhs, rhs),
-                    "i32.ge_u" | "i64.ge_u" => il.cmp_uge(size, lhs, rhs),
-                    _ => il.cmp_e(size, lhs, rhs),
+                    "i32.eq" | "i64.eq" | "f32.eq" | "f64.eq" => il.cmp_e(8, lhs, rhs),
+                    "i32.ne" | "i64.ne" | "f32.ne" | "f64.ne" => il.cmp_ne(8, lhs, rhs),
+                    "i32.lt_s" | "i64.lt_s" | "f32.lt" | "f64.lt" => il.cmp_slt(8, lhs, rhs),
+                    "i32.lt_u" | "i64.lt_u" => il.cmp_ult(8, lhs, rhs),
+                    "i32.gt_s" | "i64.gt_s" | "f32.gt" | "f64.gt" => il.cmp_sgt(8, lhs, rhs),
+                    "i32.gt_u" | "i64.gt_u" => il.cmp_ugt(8, lhs, rhs),
+                    "i32.le_s" | "i64.le_s" | "f32.le" | "f64.le" => il.cmp_sle(8, lhs, rhs),
+                    "i32.le_u" | "i64.le_u" => il.cmp_ule(8, lhs, rhs),
+                    "i32.ge_s" | "i64.ge_s" | "f32.ge" | "f64.ge" => il.cmp_sge(8, lhs, rhs),
+                    "i32.ge_u" | "i64.ge_u" => il.cmp_uge(8, lhs, rhs),
+                    _ => il.cmp_e(8, lhs, rhs),
                 };
                 let dest = stack.push();
-                il.set_reg(4, dest, result).append(); // Result is always i32
+                // Result is i32 but store in 8-byte register for consistency
+                il.set_reg(8, dest, result).append();
                 return Some((instr.len, true));
             }
             InstrKind::Test => {
                 // Test: pop 1, test, push i32
-                let size = if instr.name.contains("64") { 8 } else { 4 };
+                // Use size 8 consistently to match register size and avoid LLIL warnings
                 let val_reg = stack.pop();
-                let val = il.reg(size, val_reg);
+                let val = il.reg(8, val_reg);
                 let result = match instr.name {
-                    "i32.eqz" | "i64.eqz" => il.cmp_e(size, val, il.const_int(size, 0)),
-                    _ => il.cmp_e(size, val, il.const_int(size, 0)),
+                    "i32.eqz" | "i64.eqz" => il.cmp_e(8, val, il.const_int(8, 0)),
+                    _ => il.cmp_e(8, val, il.const_int(8, 0)),
                 };
                 let dest = stack.push();
-                il.set_reg(4, dest, result).append();
+                // Result is i32 but store in 8-byte register for consistency
+                il.set_reg(8, dest, result).append();
                 return Some((instr.len, true));
             }
             InstrKind::Normal => {
@@ -876,10 +872,10 @@ fn create_basic_blocks(
         } else {
             func_analysis.end_address
         };
-        info!("  basic block: {basic_block_start:#x}..{basic_block_end:#x}");
+        debug!("  basic block: {basic_block_start:#x}..{basic_block_end:#x}");
 
         let Some(block) = context.create_basic_block(arch, basic_block_start) else {
-            info!("  FAILED to create block at {basic_block_start:#x}");
+            error!("  FAILED to create block at {basic_block_start:#x}");
             continue;
         };
         block.set_end(basic_block_end);
