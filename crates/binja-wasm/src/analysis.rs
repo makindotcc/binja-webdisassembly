@@ -98,6 +98,9 @@ pub struct FunctionAnalysis {
     /// Note: These are CFG basic blocks, not WASM structured blocks.
     /// A single WASM `block..end` may contain multiple basic blocks if it has branches.
     pub basic_block_starts: Vec<u64>,
+    /// Map of instruction address to stack depth at that instruction (before execution).
+    /// Used for LLIL lifting to determine which temp register represents the stack slot.
+    pub instruction_stack_depths: HashMap<u64, u32>,
 }
 
 pub fn analyze_function(code: &[u8], base_addr: u64) -> FunctionAnalysis {
@@ -106,6 +109,7 @@ pub fn analyze_function(code: &[u8], base_addr: u64) -> FunctionAnalysis {
     let blocks = resolve_block_indicies(code, base_addr);
     let branch_targets = resolve_branch_targets(code, base_addr, &blocks);
     let basic_block_starts = resolve_basic_blocks(code, base_addr, &branch_targets);
+    let instruction_stack_depths = analyze_stack_depths(code, base_addr);
 
     info!(
         "analyze_function: base={:#x} len={} blocks={:?} targets={:?}",
@@ -121,6 +125,7 @@ pub fn analyze_function(code: &[u8], base_addr: u64) -> FunctionAnalysis {
         blocks,
         branch_targets,
         basic_block_starts,
+        instruction_stack_depths,
     }
 }
 
@@ -281,4 +286,54 @@ fn resolve_basic_blocks(
 
     starts.sort();
     starts
+}
+
+/// Analyze stack depths at each instruction.
+/// Returns a map from instruction address to stack depth (before execution).
+/// This is used by LLIL lifting to map stack operations to temp registers.
+fn analyze_stack_depths(code: &[u8], base_addr: u64) -> HashMap<u64, u32> {
+    let mut depths = HashMap::new();
+    let mut depth: u32 = 0;
+    let mut offset = 0;
+
+    while offset < code.len() {
+        let addr = base_addr + offset as u64;
+        let Some(instr) = decode::decode(&code[offset..]) else {
+            break;
+        };
+
+        // Record depth BEFORE this instruction executes
+        depths.insert(addr, depth);
+
+        // Update depth based on instruction effect
+        // Stack effects: (pops, pushes)
+        let (pops, pushes): (u32, u32) = match instr.kind {
+            InstrKind::Const => (0, 1),       // push constant
+            InstrKind::LocalGet => (0, 1),    // push local value
+            InstrKind::LocalSet => (1, 0),    // pop into local
+            InstrKind::LocalTee => (1, 1),    // pop, set local, push back (net 0)
+            InstrKind::GlobalGet => (0, 1),   // push global value
+            InstrKind::GlobalSet => (1, 0),   // pop into global
+            InstrKind::Drop => (1, 0),        // pop and discard
+            InstrKind::Select => (3, 1),      // pop cond, val2, val1; push result
+            InstrKind::Load => (1, 1),        // pop addr, push value
+            InstrKind::Store => (2, 0),       // pop value, pop addr
+            InstrKind::BinOp => (2, 1),       // pop 2, push 1
+            InstrKind::UnaryOp => (1, 1),     // pop 1, push 1
+            InstrKind::Compare => (2, 1),     // pop 2, push i32 result
+            InstrKind::Test => (1, 1),        // pop 1, push i32 result
+            InstrKind::CondBranch => (1, 0),  // br_if pops condition
+            InstrKind::BrTable => (1, 0),     // br_table pops index
+            // Control flow that doesn't affect stack depth calculation linearly
+            InstrKind::Block | InstrKind::Loop | InstrKind::If | InstrKind::Else |
+            InstrKind::End | InstrKind::Branch | InstrKind::Return |
+            InstrKind::Unreachable | InstrKind::Call | InstrKind::Nop | InstrKind::Normal => (0, 0),
+        };
+
+        depth = depth.saturating_sub(pops);
+        depth = depth.saturating_add(pushes);
+        offset += instr.len;
+    }
+
+    depths
 }

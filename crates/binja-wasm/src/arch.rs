@@ -1,5 +1,4 @@
 use std::borrow::Cow;
-use std::collections::HashMap;
 
 use crate::analysis::{ANALYZED_MODULES, FunctionAnalysis};
 use crate::decode::{self, InstrKind, Operands};
@@ -216,6 +215,14 @@ impl Architecture for WasmArchitecture {
             return Some((instr.len, false));
         };
 
+        // Get the stack depth at this instruction from analysis
+        let initial_depth = func_analysis
+            .instruction_stack_depths
+            .get(&addr)
+            .copied()
+            .unwrap_or(0);
+        let mut stack = StackState::new(initial_depth);
+
         match instr.kind {
             InstrKind::Nop => {
                 il.nop().append();
@@ -230,10 +237,11 @@ impl Architecture for WasmArchitecture {
                 let next_addr = addr + instr.len as u64;
                 if next_addr >= func_analysis.end_address {
                     // end at function end = implicit return
-                    // Use temp register for return value (temp regs work with LLIL API)
-                    // Temp 0xFFFE = our "ret" register equivalent
+                    // Use temp register for return value
                     let ret_temp = LowLevelILTempRegister::new(0xFFFE);
-                    il.set_reg(4, ret_temp, il.pop(4)).append();
+                    // Pop the return value from stack temp register
+                    let stack_val = stack.pop();
+                    il.set_reg(4, ret_temp, il.reg(4, stack_val)).append();
                     // Return - LLIL_RET wants return address, use const 0 as dummy
                     il.ret(il.const_int(4, 0)).append();
                 } else {
@@ -253,7 +261,7 @@ impl Architecture for WasmArchitecture {
                 il.unimplemented().append();
             }
             InstrKind::CondBranch => {
-                // br_if N - conditional jump
+                // br_if N - conditional jump (pops condition)
                 if let Some(&target) = func_analysis.branch_targets.get(&addr) {
                     let fall_through = addr + instr.len as u64;
                     let has_true = il.label_for_address(target).is_some();
@@ -263,7 +271,8 @@ impl Architecture for WasmArchitecture {
                         il.label_for_address(fall_through),
                     ) {
                         // Condition is top of stack
-                        let cond = il.pop(4);
+                        let cond_reg = stack.pop();
+                        let cond = il.reg(4, cond_reg);
                         il.if_expr(cond, &mut true_label, &mut false_label).append();
                         return Some((instr.len, true));
                     }
@@ -278,23 +287,61 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::BrTable => {
                 // br_table - indirect jump based on stack value
-                let index = il.pop(4);
+                let idx_reg = stack.pop();
+                let index = il.reg(4, idx_reg);
                 il.jump(index).append();
                 return Some((instr.len, true));
             }
             InstrKind::Call => {
                 // call function_index - need to resolve function address
                 if let Operands::Index(func_idx) = instr.operands {
-                    if let Some(wasm_func) = analysis.module.functions.get(func_idx as usize) {
+                    if let Some(wasm_func) = analysis
+                        .module
+                        .functions
+                        .iter()
+                        .find(|f| f.index == func_idx)
+                    {
+                        let param_count = wasm_func.param_count;
+                        let return_count = wasm_func.return_count;
+
+                        // // Pop arguments from value stack and push to call stack
+                        // // Arguments are in left-to-right order on value stack
+                        // // We need to push them in reverse order so first arg is on top
+                        // let mut arg_regs = Vec::new();
+                        // for _ in 0..param_count {
+                        //     arg_regs.push(stack.pop());
+                        // }
+                        // // Push in reverse order (last arg first)
+                        // for &arg_reg in arg_regs.iter() {
+                        //     il.push(4, il.reg(4, arg_reg)).append();
+                        // }
+                        for i in (0..param_count).rev() {
+                            let src = stack.pop();
+                            let arg_reg = LowLevelILTempRegister::new(i as u32);
+                            il.set_reg(4, arg_reg, il.reg(4, src)).append();
+                        }
+
                         if wasm_func.code_offset > 0 {
                             let target = il.const_ptr(wasm_func.code_offset as u64);
                             il.call(target).append();
-                            return Some((instr.len, true));
+                        } else {
+                            // Imported function - use unimplemented for now
+                            il.unimplemented().append();
                         }
+
+                        // Push return value(s) onto value stack
+                        if return_count > 0 {
+                            let ret_reg = LowLevelILTempRegister::new(RET_TEMP_ID);
+                            let dest = stack.push();
+                            il.set_reg(4, dest, il.reg(4, ret_reg)).append();
+                        }
+                        return Some((instr.len, true));
                     }
                 } else if let Operands::Indexes(_, _) = instr.operands {
                     // call_indirect - indirect call through table
-                    let target = il.pop(4);
+                    // TODO: handle param/return counts from type index
+                    let target_reg = stack.pop();
+                    let target = il.reg(4, target_reg);
                     il.call(target).append();
                     return Some((instr.len, true));
                 }
@@ -309,19 +356,25 @@ impl Architecture for WasmArchitecture {
                 return Some((instr.len, true));
             }
             InstrKind::Const => {
-                // Push constant onto stack
+                // Push constant onto stack temp register
                 match instr.operands {
                     Operands::I32(val) => {
-                        il.push(4, il.const_int(4, val as u32 as u64)).append();
+                        let dest = stack.push();
+                        il.set_reg(4, dest, il.const_int(4, val as u32 as u64))
+                            .append();
                     }
                     Operands::I64(val) => {
-                        il.push(8, il.const_int(8, val as u64)).append();
+                        let dest = stack.push();
+                        il.set_reg(8, dest, il.const_int(8, val as u64)).append();
                     }
                     Operands::F32(val) => {
-                        il.push(4, il.const_int(4, val.to_bits() as u64)).append();
+                        let dest = stack.push();
+                        il.set_reg(4, dest, il.const_int(4, val.to_bits() as u64))
+                            .append();
                     }
                     Operands::F64(val) => {
-                        il.push(8, il.const_int(8, val.to_bits())).append();
+                        let dest = stack.push();
+                        il.set_reg(8, dest, il.const_int(8, val.to_bits())).append();
                     }
                     _ => {
                         il.unimplemented().append();
@@ -332,11 +385,10 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::LocalGet => {
                 // local.get N - push local variable onto stack
-                // Use temp register to represent local variable
                 if let Operands::Index(idx) = instr.operands {
-                    let temp = LowLevelILTempRegister::new(idx);
-                    let val = il.reg(4, temp);
-                    il.push(4, val).append();
+                    let local_temp = LowLevelILTempRegister::new(idx);
+                    let dest = stack.push();
+                    il.set_reg(4, dest, il.reg(4, local_temp)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -344,22 +396,22 @@ impl Architecture for WasmArchitecture {
             InstrKind::LocalSet => {
                 // local.set N - pop stack into local variable
                 if let Operands::Index(idx) = instr.operands {
-                    let val = il.pop(4);
-                    let temp = LowLevelILTempRegister::new(idx);
-                    il.set_reg(4, temp, val).append();
+                    let src = stack.pop();
+                    let local_temp = LowLevelILTempRegister::new(idx);
+                    il.set_reg(4, local_temp, il.reg(4, src)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
             }
             InstrKind::LocalTee => {
-                // local.tee N - set local and keep value on stack
+                // local.tee N - set local and keep value on stack (pop, set, push back)
                 if let Operands::Index(idx) = instr.operands {
-                    // Pop, set, push back (equivalent to tee)
-                    let val = il.pop(4);
-                    let temp = LowLevelILTempRegister::new(idx);
-                    il.set_reg(4, temp, val).append();
-                    let val2 = il.reg(4, LowLevelILTempRegister::new(idx));
-                    il.push(4, val2).append();
+                    let src = stack.pop();
+                    let local_temp = LowLevelILTempRegister::new(idx);
+                    il.set_reg(4, local_temp, il.reg(4, src)).append();
+                    // Push back - the value stays at the same slot
+                    let dest = stack.push();
+                    il.set_reg(4, dest, il.reg(4, local_temp)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -369,32 +421,36 @@ impl Architecture for WasmArchitecture {
                 il.unimplemented().append();
             }
             InstrKind::Drop => {
-                // Drop top of stack
-                il.pop(4).build();
+                // Drop top of stack - just decrement depth, no LLIL needed
+                let _ = stack.pop();
                 il.nop().append();
                 return Some((instr.len, true));
             }
             InstrKind::Select => {
                 // select: [val1, val2, cond] -> [val1 if cond else val2]
-                let _cond = il.pop(4);
-                let _val2 = il.pop(4);
-                let _val1 = il.pop(4);
-                // Would need if expression but simplified:
-                il.push(4, il.const_int(4, 0)).append(); // placeholder
+                // For now, simplified implementation
+                let _cond = stack.pop();
+                let _val2 = stack.pop();
+                let val1 = stack.pop();
+                let dest = stack.push();
+                // TODO: Proper if-then-else, for now just use val1
+                il.set_reg(4, dest, il.reg(4, val1)).append();
                 return Some((instr.len, true));
             }
             InstrKind::Load => {
                 // Memory load: pop address, push value
                 if let Operands::MemArg { offset, .. } = instr.operands {
-                    let addr_val = il.pop(4);
-                    let effective_addr = if offset > 0 {
-                        il.add(4, addr_val, il.const_int(4, offset))
-                    } else {
-                        addr_val
-                    };
+                    let addr_reg = stack.pop();
                     let size = if instr.name.contains("64") { 8 } else { 4 };
-                    let loaded = il.load(size, effective_addr);
-                    il.push(size, loaded).append();
+                    let loaded = if offset > 0 {
+                        let effective_addr =
+                            il.add(4, il.reg(4, addr_reg), il.const_int(4, offset));
+                        il.load(size, effective_addr)
+                    } else {
+                        il.load(size, il.reg(4, addr_reg))
+                    };
+                    let dest = stack.push();
+                    il.set_reg(size, dest, loaded).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -403,14 +459,17 @@ impl Architecture for WasmArchitecture {
                 // Memory store: pop value, pop address
                 if let Operands::MemArg { offset, .. } = instr.operands {
                     let size = if instr.name.contains("64") { 8 } else { 4 };
-                    let value = il.pop(size);
-                    let addr_val = il.pop(4);
-                    let effective_addr = if offset > 0 {
-                        il.add(4, addr_val, il.const_int(4, offset))
+                    let value_reg = stack.pop();
+                    let addr_reg = stack.pop();
+                    if offset > 0 {
+                        let effective_addr =
+                            il.add(4, il.reg(4, addr_reg), il.const_int(4, offset));
+                        il.store(size, effective_addr, il.reg(size, value_reg))
+                            .append();
                     } else {
-                        addr_val
+                        il.store(size, il.reg(4, addr_reg), il.reg(size, value_reg))
+                            .append();
                     };
-                    il.store(size, effective_addr, value).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -418,8 +477,10 @@ impl Architecture for WasmArchitecture {
             InstrKind::BinOp => {
                 // Binary operation: pop 2, compute, push 1
                 let size = if instr.name.contains("64") { 8 } else { 4 };
-                let rhs = il.pop(size);
-                let lhs = il.pop(size);
+                let rhs_reg = stack.pop();
+                let lhs_reg = stack.pop();
+                let rhs = il.reg(size, rhs_reg);
+                let lhs = il.reg(size, lhs_reg);
                 let result = match instr.name {
                     "i32.add" | "i64.add" => il.add(size, lhs, rhs),
                     "i32.sub" | "i64.sub" => il.sub(size, lhs, rhs),
@@ -439,22 +500,25 @@ impl Architecture for WasmArchitecture {
                     // Float ops - just use add as placeholder
                     _ => il.add(size, lhs, rhs),
                 };
-                il.push(size, result).append();
+                let dest = stack.push();
+                il.set_reg(size, dest, result).append();
                 return Some((instr.len, true));
             }
             InstrKind::UnaryOp => {
                 // Unary operation: pop 1, compute, push 1
                 let size = if instr.name.contains("64") { 8 } else { 4 };
-                let val = il.pop(size);
-                let result = match instr.name {
-                    "i32.clz" | "i64.clz" => val,       // No direct LLIL for clz
-                    "i32.ctz" | "i64.ctz" => val,       // No direct LLIL for ctz
-                    "i32.popcnt" | "i64.popcnt" => val, // No direct LLIL for popcnt
-                    "f32.neg" | "f64.neg" => il.neg(size, val),
-                    "f32.abs" | "f64.abs" => val, // No direct abs
-                    _ => val,                     // Pass through for conversions etc
+                let val_reg = stack.pop();
+                let dest = stack.push();
+                match instr.name {
+                    "f32.neg" | "f64.neg" => {
+                        let result = il.neg(size, il.reg(size, val_reg));
+                        il.set_reg(size, dest, result).append();
+                    }
+                    // No direct LLIL for clz, ctz, popcnt, abs - pass through
+                    _ => {
+                        il.set_reg(size, dest, il.reg(size, val_reg)).append();
+                    }
                 };
-                il.push(size, result).append();
                 return Some((instr.len, true));
             }
             InstrKind::Compare => {
@@ -464,8 +528,10 @@ impl Architecture for WasmArchitecture {
                 } else {
                     4
                 };
-                let rhs = il.pop(size);
-                let lhs = il.pop(size);
+                let rhs_reg = stack.pop();
+                let lhs_reg = stack.pop();
+                let rhs = il.reg(size, rhs_reg);
+                let lhs = il.reg(size, lhs_reg);
                 let result = match instr.name {
                     "i32.eq" | "i64.eq" | "f32.eq" | "f64.eq" => il.cmp_e(size, lhs, rhs),
                     "i32.ne" | "i64.ne" | "f32.ne" | "f64.ne" => il.cmp_ne(size, lhs, rhs),
@@ -479,18 +545,21 @@ impl Architecture for WasmArchitecture {
                     "i32.ge_u" | "i64.ge_u" => il.cmp_uge(size, lhs, rhs),
                     _ => il.cmp_e(size, lhs, rhs),
                 };
-                il.push(4, result).append(); // Result is always i32
+                let dest = stack.push();
+                il.set_reg(4, dest, result).append(); // Result is always i32
                 return Some((instr.len, true));
             }
             InstrKind::Test => {
                 // Test: pop 1, test, push i32
                 let size = if instr.name.contains("64") { 8 } else { 4 };
-                let val = il.pop(size);
+                let val_reg = stack.pop();
+                let val = il.reg(size, val_reg);
                 let result = match instr.name {
                     "i32.eqz" | "i64.eqz" => il.cmp_e(size, val, il.const_int(size, 0)),
                     _ => il.cmp_e(size, val, il.const_int(size, 0)),
                 };
-                il.push(4, result).append();
+                let dest = stack.push();
+                il.set_reg(4, dest, result).append();
                 return Some((instr.len, true));
             }
             InstrKind::Normal => {
@@ -858,14 +927,14 @@ impl CallingConvention for WasmCallingConvention {
         // All temp registers are caller-saved in WASM
         vec![
             RegisterId(RET_TEMP_ID | 0x8000_0000), // return register
-            RegisterId(0 | 0x8000_0000), // temp0
-            RegisterId(1 | 0x8000_0000), // temp1
-            RegisterId(2 | 0x8000_0000), // temp2
-            RegisterId(3 | 0x8000_0000), // temp3
-            RegisterId(4 | 0x8000_0000), // temp4
-            RegisterId(5 | 0x8000_0000), // temp5
-            RegisterId(6 | 0x8000_0000), // temp6
-            RegisterId(7 | 0x8000_0000), // temp7
+            RegisterId(0 | 0x8000_0000),           // temp0
+            RegisterId(1 | 0x8000_0000),           // temp1
+            RegisterId(2 | 0x8000_0000),           // temp2
+            RegisterId(3 | 0x8000_0000),           // temp3
+            RegisterId(4 | 0x8000_0000),           // temp4
+            RegisterId(5 | 0x8000_0000),           // temp5
+            RegisterId(6 | 0x8000_0000),           // temp6
+            RegisterId(7 | 0x8000_0000),           // temp7
         ]
     }
 
@@ -874,28 +943,14 @@ impl CallingConvention for WasmCallingConvention {
     }
 
     fn int_arg_registers(&self) -> Vec<RegisterId> {
-        // WASM parameters are locals 0, 1, 2, ... which we lift as temp0, temp1, temp2, ...
-        // Temp register IDs have high bit set: idx | 0x8000_0000
-        vec![
-            RegisterId(0 | 0x8000_0000), // temp0 = arg0
-            RegisterId(1 | 0x8000_0000), // temp1 = arg1
-            RegisterId(2 | 0x8000_0000), // temp2 = arg2
-            RegisterId(3 | 0x8000_0000), // temp3 = arg3
-            RegisterId(4 | 0x8000_0000), // temp4 = arg4
-            RegisterId(5 | 0x8000_0000), // temp5 = arg5
-            RegisterId(6 | 0x8000_0000), // temp6 = arg6
-            RegisterId(7 | 0x8000_0000), // temp7 = arg7
-        ]
+        // Arguments passed on stack, not in registers
+        // This avoids conflicts with temp registers used for WASM locals
+        vec![]
     }
 
     fn float_arg_registers(&self) -> Vec<RegisterId> {
-        // Use same temp registers for float args
-        vec![
-            RegisterId(0 | 0x8000_0000),
-            RegisterId(1 | 0x8000_0000),
-            RegisterId(2 | 0x8000_0000),
-            RegisterId(3 | 0x8000_0000),
-        ]
+        // Arguments passed on stack, not in registers
+        vec![]
     }
 
     fn arg_registers_shared_index(&self) -> bool {
@@ -938,5 +993,50 @@ impl CallingConvention for WasmCallingConvention {
 
     fn are_argument_registers_used_for_var_args(&self) -> bool {
         true
+    }
+}
+
+/// Base offset for stack temp registers.
+/// We use temps starting at 0x8000_0000 to avoid conflict with:
+/// - Locals (can be any u32 index in WASM)
+/// - Return register (0xFFFE)
+///
+/// Mainstream WASM engines are setting up hard limit on locals to 50k:
+/// V8 source code:
+/// ```cpp
+/// constexpr size_t kV8MaxWasmFunctionLocals = 50000;
+/// ```
+const STACK_TEMP_BASE: u32 = 0xFFFF;
+
+/// Tracks the WASM value stack depth during LLIL lifting.
+/// Each stack slot is represented by a temp register: temp(STACK_TEMP_BASE + depth).
+struct StackState {
+    depth: u32,
+}
+
+impl StackState {
+    fn new(initial_depth: u32) -> Self {
+        Self {
+            depth: initial_depth,
+        }
+    }
+
+    /// Push a value onto the stack, returning the temp register for the new slot.
+    fn push(&mut self) -> LowLevelILTempRegister {
+        let temp = LowLevelILTempRegister::new(STACK_TEMP_BASE + self.depth);
+        self.depth += 1;
+        temp
+    }
+
+    /// Pop a value from the stack, returning the temp register for the popped slot.
+    fn pop(&mut self) -> LowLevelILTempRegister {
+        self.depth = self.depth.saturating_sub(1);
+        LowLevelILTempRegister::new(STACK_TEMP_BASE + self.depth)
+    }
+
+    /// Peek at the temp register at a given offset from the top (0 = top of stack).
+    fn peek(&self, offset: u32) -> LowLevelILTempRegister {
+        let idx = self.depth.saturating_sub(1 + offset);
+        LowLevelILTempRegister::new(STACK_TEMP_BASE + idx)
     }
 }
