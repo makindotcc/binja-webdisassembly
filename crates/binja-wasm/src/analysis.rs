@@ -252,7 +252,7 @@ fn resolve_basic_blocks(
         let is_in_function = next_addr < base_addr + code.len() as u64;
 
         match instr.kind {
-            InstrKind::Else | InstrKind::End => {
+            InstrKind::Else => {
                 if !starts.contains(&addr) {
                     starts.push(addr);
                 }
@@ -260,7 +260,6 @@ fn resolve_basic_blocks(
                     starts.push(next_addr);
                 }
             }
-
             InstrKind::Block
             | InstrKind::Loop
             | InstrKind::If
@@ -268,7 +267,8 @@ fn resolve_basic_blocks(
             | InstrKind::CondBranch
             | InstrKind::BrTable
             | InstrKind::Return
-            | InstrKind::Unreachable => {
+            | InstrKind::Unreachable
+            | InstrKind::End => {
                 if is_in_function && !starts.contains(&next_addr) {
                     starts.push(next_addr);
                 }
