@@ -11,6 +11,7 @@ use binaryninja::architecture::{
 };
 use binaryninja::basic_block::PendingBasicBlockEdge;
 use binaryninja::binary_view::BinaryViewBase;
+use binaryninja::calling_convention::CallingConvention;
 use binaryninja::disassembly::{InstructionTextToken, InstructionTextTokenKind};
 use binaryninja::function::Function;
 use binaryninja::low_level_il::{LowLevelILMutableFunction, LowLevelILTempRegister};
@@ -35,7 +36,19 @@ impl AsRef<CoreArchitecture> for WasmArchitecture {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub enum WasmRegister {
+    /// Stack pointer (not really used in WASM but required by Binary Ninja)
     Sp,
+    /// Return value register
+    Ret,
+    /// Argument registers (WASM locals 0-7)
+    Arg0,
+    Arg1,
+    Arg2,
+    Arg3,
+    Arg4,
+    Arg5,
+    Arg6,
+    Arg7,
 }
 
 impl Register for WasmRegister {
@@ -44,6 +57,15 @@ impl Register for WasmRegister {
     fn name(&self) -> Cow<'_, str> {
         match self {
             Self::Sp => "sp".into(),
+            Self::Ret => "ret".into(),
+            Self::Arg0 => "arg0".into(),
+            Self::Arg1 => "arg1".into(),
+            Self::Arg2 => "arg2".into(),
+            Self::Arg3 => "arg3".into(),
+            Self::Arg4 => "arg4".into(),
+            Self::Arg5 => "arg5".into(),
+            Self::Arg6 => "arg6".into(),
+            Self::Arg7 => "arg7".into(),
         }
     }
 
@@ -54,6 +76,15 @@ impl Register for WasmRegister {
     fn id(&self) -> RegisterId {
         match self {
             Self::Sp => 0u32.into(),
+            Self::Ret => 1u32.into(),
+            Self::Arg0 => 2u32.into(),
+            Self::Arg1 => 3u32.into(),
+            Self::Arg2 => 4u32.into(),
+            Self::Arg3 => 5u32.into(),
+            Self::Arg4 => 6u32.into(),
+            Self::Arg5 => 7u32.into(),
+            Self::Arg6 => 8u32.into(),
+            Self::Arg7 => 9u32.into(),
         }
     }
 }
@@ -190,14 +221,25 @@ impl Architecture for WasmArchitecture {
                 il.nop().append();
                 return Some((instr.len, true));
             }
-            InstrKind::Block
-            | InstrKind::Loop
-            | InstrKind::If
-            | InstrKind::Else
-            | InstrKind::End => {
-                // Structural markers - just emit nop, basic block structure
-                // is handled by analyze_basic_blocks
+            InstrKind::Block | InstrKind::Loop | InstrKind::If | InstrKind::Else => {
+                // Structural markers - just emit nop
                 il.nop().append();
+                return Some((instr.len, true));
+            }
+            InstrKind::End => {
+                let next_addr = addr + instr.len as u64;
+                if next_addr >= func_analysis.end_address {
+                    // end at function end = implicit return
+                    // Use temp register for return value (temp regs work with LLIL API)
+                    // Temp 0xFFFE = our "ret" register equivalent
+                    let ret_temp = LowLevelILTempRegister::new(0xFFFE);
+                    il.set_reg(4, ret_temp, il.pop(4)).append();
+                    // Return - LLIL_RET wants return address, use const 0 as dummy
+                    il.ret(il.const_int(4, 0)).append();
+                } else {
+                    // end in middle = fall-through
+                    il.nop().append();
+                }
                 return Some((instr.len, true));
             }
             InstrKind::Branch => {
@@ -461,18 +503,48 @@ impl Architecture for WasmArchitecture {
     }
 
     fn registers_all(&self) -> Vec<Self::Register> {
-        vec![WasmRegister::Sp]
+        vec![
+            WasmRegister::Sp,
+            WasmRegister::Ret,
+            WasmRegister::Arg0,
+            WasmRegister::Arg1,
+            WasmRegister::Arg2,
+            WasmRegister::Arg3,
+            WasmRegister::Arg4,
+            WasmRegister::Arg5,
+            WasmRegister::Arg6,
+            WasmRegister::Arg7,
+        ]
     }
 
     fn registers_full_width(&self) -> Vec<Self::Register> {
-        vec![WasmRegister::Sp]
+        vec![
+            WasmRegister::Sp,
+            WasmRegister::Ret,
+            WasmRegister::Arg0,
+            WasmRegister::Arg1,
+            WasmRegister::Arg2,
+            WasmRegister::Arg3,
+            WasmRegister::Arg4,
+            WasmRegister::Arg5,
+            WasmRegister::Arg6,
+            WasmRegister::Arg7,
+        ]
     }
 
     fn register_from_id(&self, id: RegisterId) -> Option<Self::Register> {
-        if id == WasmRegister::Sp.id() {
-            Some(WasmRegister::Sp)
-        } else {
-            None
+        match id.0 {
+            0 => Some(WasmRegister::Sp),
+            1 => Some(WasmRegister::Ret),
+            2 => Some(WasmRegister::Arg0),
+            3 => Some(WasmRegister::Arg1),
+            4 => Some(WasmRegister::Arg2),
+            5 => Some(WasmRegister::Arg3),
+            6 => Some(WasmRegister::Arg4),
+            7 => Some(WasmRegister::Arg5),
+            8 => Some(WasmRegister::Arg6),
+            9 => Some(WasmRegister::Arg7),
+            _ => None,
         }
     }
 
@@ -733,6 +805,25 @@ fn create_basic_blocks(
                     fallthrough: false,
                 });
             }
+            InstrKind::End => {
+                if basic_block_end >= func_analysis.end_address {
+                    // end at function end = implicit return
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::FunctionReturn,
+                        target: 0,
+                        arch,
+                        fallthrough: false,
+                    });
+                } else {
+                    // end in middle of function = fall-through
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::UnconditionalBranch,
+                        target: basic_block_end,
+                        arch,
+                        fallthrough: true,
+                    });
+                }
+            }
             _ => {
                 if basic_block_end < func_analysis.end_address {
                     block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
@@ -753,33 +844,99 @@ fn create_basic_blocks(
     }
 }
 
-// Helper types for analyze_basic_blocks
-#[derive(Clone, Copy, Debug)]
-enum WasmBlockKind {
-    Block,
-    Loop,
-    If,
-}
+/// WASM calling convention
+/// - Arguments passed in temp registers (mapped from WASM locals)
+/// - Return value in temp0xFFFE register
+pub struct WasmCallingConvention;
 
-#[derive(Clone, Copy, Debug)]
-struct WasmBlockInfo {
-    kind: WasmBlockKind,
-    start_addr: u64,
-}
+/// Temp register ID used for return value in LLIL
+/// Must match what we use in instruction_llil for End instruction
+const RET_TEMP_ID: u32 = 0xFFFE;
 
-/// Resolve a WASM branch target given the block stack and depth.
-/// For loops: jump to start of loop
-/// For blocks/if: jump to end of block
-fn resolve_branch_target(
-    stack: &[WasmBlockInfo],
-    ends: &HashMap<u64, u64>,
-    depth: u32,
-) -> Option<u64> {
-    let idx = stack.len().checked_sub(1 + depth as usize)?;
-    let block = stack.get(idx)?;
+impl CallingConvention for WasmCallingConvention {
+    fn caller_saved_registers(&self) -> Vec<RegisterId> {
+        // All temp registers are caller-saved in WASM
+        vec![
+            RegisterId(RET_TEMP_ID | 0x8000_0000), // return register
+            RegisterId(0 | 0x8000_0000), // temp0
+            RegisterId(1 | 0x8000_0000), // temp1
+            RegisterId(2 | 0x8000_0000), // temp2
+            RegisterId(3 | 0x8000_0000), // temp3
+            RegisterId(4 | 0x8000_0000), // temp4
+            RegisterId(5 | 0x8000_0000), // temp5
+            RegisterId(6 | 0x8000_0000), // temp6
+            RegisterId(7 | 0x8000_0000), // temp7
+        ]
+    }
 
-    match block.kind {
-        WasmBlockKind::Loop => Some(block.start_addr), // loop: jump to start
-        WasmBlockKind::Block | WasmBlockKind::If => ends.get(&block.start_addr).copied(), // block/if: jump to end
+    fn callee_saved_registers(&self) -> Vec<RegisterId> {
+        vec![]
+    }
+
+    fn int_arg_registers(&self) -> Vec<RegisterId> {
+        // WASM parameters are locals 0, 1, 2, ... which we lift as temp0, temp1, temp2, ...
+        // Temp register IDs have high bit set: idx | 0x8000_0000
+        vec![
+            RegisterId(0 | 0x8000_0000), // temp0 = arg0
+            RegisterId(1 | 0x8000_0000), // temp1 = arg1
+            RegisterId(2 | 0x8000_0000), // temp2 = arg2
+            RegisterId(3 | 0x8000_0000), // temp3 = arg3
+            RegisterId(4 | 0x8000_0000), // temp4 = arg4
+            RegisterId(5 | 0x8000_0000), // temp5 = arg5
+            RegisterId(6 | 0x8000_0000), // temp6 = arg6
+            RegisterId(7 | 0x8000_0000), // temp7 = arg7
+        ]
+    }
+
+    fn float_arg_registers(&self) -> Vec<RegisterId> {
+        // Use same temp registers for float args
+        vec![
+            RegisterId(0 | 0x8000_0000),
+            RegisterId(1 | 0x8000_0000),
+            RegisterId(2 | 0x8000_0000),
+            RegisterId(3 | 0x8000_0000),
+        ]
+    }
+
+    fn arg_registers_shared_index(&self) -> bool {
+        true // int and float args share the same registers
+    }
+
+    fn reserved_stack_space_for_arg_registers(&self) -> bool {
+        false
+    }
+
+    fn stack_adjusted_on_return(&self) -> bool {
+        false
+    }
+
+    fn is_eligible_for_heuristics(&self) -> bool {
+        false
+    }
+
+    fn return_int_reg(&self) -> Option<RegisterId> {
+        // Use temp register with high bit set (same as LowLevelILTempRegister::new(RET_TEMP_ID).id())
+        Some(RegisterId(RET_TEMP_ID | 0x8000_0000))
+    }
+
+    fn return_hi_int_reg(&self) -> Option<RegisterId> {
+        None
+    }
+
+    fn return_float_reg(&self) -> Option<RegisterId> {
+        // Use same temp register for float returns
+        Some(RegisterId(RET_TEMP_ID | 0x8000_0000))
+    }
+
+    fn global_pointer_reg(&self) -> Option<RegisterId> {
+        None
+    }
+
+    fn implicitly_defined_registers(&self) -> Vec<RegisterId> {
+        vec![]
+    }
+
+    fn are_argument_registers_used_for_var_args(&self) -> bool {
+        true
     }
 }

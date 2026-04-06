@@ -3,6 +3,7 @@ use crate::wasm::{WasmModule, WasmSection};
 use binaryninja::Endianness;
 use binaryninja::architecture::CoreArchitecture;
 use binaryninja::binary_view::{BinaryView, BinaryViewBase, BinaryViewExt};
+use binaryninja::confidence::Conf;
 use binaryninja::custom_binary_view::{
     BinaryViewType, BinaryViewTypeBase, CustomBinaryView, CustomBinaryViewType, CustomView,
     CustomViewBuilder,
@@ -11,6 +12,8 @@ use binaryninja::platform::Platform;
 use binaryninja::rc::Ref;
 use binaryninja::section::{Section, Semantics};
 use binaryninja::segment::{Segment, SegmentFlags};
+use binaryninja::types::{FunctionParameter, Type};
+use binaryninja::variable::{Variable, VariableSourceType};
 use std::sync::Arc;
 use tracing::{error, info};
 
@@ -178,34 +181,7 @@ unsafe impl CustomBinaryView for WasmView {
         );
         let analysis = analyzed_modules.get_for_view_mut(&self.handle).unwrap();
 
-        // Analyze branches and add entry points/symbols for functions
-        {
-            for func in &self.module.functions {
-                if func.code_offset > 0 && func.code_size > 0 {
-                    let addr = func.code_offset as u64;
-                    let code = &self.data[func.code_offset..func.code_offset + func.code_size];
-
-                    analysis.analyze_function(addr, code);
-
-                    // Analyze control flow for this function
-                    // let branches = analysis::analyze_branches(code, addr);
-                    // cache.extend(branches);
-
-                    self.handle.add_entry_point(addr);
-
-                    // Define function symbol if we have a name
-                    if let Some(name) = &func.name {
-                        let symbol = binaryninja::symbol::Symbol::builder(
-                            binaryninja::symbol::SymbolType::Function,
-                            name,
-                            addr,
-                        )
-                        .create();
-                        self.handle.define_auto_symbol(&symbol);
-                    }
-                }
-            }
-        }
+        self.define_functions(analysis);
 
         info!(
             "Initialized WASM view with {} functions",
@@ -213,6 +189,64 @@ unsafe impl CustomBinaryView for WasmView {
         );
 
         Ok(())
+    }
+}
+
+impl WasmView {
+    fn define_functions(&mut self, analysis: &mut WasmModuleAnalysis) {
+        let i32_type = Type::int(4, true);
+
+        for func in &self.module.functions {
+            if func.code_offset > 0 && func.code_size > 0 {
+                let addr = func.code_offset as u64;
+                let code = &self.data[func.code_offset..func.code_offset + func.code_size];
+
+                analysis.analyze_function(addr, code);
+
+                self.handle.add_entry_point(addr);
+
+                if let Some(name) = &func.name {
+                    let symbol = binaryninja::symbol::Symbol::builder(
+                        binaryninja::symbol::SymbolType::Function,
+                        name,
+                        addr,
+                    )
+                    .create();
+                    self.handle.define_auto_symbol(&symbol);
+                }
+
+                let funcs_at = self.handle.functions_at(addr);
+                if let Some(bn_func) = funcs_at.iter().next() {
+                    info!(
+                        "Setting type for function at 0x{:x} with {} params and {} returns",
+                        addr, func.param_count, func.return_count
+                    );
+                    let params: Vec<FunctionParameter> = (0..func.param_count)
+                        .map(|i| {
+                            let temp_reg_id = (i as i64) | 0x8000_0000;
+                            FunctionParameter {
+                                ty: Conf::new(i32_type.clone(), 255),
+                                name: format!("arg{}", i),
+                                location: Some(Variable::new(
+                                    VariableSourceType::RegisterVariableSourceType,
+                                    0,
+                                    temp_reg_id,
+                                )),
+                            }
+                        })
+                        .collect();
+
+                    let return_type = if func.return_count > 0 {
+                        &i32_type
+                    } else {
+                        &Type::void()
+                    };
+                    info!("Creating function type with {} parameters", params.len());
+                    let func_type = Type::function(return_type, params, false);
+                    bn_func.set_user_type(&func_type);
+                }
+            }
+        }
     }
 }
 

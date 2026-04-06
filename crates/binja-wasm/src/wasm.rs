@@ -35,6 +35,8 @@ pub struct WasmFunction {
     pub code_offset: usize,
     pub code_size: usize,
     pub name: Option<String>,
+    pub param_count: usize,
+    pub return_count: usize,
 }
 
 #[derive(Debug, Clone)]
@@ -65,12 +67,34 @@ impl WasmModule {
         let mut import_func_count = 0u32;
         let mut func_names: Vec<(u32, String)> = Vec::new();
 
+        let mut func_types: Vec<(usize, usize)> = Vec::new();
+        let mut func_type_indices: Vec<u32> = Vec::new();
+
         for payload in parser.parse_all(data) {
             let payload = payload.context("parse payload")?;
 
             match payload {
                 Payload::Version { num, .. } => {
                     version = num as u32;
+                }
+                Payload::TypeSection(reader) => {
+                    for rec_group in reader {
+                        let rec_group = rec_group.context("parse type")?;
+                        for sub_type in rec_group.into_types() {
+                            if let wasmparser::CompositeInnerType::Func(func_type) =
+                                sub_type.composite_type.inner
+                            {
+                                func_types
+                                    .push((func_type.params().len(), func_type.results().len()));
+                            }
+                        }
+                    }
+                }
+                Payload::FunctionSection(reader) => {
+                    for type_idx in reader {
+                        let type_idx = type_idx.context("parse function type index")?;
+                        func_type_indices.push(type_idx);
+                    }
                 }
                 Payload::ImportSection(reader) => {
                     for import in reader {
@@ -122,11 +146,19 @@ impl WasmModule {
                     let range = body.range();
                     let code_size = range.end - code_start;
 
+                    let (param_count, return_count) = func_type_indices
+                        .get(func_index as usize)
+                        .and_then(|&type_idx| func_types.get(type_idx as usize))
+                        .copied()
+                        .unwrap_or((0, 0));
+
                     functions.push(WasmFunction {
                         index: import_func_count + func_index,
                         code_offset: code_start,
                         code_size,
                         name: None,
+                        param_count,
+                        return_count,
                     });
                     func_index += 1;
                 }
