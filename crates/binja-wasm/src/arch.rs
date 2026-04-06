@@ -266,11 +266,12 @@ impl Architecture for WasmArchitecture {
 
         // At function entry, copy argument registers to local temp registers
         // This separates the calling convention (arg0-arg7) from local storage (temp0-temp7)
+        // Use size 8 as safe default (works for both i32 and i64 parameters)
         if addr == func_analysis.start_address {
             for i in 0..func_analysis.param_count.min(WasmRegister::ARGS.len()) {
                 let arg_reg = LowLevelILRegisterKind::Arch(WasmRegister::ARGS[i]);
                 let local_reg = local_register(i as u32);
-                il.set_reg(4, local_reg, il.reg(4, arg_reg)).append();
+                il.set_reg(8, local_reg, il.reg(8, arg_reg)).append();
             }
         }
 
@@ -288,11 +289,12 @@ impl Architecture for WasmArchitecture {
                 if next_addr >= func_analysis.end_address {
                     // end at function end = implicit return
                     // Pop the return value from stack and put in ret register
+                    // Use size 8 as safe default (works for both i32 and i64 return values)
                     let stack_val = stack.pop();
                     let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
-                    il.set_reg(4, ret_reg, il.reg(4, stack_val)).append();
+                    il.set_reg(8, ret_reg, il.reg(8, stack_val)).append();
                     // Return - LLIL_RET wants return address, use const 0 as dummy
-                    il.ret(il.const_int(4, 0)).append();
+                    il.ret(il.const_int(8, 0)).append();
                 } else {
                     il.nop().append();
                 }
@@ -359,10 +361,11 @@ impl Architecture for WasmArchitecture {
 
                         // Pop arguments from value stack and set to arg registers
                         // Arguments are popped in reverse order so arg0 gets first arg
+                        // Use size 8 as safe default (works for both i32 and i64)
                         for i in (0..param_count.min(8)).rev() {
                             let src = stack.pop();
                             let arg_reg = LowLevelILRegisterKind::Arch(WasmRegister::ARGS[i]);
-                            il.set_reg(4, arg_reg, il.reg(4, src)).append();
+                            il.set_reg(8, arg_reg, il.reg(8, src)).append();
                         }
 
                         if wasm_func.code_offset > 0 {
@@ -377,7 +380,7 @@ impl Architecture for WasmArchitecture {
                         if return_count > 0 {
                             let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
                             let dest = stack.push();
-                            il.set_reg(4, dest, il.reg(4, ret_reg)).append();
+                            il.set_reg(8, dest, il.reg(8, ret_reg)).append();
                         }
                         return Some((instr.len, true));
                     }
@@ -392,10 +395,12 @@ impl Architecture for WasmArchitecture {
                 il.unimplemented().append();
             }
             InstrKind::Return => {
+                // Pop return value from stack and set to ret register
+                // Use size 8 as safe default (works for both i32 and i64 return values)
                 let stack_val = stack.pop();
                 let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
-                il.set_reg(4, ret_reg, il.reg(4, stack_val)).append();
-                il.ret(il.const_int(4, 0)).append();
+                il.set_reg(8, ret_reg, il.reg(8, stack_val)).append();
+                il.ret(il.const_int(8, 0)).append();
                 return Some((instr.len, true));
             }
             InstrKind::Unreachable => {
@@ -432,10 +437,11 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::LocalGet => {
                 // local.get N - push local variable onto stack
+                // Use size 8 as safe default (works for both i32 and i64)
                 if let Operands::Index(idx) = instr.operands {
                     let local_reg = local_register(idx);
                     let dest = stack.push();
-                    il.set_reg(4, dest, il.reg(4, local_reg)).append();
+                    il.set_reg(8, dest, il.reg(8, local_reg)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -445,7 +451,7 @@ impl Architecture for WasmArchitecture {
                 if let Operands::Index(idx) = instr.operands {
                     let local_reg = local_register(idx);
                     let src = stack.pop();
-                    il.set_reg(4, local_reg, il.reg(4, src)).append();
+                    il.set_reg(8, local_reg, il.reg(8, src)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -455,9 +461,9 @@ impl Architecture for WasmArchitecture {
                 if let Operands::Index(idx) = instr.operands {
                     let local_reg = local_register(idx);
                     let src = stack.pop();
-                    il.set_reg(4, local_reg.clone(), il.reg(4, src)).append();
+                    il.set_reg(8, local_reg.clone(), il.reg(8, src)).append();
                     let dest = stack.push();
-                    il.set_reg(4, dest, il.reg(4, local_reg)).append();
+                    il.set_reg(8, dest, il.reg(8, local_reg)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -474,6 +480,7 @@ impl Architecture for WasmArchitecture {
             }
             InstrKind::Select => {
                 // select: [val1, val2, cond] -> [cond != 0 ? val1 : val2]
+                // cond is always i32, but val1/val2 can be any type - use 8 as safe default
                 let cond = stack.pop();
                 let val2 = stack.pop();
                 let val1 = stack.pop();
@@ -489,12 +496,12 @@ impl Architecture for WasmArchitecture {
 
                 // true_label: dest = val1; goto end
                 il.mark_label(&mut true_label);
-                il.set_reg(4, dest.clone(), il.reg(4, val1)).append();
+                il.set_reg(8, dest.clone(), il.reg(8, val1)).append();
                 il.goto(&mut end_label).append();
 
                 // false_label: dest = val2
                 il.mark_label(&mut false_label);
-                il.set_reg(4, dest, il.reg(4, val2)).append();
+                il.set_reg(8, dest, il.reg(8, val2)).append();
 
                 // end_label:
                 il.mark_label(&mut end_label);
@@ -655,7 +662,9 @@ impl Architecture for WasmArchitecture {
             7 => Some(WasmRegister::Arg5),
             8 => Some(WasmRegister::Arg6),
             9 => Some(WasmRegister::Arg7),
-            _ => None,
+            // Fallback for temp registers - return Sp to provide valid size (4 bytes)
+            // Binary Ninja queries register info for temp regs; returning None causes garbage sizes
+            _ => Some(WasmRegister::Sp),
         }
     }
 
