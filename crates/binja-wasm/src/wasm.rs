@@ -8,6 +8,7 @@ pub struct WasmModule {
     pub version: u32,
     pub sections: Vec<WasmSection>,
     pub functions: Vec<WasmFunction>,
+    pub globals: Vec<WasmGlobal>,
     pub start_function: Option<u32>,
     pub _exports: Vec<WasmExport>,
 }
@@ -46,6 +47,22 @@ pub struct WasmExport {
     pub index: u32,
 }
 
+#[derive(Debug, Clone)]
+pub struct WasmGlobal {
+    pub index: u32,
+    pub name: Option<String>,
+    pub val_type: GlobalValType,
+    pub mutable: bool,
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum GlobalValType {
+    I32,
+    I64,
+    F32,
+    F64,
+}
+
 #[derive(Debug, Clone, Copy)]
 pub enum ExportKind {
     Func,
@@ -61,10 +78,13 @@ impl WasmModule {
         let mut version = 1;
         let mut sections = Vec::new();
         let mut functions = Vec::new();
+        let mut globals = Vec::new();
         let mut start_function = None;
         let mut _exports = Vec::new();
         let mut func_index = 0u32;
+        let mut global_index = 0u32;
         let mut import_func_count = 0u32;
+        let mut import_global_count = 0u32;
         let mut func_names: Vec<(u32, String)> = Vec::new();
 
         let mut func_types: Vec<(usize, usize)> = Vec::new();
@@ -99,9 +119,47 @@ impl WasmModule {
                 Payload::ImportSection(reader) => {
                     for import in reader {
                         let import = import.context("parse import")?;
-                        if matches!(import.ty, wasmparser::TypeRef::Func(_)) {
-                            import_func_count += 1;
+                        match import.ty {
+                            wasmparser::TypeRef::Func(_) => {
+                                import_func_count += 1;
+                            }
+                            wasmparser::TypeRef::Global(gt) => {
+                                let val_type = match gt.content_type {
+                                    wasmparser::ValType::I32 => GlobalValType::I32,
+                                    wasmparser::ValType::I64 => GlobalValType::I64,
+                                    wasmparser::ValType::F32 => GlobalValType::F32,
+                                    wasmparser::ValType::F64 => GlobalValType::F64,
+                                    _ => GlobalValType::I32,
+                                };
+                                globals.push(WasmGlobal {
+                                    index: import_global_count,
+                                    name: Some(format!("{}_{}", import.module, import.name)),
+                                    val_type,
+                                    mutable: gt.mutable,
+                                });
+                                import_global_count += 1;
+                            }
+                            _ => {}
                         }
+                    }
+                }
+                Payload::GlobalSection(reader) => {
+                    for global in reader {
+                        let global = global.context("parse global")?;
+                        let val_type = match global.ty.content_type {
+                            wasmparser::ValType::I32 => GlobalValType::I32,
+                            wasmparser::ValType::I64 => GlobalValType::I64,
+                            wasmparser::ValType::F32 => GlobalValType::F32,
+                            wasmparser::ValType::F64 => GlobalValType::F64,
+                            _ => GlobalValType::I32,
+                        };
+                        globals.push(WasmGlobal {
+                            index: import_global_count + global_index,
+                            name: None,
+                            val_type,
+                            mutable: global.ty.mutable,
+                        });
+                        global_index += 1;
                     }
                 }
                 Payload::ExportSection(reader) => {
@@ -202,12 +260,22 @@ impl WasmModule {
         }
 
         for export in &_exports {
-            if matches!(export.kind, ExportKind::Func)
-                && let Some(func) = functions.iter_mut().find(|f| f.index == export.index)
-            {
-                if func.name.is_none() {
-                    func.name = Some(export.name.clone());
+            match export.kind {
+                ExportKind::Func => {
+                    if let Some(func) = functions.iter_mut().find(|f| f.index == export.index) {
+                        if func.name.is_none() {
+                            func.name = Some(export.name.clone());
+                        }
+                    }
                 }
+                ExportKind::Global => {
+                    if let Some(global) = globals.iter_mut().find(|g| g.index == export.index) {
+                        if global.name.is_none() {
+                            global.name = Some(export.name.clone());
+                        }
+                    }
+                }
+                _ => {}
             }
         }
 
@@ -215,6 +283,7 @@ impl WasmModule {
             version,
             sections,
             functions,
+            globals,
             start_function,
             _exports,
         })

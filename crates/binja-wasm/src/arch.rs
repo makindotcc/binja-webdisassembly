@@ -2,6 +2,7 @@ use std::borrow::Cow;
 
 use crate::analysis::{ANALYZED_MODULES, FunctionAnalysis};
 use crate::decode::{self, InstrKind, Operands};
+use crate::view::GLOBALS_BASE_ADDR;
 use binaryninja::Endianness;
 use binaryninja::architecture::{
     Architecture, BasicBlockAnalysisContext, BranchType, CoreArchitecture,
@@ -226,7 +227,7 @@ impl Architecture for WasmArchitecture {
         let arch = function.arch();
         create_basic_blocks(context, func_analysis, function, &code, arch);
         context.finalize();
-        info!("analyze_basic_blocks: done for {:#x}", func_start);
+        debug!("analyze_basic_blocks: done for {:#x}", func_start);
     }
 
     fn instruction_llil(
@@ -470,24 +471,23 @@ impl Architecture for WasmArchitecture {
                 il.unimplemented().append();
             }
             InstrKind::GlobalGet => {
-                // global.get N - push global variable onto stack
-                // Use temp registers with offset 0x8000 to avoid conflicts with locals
+                // global.get N - load global from memory and push onto stack
                 if let Operands::Index(idx) = instr.operands {
-                    let global_reg: LowLevelILRegisterKind<WasmRegister> =
-                        LowLevelILRegisterKind::Temp(LowLevelILTempRegister::new(0x8000 + idx));
+                    let global_addr = GLOBALS_BASE_ADDR + (idx as u64 * 8);
+                    let loaded = il.load(8, il.const_ptr(global_addr));
                     let dest = stack.push();
-                    il.set_reg(8, dest, il.reg(8, global_reg)).append();
+                    il.set_reg(8, dest, loaded).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
             }
             InstrKind::GlobalSet => {
-                // global.set N - pop stack into global variable
+                // global.set N - pop stack and store to global memory
                 if let Operands::Index(idx) = instr.operands {
-                    let global_reg: LowLevelILRegisterKind<WasmRegister> =
-                        LowLevelILRegisterKind::Temp(LowLevelILTempRegister::new(0x8000 + idx));
+                    let global_addr = GLOBALS_BASE_ADDR + (idx as u64 * 8);
                     let src = stack.pop();
-                    il.set_reg(8, global_reg, il.reg(8, src)).append();
+                    il.store(8, il.const_ptr(global_addr), il.reg(8, src))
+                        .append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -557,7 +557,8 @@ impl Architecture for WasmArchitecture {
                             il.add(8, il.reg(8, addr_reg), il.const_int(8, offset));
                         il.store(8, effective_addr, il.reg(8, value_reg)).append();
                     } else {
-                        il.store(8, il.reg(8, addr_reg), il.reg(8, value_reg)).append();
+                        il.store(8, il.reg(8, addr_reg), il.reg(8, value_reg))
+                            .append();
                     };
                     return Some((instr.len, true));
                 }
@@ -646,6 +647,41 @@ impl Architecture for WasmArchitecture {
                 let dest = stack.push();
                 // Result is i32 but store in 8-byte register for consistency
                 il.set_reg(8, dest, result).append();
+                return Some((instr.len, true));
+            }
+            InstrKind::MemoryFill => {
+                // memory.fill: pop n (count), pop val (byte), pop d (dest addr)
+                // Equivalent to memset(d, val, n)
+                let n_reg = stack.pop();
+                let val_reg = stack.pop();
+                let d_reg = stack.pop();
+                // Call __builtin_memset(dest, val, count) at well-known address
+                // Parameters are passed via arg registers
+                let arg0 = LowLevelILRegisterKind::Arch(WasmRegister::Arg0);
+                let arg1 = LowLevelILRegisterKind::Arch(WasmRegister::Arg1);
+                let arg2 = LowLevelILRegisterKind::Arch(WasmRegister::Arg2);
+                il.set_reg(4, arg0, il.reg(4, d_reg)).append();
+                il.set_reg(4, arg1, il.reg(4, val_reg)).append();
+                il.set_reg(4, arg2, il.reg(4, n_reg)).append();
+                let target = il.const_ptr(0x80000024); // __builtin_memset address
+                il.call(target).append();
+                return Some((instr.len, true));
+            }
+            InstrKind::MemoryCopy => {
+                // memory.copy: pop n (count), pop s (src addr), pop d (dest addr)
+                // Equivalent to memcpy(d, s, n)
+                let n_reg = stack.pop();
+                let s_reg = stack.pop();
+                let d_reg = stack.pop();
+                // Call __builtin_memcpy(dest, src, count) at well-known address
+                let arg0 = LowLevelILRegisterKind::Arch(WasmRegister::Arg0);
+                let arg1 = LowLevelILRegisterKind::Arch(WasmRegister::Arg1);
+                let arg2 = LowLevelILRegisterKind::Arch(WasmRegister::Arg2);
+                il.set_reg(4, arg0, il.reg(4, d_reg)).append();
+                il.set_reg(4, arg1, il.reg(4, s_reg)).append();
+                il.set_reg(4, arg2, il.reg(4, n_reg)).append();
+                let target = il.const_ptr(0x80000020); // __builtin_memcpy address
+                il.call(target).append();
                 return Some((instr.len, true));
             }
             InstrKind::Normal => {

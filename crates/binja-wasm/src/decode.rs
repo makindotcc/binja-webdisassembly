@@ -50,6 +50,9 @@ pub enum InstrKind {
     Test,
     // Nop
     Nop,
+    // Bulk memory operations
+    MemoryFill,
+    MemoryCopy,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -334,9 +337,9 @@ fn decode_operator(op: Operator<'_>) -> (&'static str, InstrKind, Operands) {
         Operator::MemorySize { mem, .. } => ("memory.size", Normal, Index(mem)),
         Operator::MemoryGrow { mem, .. } => ("memory.grow", Normal, Index(mem)),
         Operator::MemoryCopy { dst_mem, src_mem } => {
-            ("memory.copy", Normal, Indexes(dst_mem, src_mem))
+            ("memory.copy", MemoryCopy, Indexes(dst_mem, src_mem))
         }
-        Operator::MemoryFill { mem } => ("memory.fill", Normal, Index(mem)),
+        Operator::MemoryFill { mem } => ("memory.fill", MemoryFill, Index(mem)),
 
         // Constants
         Operator::I32Const { value } => ("i32.const", Const, I32(value)),

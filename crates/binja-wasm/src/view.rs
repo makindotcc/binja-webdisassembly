@@ -1,6 +1,6 @@
 use crate::analysis::{ANALYZED_MODULES, WasmModuleAnalysis};
 use crate::arch::WasmRegister;
-use crate::wasm::{WasmModule, WasmSection};
+use crate::wasm::{GlobalValType, WasmModule, WasmSection};
 use binaryninja::Endianness;
 use binaryninja::architecture::{CoreArchitecture, Register};
 use binaryninja::binary_view::{BinaryView, BinaryViewBase, BinaryViewExt};
@@ -14,10 +14,17 @@ use binaryninja::platform::Platform;
 use binaryninja::rc::Ref;
 use binaryninja::section::{Section, Semantics};
 use binaryninja::segment::{Segment, SegmentFlags};
+use binaryninja::symbol::{Symbol, SymbolType};
 use binaryninja::types::{FunctionParameter, Type};
 use binaryninja::variable::{Variable, VariableSourceType};
 use std::sync::Arc;
 use tracing::{error, info};
+
+/// Virtual base address for WASM globals segment.
+/// Must fit within 32-bit address space (WASM is 32-bit architecture).
+pub const GLOBALS_BASE_ADDR: u64 = 0x8000_0000;
+/// Size of each global slot (8 bytes to handle i64/f64).
+pub const GLOBAL_SLOT_SIZE: u64 = 8;
 
 pub struct WasmViewArgs {
     pub data: Vec<u8>,
@@ -174,7 +181,25 @@ unsafe impl CustomBinaryView for WasmView {
             }
         }
 
+        // Create a virtual segment for globals.
+        // This segment has no parent backing, so reads go through our read() method
+        // which returns zeros - preventing Binary Ninja from propagating garbage values.
+        if !self.module.globals.is_empty() {
+            let globals_size = (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
+            let globals_end = GLOBALS_BASE_ADDR + globals_size;
+            let segment = Segment::builder(GLOBALS_BASE_ADDR..globals_end)
+                .flags(SegmentFlags::new().readable(true).writable(true))
+                .is_auto(true);
+            self.handle.add_segment(segment);
+
+            let sec = Section::builder("Globals".to_string(), GLOBALS_BASE_ADDR..globals_end)
+                .semantics(Semantics::ReadWriteData);
+            self.handle.add_section(sec);
+        }
+
         self.handle.end_bulk_add_segments();
+
+        self.define_globals();
 
         let mut analyzed_modules = ANALYZED_MODULES.write().unwrap();
         analyzed_modules.register_for_view(
@@ -186,8 +211,9 @@ unsafe impl CustomBinaryView for WasmView {
         self.define_functions(analysis);
 
         info!(
-            "Initialized WASM view with {} functions",
-            self.module.functions.len()
+            "Initialized WASM view with {} functions and {} globals",
+            self.module.functions.len(),
+            self.module.globals.len()
         );
 
         Ok(())
@@ -195,6 +221,32 @@ unsafe impl CustomBinaryView for WasmView {
 }
 
 impl WasmView {
+    fn define_globals(&self) {
+        for global in &self.module.globals {
+            let addr = GLOBALS_BASE_ADDR + (global.index as u64 * 8);
+            let name = global
+                .name
+                .clone()
+                .unwrap_or_else(|| format!("global_{}", global.index));
+
+            let symbol = Symbol::builder(SymbolType::Data, &name, addr).create();
+            self.handle.define_auto_symbol(&symbol);
+
+            // Use pointer type for mutable globals (often used as stack pointers)
+            let global_type = if global.mutable {
+                Type::pointer_of_width(&Type::void(), 4, false, false, None)
+            } else {
+                match global.val_type {
+                    GlobalValType::I32 => Type::int(4, true),
+                    GlobalValType::I64 => Type::int(8, true),
+                    GlobalValType::F32 => Type::float(4),
+                    GlobalValType::F64 => Type::float(8),
+                }
+            };
+            self.handle.define_user_data_var(addr, &global_type);
+        }
+    }
+
     fn define_functions(&mut self, analysis: &mut WasmModuleAnalysis) {
         let i32_type = Type::int(4, true);
 
@@ -262,8 +314,36 @@ impl AsRef<BinaryView> for WasmView {
     }
 }
 
+/// Virtual stack base - returned for mutable globals (stack pointers) to prevent
+/// Binary Ninja from computing garbage addresses during value analysis.
+const VIRTUAL_STACK_BASE: u32 = 0x7FFF_0000;
+
 impl BinaryViewBase for WasmView {
     fn read(&self, buf: &mut [u8], offset: u64) -> usize {
+        // Handle reads from globals region
+        let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
+        if offset >= GLOBALS_BASE_ADDR && offset < globals_end {
+            let available = (globals_end - offset) as usize;
+            let to_read = buf.len().min(available);
+
+            // Return a reasonable stack-like value for mutable globals (likely stack pointers)
+            let global_idx = ((offset - GLOBALS_BASE_ADDR) / GLOBAL_SLOT_SIZE) as usize;
+            if let Some(global) = self.module.globals.get(global_idx) {
+                if global.mutable {
+                    let stack_val = VIRTUAL_STACK_BASE.to_le_bytes();
+                    let copy_len = to_read.min(4);
+                    buf[..copy_len].copy_from_slice(&stack_val[..copy_len]);
+                    if to_read > 4 {
+                        buf[4..to_read].fill(0);
+                    }
+                    return to_read;
+                }
+            }
+            buf[..to_read].fill(0);
+            return to_read;
+        }
+
+        // Handle reads from file data
         let offset = offset as usize;
         if offset >= self.data.len() {
             return 0;
@@ -319,15 +399,24 @@ impl BinaryViewBase for WasmView {
     }
 
     fn offset_valid(&self, offset: u64) -> bool {
-        offset < self.data.len() as u64
+        if offset < self.data.len() as u64 {
+            return true;
+        }
+        let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
+        offset >= GLOBALS_BASE_ADDR && offset < globals_end
     }
 
     fn offset_readable(&self, offset: u64) -> bool {
-        offset < self.data.len() as u64
+        if offset < self.data.len() as u64 {
+            return true;
+        }
+        let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
+        offset >= GLOBALS_BASE_ADDR && offset < globals_end
     }
 
-    fn offset_writable(&self, _offset: u64) -> bool {
-        false
+    fn offset_writable(&self, offset: u64) -> bool {
+        let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
+        offset >= GLOBALS_BASE_ADDR && offset < globals_end
     }
 
     fn offset_executable(&self, offset: u64) -> bool {

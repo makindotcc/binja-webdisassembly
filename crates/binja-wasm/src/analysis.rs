@@ -274,8 +274,6 @@ fn resolve_basic_blocks(
             | InstrKind::Branch
             | InstrKind::CondBranch
             | InstrKind::BrTable
-            | InstrKind::Return
-            | InstrKind::Unreachable
             | InstrKind::End => {
                 if is_in_function && !starts.contains(&next_addr) {
                     starts.push(next_addr);
@@ -321,6 +319,8 @@ fn analyze_stack_depths(code: &[u8], base_addr: u64) -> HashMap<u64, u32> {
             InstrKind::Select => (3, 1),     // pop cond, val2, val1; push result
             InstrKind::Load => (1, 1),       // pop addr, push value
             InstrKind::Store => (2, 0),      // pop value, pop addr
+            InstrKind::MemoryFill => (3, 0), // pop n, val, d
+            InstrKind::MemoryCopy => (3, 0), // pop n, s, d
             InstrKind::BinOp => (2, 1),      // pop 2, push 1
             InstrKind::UnaryOp => (1, 1),    // pop 1, push 1
             InstrKind::Compare => (2, 1),    // pop 2, push i32 result
