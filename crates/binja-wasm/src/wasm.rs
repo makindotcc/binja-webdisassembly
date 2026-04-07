@@ -144,10 +144,8 @@ impl WasmModule {
                         match import.ty {
                             wasmparser::TypeRef::Func(type_idx) => {
                                 // Add imported function with code_offset=0
-                                let (param_count, return_count) = func_types
-                                    .get(type_idx as usize)
-                                    .copied()
-                                    .unwrap_or((0, 0));
+                                let (param_count, return_count) =
+                                    func_types.get(type_idx as usize).copied().unwrap_or((0, 0));
                                 functions.push(WasmFunction {
                                     index: import_func_count,
                                     code_offset: 0,

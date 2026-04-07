@@ -288,8 +288,8 @@ fn determine_loop_nesting(info: &mut LoopInfo) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::cfg::{CfgNode, Terminator};
     use crate::cfg::dominators::compute_dominators;
+    use crate::cfg::{CfgNode, Terminator};
 
     #[test]
     fn test_simple_loop() {

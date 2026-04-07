@@ -68,9 +68,7 @@ fn recover_control_flow(block: &mut Block) {
             Stmt::DoWhile { body, .. } | Stmt::While { body, .. } => {
                 recover_control_flow(body);
             }
-            Stmt::Switch {
-                cases, default, ..
-            } => {
+            Stmt::Switch { cases, default, .. } => {
                 for case in cases {
                     recover_control_flow(&mut case.body);
                 }
@@ -429,9 +427,7 @@ fn replace_break_label(stmts: &mut Vec<Stmt>, old_label: u32, new_label: u32) {
             Stmt::Br { label, is_loop } if *label == old_label && !*is_loop => {
                 *label = new_label;
             }
-            Stmt::BrIf {
-                label, is_loop, ..
-            } if *label == old_label && !*is_loop => {
+            Stmt::BrIf { label, is_loop, .. } if *label == old_label && !*is_loop => {
                 *label = new_label;
             }
             Stmt::Block { body, .. }
@@ -450,9 +446,7 @@ fn replace_break_label(stmts: &mut Vec<Stmt>, old_label: u32, new_label: u32) {
                     replace_break_label(&mut eb.stmts, old_label, new_label);
                 }
             }
-            Stmt::Switch {
-                cases, default, ..
-            } => {
+            Stmt::Switch { cases, default, .. } => {
                 for case in cases {
                     replace_break_label(&mut case.body.stmts, old_label, new_label);
                 }
@@ -696,11 +690,7 @@ fn recover_block_ending_with_break(block: &mut Block) -> bool {
     let mut new_stmts = Vec::with_capacity(block.stmts.len());
 
     for stmt in std::mem::take(&mut block.stmts) {
-        if let Stmt::Block {
-            label,
-            mut body,
-        } = stmt
-        {
+        if let Stmt::Block { label, mut body } = stmt {
             // Check if the block ends with Br to its own label
             let ends_with_self_break = match body.stmts.last() {
                 Some(Stmt::Br {
@@ -962,9 +952,7 @@ fn has_simple_branch_to_label(stmts: &[Stmt], label: u32) -> bool {
                     }
                 }
             }
-            Stmt::Switch {
-                cases, default, ..
-            } => {
+            Stmt::Switch { cases, default, .. } => {
                 for case in cases {
                     if has_simple_branch_to_label(&case.body.stmts, label) {
                         return true;
@@ -1026,9 +1014,7 @@ fn has_br_table_to_label(stmts: &[Stmt], label: u32) -> bool {
                     }
                 }
             }
-            Stmt::Switch {
-                cases, default, ..
-            } => {
+            Stmt::Switch { cases, default, .. } => {
                 for case in cases {
                     if has_br_table_to_label(&case.body.stmts, label) {
                         return true;
@@ -1187,12 +1173,12 @@ fn recover_block_to_early_return(block: &mut Block) -> bool {
         if i + 2 < block.stmts.len() {
             if let Stmt::Block { label, body } = &block.stmts[i] {
                 let label = *label;
-                if !has_br_table_to_label(&body.stmts, label)
-                    && !has_return_stmt(&body.stmts)
-                {
+                if !has_br_table_to_label(&body.stmts, label) && !has_return_stmt(&body.stmts) {
                     // Find Return in the tail after the block
                     let tail = &block.stmts[i + 1..];
-                    let ret_idx = tail.iter().rposition(|s| matches!(s, Stmt::Return(Some(_))));
+                    let ret_idx = tail
+                        .iter()
+                        .rposition(|s| matches!(s, Stmt::Return(Some(_))));
                     if let Some(ri) = ret_idx {
                         // tail[0..ri] = epilog, tail[ri] = return
                         // Only apply if there's actual epilog (ri > 0) and it's the last stmt
@@ -1217,13 +1203,12 @@ fn recover_block_to_early_return(block: &mut Block) -> bool {
 
                             if epilog_ok {
                                 // Extract and transform
-                                let mut body = if let Stmt::Block { body, .. } =
-                                    block.stmts.remove(i)
-                                {
-                                    body
-                                } else {
-                                    unreachable!()
-                                };
+                                let mut body =
+                                    if let Stmt::Block { body, .. } = block.stmts.remove(i) {
+                                        body
+                                    } else {
+                                        unreachable!()
+                                    };
 
                                 // Collect epilog and return from remaining stmts
                                 let epilog_stmts: Vec<Stmt> =
@@ -1306,7 +1291,10 @@ fn recover_void_epilog(block: &mut Block) {
     }
 
     // Find the last Block statement
-    let block_idx = block.stmts.iter().rposition(|s| matches!(s, Stmt::Block { .. }));
+    let block_idx = block
+        .stmts
+        .iter()
+        .rposition(|s| matches!(s, Stmt::Block { .. }));
     let block_idx = match block_idx {
         Some(idx) if idx + 1 < len => idx, // must have epilog after it
         _ => return,
@@ -1414,12 +1402,11 @@ fn recover_block_with_terminal_body(block: &mut Block) -> bool {
                     }
 
                     // Extract block body
-                    let mut body =
-                        if let Stmt::Block { body, .. } = block.stmts.remove(i) {
-                            body
-                        } else {
-                            unreachable!()
-                        };
+                    let mut body = if let Stmt::Block { body, .. } = block.stmts.remove(i) {
+                        body
+                    } else {
+                        unreachable!()
+                    };
 
                     // Remove original tail stmts
                     block.stmts.drain(i..);
@@ -1833,9 +1820,7 @@ fn collect_br_table_labels(stmts: &[Stmt], labels: &mut HashSet<u32>) {
                     collect_br_table_labels(&eb.stmts, labels);
                 }
             }
-            Stmt::Switch {
-                cases, default, ..
-            } => {
+            Stmt::Switch { cases, default, .. } => {
                 for case in cases {
                     collect_br_table_labels(&case.body.stmts, labels);
                 }
@@ -1882,9 +1867,7 @@ fn has_return_stmt(stmts: &[Stmt]) -> bool {
                     }
                 }
             }
-            Stmt::Switch {
-                cases, default, ..
-            } => {
+            Stmt::Switch { cases, default, .. } => {
                 for case in cases {
                     if has_return_stmt(&case.body.stmts) {
                         return true;
@@ -1938,7 +1921,10 @@ fn negate_condition(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(negated_op, a, b, operand_ty), InferredType::Bool)
+            Expr::with_type(
+                ExprKind::Compare(negated_op, a, b, operand_ty),
+                InferredType::Bool,
+            )
         }
 
         // Double negation: Eqz(x) negated -> x

@@ -685,7 +685,10 @@ fn negate_condition(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(negated_op, a, b, operand_ty), InferredType::Bool)
+            Expr::with_type(
+                ExprKind::Compare(negated_op, a, b, operand_ty),
+                InferredType::Bool,
+            )
         }
         ExprKind::UnaryOp(UnaryOp::Eqz, inner) => *inner,
         _ => Expr::with_type(
@@ -708,7 +711,10 @@ mod tests {
             InferredType::I32,
         ));
         let negated = negate_condition(cond);
-        assert!(matches!(negated.kind, ExprKind::Compare(CmpOp::Ne, _, _, _)));
+        assert!(matches!(
+            negated.kind,
+            ExprKind::Compare(CmpOp::Ne, _, _, _)
+        ));
     }
 
     #[test]

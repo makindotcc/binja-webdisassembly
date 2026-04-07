@@ -5,8 +5,7 @@
 use std::collections::{HashMap, HashSet};
 
 use crate::cfg::{
-    build::build_cfg, dominators::compute_dominators, loops::analyze_loops, Cfg, NodeId,
-    Terminator,
+    build::build_cfg, dominators::compute_dominators, loops::analyze_loops, Cfg, NodeId, Terminator,
 };
 use crate::ir::{Block, CmpOp, Expr, ExprKind, InferredType, Stmt, UnaryOp};
 
@@ -44,7 +43,10 @@ pub fn emit_structured(body: &Block) -> Block {
     let mut stmts = emit_from(&mut ctx, cfg.entry, None);
 
     // Check if the emitted code ends with a return at the top level
-    let ends_with_return = stmts.last().map(|s| matches!(s, Stmt::Return(_))).unwrap_or(false);
+    let ends_with_return = stmts
+        .last()
+        .map(|s| matches!(s, Stmt::Return(_)))
+        .unwrap_or(false);
 
     // If not, find a return value and add it
     // (This happens when all returns are inside if branches)
@@ -104,11 +106,17 @@ struct EmitRegionCtx {
 
 impl EmitRegionCtx {
     fn new(stop_at: Option<NodeId>) -> Self {
-        Self { stop_at, loop_body: None }
+        Self {
+            stop_at,
+            loop_body: None,
+        }
     }
 
     fn with_loop(stop_at: Option<NodeId>, loop_body: HashSet<NodeId>) -> Self {
-        Self { stop_at, loop_body: Some(loop_body) }
+        Self {
+            stop_at,
+            loop_body: Some(loop_body),
+        }
     }
 
     fn is_loop_exit(&self, target: NodeId) -> bool {
@@ -126,7 +134,12 @@ fn emit_from(ctx: &mut EmitCtx, start: NodeId, stop_at: Option<NodeId>) -> Vec<S
 }
 
 /// Emit code from inside a loop body
-fn emit_from_in_loop(ctx: &mut EmitCtx, start: NodeId, stop_at: Option<NodeId>, loop_body: HashSet<NodeId>) -> Vec<Stmt> {
+fn emit_from_in_loop(
+    ctx: &mut EmitCtx,
+    start: NodeId,
+    stop_at: Option<NodeId>,
+    loop_body: HashSet<NodeId>,
+) -> Vec<Stmt> {
     emit_from_inner(ctx, start, &EmitRegionCtx::with_loop(stop_at, loop_body))
 }
 
@@ -188,7 +201,11 @@ fn emit_from_inner(ctx: &mut EmitCtx, start: NodeId, region: &EmitRegionCtx) -> 
                 current = *next;
             }
 
-            Terminator::Branch { cond, then_target, else_target } => {
+            Terminator::Branch {
+                cond,
+                then_target,
+                else_target,
+            } => {
                 let then_is_exit = region.is_loop_exit(*then_target);
                 let else_is_exit = region.is_loop_exit(*else_target);
 
@@ -198,7 +215,10 @@ fn emit_from_inner(ctx: &mut EmitCtx, start: NodeId, region: &EmitRegionCtx) -> 
                         // Emit: if (cond) break; else_body
                         result.push(Stmt::If {
                             cond: cond.clone(),
-                            then_block: Block::with_stmts(vec![Stmt::Br { label: u32::MAX, is_loop: false }]),
+                            then_block: Block::with_stmts(vec![Stmt::Br {
+                                label: u32::MAX,
+                                is_loop: false,
+                            }]),
                             else_block: None,
                         });
                         // Continue with else path
@@ -213,7 +233,10 @@ fn emit_from_inner(ctx: &mut EmitCtx, start: NodeId, region: &EmitRegionCtx) -> 
                         // Emit: if (!cond) break; then_body
                         result.push(Stmt::If {
                             cond: negate(cond.clone()),
-                            then_block: Block::with_stmts(vec![Stmt::Br { label: u32::MAX, is_loop: false }]),
+                            then_block: Block::with_stmts(vec![Stmt::Br {
+                                label: u32::MAX,
+                                is_loop: false,
+                            }]),
                             else_block: None,
                         });
                         // Continue with then path
@@ -243,7 +266,10 @@ fn emit_from_inner(ctx: &mut EmitCtx, start: NodeId, region: &EmitRegionCtx) -> 
 
                         // Continue from merge
                         if let Some(m) = merge {
-                            if !ctx.emitted.contains(&m) && Some(m) != region.stop_at && !region.is_loop_exit(m) {
+                            if !ctx.emitted.contains(&m)
+                                && Some(m) != region.stop_at
+                                && !region.is_loop_exit(m)
+                            {
                                 current = m;
                                 continue;
                             }
@@ -253,7 +279,11 @@ fn emit_from_inner(ctx: &mut EmitCtx, start: NodeId, region: &EmitRegionCtx) -> 
                 }
             }
 
-            Terminator::Switch { index, targets, default } => {
+            Terminator::Switch {
+                index,
+                targets,
+                default,
+            } => {
                 // Emit as if-else chain
                 for (i, &target) in targets.iter().enumerate() {
                     if !ctx.emitted.contains(&target) {
@@ -304,7 +334,11 @@ fn emit_loop(ctx: &mut EmitCtx, header: NodeId) -> Vec<Stmt> {
     let loop_body = ctx.loop_body(header).cloned().unwrap_or_default();
 
     match &node.terminator {
-        Terminator::Branch { cond, then_target, else_target } => {
+        Terminator::Branch {
+            cond,
+            then_target,
+            else_target,
+        } => {
             // Check if branch targets are the header itself (immediate continue)
             let then_is_header = *then_target == header;
             let else_is_header = *else_target == header;
@@ -378,7 +412,8 @@ fn emit_loop(ctx: &mut EmitCtx, header: NodeId) -> Vec<Stmt> {
                 // then exits, else is body -> do { body } while (!cond)
                 // WASM: body runs first, then "if (cond) exit; else continue"
                 (false, true) => {
-                    let body = emit_from_in_loop(ctx, *else_target, Some(header), loop_body.clone());
+                    let body =
+                        emit_from_in_loop(ctx, *else_target, Some(header), loop_body.clone());
                     let mut full_body = header_stmts;
                     full_body.extend(body);
 
@@ -391,7 +426,8 @@ fn emit_loop(ctx: &mut EmitCtx, header: NodeId) -> Vec<Stmt> {
                 // then is body (continue), else exits -> do { body } while (cond)
                 // WASM: body runs first, then "if (cond) continue; else exit"
                 (true, false) => {
-                    let body = emit_from_in_loop(ctx, *then_target, Some(header), loop_body.clone());
+                    let body =
+                        emit_from_in_loop(ctx, *then_target, Some(header), loop_body.clone());
                     let mut full_body = header_stmts;
                     full_body.extend(body);
 
@@ -402,9 +438,16 @@ fn emit_loop(ctx: &mut EmitCtx, header: NodeId) -> Vec<Stmt> {
                     }]
                 }
                 // Both in loop - infinite loop with conditional break
-                (true, true) => {
-                    emit_infinite_loop(ctx, header, &header_stmts, &loop_body, cond, *then_target, *else_target, true)
-                }
+                (true, true) => emit_infinite_loop(
+                    ctx,
+                    header,
+                    &header_stmts,
+                    &loop_body,
+                    cond,
+                    *then_target,
+                    *else_target,
+                    true,
+                ),
                 // Both exit - shouldn't happen for a real loop, emit as if
                 (false, false) => {
                     let then_stmts = emit_from(ctx, *then_target, None);
@@ -431,8 +474,15 @@ fn emit_loop(ctx: &mut EmitCtx, header: NodeId) -> Vec<Stmt> {
 
                 // Check if body ends with a conditional that could be do-while
                 if let Some(last) = full_body.last() {
-                    if let Stmt::If { cond: _, then_block, else_block: None } = last {
-                        if then_block.stmts.is_empty() || matches!(then_block.stmts.last(), Some(Stmt::Br { .. })) {
+                    if let Stmt::If {
+                        cond: _,
+                        then_block,
+                        else_block: None,
+                    } = last
+                    {
+                        if then_block.stmts.is_empty()
+                            || matches!(then_block.stmts.last(), Some(Stmt::Br { .. }))
+                        {
                             // Might be do-while pattern
                             // For now just emit as loop
                         }
@@ -481,7 +531,10 @@ fn emit_infinite_loop(
     if let Some(bc) = break_cond {
         body.push(Stmt::If {
             cond: bc,
-            then_block: Block::with_stmts(vec![Stmt::Br { label: u32::MAX, is_loop: false }]),
+            then_block: Block::with_stmts(vec![Stmt::Br {
+                label: u32::MAX,
+                is_loop: false,
+            }]),
             else_block: None,
         });
     }
@@ -606,7 +659,10 @@ fn negate(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(neg_op, a, b, operand_ty), InferredType::Bool)
+            Expr::with_type(
+                ExprKind::Compare(neg_op, a, b, operand_ty),
+                InferredType::Bool,
+            )
         }
         ExprKind::UnaryOp(UnaryOp::Eqz, inner) => *inner,
         _ => Expr::with_type(

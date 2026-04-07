@@ -65,7 +65,10 @@ impl Cfg {
 
     /// Get successors of a node
     pub fn get_successors(&self, node: NodeId) -> &[NodeId] {
-        self.successors.get(&node).map(|v| v.as_slice()).unwrap_or(&[])
+        self.successors
+            .get(&node)
+            .map(|v| v.as_slice())
+            .unwrap_or(&[])
     }
 
     /// Get predecessors of a node
@@ -177,7 +180,9 @@ impl Terminator {
                 else_target,
                 ..
             } => vec![*then_target, *else_target],
-            Terminator::Switch { targets, default, .. } => {
+            Terminator::Switch {
+                targets, default, ..
+            } => {
                 let mut succs: Vec<_> = targets.clone();
                 succs.push(*default);
                 succs

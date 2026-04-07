@@ -30,6 +30,8 @@ pub struct Module {
     pub elements: Vec<ElementSegment>,
     /// Table size (from table section)
     pub table_size: u32,
+    /// Runtime helpers declared by passes (emitter provides implementations)
+    pub runtime_helpers: Vec<RuntimeHelperDecl>,
 }
 
 /// An element segment (populates a function table)
@@ -55,6 +57,7 @@ impl Module {
             func_types: Vec::new(),
             elements: Vec::new(),
             table_size: 0,
+            runtime_helpers: vec![],
         }
     }
 
@@ -199,19 +202,17 @@ pub enum Stmt {
         else_block: Option<Block>,
     },
     /// Block (for structured control flow)
-    Block {
-        label: u32,
-        body: Block,
-    },
+    Block { label: u32, body: Block },
     /// Loop
-    Loop {
-        label: u32,
-        body: Block,
-    },
+    Loop { label: u32, body: Block },
     /// Branch
     Br { label: u32, is_loop: bool },
     /// Conditional branch
-    BrIf { label: u32, cond: Expr, is_loop: bool },
+    BrIf {
+        label: u32,
+        cond: Expr,
+        is_loop: bool,
+    },
     /// Branch table
     BrTable {
         index: Expr,
@@ -229,10 +230,9 @@ pub enum Stmt {
         default: Option<Block>,
     },
     /// Try/finally (for epilog cleanup like stack pointer restore)
-    TryFinally {
-        body: Block,
-        finally_block: Block,
-    },
+    TryFinally { body: Block, finally_block: Block },
+    /// Destructuring assignment: [local0, local1, ...] = expr
+    MultiAssign { locals: Vec<u32>, value: Expr },
     /// Unreachable
     Unreachable,
     /// No-op (placeholder)
@@ -397,6 +397,9 @@ pub enum ExprKind {
         addr: u32,
         resolved: String,
     },
+
+    /// Array literal [expr, expr, ...]
+    Array(Vec<Expr>),
 }
 
 /// Binary operators
@@ -551,3 +554,7 @@ impl InferredType {
         matches!(self, Self::F32 | Self::F64)
     }
 }
+
+/// Runtime helper declaration (pass declares need, emitter provides implementation)
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct RuntimeHelperDecl(pub &'static str);

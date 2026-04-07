@@ -15,7 +15,11 @@ use wasm_decompile::{decompile, decompile_to_ir, dump_ir, DecompileOptions, Targ
 
 #[derive(Parser, Debug)]
 #[command(name = "wasm-decompile")]
-#[command(author, version, about = "WASM to JavaScript transpiler with multi-pass architecture")]
+#[command(
+    author,
+    version,
+    about = "WASM to JavaScript transpiler with multi-pass architecture"
+)]
 struct Args {
     /// Input WASM file
     #[arg(required = true)]
@@ -80,12 +84,10 @@ fn main() -> Result<()> {
 
     // Decompile
     let output = if args.dump_ir {
-        let module = decompile_to_ir(&wasm_bytes, &options)
-            .context("Failed to decompile WASM")?;
+        let module = decompile_to_ir(&wasm_bytes, &options).context("Failed to decompile WASM")?;
         dump_ir(&module)
     } else {
-        decompile(&wasm_bytes, &options)
-            .context("Failed to decompile WASM")?
+        decompile(&wasm_bytes, &options).context("Failed to decompile WASM")?
     };
 
     // Write output

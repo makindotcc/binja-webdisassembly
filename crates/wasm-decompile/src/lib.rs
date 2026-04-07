@@ -54,7 +54,7 @@ use anyhow::Result;
 pub use emit_js::JsEmitter;
 pub use ir::*;
 pub use lift::lift;
-pub use passes::{Pass, PassContext, Pipeline};
+pub use passes::{EmitterId, HelperRegistry, Pass, PassContext, Pipeline};
 
 /// Target compiler/runtime for specialized passes
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
@@ -131,6 +131,7 @@ pub fn decompile(wasm: &[u8], options: &DecompileOptions) -> Result<String> {
 
     // Step 3: Emit JavaScript
     let mut emitter = JsEmitter::new();
+    emitter.load_helpers(&pipeline.collect_helpers());
     let js = emitter.emit(&module);
 
     Ok(js)
@@ -358,6 +359,12 @@ fn dump_stmt(stmt: &Stmt, indent: usize, output: &mut String) {
             dump_block(finally_block, indent + 1, output);
             output.push_str(&format!("{}}}\n", prefix));
         }
+        Stmt::MultiAssign { locals, value } => {
+            let names: Vec<String> = locals.iter().map(|l| format!("local.{}", l)).collect();
+            output.push_str(&format!("{}[{}] = ", prefix, names.join(", ")));
+            dump_expr(value, output);
+            output.push('\n');
+        }
     }
 }
 
@@ -472,6 +479,16 @@ fn dump_expr(expr: &Expr, output: &mut String) {
                 addr,
                 resolved.escape_default()
             ));
+        }
+        ExprKind::Array(elems) => {
+            output.push('[');
+            for (i, e) in elems.iter().enumerate() {
+                if i > 0 {
+                    output.push_str(", ");
+                }
+                dump_expr(e, output);
+            }
+            output.push(']');
         }
     }
 }

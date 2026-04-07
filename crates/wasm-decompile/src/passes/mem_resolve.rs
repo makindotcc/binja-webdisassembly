@@ -253,10 +253,7 @@ fn is_readable_string(s: &str) -> bool {
 
 fn is_printable_char(c: char) -> bool {
     // Allow ASCII printable, newlines, tabs, and common unicode
-    c.is_ascii_graphic()
-        || c.is_ascii_whitespace()
-        || c.is_alphabetic()
-        || c.is_numeric()
+    c.is_ascii_graphic() || c.is_ascii_whitespace() || c.is_alphabetic() || c.is_numeric()
 }
 
 #[cfg(test)]

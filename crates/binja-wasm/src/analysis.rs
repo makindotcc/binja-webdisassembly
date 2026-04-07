@@ -378,7 +378,13 @@ fn resolve_basic_blocks(
     base_addr: u64,
     branch_targets: &HashMap<u64, u64>,
 ) -> Vec<u64> {
-    resolve_basic_blocks_with_if(code, base_addr, branch_targets, &HashMap::new(), &HashMap::new())
+    resolve_basic_blocks_with_if(
+        code,
+        base_addr,
+        branch_targets,
+        &HashMap::new(),
+        &HashMap::new(),
+    )
 }
 
 fn resolve_basic_blocks_with_if(

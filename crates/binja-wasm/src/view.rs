@@ -15,7 +15,9 @@ use binaryninja::rc::Ref;
 use binaryninja::section::{Section, Semantics};
 use binaryninja::segment::{Segment, SegmentFlags};
 use binaryninja::symbol::{Symbol, SymbolType};
-use binaryninja::types::{FunctionParameter, MemberAccess, MemberScope, Structure, StructureType, Type};
+use binaryninja::types::{
+    FunctionParameter, MemberAccess, MemberScope, Structure, StructureType, Type,
+};
 use binaryninja::variable::{Variable, VariableSourceType};
 use std::sync::Arc;
 use tracing::{error, info};

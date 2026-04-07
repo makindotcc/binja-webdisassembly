@@ -324,7 +324,7 @@ impl CfgBuilder {
                     }
                 }
 
-                Stmt::Switch { .. } | Stmt::TryFinally { .. } => {
+                Stmt::Switch { .. } | Stmt::TryFinally { .. } | Stmt::MultiAssign { .. } => {
                     // Higher-level constructs, treat as opaque statement
                     if let Some(node) = self.cfg.get_node_mut(current) {
                         node.stmts.push(stmt.clone());

@@ -280,10 +280,18 @@ pub extern "C" fn mat2_mul(a_ptr: *const i32, b_ptr: *const i32, out_ptr: *mut i
         let a = core::slice::from_raw_parts(a_ptr, 4);
         let b = core::slice::from_raw_parts(b_ptr, 4);
         let out = core::slice::from_raw_parts_mut(out_ptr, 4);
-        out[0] = a[0].wrapping_mul(b[0]).wrapping_add(a[1].wrapping_mul(b[2]));
-        out[1] = a[0].wrapping_mul(b[1]).wrapping_add(a[1].wrapping_mul(b[3]));
-        out[2] = a[2].wrapping_mul(b[0]).wrapping_add(a[3].wrapping_mul(b[2]));
-        out[3] = a[2].wrapping_mul(b[1]).wrapping_add(a[3].wrapping_mul(b[3]));
+        out[0] = a[0]
+            .wrapping_mul(b[0])
+            .wrapping_add(a[1].wrapping_mul(b[2]));
+        out[1] = a[0]
+            .wrapping_mul(b[1])
+            .wrapping_add(a[1].wrapping_mul(b[3]));
+        out[2] = a[2]
+            .wrapping_mul(b[0])
+            .wrapping_add(a[3].wrapping_mul(b[2]));
+        out[3] = a[2]
+            .wrapping_mul(b[1])
+            .wrapping_add(a[3].wrapping_mul(b[3]));
     }
 }
 
@@ -294,8 +302,12 @@ pub extern "C" fn mat2_mul(a_ptr: *const i32, b_ptr: *const i32, out_ptr: *mut i
 /// GCD using Euclidean algorithm
 #[unsafe(no_mangle)]
 pub extern "C" fn gcd(mut a: i32, mut b: i32) -> i32 {
-    if a < 0 { a = -a; }
-    if b < 0 { b = -b; }
+    if a < 0 {
+        a = -a;
+    }
+    if b < 0 {
+        b = -b;
+    }
     while b != 0 {
         let t = b;
         b = a % b;

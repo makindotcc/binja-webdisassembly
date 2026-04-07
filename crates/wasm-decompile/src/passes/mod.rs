@@ -10,12 +10,52 @@ pub mod stackifier;
 pub mod type_infer;
 pub mod unblockify;
 
+use crate::ir::{InferredType, Module, RuntimeHelperDecl};
 use std::collections::HashMap;
 
-use crate::{
-    ir::{InferredType, Module},
-    passes::unblockify::UnblockifyPass,
-};
+/// Identifies which emitter a helper implementation targets
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct EmitterId(pub &'static str);
+
+/// Registry for runtime helper implementations keyed by (helper, emitter)
+pub struct HelperRegistry {
+    impls: HashMap<(RuntimeHelperDecl, EmitterId), String>,
+}
+
+impl HelperRegistry {
+    pub fn new() -> Self {
+        Self {
+            impls: HashMap::new(),
+        }
+    }
+
+    /// Register a helper implementation for a specific emitter
+    pub fn register(&mut self, helper: RuntimeHelperDecl, emitter: EmitterId, code: String) {
+        self.impls.insert((helper, emitter), code);
+    }
+
+    /// Get a helper implementation for a specific emitter
+    pub fn get(&self, helper: RuntimeHelperDecl, emitter: EmitterId) -> Option<&str> {
+        self.impls.get(&(helper, emitter)).map(|s| s.as_str())
+    }
+
+    /// Iterate over all helpers for a specific emitter
+    pub fn iter_for(
+        &self,
+        emitter: EmitterId,
+    ) -> impl Iterator<Item = (RuntimeHelperDecl, &String)> + '_ {
+        self.impls
+            .iter()
+            .filter(move |((_, e), _)| *e == emitter)
+            .map(|((h, _), code)| (*h, code))
+    }
+}
+
+impl Default for HelperRegistry {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 /// A transformation pass on the IR
 pub trait Pass {
@@ -24,6 +64,10 @@ pub trait Pass {
 
     /// Transform the module in-place
     fn run(&self, module: &mut Module, ctx: &mut PassContext);
+
+    /// Register runtime helper implementations for target languages.
+    /// Called by the pipeline before emission.
+    fn register_helpers(&self, _registry: &mut HelperRegistry) {}
 }
 
 /// Context shared between passes
@@ -149,14 +193,9 @@ impl Pipeline {
     pub fn for_go() -> Self {
         Self {
             passes: vec![
+                Box::new(go::AsyncifyPass),
                 Box::new(control_flow::ControlFlowPass),
-                // Box::new(simplify::SimplifyPass),
-                // Box::new(control_flow::ControlFlowPass),
-                // Box::new(type_infer::TypeInferPass),
-                // Box::new(go::GoStringPass),
-                // Box::new(go::GoSlicePass),
-                // Box::new(mem_resolve::MemResolvePass),
-                // Box::new(simplify::SimplifyPass), // Run again after Go passes
+                Box::new(mem_resolve::MemResolvePass),
             ],
         }
     }
@@ -184,6 +223,15 @@ impl Pipeline {
             ctx.log(format!("Running pass: {}", pass.name()));
             pass.run(module, ctx);
         }
+    }
+
+    /// Collect all runtime helper implementations from passes
+    pub fn collect_helpers(&self) -> HelperRegistry {
+        let mut registry = HelperRegistry::new();
+        for pass in &self.passes {
+            pass.register_helpers(&mut registry);
+        }
+        registry
     }
 }
 

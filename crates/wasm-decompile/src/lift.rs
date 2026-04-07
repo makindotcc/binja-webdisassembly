@@ -405,7 +405,11 @@ fn lift_function(
     // Use deduplicated name from func_names (already includes exports with deduplication)
     let name = func_names.get(&func_idx).cloned();
 
-    let mut lifter = FunctionLifter::new(func_type.params.len() as u32, &module.types, &module.func_types);
+    let mut lifter = FunctionLifter::new(
+        func_type.params.len() as u32,
+        &module.types,
+        &module.func_types,
+    );
 
     let ops_reader = body.get_operators_reader()?;
     for op in ops_reader {
@@ -477,15 +481,17 @@ fn expr_contains_local(expr: &Expr, idx: u32) -> bool {
         ExprKind::BinOp(_, a, b) | ExprKind::Compare(_, a, b, _) => {
             expr_contains_local(a, idx) || expr_contains_local(b, idx)
         }
-        ExprKind::UnaryOp(_, e) | ExprKind::Convert { expr: e, .. } => {
-            expr_contains_local(e, idx)
-        }
+        ExprKind::UnaryOp(_, e) | ExprKind::Convert { expr: e, .. } => expr_contains_local(e, idx),
         ExprKind::Load { addr, .. } => expr_contains_local(addr, idx),
         ExprKind::Call { args, .. } => args.iter().any(|a| expr_contains_local(a, idx)),
         ExprKind::CallIndirect { index, args, .. } => {
             expr_contains_local(index, idx) || args.iter().any(|a| expr_contains_local(a, idx))
         }
-        ExprKind::Select { cond, then_val, else_val } => {
+        ExprKind::Select {
+            cond,
+            then_val,
+            else_val,
+        } => {
             expr_contains_local(cond, idx)
                 || expr_contains_local(then_val, idx)
                 || expr_contains_local(else_val, idx)
@@ -517,7 +523,11 @@ fn expr_replace_local(expr: &mut Expr, old_idx: u32, new_idx: u32) {
                 expr_replace_local(a, old_idx, new_idx);
             }
         }
-        ExprKind::Select { cond, then_val, else_val } => {
+        ExprKind::Select {
+            cond,
+            then_val,
+            else_val,
+        } => {
             expr_replace_local(cond, old_idx, new_idx);
             expr_replace_local(then_val, old_idx, new_idx);
             expr_replace_local(else_val, old_idx, new_idx);
@@ -588,12 +598,11 @@ impl<'a> FunctionLifter<'a> {
         match blockty {
             BlockType::Empty => 0,
             BlockType::Type(_) => 1,
-            BlockType::FuncType(idx) => {
-                self.types
-                    .get(idx as usize)
-                    .map(|ft| ft.results.len())
-                    .unwrap_or(0)
-            }
+            BlockType::FuncType(idx) => self
+                .types
+                .get(idx as usize)
+                .map(|ft| ft.results.len())
+                .unwrap_or(0),
         }
     }
 
@@ -949,8 +958,7 @@ impl<'a> FunctionLifter<'a> {
                     // Save result values from the true branch
                     if result_count > 0 {
                         let drain_start = self.stack.len().saturating_sub(result_count);
-                        frame.then_result =
-                            Some(self.stack.drain(drain_start..).collect());
+                        frame.then_result = Some(self.stack.drain(drain_start..).collect());
                     }
                     frame.else_stmts = Some(std::mem::take(&mut self.stmts));
                 }
@@ -996,17 +1004,14 @@ impl<'a> FunctionLifter<'a> {
 
                             // Extract result values from the else branch (on stack now)
                             let else_results: Vec<Expr> = if result_count > 0 {
-                                let drain_start =
-                                    self.stack.len().saturating_sub(result_count);
+                                let drain_start = self.stack.len().saturating_sub(result_count);
                                 self.stack.drain(drain_start..).collect()
                             } else {
                                 Vec::new()
                             };
 
                             // Use saved condition from frame (not the stack)
-                            let cond = frame
-                                .saved_cond
-                                .unwrap_or_else(|| Expr::i32_const(0));
+                            let cond = frame.saved_cond.unwrap_or_else(|| Expr::i32_const(0));
 
                             // Fix branch ordering: at Else, the TRUE branch stmts
                             // were saved as frame.else_stmts, and at End, `body`
@@ -1014,10 +1019,7 @@ impl<'a> FunctionLifter<'a> {
                             let (then_block, else_block) = match frame.else_stmts {
                                 Some(true_branch_stmts) => {
                                     // Had else: true_branch was saved, body is false branch
-                                    (
-                                        crate::ir::Block::with_stmts(true_branch_stmts),
-                                        Some(body),
-                                    )
+                                    (crate::ir::Block::with_stmts(true_branch_stmts), Some(body))
                                 }
                                 None => {
                                     // No else: body is the true branch
@@ -1092,13 +1094,23 @@ impl<'a> FunctionLifter<'a> {
                 if result_count > 0 && !target.is_loop {
                     // Peek (not pop) the result value — br_if only consumes it when taken;
                     // on the "not taken" path, the value must remain on the stack.
-                    let result_val = self.stack.last().cloned().unwrap_or_else(|| Expr::i32_const(0));
+                    let result_val = self
+                        .stack
+                        .last()
+                        .cloned()
+                        .unwrap_or_else(|| Expr::i32_const(0));
                     let temp = self.ensure_block_result_local(relative_depth);
                     self.emit(Stmt::If {
                         cond,
                         then_block: crate::ir::Block::with_stmts(vec![
-                            Stmt::LocalSet { local: temp, value: result_val },
-                            Stmt::Br { label: target.label, is_loop: false },
+                            Stmt::LocalSet {
+                                local: temp,
+                                value: result_val,
+                            },
+                            Stmt::Br {
+                                label: target.label,
+                                is_loop: false,
+                            },
                         ]),
                         else_block: None,
                     });

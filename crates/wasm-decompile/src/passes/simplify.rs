@@ -184,7 +184,10 @@ fn negate_condition(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(negated_op, a, b, operand_ty), InferredType::Bool)
+            Expr::with_type(
+                ExprKind::Compare(negated_op, a, b, operand_ty),
+                InferredType::Bool,
+            )
         }
 
         // Double negation: Eqz(x) negated -> x
@@ -293,7 +296,10 @@ fn simplify_expr(expr: Expr) -> Expr {
                 return result;
             }
 
-            Expr::with_type(ExprKind::Compare(op, Box::new(a), Box::new(b), operand_ty), expr.ty)
+            Expr::with_type(
+                ExprKind::Compare(op, Box::new(a), Box::new(b), operand_ty),
+                expr.ty,
+            )
         }
 
         ExprKind::Load {

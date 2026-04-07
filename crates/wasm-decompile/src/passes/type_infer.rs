@@ -307,6 +307,12 @@ fn infer_expr(expr: &mut Expr, ctx: &mut PassContext) {
         ExprKind::ResolvedPointer { .. } => {
             expr.ty = InferredType::CString;
         }
+
+        ExprKind::Array(elems) => {
+            for e in elems {
+                infer_expr(e, ctx);
+            }
+        }
     }
 }
 

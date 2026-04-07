@@ -2,8 +2,10 @@
 //!
 //! These passes recognize patterns specific to Go-compiled WebAssembly.
 
+pub mod asyncify;
 mod string;
 
+pub use asyncify::AsyncifyPass;
 pub use string::GoStringPass;
 
 use crate::ir::*;

@@ -3,7 +3,12 @@
 //! Converts IR to readable JavaScript code.
 
 use crate::ir::*;
+use crate::passes::EmitterId;
+use std::collections::HashMap;
 use std::fmt::Write;
+
+/// Emitter ID for the JavaScript emitter
+pub const JS_EMITTER: EmitterId = EmitterId("js");
 
 /// Sanitize a string to be a valid JavaScript identifier
 fn sanitize_js_identifier(name: &str) -> String {
@@ -56,9 +61,15 @@ pub struct JsEmitter {
     current_param_count: usize,
     /// True when emitting in a boolean context (conditions)
     in_bool_context: bool,
+    /// Registered runtime helper implementations
+    helper_impls: HashMap<RuntimeHelperDecl, String>,
 }
 
 impl JsEmitter {
+    pub fn id() -> EmitterId {
+        JS_EMITTER
+    }
+
     pub fn new() -> Self {
         Self {
             indent: "  ".to_string(),
@@ -67,6 +78,19 @@ impl JsEmitter {
             module: None,
             current_param_count: 0,
             in_bool_context: false,
+            helper_impls: HashMap::new(),
+        }
+    }
+
+    /// Register a runtime helper implementation for this emitter
+    pub fn register_helper(&mut self, helper: RuntimeHelperDecl, js_code: String) {
+        self.helper_impls.insert(helper, js_code);
+    }
+
+    /// Load all helpers from a pass registry
+    pub fn load_helpers(&mut self, registry: &crate::passes::HelperRegistry) {
+        for (helper, code) in registry.iter_for(Self::id()) {
+            self.helper_impls.insert(helper, code.clone());
         }
     }
 
@@ -135,6 +159,19 @@ impl JsEmitter {
                     i = i
                 ));
             }
+            self.emit_line("");
+        }
+
+        // Emit registered runtime helper implementations
+        let helpers: Vec<_> = module
+            .runtime_helpers
+            .iter()
+            .filter_map(|decl| self.helper_impls.get(decl).cloned())
+            .collect();
+        for code in &helpers {
+            self.emit_line(code);
+        }
+        if !helpers.is_empty() {
             self.emit_line("");
         }
 
@@ -602,6 +639,12 @@ impl JsEmitter {
                 self.level -= 1;
                 self.emit_line("}");
             }
+
+            Stmt::MultiAssign { locals, value } => {
+                let names: Vec<String> = locals.iter().map(|l| self.local_name(*l)).collect();
+                let val = self.emit_expr(value);
+                self.emit_line(&format!("[{}] = {};", names.join(", "), val));
+            }
         }
     }
 
@@ -716,7 +759,6 @@ impl JsEmitter {
                         dest, src, src, len
                     );
                 }
-
                 let name = self.get_func_name(*func);
                 let args_str: Vec<String> = args.iter().map(|a| self.emit_expr(a)).collect();
                 format!("{}({})", name, args_str.join(", "))
@@ -770,6 +812,11 @@ impl JsEmitter {
 
             ExprKind::ResolvedPointer { addr, resolved } => {
                 format!("{} /* \"{}\" */", addr, escape_js_string(resolved))
+            }
+
+            ExprKind::Array(elems) => {
+                let parts: Vec<String> = elems.iter().map(|e| self.emit_expr(e)).collect();
+                format!("[{}]", parts.join(", "))
             }
         }
     }
@@ -1087,9 +1134,7 @@ impl JsEmitter {
                 Stmt::DoWhile { body, .. } | Stmt::While { body, .. } => {
                     Self::collect_temp_locals_inner(&body.stmts, temps);
                 }
-                Stmt::Switch {
-                    cases, default, ..
-                } => {
+                Stmt::Switch { cases, default, .. } => {
                     for case in cases {
                         Self::collect_temp_locals_inner(&case.body.stmts, temps);
                     }
@@ -1103,6 +1148,13 @@ impl JsEmitter {
                 } => {
                     Self::collect_temp_locals_inner(&body.stmts, temps);
                     Self::collect_temp_locals_inner(&finally_block.stmts, temps);
+                }
+                Stmt::MultiAssign { locals, .. } => {
+                    for &local in locals {
+                        if local >= TEMP_BASE {
+                            temps.insert(local);
+                        }
+                    }
                 }
                 _ => {}
             }
