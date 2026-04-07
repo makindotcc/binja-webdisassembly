@@ -768,8 +768,8 @@ impl JsEmitter {
                 format!("go_interface({}, {})", t, d)
             }
 
-            ExprKind::ResolvedPointer { resolved, .. } => {
-                format!("\"{}\"", escape_js_string(resolved))
+            ExprKind::ResolvedPointer { addr, resolved } => {
+                format!("{} /* \"{}\" */", addr, escape_js_string(resolved))
             }
         }
     }

@@ -136,10 +136,11 @@ impl Pipeline {
         Self {
             passes: vec![
                 Box::new(control_flow::ControlFlowPass),
+                Box::new(mem_resolve::MemResolvePass),
                 // Box::new(stackifier::StackifierPass),
                 // Box::new(UnblockifyPass),
                 // Box::new(type_infer::TypeInferPass),
-                // Box::new(mem_resolve::MemResolvePass),
+                // Box::new(go::GoSlicePass),
             ],
         }
     }
@@ -148,13 +149,14 @@ impl Pipeline {
     pub fn for_go() -> Self {
         Self {
             passes: vec![
-                Box::new(simplify::SimplifyPass),
                 Box::new(control_flow::ControlFlowPass),
-                Box::new(type_infer::TypeInferPass),
-                Box::new(go::GoStringPass),
-                Box::new(go::GoSlicePass),
-                Box::new(mem_resolve::MemResolvePass),
-                Box::new(simplify::SimplifyPass), // Run again after Go passes
+                // Box::new(simplify::SimplifyPass),
+                // Box::new(control_flow::ControlFlowPass),
+                // Box::new(type_infer::TypeInferPass),
+                // Box::new(go::GoStringPass),
+                // Box::new(go::GoSlicePass),
+                // Box::new(mem_resolve::MemResolvePass),
+                // Box::new(simplify::SimplifyPass), // Run again after Go passes
             ],
         }
     }

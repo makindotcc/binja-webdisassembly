@@ -83,6 +83,26 @@ fn resolve_stmt(stmt: &mut Stmt, memory: &[u8], ctx: &mut PassContext) {
         Stmt::Drop(expr) => {
             resolve_expr(expr, memory, ctx);
         }
+        Stmt::Switch {
+            index,
+            cases,
+            default,
+        } => {
+            resolve_expr(index, memory, ctx);
+            for case in cases {
+                resolve_block(&mut case.body, memory, ctx);
+            }
+            if let Some(def) = default {
+                resolve_block(def, memory, ctx);
+            }
+        }
+        Stmt::TryFinally {
+            body,
+            finally_block,
+        } => {
+            resolve_block(body, memory, ctx);
+            resolve_block(finally_block, memory, ctx);
+        }
         _ => {}
     }
 }
@@ -91,19 +111,15 @@ fn resolve_expr(expr: &mut Expr, memory: &[u8], ctx: &mut PassContext) {
     match &mut expr.kind {
         ExprKind::Call { args, .. } => {
             // Try to resolve consecutive (ptr, len) arguments as strings
-            let resolved = try_resolve_string_args(args, memory);
-            if let Some(resolved_args) = resolved {
-                *args = resolved_args;
-            } else {
-                // Regular resolve for each arg
-                for arg in args {
-                    resolve_expr(arg, memory, ctx);
-                }
+            try_resolve_string_args(args, memory);
+            for arg in args {
+                resolve_expr(arg, memory, ctx);
             }
         }
 
         ExprKind::CallIndirect { index, args, .. } => {
             resolve_expr(index, memory, ctx);
+            try_resolve_string_args(args, memory);
             for arg in args {
                 resolve_expr(arg, memory, ctx);
             }
@@ -169,48 +185,33 @@ fn resolve_expr(expr: &mut Expr, memory: &[u8], ctx: &mut PassContext) {
     }
 }
 
-/// Try to resolve consecutive (ptr, len) argument pairs as string literals
-fn try_resolve_string_args(args: &Vec<Expr>, memory: &[u8]) -> Option<Vec<Expr>> {
+/// Try to resolve consecutive (ptr, len) argument pairs as annotated pointers.
+/// Replaces I32Const(ptr) with ResolvedPointer { addr, resolved } but keeps
+/// the len argument unchanged, so the call signature stays the same.
+fn try_resolve_string_args(args: &mut Vec<Expr>, memory: &[u8]) {
     if args.len() < 2 {
-        return None;
+        return;
     }
 
-    let mut resolved = Vec::new();
     let mut i = 0;
-    let mut any_resolved = false;
-
-    while i < args.len() {
-        // Check for (ptr_const, len_const) pattern
-        if i + 1 < args.len() {
-            if let (ExprKind::I32Const(ptr), ExprKind::I32Const(len)) =
-                (&args[i].kind, &args[i + 1].kind)
-            {
-                // Only try to resolve if this looks like a string pointer
-                // (reasonable address range and length)
-                if *ptr > 0 && *len > 0 && *len < 10000 {
-                    if let Some(s) = get_string_from_memory(memory, *ptr as usize, *len as usize) {
-                        // Successfully resolved - emit StringLiteral instead of ptr, len
-                        resolved.push(Expr::with_type(
-                            ExprKind::StringLiteral(s),
-                            InferredType::GoString,
-                        ));
-                        i += 2;
-                        any_resolved = true;
-                        continue;
-                    }
+    while i + 1 < args.len() {
+        if let (ExprKind::I32Const(ptr), ExprKind::I32Const(len)) =
+            (&args[i].kind, &args[i + 1].kind)
+        {
+            let ptr = *ptr;
+            let len = *len;
+            if ptr > 0 && len > 0 && len < 10000 {
+                if let Some(s) = get_string_from_memory(memory, ptr as usize, len as usize) {
+                    args[i] = Expr::new(ExprKind::ResolvedPointer {
+                        addr: ptr as u32,
+                        resolved: s,
+                    });
+                    i += 2;
+                    continue;
                 }
             }
         }
-
-        // Not a string pattern - keep original
-        resolved.push(args[i].clone());
         i += 1;
-    }
-
-    if any_resolved {
-        Some(resolved)
-    } else {
-        None
     }
 }
 
