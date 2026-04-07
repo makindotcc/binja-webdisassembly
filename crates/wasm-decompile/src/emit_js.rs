@@ -161,7 +161,8 @@ impl JsEmitter {
     fn emit_runtime(&mut self) {
         self.emit_line("// @ts-nocheck");
         self.emit_line("// Runtime");
-        self.emit_line("const memory = new WebAssembly.Memory({ initial: 256 });");
+        let pages = self.module.as_ref().map(|m| m.memory_pages).unwrap_or(256);
+        self.emit_line(&format!("const memory = new WebAssembly.Memory({{ initial: {} }});", pages));
         self.emit_line("let _mem_buf = memory.buffer, _mem_dv = new DataView(_mem_buf);");
         self.emit_line("function mem() { if (_mem_buf !== memory.buffer) { _mem_buf = memory.buffer; _mem_dv = new DataView(_mem_buf); } return _mem_dv; }");
         self.emit_line("");
@@ -204,7 +205,7 @@ impl JsEmitter {
         self.emit_line("function popcnt32(x) { x = x - ((x >> 1) & 0x55555555); x = (x & 0x33333333) + ((x >> 2) & 0x33333333); return ((x + (x >> 4) & 0xF0F0F0F) * 0x1010101) >> 24; }");
         self.emit_line("function rotl32(x, k) { return (x << k) | (x >>> (32 - k)); }");
         self.emit_line("function rotr32(x, k) { return (x >>> k) | (x << (32 - k)); }");
-        self.emit_line("function u32(x) { return x >>> 0; }");
+        self.emit_line("function u32(x) { if (typeof x === 'bigint') return Number(BigInt.asUintN(32, x)); return x >>> 0; }");
     }
 
     fn emit_function_table(&mut self, module: &Module) {
@@ -294,8 +295,15 @@ impl JsEmitter {
 
         // Declare locals
         let num_locals = func.locals.len();
-        if num_locals > 0 {
-            let local_decls: Vec<String> = (0..num_locals).map(|i| format!("l{}", i)).collect();
+        let mut local_decls: Vec<String> = (0..num_locals).map(|i| format!("l{}", i)).collect();
+
+        // Also declare any temp locals introduced by the lifter (for saving locals before reassignment)
+        let temp_locals = Self::collect_temp_locals(&func.body);
+        for idx in &temp_locals {
+            local_decls.push(self.local_name(*idx));
+        }
+
+        if !local_decls.is_empty() {
             self.emit_line(&format!("let {};", local_decls.join(", ")));
         }
 
@@ -409,11 +417,11 @@ impl JsEmitter {
                 self.level += 1;
                 self.emit_block(body);
                 // In WASM, falling through to the end of a loop exits it.
-                // With while(true), we need explicit break to exit.
-                // Only add break if the body doesn't already terminate.
-                if !block_terminates(body) {
-                    self.emit_line("break;");
-                }
+                // Always add break: block_terminates() can't account for
+                // inner blocks exited via `break block_N`, which resume
+                // at the end of the loop body. An unreachable break after
+                // a truly terminating body is harmless.
+                self.emit_line("break;");
                 self.level -= 1;
                 self.emit_line("}");
             }
@@ -526,6 +534,33 @@ impl JsEmitter {
                     self.emit_line(&format!("{};", e));
                 }
             }
+
+            Stmt::Switch {
+                index,
+                cases,
+                default,
+            } => {
+                let idx = self.emit_expr(index);
+                self.emit_line(&format!("switch ({}) {{", idx));
+                self.level += 1;
+                for case in cases {
+                    for val in &case.values {
+                        self.emit_line(&format!("case {}:", val));
+                    }
+                    self.level += 1;
+                    self.emit_block(&case.body);
+                    self.emit_line("break;");
+                    self.level -= 1;
+                }
+                if let Some(def) = default {
+                    self.emit_line("default:");
+                    self.level += 1;
+                    self.emit_block(def);
+                    self.level -= 1;
+                }
+                self.level -= 1;
+                self.emit_line("}");
+            }
         }
     }
 
@@ -581,10 +616,10 @@ impl JsEmitter {
                 self.emit_unaryop(*op, &a_str, &expr.ty)
             }
 
-            ExprKind::Compare(op, a, b) => {
+            ExprKind::Compare(op, a, b, ref operand_ty) => {
                 let a_str = self.emit_expr(a);
                 let b_str = self.emit_expr(b);
-                self.emit_cmpop(*op, &a_str, &b_str)
+                self.emit_cmpop(*op, &a_str, &b_str, operand_ty)
             }
 
             ExprKind::Load {
@@ -619,6 +654,20 @@ impl JsEmitter {
                 if *func == u32::MAX - 1 {
                     let arg = args.first().map(|a| self.emit_expr(a)).unwrap_or_default();
                     return format!("memory.grow({})", arg);
+                }
+                if *func == u32::MAX - 2 {
+                    // memory.fill(dest, value, len)
+                    let dest = args.get(0).map(|a| self.emit_expr(a)).unwrap_or_default();
+                    let value = args.get(1).map(|a| self.emit_expr(a)).unwrap_or_default();
+                    let len = args.get(2).map(|a| self.emit_expr(a)).unwrap_or_default();
+                    return format!("new Uint8Array(memory.buffer).fill({}, {}, {} + {})", value, dest, dest, len);
+                }
+                if *func == u32::MAX - 3 {
+                    // memory.copy(dest, src, len)
+                    let dest = args.get(0).map(|a| self.emit_expr(a)).unwrap_or_default();
+                    let src = args.get(1).map(|a| self.emit_expr(a)).unwrap_or_default();
+                    let len = args.get(2).map(|a| self.emit_expr(a)).unwrap_or_default();
+                    return format!("new Uint8Array(memory.buffer).copyWithin({}, {}, {} + {})", dest, src, src, len);
                 }
 
                 let name = self.get_func_name(*func);
@@ -685,31 +734,45 @@ impl JsEmitter {
                 if is_i64 {
                     format!("BigInt.asIntN(64, {} + {})", a, b)
                 } else {
-                    format!("({} + {})", a, b)
+                    format!("(({} + {}) | 0)", a, b)
                 }
             }
             BinOp::Sub => {
                 if is_i64 {
                     format!("BigInt.asIntN(64, {} - {})", a, b)
                 } else {
-                    format!("({} - {})", a, b)
+                    format!("(({} - {}) | 0)", a, b)
                 }
             }
             BinOp::Mul => {
                 if is_i64 {
                     format!("BigInt.asIntN(64, {} * {})", a, b)
                 } else {
-                    format!("({} * {})", a, b)
+                    format!("Math.imul({}, {})", a, b)
                 }
             }
-            BinOp::DivS | BinOp::DivU => {
+            BinOp::DivS => {
                 if is_i64 {
                     format!("({} / {})", a, b)
                 } else {
                     format!("({} / {}) | 0", a, b)
                 }
             }
-            BinOp::RemS | BinOp::RemU => format!("({} % {})", a, b),
+            BinOp::DivU => {
+                if is_i64 {
+                    format!("(BigInt.asUintN(64, BigInt({})) / BigInt.asUintN(64, BigInt({})))", a, b)
+                } else {
+                    format!("(u32({}) / u32({})) | 0", a, b)
+                }
+            }
+            BinOp::RemS => format!("({} % {})", a, b),
+            BinOp::RemU => {
+                if is_i64 {
+                    format!("(BigInt.asUintN(64, BigInt({})) % BigInt.asUintN(64, BigInt({})))", a, b)
+                } else {
+                    format!("(u32({}) % u32({}))", a, b)
+                }
+            }
             BinOp::And => format!("({} & {})", a, b),
             BinOp::Or => format!("({} | {})", a, b),
             BinOp::Xor => format!("({} ^ {})", a, b),
@@ -723,21 +786,21 @@ impl JsEmitter {
             BinOp::ShrS => format!("({} >> {})", a, b),
             BinOp::ShrU => {
                 if is_i64 {
-                    format!("BigInt.asIntN(64, BigInt.asUintN(64, {}) >> {})", a, b)
+                    format!("BigInt.asIntN(64, BigInt.asUintN(64, BigInt({})) >> {})", a, b)
                 } else {
                     format!("({} >>> {})", a, b)
                 }
             }
             BinOp::Rotl => {
                 if is_i64 {
-                    format!("BigInt.asIntN(64, BigInt.asUintN(64, {a}) << ({b} & 63n) | BigInt.asUintN(64, {a}) >> (64n - ({b} & 63n)))", a = a, b = b)
+                    format!("BigInt.asIntN(64, BigInt.asUintN(64, BigInt({a})) << ({b} & 63n) | BigInt.asUintN(64, BigInt({a})) >> (64n - ({b} & 63n)))", a = a, b = b)
                 } else {
                     format!("rotl32({}, {})", a, b)
                 }
             }
             BinOp::Rotr => {
                 if is_i64 {
-                    format!("BigInt.asIntN(64, BigInt.asUintN(64, {a}) >> ({b} & 63n) | BigInt.asUintN(64, {a}) << (64n - ({b} & 63n)))", a = a, b = b)
+                    format!("BigInt.asIntN(64, BigInt.asUintN(64, BigInt({a})) >> ({b} & 63n) | BigInt.asUintN(64, BigInt({a})) << (64n - ({b} & 63n)))", a = a, b = b)
                 } else {
                     format!("rotr32({}, {})", a, b)
                 }
@@ -776,10 +839,15 @@ impl JsEmitter {
                 }
             }
             UnaryOp::Eqz => {
-                if self.in_bool_context {
-                    format!("({} === 0)", a)
+                let zero = if *operand_ty == InferredType::I64 {
+                    "0n"
                 } else {
-                    format!("({} === 0 ? 1 : 0)", a)
+                    "0"
+                };
+                if self.in_bool_context {
+                    format!("({} === {})", a, zero)
+                } else {
+                    format!("(({} === {}) ? 1 : 0)", a, zero)
                 }
             }
             UnaryOp::FAbs => format!("Math.abs({})", a),
@@ -792,24 +860,48 @@ impl JsEmitter {
         }
     }
 
-    fn emit_cmpop(&mut self, op: CmpOp, a: &str, b: &str) -> String {
+    fn emit_cmpop(&mut self, op: CmpOp, a: &str, b: &str, operand_ty: &InferredType) -> String {
+        let is_i64 = *operand_ty == InferredType::I64;
         let result = match op {
             CmpOp::Eq | CmpOp::FEq => format!("{} === {}", a, b),
             CmpOp::Ne | CmpOp::FNe => format!("{} !== {}", a, b),
             CmpOp::LtS | CmpOp::FLt => format!("{} < {}", a, b),
-            CmpOp::LtU => format!("{} < {}", self.as_u32(a), self.as_u32(b)),
+            CmpOp::LtU => {
+                if is_i64 {
+                    format!("BigInt.asUintN(64, BigInt({})) < BigInt.asUintN(64, BigInt({}))", a, b)
+                } else {
+                    format!("{} < {}", self.as_u32(a), self.as_u32(b))
+                }
+            }
             CmpOp::GtS | CmpOp::FGt => format!("{} > {}", a, b),
-            CmpOp::GtU => format!("{} > {}", self.as_u32(a), self.as_u32(b)),
+            CmpOp::GtU => {
+                if is_i64 {
+                    format!("BigInt.asUintN(64, BigInt({})) > BigInt.asUintN(64, BigInt({}))", a, b)
+                } else {
+                    format!("{} > {}", self.as_u32(a), self.as_u32(b))
+                }
+            }
             CmpOp::LeS | CmpOp::FLe => format!("{} <= {}", a, b),
-            CmpOp::LeU => format!("{} <= {}", self.as_u32(a), self.as_u32(b)),
+            CmpOp::LeU => {
+                if is_i64 {
+                    format!("BigInt.asUintN(64, BigInt({})) <= BigInt.asUintN(64, BigInt({}))", a, b)
+                } else {
+                    format!("{} <= {}", self.as_u32(a), self.as_u32(b))
+                }
+            }
             CmpOp::GeS | CmpOp::FGe => format!("{} >= {}", a, b),
-            CmpOp::GeU => format!("{} >= {}", self.as_u32(a), self.as_u32(b)),
+            CmpOp::GeU => {
+                if is_i64 {
+                    format!("BigInt.asUintN(64, BigInt({})) >= BigInt.asUintN(64, BigInt({}))", a, b)
+                } else {
+                    format!("{} >= {}", self.as_u32(a), self.as_u32(b))
+                }
+            }
         };
         if self.in_bool_context {
-            // format!("({})", result)
             result
         } else {
-            format!("{} ? 1 : 0", result)
+            format!("({} ? 1 : 0)", result)
         }
     }
 
@@ -830,7 +922,7 @@ impl JsEmitter {
 
     fn emit_convert(&mut self, op: ConvertOp, e: &str) -> String {
         match op {
-            ConvertOp::I32WrapI64 => format!("Number({} & 0xFFFFFFFFn)", e),
+            ConvertOp::I32WrapI64 => format!("Number(BigInt.asIntN(32, {}))", e),
             ConvertOp::I64ExtendI32S => format!("BigInt({})", e),
             ConvertOp::I64ExtendI32U => format!("BigInt(u32({}))", e),
             ConvertOp::I32TruncF32S | ConvertOp::I32TruncF64S => format!("Math.trunc({})", e),
@@ -844,13 +936,13 @@ impl JsEmitter {
                 format!("BigInt(Math.trunc({})) & 0xFFFFFFFFFFFFFFFFn", e)
             }
             ConvertOp::F32ConvertI32S
-            | ConvertOp::F32ConvertI32U
-            | ConvertOp::F32ConvertI64S
-            | ConvertOp::F32ConvertI64U
             | ConvertOp::F64ConvertI32S
-            | ConvertOp::F64ConvertI32U
-            | ConvertOp::F64ConvertI64S
-            | ConvertOp::F64ConvertI64U => format!("Number({})", e),
+            | ConvertOp::F32ConvertI64S
+            | ConvertOp::F64ConvertI64S => format!("Number({})", e),
+            ConvertOp::F32ConvertI32U
+            | ConvertOp::F64ConvertI32U => format!("Number(u32({}))", e),
+            ConvertOp::F32ConvertI64U
+            | ConvertOp::F64ConvertI64U => format!("Number(BigInt.asUintN(64, BigInt({})))", e),
             ConvertOp::F32DemoteF64 => format!("Math.fround({})", e),
             ConvertOp::F64PromoteF32 => e.to_string(),
             ConvertOp::I32ReinterpretF32 => {
@@ -867,20 +959,20 @@ impl JsEmitter {
             }
             ConvertOp::I32Extend8S => format!("({} << 24) >> 24", e),
             ConvertOp::I32Extend16S => format!("({} << 16) >> 16", e),
-            ConvertOp::I64Extend8S => format!("(BigInt({}) << 56n) >> 56n", e),
-            ConvertOp::I64Extend16S => format!("(BigInt({}) << 48n) >> 48n", e),
-            ConvertOp::I64Extend32S => format!("BigInt({} | 0)", e),
+            ConvertOp::I64Extend8S => format!("BigInt.asIntN(8, {})", e),
+            ConvertOp::I64Extend16S => format!("BigInt.asIntN(16, {})", e),
+            ConvertOp::I64Extend32S => format!("BigInt.asIntN(32, {})", e),
             ConvertOp::I32TruncSatF32S | ConvertOp::I32TruncSatF64S => {
-                format!("Math.trunc({})", e)
+                format!("(Number.isNaN({0}) ? 0 : Math.min(Math.max(Math.trunc({0}), -2147483648), 2147483647))", e)
             }
             ConvertOp::I32TruncSatF32U | ConvertOp::I32TruncSatF64U => {
-                format!("u32(Math.trunc({}))", e)
+                format!("(Number.isNaN({0}) ? 0 : u32(Math.min(Math.max(Math.trunc({0}), 0), 4294967295)))", e)
             }
             ConvertOp::I64TruncSatF32S | ConvertOp::I64TruncSatF64S => {
-                format!("BigInt(Math.trunc({}))", e)
+                format!("(Number.isNaN({0}) ? 0n : BigInt(Math.min(Math.max(Math.trunc({0}), -9223372036854775808), 9223372036854775807)))", e)
             }
             ConvertOp::I64TruncSatF32U | ConvertOp::I64TruncSatF64U => {
-                format!("BigInt(Math.trunc({})) & 0xFFFFFFFFFFFFFFFFn", e)
+                format!("(Number.isNaN({0}) ? 0n : BigInt(Math.min(Math.max(Math.trunc({0}), 0), 18446744073709551615)) & 0xFFFFFFFFFFFFFFFFn)", e)
             }
         }
     }
@@ -893,6 +985,38 @@ impl JsEmitter {
         } else {
             // It's a local variable
             format!("l{}", idx - self.current_param_count)
+        }
+    }
+
+    /// Collect temp local indices (>= u32::MAX/2) used in LocalSet statements within a block
+    fn collect_temp_locals(block: &crate::ir::Block) -> Vec<u32> {
+        use std::collections::BTreeSet;
+        let mut temps = BTreeSet::new();
+        Self::collect_temp_locals_inner(&block.stmts, &mut temps);
+        temps.into_iter().collect()
+    }
+
+    fn collect_temp_locals_inner(stmts: &[Stmt], temps: &mut std::collections::BTreeSet<u32>) {
+        const TEMP_BASE: u32 = u32::MAX / 2;
+        for stmt in stmts {
+            match stmt {
+                Stmt::LocalSet { local, .. } if *local >= TEMP_BASE => {
+                    temps.insert(*local);
+                }
+                Stmt::If { then_block, else_block, .. } => {
+                    Self::collect_temp_locals_inner(&then_block.stmts, temps);
+                    if let Some(eb) = else_block {
+                        Self::collect_temp_locals_inner(&eb.stmts, temps);
+                    }
+                }
+                Stmt::Block { body, .. } | Stmt::Loop { body, .. } => {
+                    Self::collect_temp_locals_inner(&body.stmts, temps);
+                }
+                Stmt::DoWhile { body, .. } | Stmt::While { body, .. } => {
+                    Self::collect_temp_locals_inner(&body.stmts, temps);
+                }
+                _ => {}
+            }
         }
     }
 
@@ -958,7 +1082,9 @@ impl JsEmitter {
         // Export runtime internals for testing
         self.emit_line("memory,");
         self.emit_line("get mem() { return mem(); },");
-        self.emit_line("globals,");
+        if !module.globals.is_empty() {
+            self.emit_line("globals,");
+        }
 
         // Export imports object (so host can provide implementations)
         if !module.imports.is_empty() {

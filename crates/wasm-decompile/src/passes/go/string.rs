@@ -118,7 +118,7 @@ fn transform_string_expr(expr: &mut Expr, ctx: &mut PassContext) {
             transform_string_expr(a, ctx);
         }
 
-        ExprKind::Compare(_, a, b) => {
+        ExprKind::Compare(_, a, b, _) => {
             transform_string_expr(a, ctx);
             transform_string_expr(b, ctx);
         }

@@ -77,7 +77,7 @@ fn transform_slice_expr(expr: &mut Expr, ctx: &mut PassContext) {
             transform_slice_expr(a, ctx);
         }
 
-        ExprKind::Compare(_, a, b) => {
+        ExprKind::Compare(_, a, b, _) => {
             transform_slice_expr(a, ctx);
             transform_slice_expr(b, ctx);
         }
@@ -231,7 +231,7 @@ fn transform_interface_expr(expr: &mut Expr, ctx: &mut PassContext) {
             transform_interface_expr(a, ctx);
         }
 
-        ExprKind::Compare(_, a, b) => {
+        ExprKind::Compare(_, a, b, _) => {
             transform_interface_expr(a, ctx);
             transform_interface_expr(b, ctx);
         }

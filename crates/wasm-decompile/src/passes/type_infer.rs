@@ -228,7 +228,7 @@ fn infer_expr(expr: &mut Expr, ctx: &mut PassContext) {
             }
         }
 
-        ExprKind::Compare(_, a, b) => {
+        ExprKind::Compare(_, a, b, _) => {
             infer_expr(a, ctx);
             infer_expr(b, ctx);
             expr.ty = InferredType::Bool;

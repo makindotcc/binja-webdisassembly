@@ -118,7 +118,7 @@ fn resolve_expr(expr: &mut Expr, memory: &[u8], ctx: &mut PassContext) {
             resolve_expr(a, memory, ctx);
         }
 
-        ExprKind::Compare(_, a, b) => {
+        ExprKind::Compare(_, a, b, _) => {
             resolve_expr(a, memory, ctx);
             resolve_expr(b, memory, ctx);
         }

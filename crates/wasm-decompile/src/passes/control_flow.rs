@@ -62,6 +62,16 @@ fn recover_control_flow(block: &mut Block) {
             Stmt::DoWhile { body, .. } | Stmt::While { body, .. } => {
                 recover_control_flow(body);
             }
+            Stmt::Switch {
+                cases, default, ..
+            } => {
+                for case in cases {
+                    recover_control_flow(&mut case.body);
+                }
+                if let Some(def) = default {
+                    recover_control_flow(def);
+                }
+            }
             _ => {}
         }
     }
@@ -697,7 +707,7 @@ fn collect_br_table_labels(stmts: &[Stmt], labels: &mut std::collections::HashSe
 fn negate_condition(cond: Expr) -> Expr {
     match cond.kind {
         // Invert comparison operators
-        ExprKind::Compare(op, a, b) => {
+        ExprKind::Compare(op, a, b, operand_ty) => {
             let negated_op = match op {
                 CmpOp::Eq => CmpOp::Ne,
                 CmpOp::Ne => CmpOp::Eq,
@@ -717,7 +727,7 @@ fn negate_condition(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(negated_op, a, b), InferredType::Bool)
+            Expr::with_type(ExprKind::Compare(negated_op, a, b, operand_ty), InferredType::Bool)
         }
 
         // Double negation: Eqz(x) negated -> x

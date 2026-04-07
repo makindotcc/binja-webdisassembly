@@ -263,6 +263,7 @@ fn emit_from_inner(ctx: &mut EmitCtx, start: NodeId, region: &EmitRegionCtx) -> 
                                 CmpOp::Eq,
                                 Box::new(index.clone()),
                                 Box::new(Expr::i32_const(i as i32)),
+                                InferredType::I32,
                             )),
                             then_block: Block::with_stmts(target_stmts),
                             else_block: None,
@@ -586,7 +587,7 @@ fn reachable(cfg: &Cfg, start: NodeId, limit: usize) -> HashSet<NodeId> {
 /// Negate condition
 fn negate(cond: Expr) -> Expr {
     match cond.kind {
-        ExprKind::Compare(op, a, b) => {
+        ExprKind::Compare(op, a, b, operand_ty) => {
             let neg_op = match op {
                 CmpOp::Eq => CmpOp::Ne,
                 CmpOp::Ne => CmpOp::Eq,
@@ -605,7 +606,7 @@ fn negate(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(neg_op, a, b), InferredType::Bool)
+            Expr::with_type(ExprKind::Compare(neg_op, a, b, operand_ty), InferredType::Bool)
         }
         ExprKind::UnaryOp(UnaryOp::Eqz, inner) => *inner,
         _ => Expr::with_type(

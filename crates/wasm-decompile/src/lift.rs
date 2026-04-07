@@ -5,9 +5,10 @@
 use anyhow::{anyhow, Result};
 use std::collections::HashMap;
 use wasmparser::{
-    BinaryReader, DataSectionReader, ElementSectionReader, ExportSectionReader, FunctionBody,
-    FunctionSectionReader, GlobalSectionReader, ImportSectionReader, MemorySectionReader,
-    NameSectionReader, Operator, Parser, Payload, TypeSectionReader, ValType as WasmValType,
+    BinaryReader, BlockType, DataSectionReader, ElementSectionReader, ExportSectionReader,
+    FunctionBody, FunctionSectionReader, GlobalSectionReader, ImportSectionReader,
+    MemorySectionReader, NameSectionReader, Operator, Parser, Payload, TypeSectionReader,
+    ValType as WasmValType,
 };
 
 use crate::ir::*;
@@ -236,6 +237,7 @@ fn parse_memory(module: &mut Module, reader: MemorySectionReader) -> Result<()> 
         let memory = memory?;
         // Initialize memory to minimum size
         let min_pages = memory.initial as usize;
+        module.memory_pages = min_pages as u32;
         module.memory.resize(min_pages * 65536, 0);
     }
     Ok(())
@@ -436,6 +438,8 @@ struct FunctionLifter<'a> {
     /// Number of parameters (to distinguish params from locals)
     #[allow(dead_code)]
     num_params: u32,
+    /// Next temp local index for saving locals before reassignment
+    next_temp_local: u32,
     /// Function type signatures (from module)
     types: &'a [FuncType],
     /// Function index -> type index mapping (from module)
@@ -447,6 +451,16 @@ struct ControlFrame {
     label: u32,
     stmts: Vec<Stmt>,
     else_stmts: Option<Vec<Stmt>>,
+    /// Block type — used to detect if/else that produces a value
+    blockty: BlockType,
+    /// Saved value stack depth at entry (to extract result values)
+    stack_depth_at_entry: usize,
+    /// Values from the true branch of an if/else with result type
+    then_result: Option<Vec<Expr>>,
+    /// Saved condition for If blocks (not stored on the value stack)
+    saved_cond: Option<Expr>,
+    /// Temp local for typed block results carried by br/br_if
+    block_result_local: Option<u32>,
 }
 
 #[derive(Clone, Copy)]
@@ -454,6 +468,62 @@ enum ControlKind {
     Block,
     Loop,
     If,
+}
+
+/// Check if an expression tree contains a reference to Local(idx)
+fn expr_contains_local(expr: &Expr, idx: u32) -> bool {
+    match &expr.kind {
+        ExprKind::Local(i) => *i == idx,
+        ExprKind::BinOp(_, a, b) | ExprKind::Compare(_, a, b, _) => {
+            expr_contains_local(a, idx) || expr_contains_local(b, idx)
+        }
+        ExprKind::UnaryOp(_, e) | ExprKind::Convert { expr: e, .. } => {
+            expr_contains_local(e, idx)
+        }
+        ExprKind::Load { addr, .. } => expr_contains_local(addr, idx),
+        ExprKind::Call { args, .. } => args.iter().any(|a| expr_contains_local(a, idx)),
+        ExprKind::CallIndirect { index, args, .. } => {
+            expr_contains_local(index, idx) || args.iter().any(|a| expr_contains_local(a, idx))
+        }
+        ExprKind::Select { cond, then_val, else_val } => {
+            expr_contains_local(cond, idx)
+                || expr_contains_local(then_val, idx)
+                || expr_contains_local(else_val, idx)
+        }
+        _ => false,
+    }
+}
+
+/// Replace all Local(old_idx) references with Local(new_idx) in an expression tree
+fn expr_replace_local(expr: &mut Expr, old_idx: u32, new_idx: u32) {
+    match &mut expr.kind {
+        ExprKind::Local(i) if *i == old_idx => *i = new_idx,
+        ExprKind::BinOp(_, a, b) | ExprKind::Compare(_, a, b, _) => {
+            expr_replace_local(a, old_idx, new_idx);
+            expr_replace_local(b, old_idx, new_idx);
+        }
+        ExprKind::UnaryOp(_, e) | ExprKind::Convert { expr: e, .. } => {
+            expr_replace_local(e, old_idx, new_idx);
+        }
+        ExprKind::Load { addr, .. } => expr_replace_local(addr, old_idx, new_idx),
+        ExprKind::Call { args, .. } => {
+            for a in args.iter_mut() {
+                expr_replace_local(a, old_idx, new_idx);
+            }
+        }
+        ExprKind::CallIndirect { index, args, .. } => {
+            expr_replace_local(index, old_idx, new_idx);
+            for a in args.iter_mut() {
+                expr_replace_local(a, old_idx, new_idx);
+            }
+        }
+        ExprKind::Select { cond, then_val, else_val } => {
+            expr_replace_local(cond, old_idx, new_idx);
+            expr_replace_local(then_val, old_idx, new_idx);
+            expr_replace_local(else_val, old_idx, new_idx);
+        }
+        _ => {}
+    }
 }
 
 impl<'a> FunctionLifter<'a> {
@@ -464,6 +534,7 @@ impl<'a> FunctionLifter<'a> {
             control_stack: Vec::new(),
             next_label: 0,
             num_params,
+            next_temp_local: u32::MAX / 2,
             types,
             func_types,
         }
@@ -493,6 +564,39 @@ impl<'a> FunctionLifter<'a> {
         self.stmts.push(stmt);
     }
 
+    /// If any expression on the stack references Local(idx), save the old value
+    /// in a temp local and replace all stack references to use the temp.
+    /// This prevents correctness issues when local.set/local.tee overwrites a local
+    /// that is already referenced by pending stack expressions.
+    fn save_local_if_conflicting(&mut self, idx: u32) {
+        let has_conflict = self.stack.iter().any(|e| expr_contains_local(e, idx));
+        if has_conflict {
+            let temp = self.next_temp_local;
+            self.next_temp_local += 1;
+            self.emit(Stmt::LocalSet {
+                local: temp,
+                value: Expr::local(idx),
+            });
+            for expr in &mut self.stack {
+                expr_replace_local(expr, idx, temp);
+            }
+        }
+    }
+
+    /// How many result values a block type produces
+    fn block_result_count(&self, blockty: BlockType) -> usize {
+        match blockty {
+            BlockType::Empty => 0,
+            BlockType::Type(_) => 1,
+            BlockType::FuncType(idx) => {
+                self.types
+                    .get(idx as usize)
+                    .map(|ft| ft.results.len())
+                    .unwrap_or(0)
+            }
+        }
+    }
+
     fn alloc_label(&mut self) -> u32 {
         let label = self.next_label;
         self.next_label += 1;
@@ -515,6 +619,7 @@ impl<'a> FunctionLifter<'a> {
             }
             LocalSet { local_index } => {
                 let value = self.pop();
+                self.save_local_if_conflicting(local_index);
                 self.emit(Stmt::LocalSet {
                     local: local_index,
                     value,
@@ -522,6 +627,7 @@ impl<'a> FunctionLifter<'a> {
             }
             LocalTee { local_index } => {
                 let value = self.pop();
+                self.save_local_if_conflicting(local_index);
                 self.emit(Stmt::LocalSet {
                     local: local_index,
                     value,
@@ -625,11 +731,11 @@ impl<'a> FunctionLifter<'a> {
             I32Clz => self.lift_unaryop(UnaryOp::Clz, InferredType::I32),
             I32Ctz => self.lift_unaryop(UnaryOp::Ctz, InferredType::I32),
             I32Popcnt => self.lift_unaryop(UnaryOp::Popcnt, InferredType::I32),
-            I32Eqz => self.lift_unaryop(UnaryOp::Eqz, InferredType::Bool),
+            I32Eqz => self.lift_unaryop(UnaryOp::Eqz, InferredType::I32),
             I64Clz => self.lift_unaryop(UnaryOp::Clz, InferredType::I64),
             I64Ctz => self.lift_unaryop(UnaryOp::Ctz, InferredType::I64),
             I64Popcnt => self.lift_unaryop(UnaryOp::Popcnt, InferredType::I64),
-            I64Eqz => self.lift_unaryop(UnaryOp::Eqz, InferredType::Bool),
+            I64Eqz => self.lift_unaryop(UnaryOp::Eqz, InferredType::I64),
 
             F32Abs => self.lift_unaryop(UnaryOp::FAbs, InferredType::F32),
             F32Neg => self.lift_unaryop(UnaryOp::FNeg, InferredType::F32),
@@ -648,43 +754,43 @@ impl<'a> FunctionLifter<'a> {
             F64Sqrt => self.lift_unaryop(UnaryOp::FSqrt, InferredType::F64),
 
             // Comparisons (i32)
-            I32Eq => self.lift_cmpop(CmpOp::Eq),
-            I32Ne => self.lift_cmpop(CmpOp::Ne),
-            I32LtS => self.lift_cmpop(CmpOp::LtS),
-            I32LtU => self.lift_cmpop(CmpOp::LtU),
-            I32GtS => self.lift_cmpop(CmpOp::GtS),
-            I32GtU => self.lift_cmpop(CmpOp::GtU),
-            I32LeS => self.lift_cmpop(CmpOp::LeS),
-            I32LeU => self.lift_cmpop(CmpOp::LeU),
-            I32GeS => self.lift_cmpop(CmpOp::GeS),
-            I32GeU => self.lift_cmpop(CmpOp::GeU),
+            I32Eq => self.lift_cmpop(CmpOp::Eq, InferredType::I32),
+            I32Ne => self.lift_cmpop(CmpOp::Ne, InferredType::I32),
+            I32LtS => self.lift_cmpop(CmpOp::LtS, InferredType::I32),
+            I32LtU => self.lift_cmpop(CmpOp::LtU, InferredType::I32),
+            I32GtS => self.lift_cmpop(CmpOp::GtS, InferredType::I32),
+            I32GtU => self.lift_cmpop(CmpOp::GtU, InferredType::I32),
+            I32LeS => self.lift_cmpop(CmpOp::LeS, InferredType::I32),
+            I32LeU => self.lift_cmpop(CmpOp::LeU, InferredType::I32),
+            I32GeS => self.lift_cmpop(CmpOp::GeS, InferredType::I32),
+            I32GeU => self.lift_cmpop(CmpOp::GeU, InferredType::I32),
 
             // Comparisons (i64)
-            I64Eq => self.lift_cmpop(CmpOp::Eq),
-            I64Ne => self.lift_cmpop(CmpOp::Ne),
-            I64LtS => self.lift_cmpop(CmpOp::LtS),
-            I64LtU => self.lift_cmpop(CmpOp::LtU),
-            I64GtS => self.lift_cmpop(CmpOp::GtS),
-            I64GtU => self.lift_cmpop(CmpOp::GtU),
-            I64LeS => self.lift_cmpop(CmpOp::LeS),
-            I64LeU => self.lift_cmpop(CmpOp::LeU),
-            I64GeS => self.lift_cmpop(CmpOp::GeS),
-            I64GeU => self.lift_cmpop(CmpOp::GeU),
+            I64Eq => self.lift_cmpop(CmpOp::Eq, InferredType::I64),
+            I64Ne => self.lift_cmpop(CmpOp::Ne, InferredType::I64),
+            I64LtS => self.lift_cmpop(CmpOp::LtS, InferredType::I64),
+            I64LtU => self.lift_cmpop(CmpOp::LtU, InferredType::I64),
+            I64GtS => self.lift_cmpop(CmpOp::GtS, InferredType::I64),
+            I64GtU => self.lift_cmpop(CmpOp::GtU, InferredType::I64),
+            I64LeS => self.lift_cmpop(CmpOp::LeS, InferredType::I64),
+            I64LeU => self.lift_cmpop(CmpOp::LeU, InferredType::I64),
+            I64GeS => self.lift_cmpop(CmpOp::GeS, InferredType::I64),
+            I64GeU => self.lift_cmpop(CmpOp::GeU, InferredType::I64),
 
             // Float comparisons
-            F32Eq => self.lift_cmpop(CmpOp::FEq),
-            F32Ne => self.lift_cmpop(CmpOp::FNe),
-            F32Lt => self.lift_cmpop(CmpOp::FLt),
-            F32Gt => self.lift_cmpop(CmpOp::FGt),
-            F32Le => self.lift_cmpop(CmpOp::FLe),
-            F32Ge => self.lift_cmpop(CmpOp::FGe),
+            F32Eq => self.lift_cmpop(CmpOp::FEq, InferredType::F32),
+            F32Ne => self.lift_cmpop(CmpOp::FNe, InferredType::F32),
+            F32Lt => self.lift_cmpop(CmpOp::FLt, InferredType::F32),
+            F32Gt => self.lift_cmpop(CmpOp::FGt, InferredType::F32),
+            F32Le => self.lift_cmpop(CmpOp::FLe, InferredType::F32),
+            F32Ge => self.lift_cmpop(CmpOp::FGe, InferredType::F32),
 
-            F64Eq => self.lift_cmpop(CmpOp::FEq),
-            F64Ne => self.lift_cmpop(CmpOp::FNe),
-            F64Lt => self.lift_cmpop(CmpOp::FLt),
-            F64Gt => self.lift_cmpop(CmpOp::FGt),
-            F64Le => self.lift_cmpop(CmpOp::FLe),
-            F64Ge => self.lift_cmpop(CmpOp::FGe),
+            F64Eq => self.lift_cmpop(CmpOp::FEq, InferredType::F64),
+            F64Ne => self.lift_cmpop(CmpOp::FNe, InferredType::F64),
+            F64Lt => self.lift_cmpop(CmpOp::FLt, InferredType::F64),
+            F64Gt => self.lift_cmpop(CmpOp::FGt, InferredType::F64),
+            F64Le => self.lift_cmpop(CmpOp::FLe, InferredType::F64),
+            F64Ge => self.lift_cmpop(CmpOp::FGe, InferredType::F64),
 
             // Conversions
             I32WrapI64 => self.lift_convert(ConvertOp::I32WrapI64, InferredType::I32),
@@ -783,41 +889,69 @@ impl<'a> FunctionLifter<'a> {
             }
 
             // Control flow
-            Block { blockty: _ } => {
+            Block { blockty } => {
                 let label = self.alloc_label();
+                let stack_depth = self.stack.len();
                 self.control_stack.push(ControlFrame {
                     kind: ControlKind::Block,
                     label,
                     stmts: std::mem::take(&mut self.stmts),
                     else_stmts: None,
+                    blockty,
+                    stack_depth_at_entry: stack_depth,
+                    then_result: None,
+                    saved_cond: None,
+                    block_result_local: None,
                 });
             }
 
-            Loop { blockty: _ } => {
+            Loop { blockty } => {
                 let label = self.alloc_label();
+                let stack_depth = self.stack.len();
                 self.control_stack.push(ControlFrame {
                     kind: ControlKind::Loop,
                     label,
                     stmts: std::mem::take(&mut self.stmts),
                     else_stmts: None,
+                    blockty,
+                    stack_depth_at_entry: stack_depth,
+                    then_result: None,
+                    saved_cond: None,
+                    block_result_local: None,
                 });
             }
 
-            If { blockty: _ } => {
+            If { blockty } => {
                 let cond = self.pop();
                 let label = self.alloc_label();
+                let stack_depth = self.stack.len();
                 self.control_stack.push(ControlFrame {
                     kind: ControlKind::If,
                     label,
                     stmts: std::mem::take(&mut self.stmts),
                     else_stmts: None,
+                    blockty,
+                    stack_depth_at_entry: stack_depth,
+                    then_result: None,
+                    saved_cond: Some(cond),
+                    block_result_local: None,
                 });
-                // Store condition for later
-                self.stack.push(cond);
             }
 
             Else => {
+                // Compute result count before mutably borrowing the frame
+                let result_count = self
+                    .control_stack
+                    .last()
+                    .map(|f| self.block_result_count(f.blockty))
+                    .unwrap_or(0);
                 if let Some(frame) = self.control_stack.last_mut() {
+                    // Save result values from the true branch
+                    if result_count > 0 {
+                        let drain_start = self.stack.len().saturating_sub(result_count);
+                        frame.then_result =
+                            Some(self.stack.drain(drain_start..).collect());
+                    }
                     frame.else_stmts = Some(std::mem::take(&mut self.stmts));
                 }
             }
@@ -829,10 +963,27 @@ impl<'a> FunctionLifter<'a> {
 
                     match frame.kind {
                         ControlKind::Block => {
-                            self.emit(Stmt::Block {
-                                label: frame.label,
-                                body,
-                            });
+                            // Handle typed block results
+                            if let Some(temp) = frame.block_result_local {
+                                // Pop fallthrough result and assign to temp
+                                let fallthrough_val = self.pop();
+                                let mut body_stmts = body.stmts;
+                                body_stmts.push(Stmt::LocalSet {
+                                    local: temp,
+                                    value: fallthrough_val,
+                                });
+                                self.emit(Stmt::Block {
+                                    label: frame.label,
+                                    body: crate::ir::Block::with_stmts(body_stmts),
+                                });
+                                // Push the result temp onto the stack
+                                self.push(Expr::local(temp));
+                            } else {
+                                self.emit(Stmt::Block {
+                                    label: frame.label,
+                                    body,
+                                });
+                            }
                         }
                         ControlKind::Loop => {
                             self.emit(Stmt::Loop {
@@ -841,13 +992,67 @@ impl<'a> FunctionLifter<'a> {
                             });
                         }
                         ControlKind::If => {
-                            let cond = self.pop();
-                            let else_block = frame.else_stmts.map(crate::ir::Block::with_stmts);
-                            self.emit(Stmt::If {
-                                cond,
-                                then_block: body,
-                                else_block,
-                            });
+                            let result_count = self.block_result_count(frame.blockty);
+
+                            // Extract result values from the else branch (on stack now)
+                            let else_results: Vec<Expr> = if result_count > 0 {
+                                let drain_start =
+                                    self.stack.len().saturating_sub(result_count);
+                                self.stack.drain(drain_start..).collect()
+                            } else {
+                                Vec::new()
+                            };
+
+                            // Use saved condition from frame (not the stack)
+                            let cond = frame
+                                .saved_cond
+                                .unwrap_or_else(|| Expr::i32_const(0));
+
+                            // Fix branch ordering: at Else, the TRUE branch stmts
+                            // were saved as frame.else_stmts, and at End, `body`
+                            // contains the FALSE branch stmts. Swap them back.
+                            let (then_block, else_block) = match frame.else_stmts {
+                                Some(true_branch_stmts) => {
+                                    // Had else: true_branch was saved, body is false branch
+                                    (
+                                        crate::ir::Block::with_stmts(true_branch_stmts),
+                                        Some(body),
+                                    )
+                                }
+                                None => {
+                                    // No else: body is the true branch
+                                    (body, None)
+                                }
+                            };
+
+                            if result_count > 0
+                                && frame.then_result.is_some()
+                                && !else_results.is_empty()
+                            {
+                                let then_results = frame.then_result.unwrap();
+                                // Emit the if/else as a statement (for side effects)
+                                self.emit(Stmt::If {
+                                    cond: cond.clone(),
+                                    then_block,
+                                    else_block,
+                                });
+                                // Push result values as Select (ternary) expressions
+                                for (then_val, else_val) in
+                                    then_results.into_iter().zip(else_results.into_iter())
+                                {
+                                    self.push(Expr::new(ExprKind::Select {
+                                        cond: Box::new(cond.clone()),
+                                        then_val: Box::new(then_val),
+                                        else_val: Box::new(else_val),
+                                    }));
+                                }
+                            } else {
+                                self.emit(Stmt::If {
+                                    cond,
+                                    then_block,
+                                    else_block,
+                                });
+                            }
                         }
                     }
                 }
@@ -855,6 +1060,8 @@ impl<'a> FunctionLifter<'a> {
 
             Br { relative_depth } => {
                 let target = self.get_branch_target(relative_depth);
+                // Handle typed block results: assign carried values to temp
+                self.emit_block_result_assignment(relative_depth);
                 self.emit(Stmt::Br {
                     label: target.label,
                     is_loop: target.is_loop,
@@ -864,11 +1071,29 @@ impl<'a> FunctionLifter<'a> {
             BrIf { relative_depth } => {
                 let cond = self.pop();
                 let target = self.get_branch_target(relative_depth);
-                self.emit(Stmt::BrIf {
-                    label: target.label,
-                    cond,
-                    is_loop: target.is_loop,
-                });
+
+                // Check if this branch carries values to a typed block
+                let result_count = self.get_branch_result_count(relative_depth);
+                if result_count > 0 && !target.is_loop {
+                    // Peek (not pop) the result value — br_if only consumes it when taken;
+                    // on the "not taken" path, the value must remain on the stack.
+                    let result_val = self.stack.last().cloned().unwrap_or_else(|| Expr::i32_const(0));
+                    let temp = self.ensure_block_result_local(relative_depth);
+                    self.emit(Stmt::If {
+                        cond,
+                        then_block: crate::ir::Block::with_stmts(vec![
+                            Stmt::LocalSet { local: temp, value: result_val },
+                            Stmt::Br { label: target.label, is_loop: false },
+                        ]),
+                        else_block: None,
+                    });
+                } else {
+                    self.emit(Stmt::BrIf {
+                        label: target.label,
+                        cond,
+                        is_loop: target.is_loop,
+                    });
+                }
             }
 
             BrTable { targets } => {
@@ -936,6 +1161,29 @@ impl<'a> FunctionLifter<'a> {
                 }));
             }
 
+            // Bulk memory operations
+            MemoryFill { .. } => {
+                // memory.fill(dest, value, len) - fills memory with a byte value
+                let len = self.pop();
+                let value = self.pop();
+                let dest = self.pop();
+                self.emit(Stmt::Expr(Expr::new(ExprKind::Call {
+                    func: u32::MAX - 2, // Special marker for memory.fill
+                    args: vec![dest, value, len],
+                })));
+            }
+
+            MemoryCopy { .. } => {
+                // memory.copy(dest, src, len) - copies memory regions
+                let len = self.pop();
+                let src = self.pop();
+                let dest = self.pop();
+                self.emit(Stmt::Expr(Expr::new(ExprKind::Call {
+                    func: u32::MAX - 3, // Special marker for memory.copy
+                    args: vec![dest, src, len],
+                })));
+            }
+
             // Default: treat as nop
             _ => {}
         }
@@ -986,10 +1234,10 @@ impl<'a> FunctionLifter<'a> {
         self.push(Expr::with_type(ExprKind::UnaryOp(op, Box::new(a)), ty));
     }
 
-    fn lift_cmpop(&mut self, op: CmpOp) {
+    fn lift_cmpop(&mut self, op: CmpOp, operand_ty: InferredType) {
         let (a, b) = self.pop2();
         self.push(Expr::with_type(
-            ExprKind::Compare(op, Box::new(a), Box::new(b)),
+            ExprKind::Compare(op, Box::new(a), Box::new(b), operand_ty),
             InferredType::Bool,
         ));
     }
@@ -1003,6 +1251,56 @@ impl<'a> FunctionLifter<'a> {
             },
             ty,
         ));
+    }
+
+    /// Get result count for a branch target (0 for loops, block result count otherwise)
+    fn get_branch_result_count(&self, relative_depth: u32) -> usize {
+        let idx = self
+            .control_stack
+            .len()
+            .saturating_sub(1 + relative_depth as usize);
+        self.control_stack
+            .get(idx)
+            .map(|f| {
+                if matches!(f.kind, ControlKind::Loop) {
+                    0
+                } else {
+                    self.block_result_count(f.blockty)
+                }
+            })
+            .unwrap_or(0)
+    }
+
+    /// Ensure the target block has a result temp local allocated, return it
+    fn ensure_block_result_local(&mut self, relative_depth: u32) -> u32 {
+        let idx = self
+            .control_stack
+            .len()
+            .saturating_sub(1 + relative_depth as usize);
+        if let Some(frame) = self.control_stack.get(idx) {
+            if let Some(local) = frame.block_result_local {
+                return local;
+            }
+        }
+        let temp = self.next_temp_local;
+        self.next_temp_local += 1;
+        if let Some(frame) = self.control_stack.get_mut(idx) {
+            frame.block_result_local = Some(temp);
+        }
+        temp
+    }
+
+    /// Emit assignment of stack values to block result temp for Br to typed blocks
+    fn emit_block_result_assignment(&mut self, relative_depth: u32) {
+        let result_count = self.get_branch_result_count(relative_depth);
+        if result_count > 0 {
+            let result_val = self.pop();
+            let temp = self.ensure_block_result_local(relative_depth);
+            self.emit(Stmt::LocalSet {
+                local: temp,
+                value: result_val,
+            });
+        }
     }
 
     fn get_branch_target(&self, relative_depth: u32) -> BranchTarget {

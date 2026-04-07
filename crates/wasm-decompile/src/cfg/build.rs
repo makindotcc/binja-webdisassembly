@@ -323,6 +323,13 @@ impl CfgBuilder {
                         node.stmts.push(stmt.clone());
                     }
                 }
+
+                Stmt::Switch { .. } => {
+                    // Switch is a higher-level construct, treat as opaque statement
+                    if let Some(node) = self.cfg.get_node_mut(current) {
+                        node.stmts.push(stmt.clone());
+                    }
+                }
             }
         }
 

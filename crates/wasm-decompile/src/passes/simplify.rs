@@ -164,7 +164,7 @@ fn has_branch_to_label(stmts: &[Stmt], label: u32) -> bool {
 fn negate_condition(cond: Expr) -> Expr {
     match cond.kind {
         // Invert comparison operators
-        ExprKind::Compare(op, a, b) => {
+        ExprKind::Compare(op, a, b, operand_ty) => {
             let negated_op = match op {
                 CmpOp::Eq => CmpOp::Ne,
                 CmpOp::Ne => CmpOp::Eq,
@@ -184,7 +184,7 @@ fn negate_condition(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(negated_op, a, b), InferredType::Bool)
+            Expr::with_type(ExprKind::Compare(negated_op, a, b, operand_ty), InferredType::Bool)
         }
 
         // Double negation: Eqz(x) negated -> x
@@ -284,7 +284,7 @@ fn simplify_expr(expr: Expr) -> Expr {
             Expr::with_type(ExprKind::UnaryOp(op, Box::new(a)), expr.ty)
         }
 
-        ExprKind::Compare(op, a, b) => {
+        ExprKind::Compare(op, a, b, operand_ty) => {
             let a = simplify_expr(*a);
             let b = simplify_expr(*b);
 
@@ -293,7 +293,7 @@ fn simplify_expr(expr: Expr) -> Expr {
                 return result;
             }
 
-            Expr::with_type(ExprKind::Compare(op, Box::new(a), Box::new(b)), expr.ty)
+            Expr::with_type(ExprKind::Compare(op, Box::new(a), Box::new(b), operand_ty), expr.ty)
         }
 
         ExprKind::Load {
@@ -782,7 +782,7 @@ fn has_side_effects(expr: &Expr) -> bool {
         ExprKind::Call { .. } | ExprKind::CallIndirect { .. } => true,
         ExprKind::BinOp(_, a, b) => has_side_effects(a) || has_side_effects(b),
         ExprKind::UnaryOp(_, a) => has_side_effects(a),
-        ExprKind::Compare(_, a, b) => has_side_effects(a) || has_side_effects(b),
+        ExprKind::Compare(_, a, b, _) => has_side_effects(a) || has_side_effects(b),
         ExprKind::Load { addr, .. } => has_side_effects(addr),
         ExprKind::Select {
             cond,

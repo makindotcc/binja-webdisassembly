@@ -330,6 +330,24 @@ fn dump_stmt(stmt: &Stmt, indent: usize, output: &mut String) {
             dump_expr(expr, output);
             output.push('\n');
         }
+        Stmt::Switch {
+            index,
+            cases,
+            default,
+        } => {
+            output.push_str(&format!("{}switch ", prefix));
+            dump_expr(index, output);
+            output.push_str(" {\n");
+            for case in cases {
+                output.push_str(&format!("{}  case {:?}:\n", prefix, case.values));
+                dump_block(&case.body, indent + 2, output);
+            }
+            if let Some(def) = default {
+                output.push_str(&format!("{}  default:\n", prefix));
+                dump_block(def, indent + 2, output);
+            }
+            output.push_str(&format!("{}}}\n", prefix));
+        }
     }
 }
 
@@ -353,7 +371,7 @@ fn dump_expr(expr: &Expr, output: &mut String) {
             dump_expr(a, output);
             output.push(')');
         }
-        ExprKind::Compare(op, a, b) => {
+        ExprKind::Compare(op, a, b, _) => {
             output.push('(');
             dump_expr(a, output);
             output.push_str(&format!(" {:?} ", op));

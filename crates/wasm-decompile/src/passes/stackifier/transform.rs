@@ -666,7 +666,7 @@ fn has_br_table_to_label(stmts: &[Stmt], label: u32) -> bool {
 /// Negate a condition expression
 fn negate_condition(cond: Expr) -> Expr {
     match cond.kind {
-        ExprKind::Compare(op, a, b) => {
+        ExprKind::Compare(op, a, b, operand_ty) => {
             let negated_op = match op {
                 CmpOp::Eq => CmpOp::Ne,
                 CmpOp::Ne => CmpOp::Eq,
@@ -685,7 +685,7 @@ fn negate_condition(cond: Expr) -> Expr {
                 CmpOp::FLe => CmpOp::FGt,
                 CmpOp::FGe => CmpOp::FLt,
             };
-            Expr::with_type(ExprKind::Compare(negated_op, a, b), InferredType::Bool)
+            Expr::with_type(ExprKind::Compare(negated_op, a, b, operand_ty), InferredType::Bool)
         }
         ExprKind::UnaryOp(UnaryOp::Eqz, inner) => *inner,
         _ => Expr::with_type(
@@ -705,9 +705,10 @@ mod tests {
             CmpOp::Eq,
             Box::new(Expr::i32_const(1)),
             Box::new(Expr::i32_const(2)),
+            InferredType::I32,
         ));
         let negated = negate_condition(cond);
-        assert!(matches!(negated.kind, ExprKind::Compare(CmpOp::Ne, _, _)));
+        assert!(matches!(negated.kind, ExprKind::Compare(CmpOp::Ne, _, _, _)));
     }
 
     #[test]

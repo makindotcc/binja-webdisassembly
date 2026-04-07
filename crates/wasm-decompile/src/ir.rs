@@ -14,6 +14,8 @@ pub struct Module {
     pub globals: Vec<Global>,
     /// Memory sections (initial data)
     pub memory: Vec<u8>,
+    /// Initial memory size in pages
+    pub memory_pages: u32,
     /// Data segments with their offsets
     pub data_segments: Vec<DataSegment>,
     /// Imported functions
@@ -45,6 +47,7 @@ impl Module {
             functions: Vec::new(),
             globals: Vec::new(),
             memory: Vec::new(),
+            memory_pages: 0,
             data_segments: Vec::new(),
             imports: Vec::new(),
             exports: HashMap::new(),
@@ -219,12 +222,27 @@ pub enum Stmt {
     DoWhile { body: Block, cond: Expr },
     /// While loop (recovered from WASM block+loop pattern)
     While { cond: Expr, body: Block },
+    /// Switch statement (recovered from br_table + nested blocks)
+    Switch {
+        index: Expr,
+        cases: Vec<SwitchCase>,
+        default: Option<Block>,
+    },
     /// Unreachable
     Unreachable,
     /// No-op (placeholder)
     Nop,
     /// Drop value
     Drop(Expr),
+}
+
+/// A case in a switch statement
+#[derive(Debug, Clone)]
+pub struct SwitchCase {
+    /// Which index values map to this case
+    pub values: Vec<u32>,
+    /// The case body
+    pub body: Block,
 }
 
 /// Branch target for br_table
@@ -308,8 +326,8 @@ pub enum ExprKind {
     // Unary operations
     UnaryOp(UnaryOp, Box<Expr>),
 
-    // Comparison
-    Compare(CmpOp, Box<Expr>, Box<Expr>),
+    // Comparison (op, left, right, operand_type)
+    Compare(CmpOp, Box<Expr>, Box<Expr>, InferredType),
 
     // Memory load
     Load {
