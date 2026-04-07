@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-const decomp = require("./target/wasm32-unknown-unknown/release/example_wasm.wasm");
+const decomp = require("./example_wasm.js");
 
 const wasmPath = path.join(
   __dirname,
