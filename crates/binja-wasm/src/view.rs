@@ -15,7 +15,7 @@ use binaryninja::rc::Ref;
 use binaryninja::section::{Section, Semantics};
 use binaryninja::segment::{Segment, SegmentFlags};
 use binaryninja::symbol::{Symbol, SymbolType};
-use binaryninja::types::{FunctionParameter, Type};
+use binaryninja::types::{FunctionParameter, MemberAccess, MemberScope, Structure, StructureType, Type};
 use binaryninja::variable::{Variable, VariableSourceType};
 use std::sync::Arc;
 use tracing::{error, info};
@@ -25,6 +25,12 @@ use tracing::{error, info};
 pub const GLOBALS_BASE_ADDR: u64 = 0x8000_0000;
 /// Size of each global slot (8 bytes to handle i64/f64).
 pub const GLOBAL_SLOT_SIZE: u64 = 8;
+
+/// Virtual base address for WASM linear memory.
+/// Linear memory addresses from i32.load/i32.store are offset by this base.
+pub const LINEAR_MEMORY_BASE: u64 = 0x1000_0000;
+/// Size of a WASM memory page (64KB).
+pub const WASM_PAGE_SIZE: u64 = 65536;
 
 pub struct WasmViewArgs {
     pub data: Vec<u8>,
@@ -197,8 +203,32 @@ unsafe impl CustomBinaryView for WasmView {
             self.handle.add_section(sec);
         }
 
+        // Create a virtual segment for WASM linear memory.
+        // This contains data initialized by data segments.
+        if let Some(ref memory) = self.module.memory {
+            let memory_size = (memory.initial_pages as u64) * WASM_PAGE_SIZE;
+            let memory_end = LINEAR_MEMORY_BASE + memory_size;
+            let segment = Segment::builder(LINEAR_MEMORY_BASE..memory_end)
+                .flags(SegmentFlags::new().readable(true).writable(true))
+                .is_auto(true);
+            self.handle.add_segment(segment);
+
+            let sec = Section::builder("LinearMemory".to_string(), LINEAR_MEMORY_BASE..memory_end)
+                .semantics(Semantics::ReadWriteData);
+            self.handle.add_section(sec);
+
+            info!(
+                "Created linear memory segment: 0x{:x}-0x{:x} ({} pages, {} data segments)",
+                LINEAR_MEMORY_BASE,
+                memory_end,
+                memory.initial_pages,
+                self.module.data_segments.len()
+            );
+        }
+
         self.handle.end_bulk_add_segments();
 
+        self.define_types();
         self.define_globals();
 
         let mut analyzed_modules = ANALYZED_MODULES.write().unwrap();
@@ -221,6 +251,98 @@ unsafe impl CustomBinaryView for WasmView {
 }
 
 impl WasmView {
+    /// Define common Go/TinyGo types used in WASM binaries.
+    /// These include GoString, GoSlice, and GoInterface.
+    fn define_types(&self) {
+        // GoString: { ptr *byte, len int }
+        let go_string = {
+            let mut s = Structure::builder();
+            s.structure_type(StructureType::StructStructureType);
+            s.insert(
+                &Type::pointer_of_width(&Type::int(1, false), 4, false, false, None),
+                "ptr",
+                0,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.insert(
+                &Type::int(4, true),
+                "len",
+                4,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.width(8);
+            Type::structure(&s.finalize())
+        };
+        self.handle.define_user_type("GoString", &go_string);
+
+        // GoSlice: { ptr *void, len int, cap int }
+        let go_slice = {
+            let mut s = Structure::builder();
+            s.structure_type(StructureType::StructStructureType);
+            s.insert(
+                &Type::pointer_of_width(&Type::void(), 4, false, false, None),
+                "ptr",
+                0,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.insert(
+                &Type::int(4, true),
+                "len",
+                4,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.insert(
+                &Type::int(4, true),
+                "cap",
+                8,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.width(12);
+            Type::structure(&s.finalize())
+        };
+        self.handle.define_user_type("GoSlice", &go_slice);
+
+        // GoInterface: { type *void, data *void }
+        let go_interface = {
+            let mut s = Structure::builder();
+            s.structure_type(StructureType::StructStructureType);
+            s.insert(
+                &Type::pointer_of_width(&Type::void(), 4, false, false, None),
+                "type",
+                0,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.insert(
+                &Type::pointer_of_width(&Type::void(), 4, false, false, None),
+                "data",
+                4,
+                false,
+                MemberAccess::PublicAccess,
+                MemberScope::NoScope,
+            );
+            s.width(8);
+            Type::structure(&s.finalize())
+        };
+        self.handle.define_user_type("GoInterface", &go_interface);
+
+        // GoError: same as GoInterface but named differently
+        self.handle.define_user_type("GoError", &go_interface);
+
+        info!("Defined Go/TinyGo types: GoString, GoSlice, GoInterface, GoError");
+    }
+
     fn define_globals(&self) {
         for global in &self.module.globals {
             let addr = GLOBALS_BASE_ADDR + (global.index as u64 * 8);
@@ -343,6 +465,45 @@ impl BinaryViewBase for WasmView {
             return to_read;
         }
 
+        // Handle reads from linear memory region
+        if let Some(ref memory) = self.module.memory {
+            let memory_size = (memory.initial_pages as u64) * WASM_PAGE_SIZE;
+            let memory_end = LINEAR_MEMORY_BASE + memory_size;
+            if offset >= LINEAR_MEMORY_BASE && offset < memory_end {
+                let mem_offset = (offset - LINEAR_MEMORY_BASE) as u32;
+                let available = (memory_end - offset) as usize;
+                let to_read = buf.len().min(available);
+
+                // Initialize buffer with zeros
+                buf[..to_read].fill(0);
+
+                // Fill with data from data segments
+                for segment in &self.module.data_segments {
+                    let seg_start = segment.memory_offset;
+                    let seg_end = seg_start + segment.data.len() as u32;
+
+                    // Check if this segment overlaps with our read range
+                    let read_start = mem_offset;
+                    let read_end = mem_offset + to_read as u32;
+
+                    if seg_end > read_start && seg_start < read_end {
+                        // Calculate overlap
+                        let overlap_start = seg_start.max(read_start);
+                        let overlap_end = seg_end.min(read_end);
+
+                        let buf_offset = (overlap_start - read_start) as usize;
+                        let seg_offset = (overlap_start - seg_start) as usize;
+                        let copy_len = (overlap_end - overlap_start) as usize;
+
+                        buf[buf_offset..buf_offset + copy_len]
+                            .copy_from_slice(&segment.data[seg_offset..seg_offset + copy_len]);
+                    }
+                }
+
+                return to_read;
+            }
+        }
+
         // Handle reads from file data
         let offset = offset as usize;
         if offset >= self.data.len() {
@@ -403,7 +564,16 @@ impl BinaryViewBase for WasmView {
             return true;
         }
         let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
-        offset >= GLOBALS_BASE_ADDR && offset < globals_end
+        if offset >= GLOBALS_BASE_ADDR && offset < globals_end {
+            return true;
+        }
+        if let Some(ref memory) = self.module.memory {
+            let memory_end = LINEAR_MEMORY_BASE + (memory.initial_pages as u64) * WASM_PAGE_SIZE;
+            if offset >= LINEAR_MEMORY_BASE && offset < memory_end {
+                return true;
+            }
+        }
+        false
     }
 
     fn offset_readable(&self, offset: u64) -> bool {
@@ -411,12 +581,30 @@ impl BinaryViewBase for WasmView {
             return true;
         }
         let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
-        offset >= GLOBALS_BASE_ADDR && offset < globals_end
+        if offset >= GLOBALS_BASE_ADDR && offset < globals_end {
+            return true;
+        }
+        if let Some(ref memory) = self.module.memory {
+            let memory_end = LINEAR_MEMORY_BASE + (memory.initial_pages as u64) * WASM_PAGE_SIZE;
+            if offset >= LINEAR_MEMORY_BASE && offset < memory_end {
+                return true;
+            }
+        }
+        false
     }
 
     fn offset_writable(&self, offset: u64) -> bool {
         let globals_end = GLOBALS_BASE_ADDR + (self.module.globals.len() as u64) * GLOBAL_SLOT_SIZE;
-        offset >= GLOBALS_BASE_ADDR && offset < globals_end
+        if offset >= GLOBALS_BASE_ADDR && offset < globals_end {
+            return true;
+        }
+        if let Some(ref memory) = self.module.memory {
+            let memory_end = LINEAR_MEMORY_BASE + (memory.initial_pages as u64) * WASM_PAGE_SIZE;
+            if offset >= LINEAR_MEMORY_BASE && offset < memory_end {
+                return true;
+            }
+        }
+        false
     }
 
     fn offset_executable(&self, offset: u64) -> bool {

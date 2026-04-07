@@ -11,6 +11,26 @@ pub struct WasmModule {
     pub globals: Vec<WasmGlobal>,
     pub start_function: Option<u32>,
     pub _exports: Vec<WasmExport>,
+    /// Linear memory limits (min pages, max pages). Each page is 64KB.
+    pub memory: Option<WasmMemory>,
+    /// Data segments that initialize linear memory.
+    pub data_segments: Vec<WasmDataSegment>,
+}
+
+#[derive(Debug, Clone)]
+pub struct WasmMemory {
+    /// Minimum number of 64KB pages.
+    pub initial_pages: u32,
+    /// Maximum number of 64KB pages (if specified).
+    pub max_pages: Option<u32>,
+}
+
+#[derive(Debug, Clone)]
+pub struct WasmDataSegment {
+    /// Offset in linear memory where this segment starts.
+    pub memory_offset: u32,
+    /// The data bytes.
+    pub data: Vec<u8>,
 }
 
 #[derive(Debug, Clone)]
@@ -81,6 +101,8 @@ impl WasmModule {
         let mut globals = Vec::new();
         let mut start_function = None;
         let mut _exports = Vec::new();
+        let mut memory = None;
+        let mut data_segments = Vec::new();
         let mut func_index = 0u32;
         let mut global_index = 0u32;
         let mut import_func_count = 0u32;
@@ -120,7 +142,20 @@ impl WasmModule {
                     for import in reader {
                         let import = import.context("parse import")?;
                         match import.ty {
-                            wasmparser::TypeRef::Func(_) => {
+                            wasmparser::TypeRef::Func(type_idx) => {
+                                // Add imported function with code_offset=0
+                                let (param_count, return_count) = func_types
+                                    .get(type_idx as usize)
+                                    .copied()
+                                    .unwrap_or((0, 0));
+                                functions.push(WasmFunction {
+                                    index: import_func_count,
+                                    code_offset: 0,
+                                    code_size: 0,
+                                    name: Some(format!("{}_{}", import.module, import.name)),
+                                    param_count,
+                                    return_count,
+                                });
                                 import_func_count += 1;
                             }
                             wasmparser::TypeRef::Global(gt) => {
@@ -139,8 +174,24 @@ impl WasmModule {
                                 });
                                 import_global_count += 1;
                             }
+                            wasmparser::TypeRef::Memory(mem_type) => {
+                                memory = Some(WasmMemory {
+                                    initial_pages: mem_type.initial as u32,
+                                    max_pages: mem_type.maximum.map(|m| m as u32),
+                                });
+                            }
                             _ => {}
                         }
+                    }
+                }
+                Payload::MemorySection(reader) => {
+                    for mem in reader {
+                        let mem = mem.context("parse memory")?;
+                        memory = Some(WasmMemory {
+                            initial_pages: mem.initial as u32,
+                            max_pages: mem.maximum.map(|m| m as u32),
+                        });
+                        break; // WASM 1.0 only supports one memory
                     }
                 }
                 Payload::GlobalSection(reader) => {
@@ -226,6 +277,32 @@ impl WasmModule {
                         offset: range.start,
                         size: range.len(),
                     });
+
+                    // Parse data segment entries
+                    for data in reader.clone() {
+                        if let Ok(data) = data {
+                            // Try to extract the memory offset from the init expression
+                            if let wasmparser::DataKind::Active {
+                                memory_index: 0,
+                                offset_expr,
+                            } = data.kind
+                            {
+                                // Parse the const init expression to get the offset
+                                let mut reader = offset_expr.get_binary_reader();
+                                if let Ok(op) = reader.read_operator() {
+                                    let mem_offset = match op {
+                                        wasmparser::Operator::I32Const { value } => value as u32,
+                                        wasmparser::Operator::I64Const { value } => value as u32,
+                                        _ => continue,
+                                    };
+                                    data_segments.push(WasmDataSegment {
+                                        memory_offset: mem_offset,
+                                        data: data.data.to_vec(),
+                                    });
+                                }
+                            }
+                        }
+                    }
                 }
                 Payload::CustomSection(custom) => {
                     // Parse "name" section for function names
@@ -286,6 +363,8 @@ impl WasmModule {
             globals,
             start_function,
             _exports,
+            memory,
+            data_segments,
         })
     }
 }

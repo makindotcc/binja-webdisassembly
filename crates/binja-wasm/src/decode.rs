@@ -53,6 +53,9 @@ pub enum InstrKind {
     // Bulk memory operations
     MemoryFill,
     MemoryCopy,
+    // Table operations
+    TableGet,
+    TableSet,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -511,8 +514,8 @@ fn decode_operator(op: Operator<'_>) -> (&'static str, InstrKind, Operands) {
         Operator::RefFunc { function_index } => ("ref.func", Normal, Index(function_index)),
 
         // Table operations
-        Operator::TableGet { table } => ("table.get", Normal, Index(table)),
-        Operator::TableSet { table } => ("table.set", Normal, Index(table)),
+        Operator::TableGet { table } => ("table.get", TableGet, Index(table)),
+        Operator::TableSet { table } => ("table.set", TableSet, Index(table)),
         Operator::TableGrow { table } => ("table.grow", Normal, Index(table)),
         Operator::TableSize { table } => ("table.size", Normal, Index(table)),
         Operator::TableFill { table } => ("table.fill", Normal, Index(table)),

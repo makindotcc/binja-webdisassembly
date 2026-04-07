@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::analysis::{ANALYZED_MODULES, FunctionAnalysis};
 use crate::decode::{self, InstrKind, Operands};
-use crate::view::GLOBALS_BASE_ADDR;
+use crate::view::{GLOBALS_BASE_ADDR, LINEAR_MEMORY_BASE};
 use binaryninja::Endianness;
 use binaryninja::architecture::{
     Architecture, BasicBlockAnalysisContext, BranchType, CoreArchitecture,
@@ -18,7 +18,7 @@ use binaryninja::low_level_il::lifting::LowLevelILLabel;
 use binaryninja::low_level_il::{
     LowLevelILMutableFunction, LowLevelILRegisterKind, LowLevelILTempRegister,
 };
-use tracing::{debug, error, info, warn};
+use tracing::{debug, error, warn};
 
 pub struct WasmArchitecture {
     handle: CustomArchitectureHandle<Self>,
@@ -126,7 +126,7 @@ impl RegisterInfo for WasmRegister {
     }
 
     fn size(&self) -> usize {
-        4 // All registers are 32-bit in WASM32
+        8 // Match LLIL operation sizes (handles both i32 and i64)
     }
 
     fn offset(&self) -> usize {
@@ -281,7 +281,39 @@ impl Architecture for WasmArchitecture {
                 il.nop().append();
                 return Some((instr.len, true));
             }
-            InstrKind::Block | InstrKind::Loop | InstrKind::If | InstrKind::Else => {
+            InstrKind::Block | InstrKind::Loop => {
+                il.nop().append();
+                return Some((instr.len, true));
+            }
+            InstrKind::If => {
+                // Pop condition from stack
+                let cond_reg = stack.pop();
+
+                // Get target for false branch (else or end)
+                if let Some(&target) = func_analysis.if_targets.get(&addr) {
+                    let fall_through = addr + instr.len as u64;
+                    if let (Some(mut true_label), Some(mut false_label)) = (
+                        il.label_for_address(fall_through),
+                        il.label_for_address(target),
+                    ) {
+                        let cond = il.reg(8, cond_reg);
+                        il.if_expr(cond, &mut true_label, &mut false_label).append();
+                        return Some((instr.len, true));
+                    }
+                }
+                // Fallback: emit nop if we can't resolve targets
+                il.nop().append();
+                return Some((instr.len, true));
+            }
+            InstrKind::Else => {
+                // Jump over else block to end
+                if let Some(&target) = func_analysis.else_targets.get(&addr) {
+                    if let Some(mut label) = il.label_for_address(target) {
+                        il.goto(&mut label).append();
+                        return Some((instr.len, true));
+                    }
+                }
+                // Fallback: emit nop if we can't resolve target
                 il.nop().append();
                 return Some((instr.len, true));
             }
@@ -342,15 +374,68 @@ impl Architecture for WasmArchitecture {
                 return Some((instr.len, true));
             }
             InstrKind::BrTable => {
-                // br_table - indirect jump based on stack value
+                // br_table - switch on stack value to multiple targets
                 let idx_reg = stack.pop();
-                let index = il.reg(8, idx_reg);
-                il.jump(index).append();
+
+                if let Some((label_targets, default_target)) =
+                    func_analysis.br_table_targets.get(&addr)
+                {
+                    // Generate if-else chain for the switch
+                    // if (idx == 0) goto target[0]
+                    // else if (idx == 1) goto target[1]
+                    // ...
+                    // else goto default
+
+                    let num_labels = label_targets.len();
+
+                    if num_labels == 0 {
+                        // No labels, just jump to default
+                        if let Some(mut label) = il.label_for_address(*default_target) {
+                            il.goto(&mut label).append();
+                        } else {
+                            il.jump(il.const_ptr(*default_target)).append();
+                        }
+                        return Some((instr.len, true));
+                    }
+
+                    // Create labels for each case and default
+                    for (i, &target) in label_targets.iter().enumerate() {
+                        let cmp = il.cmp_e(8, il.reg(8, idx_reg), il.const_int(8, i as u64));
+
+                        if let Some(mut target_label) = il.label_for_address(target) {
+                            let mut next_check = LowLevelILLabel::new();
+                            il.if_expr(cmp, &mut target_label, &mut next_check).append();
+                            il.mark_label(&mut next_check);
+                        } else {
+                            // Fallback: use indirect jump for unresolved target
+                            let mut next_check = LowLevelILLabel::new();
+                            let mut jump_label = LowLevelILLabel::new();
+                            il.if_expr(cmp, &mut jump_label, &mut next_check).append();
+                            il.mark_label(&mut jump_label);
+                            il.jump(il.const_ptr(target)).append();
+                            il.mark_label(&mut next_check);
+                        }
+                    }
+
+                    // Default case (index out of bounds)
+                    if let Some(mut default_label) = il.label_for_address(*default_target) {
+                        il.goto(&mut default_label).append();
+                    } else {
+                        il.jump(il.const_ptr(*default_target)).append();
+                    }
+
+                    return Some((instr.len, true));
+                }
+
+                // Fallback: unresolved br_table - emit trap
+                il.trap(0).append();
                 return Some((instr.len, true));
             }
             InstrKind::Call => {
                 // call function_index - need to resolve function address
                 if let Operands::Index(func_idx) = instr.operands {
+                    let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
+
                     if let Some(wasm_func) = analysis
                         .module
                         .functions
@@ -373,13 +458,14 @@ impl Architecture for WasmArchitecture {
                             let target = il.const_ptr(wasm_func.code_offset as u64);
                             il.call(target).append();
                         } else {
-                            // Imported function - use unimplemented for now
-                            il.unimplemented().append();
+                            // Imported function - mark ret as undefined to show it comes from external
+                            il.set_reg(8, ret_reg, il.undefined()).append();
                         }
 
                         // Push return value(s) onto value stack
+                        // Read from ret register - the calling convention tells decompiler
+                        // that calls write to this register
                         if return_count > 0 {
-                            let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
                             let dest = stack.push();
                             il.set_reg(8, dest, il.reg(8, ret_reg)).append();
                         }
@@ -391,6 +477,10 @@ impl Architecture for WasmArchitecture {
                     let target_reg = stack.pop();
                     let target = il.reg(8, target_reg);
                     il.call(target).append();
+                    // Assume indirect calls return a value
+                    let ret_reg = LowLevelILRegisterKind::Arch(WasmRegister::Ret);
+                    let dest = stack.push();
+                    il.set_reg(8, dest, il.reg(8, ret_reg)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -531,15 +621,13 @@ impl Architecture for WasmArchitecture {
             InstrKind::Load => {
                 // Memory load: pop address, push value
                 // Use 8 bytes for everything to avoid LLIL size mismatch warnings
+                // Add LINEAR_MEMORY_BASE to map WASM addresses to our virtual segment
                 if let Operands::MemArg { offset, .. } = instr.operands {
                     let addr_reg = stack.pop();
-                    let loaded = if offset > 0 {
-                        let effective_addr =
-                            il.add(8, il.reg(8, addr_reg), il.const_int(8, offset));
-                        il.load(8, effective_addr)
-                    } else {
-                        il.load(8, il.reg(8, addr_reg))
-                    };
+                    let base_offset = LINEAR_MEMORY_BASE + offset;
+                    let effective_addr =
+                        il.add(8, il.reg(8, addr_reg), il.const_int(8, base_offset));
+                    let loaded = il.load(8, effective_addr);
                     let dest = stack.push();
                     il.set_reg(8, dest, loaded).append();
                     return Some((instr.len, true));
@@ -549,17 +637,14 @@ impl Architecture for WasmArchitecture {
             InstrKind::Store => {
                 // Memory store: pop value, pop address
                 // Use 8 bytes for everything to avoid LLIL size mismatch warnings
+                // Add LINEAR_MEMORY_BASE to map WASM addresses to our virtual segment
                 if let Operands::MemArg { offset, .. } = instr.operands {
                     let value_reg = stack.pop();
                     let addr_reg = stack.pop();
-                    if offset > 0 {
-                        let effective_addr =
-                            il.add(8, il.reg(8, addr_reg), il.const_int(8, offset));
-                        il.store(8, effective_addr, il.reg(8, value_reg)).append();
-                    } else {
-                        il.store(8, il.reg(8, addr_reg), il.reg(8, value_reg))
-                            .append();
-                    };
+                    let base_offset = LINEAR_MEMORY_BASE + offset;
+                    let effective_addr =
+                        il.add(8, il.reg(8, addr_reg), il.const_int(8, base_offset));
+                    il.store(8, effective_addr, il.reg(8, value_reg)).append();
                     return Some((instr.len, true));
                 }
                 il.unimplemented().append();
@@ -682,6 +767,28 @@ impl Architecture for WasmArchitecture {
                 il.set_reg(4, arg2, il.reg(4, n_reg)).append();
                 let target = il.const_ptr(0x80000020); // __builtin_memcpy address
                 il.call(target).append();
+                return Some((instr.len, true));
+            }
+            InstrKind::TableGet => {
+                // table.get: pop index, push table[index]
+                // Tables store function references - treat as opaque values
+                let idx_reg = stack.pop();
+                let dest = stack.push();
+                // Just pass through the index as the "value" for now
+                // A more complete implementation would load from a virtual table segment
+                il.set_reg(8, dest, il.reg(8, idx_reg)).append();
+                return Some((instr.len, true));
+            }
+            InstrKind::TableSet => {
+                // table.set: pop value, pop index - store value at table[index]
+                // Tables store function references - treat as opaque values
+                let val_reg = stack.pop();
+                let _idx_reg = stack.pop();
+                // For analysis purposes, emit a nop - the value is stored
+                // in the table for later call_indirect use
+                il.nop().append();
+                // Suppress unused variable warning by using it
+                let _ = val_reg;
                 return Some((instr.len, true));
             }
             InstrKind::Normal => {
@@ -959,6 +1066,54 @@ fn create_basic_blocks(
                     });
                 }
             }
+            InstrKind::If => {
+                // if instruction: condition true falls through, false goes to else/end
+                if let Some(&target) = func_analysis.if_targets.get(&last_instr_addr) {
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::TrueBranch,
+                        target: basic_block_end,
+                        arch,
+                        fallthrough: true,
+                    });
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::FalseBranch,
+                        target,
+                        arch,
+                        fallthrough: false,
+                    });
+                } else {
+                    // Fallback: just fall through
+                    if basic_block_end < func_analysis.end_address {
+                        block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                            branch_type: BranchType::UnconditionalBranch,
+                            target: basic_block_end,
+                            arch,
+                            fallthrough: true,
+                        });
+                    }
+                }
+            }
+            InstrKind::Else => {
+                // else instruction: jump to after end (skip else body from true branch)
+                if let Some(&target) = func_analysis.else_targets.get(&last_instr_addr) {
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::UnconditionalBranch,
+                        target,
+                        arch,
+                        fallthrough: false,
+                    });
+                } else {
+                    // Fallback: just fall through
+                    if basic_block_end < func_analysis.end_address {
+                        block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                            branch_type: BranchType::UnconditionalBranch,
+                            target: basic_block_end,
+                            arch,
+                            fallthrough: true,
+                        });
+                    }
+                }
+            }
             InstrKind::Return => {
                 block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
                     branch_type: BranchType::FunctionReturn,
@@ -969,12 +1124,35 @@ fn create_basic_blocks(
             }
             InstrKind::Unreachable => {}
             InstrKind::BrTable => {
-                block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
-                    branch_type: BranchType::IndirectBranch,
-                    target: 0,
-                    arch,
-                    fallthrough: false,
-                });
+                // Add edges to all br_table targets
+                if let Some((label_targets, default_target)) =
+                    func_analysis.br_table_targets.get(&last_instr_addr)
+                {
+                    // Add edge to each label target
+                    for &target in label_targets {
+                        block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                            branch_type: BranchType::UnconditionalBranch,
+                            target,
+                            arch,
+                            fallthrough: false,
+                        });
+                    }
+                    // Add edge to default target
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::UnconditionalBranch,
+                        target: *default_target,
+                        arch,
+                        fallthrough: false,
+                    });
+                } else {
+                    // Fallback: indirect branch if we couldn't resolve targets
+                    block.add_pending_outgoing_edge(&PendingBasicBlockEdge {
+                        branch_type: BranchType::IndirectBranch,
+                        target: 0,
+                        arch,
+                        fallthrough: false,
+                    });
+                }
             }
             InstrKind::End => {
                 if basic_block_end >= func_analysis.end_address {
@@ -1072,7 +1250,8 @@ impl CallingConvention for WasmCallingConvention {
     }
 
     fn implicitly_defined_registers(&self) -> Vec<RegisterId> {
-        vec![]
+        // Ret is implicitly defined by every call instruction
+        vec![WasmRegister::Ret.id()]
     }
 
     fn are_argument_registers_used_for_var_args(&self) -> bool {
