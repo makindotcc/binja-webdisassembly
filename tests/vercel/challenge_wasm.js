@@ -1450,7 +1450,7 @@ function chacha20_update(p0, p1) {
   l11 = l32;
   l33 = load_i32(p1, 44);
   l12 = l33;
-  loop_0: while (true) {
+  do {
     l2147483645 = l2;
     l2 = ((l2 + l15) | 0);
     l11 = rotl32((l11 ^ l2), 16);
@@ -1526,9 +1526,7 @@ function chacha20_update(p0, p1) {
     l8 = ((l11 + l16) | 0);
     l0 = rotl32((l8 ^ l0), 7);
     l17 = ((l17 + 2) | 0);
-    if (u32(l17) < 18) continue loop_0;
-    break;
-  }
+  } while (u32(l17) < 18);
   store_i32(p1, l4, 48);
   store_i32(p1, l3);
   store_i32(p1, l5, 16);
@@ -1715,16 +1713,14 @@ function arc4random() {
               if ((l6 === 0)) break block_29;
               l0 = load_i32(137532);
               l5 = 0;
-              loop_30: while (true) {
+              do {
                 if (l0 === 512) {
                   if (u32(l6) >= 512) {
-                    loop_33: while (true) {
+                    do {
                       chacha20_rng(((l5 + l11) | 0));
                       l5 = ((l5 + 512) | 0);
                       l6 = ((l6 - 512) | 0);
-                      if (u32(l6) > 511) continue loop_33;
-                      break;
-                    }
+                    } while (u32(l6) > 511);
                   }
                   if ((l6 === 0)) break block_29;
                   chacha20_rng(137568);
@@ -1794,7 +1790,7 @@ function arc4random() {
                       }
                       if (u32(l2) < 16) break block_39;
                       l2 = l1;
-                      loop_42: while (true) {
+                      do {
                         store_i64(l0, load_i64(l3));
                         store_i64(l0, load_i64(l3, 8), 8);
                         store_i64(l0, load_i64(l3, 16), 16);
@@ -1802,9 +1798,7 @@ function arc4random() {
                         l0 = ((l0 + 32) | 0);
                         l3 = ((l3 + 32) | 0);
                         l2 = ((l2 - 32) | 0);
-                        if (u32(l2) > 15) continue loop_42;
-                        break;
-                      }
+                      } while (u32(l2) > 15);
                     }
                     if (u32(l2) >= 8) {
                       store_i64(l0, load_i64(l3));
@@ -1861,12 +1855,10 @@ function arc4random() {
                             l2147483655 = ((l0 + 17) | 0);
                             break block_48;
                           }
-                          block_53: {
-                            if (u32(l1) < 16) {
-                              l2 = l0;
-                              l2147483656 = l3;
-                              break block_53;
-                            }
+                          if (u32(l1) < 16) {
+                            l2 = l0;
+                            l2147483656 = l3;
+                          } else {
                             store_i8(l0, load_u8(l3));
                             store_i32(l0, load_i32(l3, 1), 1);
                             store_i64(l0, load_i64(l3, 5), 5);
@@ -1910,11 +1902,9 @@ function arc4random() {
                   store_i8(l2, load_u8(l4));
                 }
                 l1 = ((load_i32(137532) + 137568) | 0);
-                block_57: {
-                  if (u32(l7) >= 33) {
-                    new Uint8Array(memory.buffer).fill(0, l1, l1 + l7);
-                    break block_57;
-                  }
+                if (u32(l7) >= 33) {
+                  new Uint8Array(memory.buffer).fill(0, l1, l1 + l7);
+                } else {
                   block_59: {
                     if ((l7 === 0)) break block_59;
                     store_i8(l1, 0);
@@ -1953,25 +1943,21 @@ function arc4random() {
                     l2 = ((l2 - l1) | 0);
                     if (u32(l2) < 32) break block_59;
                     l1 = ((l1 + l3) | 0);
-                    loop_60: while (true) {
+                    do {
                       store_i64(l1, 0n, 24);
                       store_i64(l1, 0n, 16);
                       store_i64(l1, 0n, 8);
                       store_i64(l1, 0n);
                       l1 = ((l1 + 32) | 0);
                       l2 = ((l2 - 32) | 0);
-                      if (u32(l2) > 31) continue loop_60;
-                      break;
-                    }
+                    } while (u32(l2) > 31);
                   }
                 }
                 l0 = ((load_i32(137532) + l7) | 0);
                 store_i32(137532, l0);
                 l5 = ((l5 + l7) | 0);
                 l6 = ((l6 - l7) | 0);
-                if (l6) continue loop_30;
-                break;
-              }
+              } while (l6);
             }
           }
           break block_6;
@@ -2151,9 +2137,8 @@ function internal_itoa_Uitoa(p0, p1) {
       block_7: {
         if ((g1 === 0)) {
           loop_9: while (true) {
-            block_10: {
-              l4 = ((l1 + 19) | 0);
-              if (u32(p1) < 10) break block_10;
+            l4 = ((l1 + 19) | 0);
+            if (u32(p1) >= 10) {
               if (u32(l4) > 19) break block_7;
               l2147483645 = p1;
               p1 = (u32(p1) / u32(10)) | 0;
@@ -5495,11 +5480,9 @@ function _reflect_rawType_rawField(p0, p1, p2) {
             l3 = (g1 ? l3 : (p1 !== 6 ? 1 : 0));
             block_12: {
               if ((g1 === 0)) {
-                block_14: {
-                  if ((l3 === 0)) {
-                    p1 = 0;
-                    break block_14;
-                  }
+                if ((l3 === 0)) {
+                  p1 = 0;
+                } else {
                   l3 = load_u8(((p1 + l2) | 0));
                   l10 = (l3 << 24) >> 24;
                   if (l10 < 0) break block_12;
@@ -5719,35 +5702,23 @@ function runtime_alloc(p0, p1) {
                       block_21: {
                         block_22: {
                           if (u32(l0) < u32(load_i32(138224))) {
-                            block_24: {
-                              block_25: {
-                                block_26: {
-                                  block_27: {
-                                    if (((((_runtime_gcBlock_state(l0) & 255) - 1) | 0)) === 0) {
-                                      break block_27;
-                                    } else if (((((_runtime_gcBlock_state(l0) & 255) - 1) | 0)) === 1) {
-                                      break block_26;
-                                    } else if (((((_runtime_gcBlock_state(l0) & 255) - 1) | 0)) === 2) {
-                                      break block_25;
-                                    } else {
-                                      break block_24;
-                                    }
-                                  }
-                                  _runtime_gcBlock_markFree(l0);
-                                  store_i64(138256, BigInt.asIntN(64, load_i64(138256) + 1n));
-                                  break block_22;
-                                }
+                            switch ((((_runtime_gcBlock_state(l0) & 255) - 1) | 0)) {
+                              case 0:
+                                _runtime_gcBlock_markFree(l0);
+                                store_i64(138256, BigInt.asIntN(64, load_i64(138256) + 1n));
+                                break block_22;
+                              case 1:
                                 l2147483646 = l1;
                                 l1 = 0;
                                 if (((l2147483646 & 1) === 0)) break block_21;
                                 _runtime_gcBlock_markFree(l0);
                                 break block_22;
-                              }
-                              l1 = 0;
-                              l7 = ((load_i32(138216) + (l0 >>> 2)) | 0);
-                              l8 = load_u8(l7);
-                              store_i8(l7, (l8 & ((2 << ((l0 << 1) & 6)) ^ -1)));
-                              break block_21;
+                              case 2:
+                                l1 = 0;
+                                l7 = ((load_i32(138216) + (l0 >>> 2)) | 0);
+                                l8 = load_u8(l7);
+                                store_i8(l7, (l8 & ((2 << ((l0 << 1) & 6)) ^ -1)));
+                                break block_21;
                             }
                             l4 = ((l4 + 16) | 0);
                             break block_21;
@@ -7122,26 +7093,20 @@ function reflect_pointerTo(p0) {
       block_6: {
         if ((g1 === 0)) {
           if ((l0 | (p0 === 0))) break block_6;
-          block_8: {
-            block_9: {
-              block_10: {
-                if (((p0 & 3)) === 0) {
-                  break block_10;
-                } else if (((p0 & 3)) === 1) {
-                  break block_9;
-                } else if (((p0 & 3)) === 2) {
-                  break block_9;
-                } else if (((p0 & 3)) === 3) {
-                  break block_8;
-                } else {
-                  break block_9;
-                }
-              }
+          switch ((p0 & 3)) {
+            case 0:
               l0 = (load_u8(p0) & 31);
               if ((l0 === 26 | l0 !== 21)) break block_6;
-            }
-            l2147483647 = ((p0 + 1) | 0);
-            break block_5;
+              break;
+            case 1:
+            case 2:
+              l2147483647 = ((p0 + 1) | 0);
+              break block_5;
+            case 3:
+              break;
+            default:
+              l2147483647 = ((p0 + 1) | 0);
+              break block_5;
           }
         }
         if ((g1 ? l4 === 1 : 1)) {
@@ -7739,7 +7704,7 @@ function _reflect_Value_Float(p0, p1, p2) {
       store_i32(l0, l1);
       block_4: {
         if (((p0 === 0) | (p0 & 3))) break block_4;
-        block_5: {
+        try {
           block_6: {
             block_7: {
               if (((((load_u8(p0) & 31) - 13) | 0)) === 0) {
@@ -7752,16 +7717,17 @@ function _reflect_Value_Float(p0, p1, p2) {
             }
             if ((p2 & 1)) {
               l2147483644 = load_f32(p1);
-              break block_5;
+              return l2147483644;
             }
             l2147483644 = (new Float32Array(new Int32Array([p1]).buffer))[0];
-            break block_5;
+            return l2147483644;
           }
           l2147483644 = load_f64(p1);
+          return l2147483644;
+        } finally {
+          store_i32(138276, l1);
+          g0 = ((l0 + 16) | 0);
         }
-        store_i32(138276, l1);
-        g0 = ((l0 + 16) | 0);
-        return l2147483644;
       }
     }
     if (((g1 ? l2 : 0) === 0)) {
@@ -8706,21 +8672,21 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
 // runtime.stringEqual
 function runtime_stringEqual(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643, l2147483644;
-  block_0: {
-    if (p1 !== p3) break block_0;
-    p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
-    loop_1: while (true) {
-      l0 = ((p1 === 0) ? 1 : 0);
-      if ((p1 === 0)) break block_0;
-      p1 = ((p1 - 1) | 0);
-      l2147483643 = p2;
-      p2 = ((p2 + 1) | 0);
-      l2147483644 = p0;
-      p0 = ((p0 + 1) | 0);
-      if (load_u8(l2147483643) === load_u8(l2147483644)) continue loop_1;
-      break;
-    }
+  if (p1 !== p3) {
+    return l0;
   }
+  p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
+  do {
+    l0 = ((p1 === 0) ? 1 : 0);
+    if ((p1 === 0)) {
+      return l0;
+    }
+    p1 = ((p1 - 1) | 0);
+    l2147483643 = p2;
+    p2 = ((p2 + 1) | 0);
+    l2147483644 = p0;
+    p0 = ((p0 + 1) | 0);
+  } while (load_u8(l2147483643) === load_u8(l2147483644));
   return l0;
 }
 
@@ -12375,7 +12341,7 @@ function _sync_WaitGroup_Add(p0, p1) {
               p1 = (l3 !== l4 ? 1 : 0);
               if (p1) break block_4;
             }
-            loop_10: while (true) {
+            do {
               if ((g1 === 0)) {
                 p1 = load_i32(p0, 4);
                 if (p1) {
@@ -12393,9 +12359,7 @@ function _sync_WaitGroup_Add(p0, p1) {
                   break block_1;
                 }
               }
-              if ((g1 === 0)) continue loop_10;
-              break;
-            }
+            } while ((g1 === 0));
           }
           if ((g1 ? l0 === 1 : 1)) {
             runtime_nilPanic();
@@ -13504,7 +13468,7 @@ function strconv_leftShift(p0, p1) {
         l8 = load_i32(((l3 + 80960) | 0));
         l0 = 0;
         block_6: {
-          loop_7: while (true) {
+          do {
             if (l0 === l1) break block_6;
             if (l0 === l5) {
               l2 = -1;
@@ -13515,9 +13479,7 @@ function strconv_leftShift(p0, p1) {
             l0 = ((l0 + 1) | 0);
             l3 = load_u8(((l2147483645 + l4) | 0));
             l7 = load_u8(l7);
-            if (l3 === l7) continue loop_7;
-            break;
-          }
+          } while (l3 === l7);
           l2 = ((u32(l3) > u32(l7) ? 1 : 0) ? -1 : 0);
         }
         l3 = ((l5 - 1) | 0);
@@ -15088,11 +15050,9 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                                 if (l4) break block_95;
                                                 l6 = load_u8(l0, 144);
                                                 l4 = load_i32(l0, 136);
-                                                block_103: {
-                                                  if (u32(l1) < u32(-10)) {
-                                                    l7 = (u32(l1) < 28 ? 1 : 0);
-                                                    break block_103;
-                                                  }
+                                                if (u32(l1) < u32(-10)) {
+                                                  l7 = (u32(l1) < 28 ? 1 : 0);
+                                                } else {
                                                   l13 = BigInt(u32(l8));
                                                   l8 = strconv_divisibleByPower5(l13, ((0 - l1) | 0));
                                                   l7 = (l8 | (u32(l1) < 28 ? 1 : 0));
@@ -15155,11 +15115,9 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                               if (l4) break block_93;
                                               l6 = load_u8(l0, 164);
                                               l14 = load_i64(l0, 152);
-                                              block_111: {
-                                                if (u32(p7) < u32(-22)) {
-                                                  l8 = (u32(p7) < 56 ? 1 : 0);
-                                                  break block_111;
-                                                }
+                                              if (u32(p7) < u32(-22)) {
+                                                l8 = (u32(p7) < 56 ? 1 : 0);
+                                              } else {
                                                 l8 = strconv_divisibleByPower5(l13, ((0 - p7) | 0));
                                                 l6 = (l6 | l8);
                                               }
@@ -15326,10 +15284,9 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                         l2 = ((l3 - 1) | 0);
                         l3 = 0;
                         loop_135: while (true) {
-                          block_136: {
-                            store_i32(p7, l3, 800);
-                            l4 = (l2 === -1 ? 1 : 0);
-                            if (l4) break block_136;
+                          store_i32(p7, l3, 800);
+                          l4 = (l2 === -1 ? 1 : 0);
+                          if ((l4 === 0)) {
                             l4 = (u32(l3) > 799 ? 1 : 0);
                             if (l4) break block_24;
                             store_i8(((p7 + l3) | 0), load_u8(((((l0 + 632) | 0) + l2) | 0)));
@@ -15508,15 +15465,13 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   }
                   if ((g1 === 0)) {
                     block_167: {
-                      loop_168: while (true) {
+                      do {
                         if ((l1 === 0)) break block_167;
                         l1 = ((l1 - 1) | 0);
                         l3 = ((l1 + p7) | 0);
                         l2 = load_u8(l3);
                         l4 = (u32(l2) > 56 ? 1 : 0);
-                        if (l4) continue loop_168;
-                        break;
-                      }
+                      } while (l4);
                       store_i8(l3, ((l2 + 1) | 0));
                       l2 = ((l1 + 1) | 0);
                       store_i32(p7, l2, 800);
@@ -15672,14 +15627,12 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
             block_193: {
               l8 = (g1 ? l8 : (l1 >= 0 ? 1 : 0));
               if (((l8 | g1) === 0)) {
-                block_195: {
-                  if (u32((l2 + 25) | 0) > 23) {
-                    l2 = (l2 < 55 ? 1 : 0);
-                    l4 = (l4 & l2);
-                    p7 = (p7 & l2);
-                    l8 = (l2 & l6);
-                    break block_195;
-                  }
+                if (u32((l2 + 25) | 0) > 23) {
+                  l2 = (l2 < 55 ? 1 : 0);
+                  l4 = (l4 & l2);
+                  p7 = (p7 & l2);
+                  l8 = (l2 & l6);
+                } else {
                   l2 = (l2 ^ -1);
                   l8 = (strconv_divisibleByPower5(l16, l2) | l6);
                   p7 = (strconv_divisibleByPower5(l14, l2) | p7);
@@ -16183,13 +16136,11 @@ function strconv_mult64bitPow10(p0, p1, p2, p3) {
       l0 = ((g0 - 16) | 0);
       g0 = l0;
       block_3: {
-        block_4: {
-          if ((p3 === 0)) {
-            p3 = ((p2 - 6) | 0);
-            p1 = (p1 << 6);
-            l2147483643 = 1;
-            break block_4;
-          }
+        if ((p3 === 0)) {
+          p3 = ((p2 - 6) | 0);
+          p1 = (p1 << 6);
+          l2147483643 = 1;
+        } else {
           if (u32((p3 - 348) | 0) <= u32(-697)) break block_3;
           math_bits_Mul64(l0, BigInt(u32(p1)), BigInt.asIntN(64, load_i64((((p3 << 4) + 74432) | 0)) + BigInt(u32((p3 >>> 31)))));
           l2 = load_i64(l0, 8);
@@ -16225,23 +16176,23 @@ function strconv_mult64bitPow10(p0, p1, p2, p3) {
 // strconv.divisibleByPower5
 function strconv_divisibleByPower5(p0, p1) {
   let l0 = 0, l1 = 0n;
-  block_0: {
-    if ((p0 === 0n)) {
-      l0 = 1;
-      break block_0;
-    }
-    p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
-    loop_2: while (true) {
-      l0 = ((p1 === 0) ? 1 : 0);
-      l1 = (BigInt.asUintN(64, BigInt(p0)) / BigInt.asUintN(64, BigInt(5n)));
-      if (((p1 === 0) | p0 !== BigInt.asIntN(64, l1 * 5n))) break block_0;
-      p1 = ((p1 - 1) | 0);
-      p0 = l1;
-      continue loop_2;
-      break;
-    }
-    throw new Error('unreachable');
+  if ((p0 === 0n)) {
+    l0 = 1;
+    return l0;
   }
+  p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
+  loop_2: while (true) {
+    l0 = ((p1 === 0) ? 1 : 0);
+    l1 = (BigInt.asUintN(64, BigInt(p0)) / BigInt.asUintN(64, BigInt(5n)));
+    if (((p1 === 0) | p0 !== BigInt.asIntN(64, l1 * 5n))) {
+      return l0;
+    }
+    p1 = ((p1 - 1) | 0);
+    p0 = l1;
+    continue loop_2;
+    break;
+  }
+  throw new Error('unreachable');
   return l0;
 }
 
@@ -16257,13 +16208,11 @@ function strconv_mult128bitPow10(p0, p1, p2, p3) {
       l0 = ((g0 - 32) | 0);
       g0 = l0;
       block_3: {
-        block_4: {
-          if ((p3 === 0)) {
-            p3 = ((p2 - 8) | 0);
-            p2 = 1;
-            l2147483643 = BigInt.asIntN(64, p1 << 8n);
-            break block_4;
-          }
+        if ((p3 === 0)) {
+          p3 = ((p2 - 8) | 0);
+          p2 = 1;
+          l2147483643 = BigInt.asIntN(64, p1 << 8n);
+        } else {
           if (u32((p3 - 348) | 0) <= u32(-697)) break block_3;
           l1 = (p3 << 4);
           math_bits_Mul64(((l0 + 16) | 0), p1, BigInt.asIntN(64, load_i64(((l1 + 74424) | 0)) + BigInt(u32((p3 >>> 31)))));
@@ -17659,16 +17608,14 @@ function unicode_isExcludingLatin(p0, p1) {
                 if ((g1 === 0)) {
                   p0 = ((l6 - 4) | 0);
                   l0 = ((l5 + 1) | 0);
-                  loop_23: while (true) {
+                  do {
                     l0 = ((l0 - 1) | 0);
                     if ((l0 === 0)) break block_5;
                     l4 = load_i32(((p0 + 4) | 0));
                     if (u32(l4) > u32(p1)) break block_5;
                     l2147483646 = p0;
                     p0 = ((p0 + 12) | 0);
-                    if (u32(load_i32(((l2147483646 + 8) | 0))) < u32(p1)) continue loop_23;
-                    break;
-                  }
+                  } while (u32(load_i32(((l2147483646 + 8) | 0))) < u32(p1));
                   l2 = 1;
                   p0 = load_i32(p0);
                   if ((p0) === 0) {
@@ -17690,7 +17637,7 @@ function unicode_isExcludingLatin(p0, p1) {
               l1 = ((l7 + 1) | 0);
               p0 = ((l8 - 2) | 0);
               l3 = (p1 & 65535);
-              loop_26: while (true) {
+              do {
                 if ((l0 === 0)) break block_5;
                 l1 = ((l1 - 1) | 0);
                 if ((l1 === 0)) break block_3;
@@ -17699,9 +17646,7 @@ function unicode_isExcludingLatin(p0, p1) {
                 l0 = ((l0 - 1) | 0);
                 l4 = ((p0 + 4) | 0);
                 p0 = ((p0 + 6) | 0);
-                if (u32(load_u16(l4)) < u32(l3)) continue loop_26;
-                break;
-              }
+              } while (u32(load_u16(l4)) < u32(l3));
               l2 = 1;
               p0 = load_u16(p0);
               if ((p0) === 0) {
@@ -18492,20 +18437,16 @@ function _bytes_Buffer_WriteByte(p0, p1) {
 function runtime_memequal(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643, l2147483644;
   p3 = 0;
-  block_0: {
-    loop_1: while (true) {
-      if (p2 === p3) {
-        l2147483643 = p2;
-        break block_0;
-      }
-      l0 = ((p1 + p3) | 0);
-      l2147483644 = p3;
-      p3 = ((p3 + 1) | 0);
-      if (load_u8(((p0 + l2147483644) | 0)) === load_u8(l0)) continue loop_1;
-      break;
+  do {
+    if (p2 === p3) {
+      l2147483643 = p2;
+      return (u32(l2147483643) >= u32(p2) ? 1 : 0);
     }
-    l2147483643 = ((p3 - 1) | 0);
-  }
+    l0 = ((p1 + p3) | 0);
+    l2147483644 = p3;
+    p3 = ((p3 + 1) | 0);
+  } while (load_u8(((p0 + l2147483644) | 0)) === load_u8(l0));
+  l2147483643 = ((p3 - 1) | 0);
   return (u32(l2147483643) >= u32(p2) ? 1 : 0);
 }
 
@@ -19342,7 +19283,7 @@ function runtime_scheduler() {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      loop_3: while (true) {
+      do {
         block_4: {
           l0 = load_i32(138284);
           if (l0) {
@@ -19379,9 +19320,7 @@ function runtime_scheduler() {
         l1 = load_i32(138276);
         store_i32(138276, load_i32(l0, 16));
         store_i32(l0, l1, 16);
-        if (u32(load_i32(((l0 + 32) | 0))) >= u32(load_i32(((l0 + 28) | 0)))) continue loop_3;
-        break;
-      }
+      } while (u32(load_i32(((l0 + 32) | 0))) >= u32(load_i32(((l0 + 28) | 0))));
     }
     if (((g1 ? l3 : 0) === 0)) {
       runtime_runtimePanic(67276, 14);
@@ -20902,13 +20841,11 @@ function runtime_startMark(p0) {
                 l5 = 1;
                 break block_6;
               }
-              block_8: {
-                if ((p0 & 1)) {
-                  l5 = (p0 >>> 6);
-                  l7 = ((p0 >>> 1) & 31);
-                  l2147483646 = 0;
-                  break block_8;
-                }
+              if ((p0 & 1)) {
+                l5 = (p0 >>> 6);
+                l7 = ((p0 >>> 1) & 31);
+                l2147483646 = 0;
+              } else {
                 l7 = load_i32(p0);
                 l5 = 0;
                 l2147483646 = ((p0 + 4) | 0);
@@ -20937,9 +20874,8 @@ function runtime_startMark(p0) {
             l0 = ((((p0 - l0) | 0) - 16) | 0);
             l11 = load_i32(138216);
             loop_12: while (true) {
-              block_13: {
-                p0 = l0;
-                if (u32(l1) >= u32(l11)) break block_13;
+              p0 = l0;
+              if (u32(l1) < u32(l11)) {
                 l0 = ((p0 + 16) | 0);
                 l1 = ((l1 + 16) | 0);
                 l2147483647 = l2;
@@ -23531,19 +23467,17 @@ function _runtime_chanQueue_pop(p0) {
       block_3: {
         if ((p0 === 0)) break block_3;
         l2 = load_i32(p0);
-        block_4: {
-          loop_5: while (true) {
-            l0 = l2;
-            if ((l0 === 0)) break block_4;
-            l2 = load_i32(l0);
-            store_i32(p0, l2);
-            l3 = load_i32(l0, 4);
-            if ((l3 === 0)) break block_3;
-            if (load_i32(l3, 8)) continue loop_5;
-            break;
+        do {
+          l0 = l2;
+          if ((l0 === 0)) {
+            return l0;
           }
-          store_i32(l3, ((load_i32(l0, 8) << 2) | 1), 8);
-        }
+          l2 = load_i32(l0);
+          store_i32(p0, l2);
+          l3 = load_i32(l0, 4);
+          if ((l3 === 0)) break block_3;
+        } while (load_i32(l3, 8));
+        store_i32(l3, ((load_i32(l0, 8) << 2) | 1), 8);
         return l0;
       }
     }
@@ -23975,19 +23909,17 @@ function runtime_stringLess(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0;
   l0 = ((p1 > p3 ? 1 : 0) ? p3 : p1);
   l0 = ((l0 > 0 ? 1 : 0) ? l0 : 0);
-  block_0: {
-    loop_1: while (true) {
-      if ((l0 === 0)) break block_0;
-      l0 = ((l0 - 1) | 0);
-      l1 = load_u8(p2);
-      l2 = load_u8(p0);
-      p2 = ((p2 + 1) | 0);
-      p0 = ((p0 + 1) | 0);
-      if (l1 === l2) continue loop_1;
-      break;
+  do {
+    if ((l0 === 0)) {
+      return (p1 < p3 ? 1 : 0);
     }
-    return (u32(l1) > u32(l2) ? 1 : 0);
-  }
+    l0 = ((l0 - 1) | 0);
+    l1 = load_u8(p2);
+    l2 = load_u8(p0);
+    p2 = ((p2 + 1) | 0);
+    p0 = ((p0 + 1) | 0);
+  } while (l1 === l2);
+  return (u32(l1) > u32(l2) ? 1 : 0);
   return (p1 < p3 ? 1 : 0);
 }
 
@@ -24122,7 +24054,7 @@ function runtime_stringFromRunes(p0, p1, p2) {
 // runtime.encodeUTF8
 function runtime_encodeUTF8(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0;
-  block_0: {
+  try {
     block_1: {
       if (p1 < 128) {
         l2 = 1;
@@ -24139,27 +24071,32 @@ function runtime_encodeUTF8(p0, p1) {
       l3 = 189;
       l0 = 191;
       l1 = 239;
-      if ((p1 & 2147481600) === 55296) break block_0;
+      if ((p1 & 2147481600) === 55296) {
+        return;
+      }
       if (u32(p1) <= 65535) {
         l3 = ((p1 & 63) | -128);
         l1 = ((p1 >>> 12) | -32);
         l0 = (((p1 >>> 6) & 63) | -128);
-        break block_0;
+        return;
       }
-      if (u32(p1) > 1114111) break block_0;
+      if (u32(p1) > 1114111) {
+        return;
+      }
       l4 = ((p1 & 63) | -128);
       l1 = ((p1 >>> 18) | -16);
       l3 = (((p1 >>> 6) & 63) | -128);
       l0 = (((p1 >>> 12) & 63) | -128);
       l2 = 4;
-      break block_0;
+      return;
     }
+  } finally {
+    store_i8(p0, l1);
+    store_i8(p0, l0, 1);
+    store_i8(p0, l3, 2);
+    store_i8(p0, l4, 3);
+    store_i32(p0, l2, 4);
   }
-  store_i8(p0, l1);
-  store_i8(p0, l0, 1);
-  store_i8(p0, l3, 2);
-  store_i8(p0, l4, 3);
-  store_i32(p0, l2, 4);
 }
 
 // runtime.stringNext
@@ -27258,7 +27195,7 @@ function syscall_js_ValueOf(p0, p1, p2) {
             store_i64(p1, 0n);
             store_i64(l0, 0n, 176);
           }
-          loop_27: while (true) {
+          do {
             if ((g1 === 0)) {
               p2 = ((l0 + 200) | 0);
               l4 = ((l0 + 208) | 0);
@@ -27288,9 +27225,7 @@ function syscall_js_ValueOf(p0, p1, p2) {
                 break block_1;
               }
             }
-            if ((g1 === 0)) continue loop_27;
-            break;
-          }
+          } while ((g1 === 0));
         }
         if ((g1 ? l3 === 5 : 1)) {
           runtime__panic(127752, 94792);
@@ -27337,19 +27272,20 @@ function syscall_js_ValueOf(p0, p1, p2) {
 // syscall/js.floatValue
 function syscall_js_floatValue(p0, p1) {
   let l2147483645;
-  block_0: {
+  try {
     if (p1 === 0) {
       l2147483645 = 9221120237041090561n;
-      break block_0;
+      return;
     }
     if (p1 !== p1) {
       l2147483645 = 9221120237041090560n;
-      break block_0;
+      return;
     }
     l2147483645 = (new BigInt64Array(new Float64Array([p1]).buffer))[0];
+  } finally {
+    store_i64(p0, l2147483645);
+    store_i32(p0, 0, 8);
   }
-  store_i64(p0, l2147483645);
-  store_i32(p0, 0, 8);
 }
 
 // (syscall/js.Value).New
@@ -28440,10 +28376,9 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                     l0 = ((l5 - 1) | 0);
                     l3 = ((l14 + (p2 << 2)) | 0);
                     loop_53: while (true) {
-                      block_54: {
-                        l1 = l3;
-                        p2 = l2;
-                        if (l0 < l2) break block_54;
+                      l1 = l3;
+                      p2 = l2;
+                      if (l0 >= l2) {
                         l3 = (u32(p1) <= u32(l2) ? 1 : 0);
                         if (l3) break block_10;
                         l3 = ((l1 + 4) | 0);
@@ -28491,11 +28426,10 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                 l2 = l19;
                 l5 = l13;
                 loop_57: while (true) {
-                  block_58: {
-                    l3 = l2;
-                    l1 = l5;
-                    l5 = (l0 < l1 ? 1 : 0);
-                    if (l5) break block_58;
+                  l3 = l2;
+                  l1 = l5;
+                  l5 = (l0 < l1 ? 1 : 0);
+                  if ((l5 === 0)) {
                     l5 = (p1 === l1 ? 1 : 0);
                     if (l5) break block_10;
                     l2 = ((l2 + 4) | 0);
@@ -29669,11 +29603,9 @@ function strings_Cut(p0, p1, p2) {
     }
     if ((g1 === 0)) {
       block_5: {
-        block_6: {
-          if (l1 < 0) {
-            l0 = 0;
-            break block_6;
-          }
+        if (l1 < 0) {
+          l0 = 0;
+        } else {
           if ((u32(p2) < u32(l1) | u32(p2) <= u32(l1))) break block_5;
           l2147483645 = p2;
           p2 = ((l1 + 1) | 0);
@@ -31421,16 +31353,14 @@ function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
           l0 = ((((l2 - l0) | 0) + 1) | 0);
           l4 = load_u8(((Number(BigInt.asIntN(32, p1)) + p5) | 0));
           block_40: {
-            loop_41: while (true) {
+            do {
               l1 = ((p3 + l3) | 0);
               store_i8(l1, l4);
               if ((p3 <= 0 | l0 >= l5)) break block_40;
               l0 = ((l0 + 1) | 0);
               l4 = 48;
               p3 = ((p3 - 1) | 0);
-              if (u32(l2) > u32(p3)) continue loop_41;
-              break;
-            }
+            } while (u32(l2) > u32(p3));
             break block_21;
           }
           block_42: {
@@ -36301,9 +36231,8 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
               l0 = ((l5 + l6) | 0);
               p3 = 0;
               loop_61: while (true) {
-                block_62: {
-                  l2 = ((p3 + l6) | 0);
-                  if (BigInt.asUintN(64, BigInt(p1)) < BigInt.asUintN(64, BigInt(16n))) break block_62;
+                l2 = ((p3 + l6) | 0);
+                if (BigInt.asUintN(64, BigInt(p1)) >= BigInt.asUintN(64, BigInt(16n))) {
                   if (u32(p2) <= u32(l2)) break block_51;
                   store_i8(((p3 + l0) | 0), load_u8((((Number(BigInt.asIntN(32, p1)) & 15) + 96005) | 0)));
                   p3 = ((p3 - 1) | 0);
@@ -36318,14 +36247,12 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
               l0 = ((l7 - 3) | 0);
               l2 = load_u8(((Number(BigInt.asIntN(32, p1)) + 96005) | 0));
               block_63: {
-                loop_64: while (true) {
+                do {
                   store_i8(((((p3 + l0) | 0) + 2) | 0), l2);
                   if (((p3 + l6) | 0) <= 0) break block_63;
                   l2 = 48;
                   p3 = ((p3 - 1) | 0);
-                  if (u32((((l1 + p3) | 0) - 1) | 0) < u32(p2)) continue loop_64;
-                  break;
-                }
+                } while (u32((((l1 + p3) | 0) - 1) | 0) < u32(p2));
                 break block_51;
               }
               l2 = ((p3 + l1) | 0);
@@ -37749,16 +37676,14 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
                 p1 = (p2 > 0 ? 1 : 0);
                 p1 = (p1 ? p2 : 0);
                 block_11: {
-                  loop_12: while (true) {
+                  do {
                     if ((p1 === 0)) break block_11;
                     if ((p2 === 0)) break block_8;
                     p1 = ((p1 - 1) | 0);
                     p2 = ((p2 - 1) | 0);
                     l2147483645 = l1;
                     l1 = ((l1 + 1) | 0);
-                    if (load_u8(l2147483645) !== 46) continue loop_12;
-                    break;
-                  }
+                  } while (load_u8(l2147483645) !== 46);
                   break block_6;
                 }
               }
@@ -37774,11 +37699,9 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
               }
             }
             if ((g1 === 0)) {
-              block_16: {
-                if ((p1 === 0)) {
-                  p2 = 0;
-                  break block_16;
-                }
+              if ((p1 === 0)) {
+                p2 = 0;
+              } else {
                 l1 = 0;
                 p2 = 0;
                 if ((p1 & 3)) break block_6;
@@ -38998,7 +38921,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   block_102: {
                                                     block_103: {
                                                       if ((g1 === 0)) {
-                                                        loop_105: while (true) {
+                                                        do {
                                                           l14 = l6;
                                                           store_i32(l0, l6, 1056);
                                                           l1 = ((l8 === 0) ? 1 : 0);
@@ -39085,9 +39008,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l8 = ((l8 - l13) | 0);
                                                           l6 = ((l11 + l13) | 0);
                                                           l15 = (((runtime_stringEqual(97712, 4, l15, l2) & 1) === 0) ? 1 : 0);
-                                                          if (l15) continue loop_105;
-                                                          break;
-                                                        }
+                                                        } while (l15);
                                                         l6 = 128160;
                                                         l8 = (l13 < 2 ? 1 : 0);
                                                       }
@@ -41498,28 +41419,26 @@ function slices_Compare_int_int(p0, p1, p2, p3) {
     block_4: {
       if ((g1 === 0)) {
         block_6: {
-          block_7: {
-            loop_8: while (true) {
-              if (l1 === l5) break block_7;
-              l0 = (p1 === l1 ? 1 : 0);
-              if (l0) break block_6;
-              if (l1 === l4) {
-                l0 = 1;
-                break block_4;
-              }
-              l1 = ((l1 + 1) | 0);
-              l0 = (l6 === l1 ? 1 : 0);
-              if (l0) break block_6;
-              l0 = load_i32(p0);
-              p0 = ((p0 + 4) | 0);
-              l3 = load_i32(p2);
-              p2 = ((p2 + 4) | 0);
-              l0 = ((l0 < l3 ? 1 : 0) ? -1 : (l0 > l3 ? 1 : 0));
-              if ((l0 === 0)) continue loop_8;
-              break;
+          do {
+            if (l1 === l5) {
+              return ((p1 < p3 ? 1 : 0) ? -1 : 0);
             }
-            break block_4;
-          }
+            l0 = (p1 === l1 ? 1 : 0);
+            if (l0) break block_6;
+            if (l1 === l4) {
+              l0 = 1;
+              break block_4;
+            }
+            l1 = ((l1 + 1) | 0);
+            l0 = (l6 === l1 ? 1 : 0);
+            if (l0) break block_6;
+            l0 = load_i32(p0);
+            p0 = ((p0 + 4) | 0);
+            l3 = load_i32(p2);
+            p2 = ((p2 + 4) | 0);
+            l0 = ((l0 < l3 ? 1 : 0) ? -1 : (l0 > l3 ? 1 : 0));
+          } while ((l0 === 0));
+          break block_4;
           return ((p1 < p3 ? 1 : 0) ? -1 : 0);
         }
       }
@@ -45102,16 +45021,14 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                           p5 = (p2 >> 31);
                           p6 = (p5 & p2);
                           p2 = ((p1 + 1) | 0);
-                          loop_20: while (true) {
+                          do {
                             p3 = ((p3 - 1) | 0);
                             p1 = (p3 <= 0 ? 1 : 0);
                             if (p1) break block_17;
                             p5 = ((p2 + 1) | 0);
                             l2147483642 = p2;
                             p2 = p5;
-                            if (u32(((load_u8(l2147483642) - 48) | 0) & 255) < 10) continue loop_20;
-                            break;
-                          }
+                          } while (u32(((load_u8(l2147483642) - 48) | 0) & 255) < 10);
                           l2147483641 = ((p2 - 1) | 0);
                         }
                         p2 = l2147483641;
@@ -53620,18 +53537,16 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               store_i64(l24, 0n);
                               store_i64(l0, 0n, 248);
                               new Uint8Array(memory.buffer).fill(0, ((l0 + 280) | 0), ((l0 + 280) | 0) + 120);
-                              block_78: {
-                                if (load_u8(l0, 392)) {
-                                  p4 = -1090891868;
-                                  l3 = 1694076839;
-                                  p5 = 1750603025;
-                                  l4 = -4191439;
-                                  l5 = -150054599;
-                                  p2 = 812702999;
-                                  l7 = -1056596264;
-                                  l2147483642 = 914150663;
-                                  break block_78;
-                                }
+                              if (load_u8(l0, 392)) {
+                                p4 = -1090891868;
+                                l3 = 1694076839;
+                                p5 = 1750603025;
+                                l4 = -4191439;
+                                l5 = -150054599;
+                                p2 = 812702999;
+                                l7 = -1056596264;
+                                l2147483642 = 914150663;
+                              } else {
                                 p4 = 1541459225;
                                 l3 = 528734635;
                                 p5 = -1694144372;
@@ -53829,7 +53744,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                       }
                       block_94: {
                         if ((g1 === 0)) {
-                          loop_96: while (true) {
+                          do {
                             l3 = ((l3 - 1) | 0);
                             p2 = ((l3 === 0) ? 1 : 0);
                             if (p2) break block_94;
@@ -53839,9 +53754,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                             p4 = ((l4 + p4) | 0);
                             p6 = ((p6 + 8) | 0);
                             p2 = (p5 >= l4 ? 1 : 0);
-                            if (p2) continue loop_96;
-                            break;
-                          }
+                          } while (p2);
                         }
                         if ((g1 ? l2 === 18 : 1)) {
                           runtime__panic(127752, 95024);
@@ -55805,15 +55718,15 @@ module.exports = {
   get mem() { return mem(); },
   globals,
   imports,
-  asyncify_stop_rewind: asyncify_stop_rewind,
-  asyncify_start_unwind: asyncify_start_unwind,
+  calloc: calloc,
+  go_scheduler: go_scheduler,
   malloc: malloc_318,
+  free: free_319,
   realloc: realloc,
   _start: _start,
   resume: resume,
-  calloc: calloc,
-  free: free_319,
-  asyncify_get_state: asyncify_get_state,
   asyncify_start_rewind: asyncify_start_rewind,
-  go_scheduler: go_scheduler,
+  asyncify_get_state: asyncify_get_state,
+  asyncify_start_unwind: asyncify_start_unwind,
+  asyncify_stop_rewind: asyncify_stop_rewind,
 };

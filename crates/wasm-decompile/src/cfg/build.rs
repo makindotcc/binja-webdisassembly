@@ -324,8 +324,8 @@ impl CfgBuilder {
                     }
                 }
 
-                Stmt::Switch { .. } => {
-                    // Switch is a higher-level construct, treat as opaque statement
+                Stmt::Switch { .. } | Stmt::TryFinally { .. } => {
+                    // Higher-level constructs, treat as opaque statement
                     if let Some(node) = self.cfg.get_node_mut(current) {
                         node.stmts.push(stmt.clone());
                     }

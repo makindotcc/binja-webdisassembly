@@ -228,6 +228,11 @@ pub enum Stmt {
         cases: Vec<SwitchCase>,
         default: Option<Block>,
     },
+    /// Try/finally (for epilog cleanup like stack pointer restore)
+    TryFinally {
+        body: Block,
+        finally_block: Block,
+    },
     /// Unreachable
     Unreachable,
     /// No-op (placeholder)

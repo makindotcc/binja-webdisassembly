@@ -135,8 +135,7 @@ impl Pipeline {
     pub fn default_pipeline() -> Self {
         Self {
             passes: vec![
-                // Box::new(simplify::SimplifyPass),
-                // Box::new(control_flow::ControlFlowPass),
+                Box::new(control_flow::ControlFlowPass),
                 // Box::new(stackifier::StackifierPass),
                 // Box::new(UnblockifyPass),
                 // Box::new(type_infer::TypeInferPass),

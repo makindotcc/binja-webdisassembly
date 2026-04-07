@@ -483,9 +483,17 @@ impl JsEmitter {
             } => {
                 let cond_str = self.emit_expr_as_condition(cond);
                 if *is_loop {
-                    self.emit_line(&format!("if ({}) continue loop_{};", cond_str, label));
+                    if *label == u32::MAX {
+                        self.emit_line(&format!("if ({}) continue;", cond_str));
+                    } else {
+                        self.emit_line(&format!("if ({}) continue loop_{};", cond_str, label));
+                    }
                 } else {
-                    self.emit_line(&format!("if ({}) break block_{};", cond_str, label));
+                    if *label == u32::MAX {
+                        self.emit_line(&format!("if ({}) break;", cond_str));
+                    } else {
+                        self.emit_line(&format!("if ({}) break block_{};", cond_str, label));
+                    }
                 }
             }
 
@@ -565,7 +573,9 @@ impl JsEmitter {
                     }
                     self.level += 1;
                     self.emit_block(&case.body);
-                    self.emit_line("break;");
+                    if !block_terminates(&case.body) {
+                        self.emit_line("break;");
+                    }
                     self.level -= 1;
                 }
                 if let Some(def) = default {
@@ -574,6 +584,21 @@ impl JsEmitter {
                     self.emit_block(def);
                     self.level -= 1;
                 }
+                self.level -= 1;
+                self.emit_line("}");
+            }
+
+            Stmt::TryFinally {
+                body,
+                finally_block,
+            } => {
+                self.emit_line("try {");
+                self.level += 1;
+                self.emit_block(body);
+                self.level -= 1;
+                self.emit_line("} finally {");
+                self.level += 1;
+                self.emit_block(finally_block);
                 self.level -= 1;
                 self.emit_line("}");
             }
@@ -1061,6 +1086,23 @@ impl JsEmitter {
                 }
                 Stmt::DoWhile { body, .. } | Stmt::While { body, .. } => {
                     Self::collect_temp_locals_inner(&body.stmts, temps);
+                }
+                Stmt::Switch {
+                    cases, default, ..
+                } => {
+                    for case in cases {
+                        Self::collect_temp_locals_inner(&case.body.stmts, temps);
+                    }
+                    if let Some(def) = default {
+                        Self::collect_temp_locals_inner(&def.stmts, temps);
+                    }
+                }
+                Stmt::TryFinally {
+                    body,
+                    finally_block,
+                } => {
+                    Self::collect_temp_locals_inner(&body.stmts, temps);
+                    Self::collect_temp_locals_inner(&finally_block.stmts, temps);
                 }
                 _ => {}
             }

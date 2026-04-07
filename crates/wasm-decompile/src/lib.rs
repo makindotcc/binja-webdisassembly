@@ -348,6 +348,16 @@ fn dump_stmt(stmt: &Stmt, indent: usize, output: &mut String) {
             }
             output.push_str(&format!("{}}}\n", prefix));
         }
+        Stmt::TryFinally {
+            body,
+            finally_block,
+        } => {
+            output.push_str(&format!("{}try {{\n", prefix));
+            dump_block(body, indent + 1, output);
+            output.push_str(&format!("{}}} finally {{\n", prefix));
+            dump_block(finally_block, indent + 1, output);
+            output.push_str(&format!("{}}}\n", prefix));
+        }
     }
 }
 
