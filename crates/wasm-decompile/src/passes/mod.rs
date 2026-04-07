@@ -194,6 +194,7 @@ impl Pipeline {
         Self {
             passes: vec![
                 Box::new(go::AsyncifyPass),
+                Box::new(go::GoDeferPass),
                 Box::new(control_flow::ControlFlowPass),
                 Box::new(mem_resolve::MemResolvePass),
             ],

@@ -1376,10 +1376,6 @@ function gojs_syscall_js_valueInvoke() { if (imports.gojs_syscall_js_valueInvoke
 function gojs_syscall_js_valueIndex() { if (imports.gojs_syscall_js_valueIndex) return imports.gojs_syscall_js_valueIndex(...arguments); }
 function gojs_syscall_js_valueCall() { if (imports.gojs_syscall_js_valueCall) return imports.gojs_syscall_js_valueCall(...arguments); }
 function wasi_snapshot_preview1_random_get() { if (imports.wasi_snapshot_preview1_random_get) return imports.wasi_snapshot_preview1_random_get(...arguments); }
-function asyncify_rewind() { if (imports.asyncify_rewind) return imports.asyncify_rewind(...arguments); }
-function asyncify_unwind() { if (imports.asyncify_unwind) return imports.asyncify_unwind(...arguments); }
-function deferSetup() { if (imports.deferSetup) return imports.deferSetup(...arguments); }
-function deferCleanup() { if (imports.deferCleanup) return imports.deferCleanup(...arguments); }
 
 // Globals
 const globals = {
@@ -1390,11 +1386,6 @@ const globals = {
 let g0 = globals.g0; Object.defineProperty(globals, 'g0', { get() { return g0; }, set(v) { g0 = v; } });
 let g1 = globals.g1; Object.defineProperty(globals, 'g1', { get() { return g1; }, set(v) { g1 = v; } });
 let g2 = globals.g2; Object.defineProperty(globals, 'g2', { get() { return g2; }, set(v) { g2 = v; } });
-
-function asyncify_rewind(size, ...layout) { store_i32(g2, ((load_i32(g2) - size) | 0)); let p = load_i32(g2), r = []; for (let [t, o] of layout) { if (t === "i64") r.push(load_i64(p, o)); else r.push(load_i32(p, o)); } return r; }
-function asyncify_unwind(branchId, frameSize, ...layout) { store_i32(load_i32(g2), branchId); store_i32(g2, ((load_i32(g2) + 4) | 0)); let p = load_i32(g2); for (let [t, o, v] of layout) { if (t === "i64") store_i64(p, v, o); else store_i32(p, v, o); } store_i32(g2, ((load_i32(g2) + frameSize) | 0)); }
-function deferSetup(frameSize, nodeOffset) { let f = (g0 - frameSize) | 0; g0 = f; let prev = load_i32(138276); store_i32(138276, (f + nodeOffset) | 0); store_i32(f, prev, nodeOffset); return prev; }
-function deferCleanup(prev, frameSize) { store_i32(138276, prev); g0 = (g0 + frameSize) | 0; }
 
 function chacha20_rng(p0) {
   let l0 = 0;
@@ -1574,7 +1565,10 @@ function chacha20_update(p0, p1) {
 function arc4random() {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653, l2147483654, l2147483655, l2147483656, l2147483657;
   if (g1 === 2) {
-    [l10, l9] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    l1 = load_i32(g2);
+    l10 = load_i32(l1);
+    l9 = load_i32(l1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -1591,7 +1585,11 @@ function arc4random() {
       l1 = 0;
       l6 = 4;
       if (g1 === 2) {
-        [l11, l6, l5] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+        store_i32(g2, ((load_i32(g2) - 12) | 0));
+        l2 = load_i32(g2);
+        l11 = load_i32(l2);
+        l6 = load_i32(l2, 4);
+        l5 = load_i32(l2, 8);
       }
       block_6: {
         block_7: {
@@ -1612,7 +1610,11 @@ function arc4random() {
               l0 = 0;
               l3 = 32;
               if (g1 === 2) {
-                [l2, l0, l3] = asyncify_rewind(12, ["i32", 0], ["i32", 8], ["i32", 4]);
+                store_i32(g2, ((load_i32(g2) - 12) | 0));
+                l3 = load_i32(g2);
+                l2 = load_i32(l3);
+                l0 = load_i32(l3, 8);
+                l3 = load_i32(l3, 4);
               }
               block_14: {
                 block_15: {
@@ -1633,7 +1635,10 @@ function arc4random() {
                         l1 = l2;
                         l4 = l3;
                         if (g1 === 2) {
-                          [l1, l4] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+                          store_i32(g2, ((load_i32(g2) - 8) | 0));
+                          l4 = load_i32(g2);
+                          l1 = load_i32(l4);
+                          l4 = load_i32(l4, 4);
                         }
                         block_22: {
                           if (g1 === 2) {
@@ -1659,7 +1664,12 @@ function arc4random() {
                           l2147483649 = 0;
                         }
                         l8 = l2147483649;
-                        asyncify_unwind(l8, 8, ["i32", 0, l1], ["i32", 4, l4]);
+                        store_i32(load_i32(g2), l8);
+                        store_i32(g2, ((load_i32(g2) + 4) | 0));
+                        l8 = load_i32(g2);
+                        store_i32(l8, l1);
+                        store_i32(l8, l4, 4);
+                        store_i32(g2, ((load_i32(g2) + 8) | 0));
                         l2147483651 = 0;
                       }
                       if (g1 === 1) {
@@ -1681,7 +1691,13 @@ function arc4random() {
                   l2147483652 = 0;
                 }
                 l1 = l2147483652;
-                asyncify_unwind(l1, 12, ["i32", 0, l2], ["i32", 4, l3], ["i32", 8, l0]);
+                store_i32(load_i32(g2), l1);
+                store_i32(g2, ((load_i32(g2) + 4) | 0));
+                l1 = load_i32(g2);
+                store_i32(l1, l2);
+                store_i32(l1, l3, 4);
+                store_i32(l1, l0, 8);
+                store_i32(g2, ((load_i32(g2) + 12) | 0));
               }
               if (g1 === 1) {
                 l2147483653 = 0;
@@ -1948,7 +1964,13 @@ function arc4random() {
           l2147483653 = 0;
         }
         l2 = l2147483653;
-        asyncify_unwind(l2, 12, ["i32", 0, l11], ["i32", 4, l6], ["i32", 8, l5]);
+        store_i32(load_i32(g2), l2);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l2 = load_i32(g2);
+        store_i32(l2, l11);
+        store_i32(l2, l6, 4);
+        store_i32(l2, l5, 8);
+        store_i32(g2, ((load_i32(g2) + 12) | 0));
       }
       if (g1 === 1) {
         l2147483657 = 0;
@@ -1963,7 +1985,12 @@ function arc4random() {
     l2147483657 = 0;
   }
   l2 = l2147483657;
-  asyncify_unwind(l2, 8, ["i32", 0, l10], ["i32", 4, l9]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, l10);
+  store_i32(l2, l9, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
   return 0;
 }
 
@@ -1971,7 +1998,14 @@ function arc4random() {
 function internal_itoa_Itoa(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, p1, l0, l1, l4, l3] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    p1 = load_i32(l3, 4);
+    l0 = load_i32(l3, 8);
+    l1 = load_i32(l3, 12);
+    l4 = load_i32(l3, 16);
+    l3 = load_i32(l3, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -1979,9 +2013,12 @@ function internal_itoa_Itoa(p0, p1) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 32);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       store_i64(l0, 2n, 36);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l0 + 32) | 0));
+      store_i32(l0, l4, 32);
       l1 = (p1 >= 0 ? 1 : 0);
     }
     block_4: {
@@ -2044,14 +2081,30 @@ function internal_itoa_Itoa(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l4], ["i32", 20, l3]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l1, 12);
+  store_i32(l2, l4, 16);
+  store_i32(l2, l3, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // internal/itoa.Uitoa
 function internal_itoa_Uitoa(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645, l2147483646;
   if (g1 === 2) {
-    [p0, p1, l0, l1, l4, l2] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    l0 = load_i32(l2, 8);
+    l1 = load_i32(l2, 12);
+    l4 = load_i32(l2, 16);
+    l2 = load_i32(l2, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -2059,10 +2112,13 @@ function internal_itoa_Uitoa(p0, p1) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(48, 32);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       store_i64(l0, 1n, 36);
+      l2 = load_i32(138276);
       l4 = ((l0 + 32) | 0);
+      store_i32(138276, l4);
+      store_i32(l0, l2, 32);
       l1 = 0;
     }
     block_4: {
@@ -2131,14 +2187,33 @@ function internal_itoa_Uitoa(p0, p1) {
     l2147483646 = 0;
   }
   l3 = l2147483646;
-  asyncify_unwind(l3, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l4], ["i32", 20, l2]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, l0, 8);
+  store_i32(l3, l1, 12);
+  store_i32(l3, l4, 16);
+  store_i32(l3, l2, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // runtime.stringConcat
 function runtime_stringConcat(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l2, l3, l4, l1] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    l2 = load_i32(l1, 20);
+    l3 = load_i32(l1, 24);
+    l4 = load_i32(l1, 28);
+    l1 = load_i32(l1, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -2146,11 +2221,14 @@ function runtime_stringConcat(p0, p1, p2, p3, p4) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l3 = g0;
+      l3 = ((g0 - 32) | 0);
+      g0 = l3;
       store_i64(l3, 0n, 20);
       store_i64(l3, 3n, 12);
+      l1 = load_i32(138276);
       l2 = ((l3 + 8) | 0);
+      store_i32(138276, l2);
+      store_i32(l3, l1, 8);
     }
     block_4: {
       if ((g1 === 0)) {
@@ -2188,14 +2266,33 @@ function runtime_stringConcat(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l2], ["i32", 24, l3], ["i32", 28, l4], ["i32", 32, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(l0, l4, 28);
+  store_i32(l0, l1, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // runtime.stringFromBytes
 function runtime_stringFromBytes(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l3, l1] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    l2 = load_i32(l1, 12);
+    l3 = load_i32(l1, 16);
+    l1 = load_i32(l1, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -2203,11 +2300,14 @@ function runtime_stringFromBytes(p0, p1, p2) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i64(l2, 0n, 20);
       store_i64(l2, 3n, 12);
+      l1 = load_i32(138276);
       l3 = ((l2 + 8) | 0);
+      store_i32(138276, l3);
+      store_i32(l2, l1, 8);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -2227,7 +2327,16 @@ function runtime_stringFromBytes(p0, p1, p2) {
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l2, 12);
+  store_i32(l0, l3, 16);
+  store_i32(l0, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // runtime.lookupPanic
@@ -2384,7 +2493,17 @@ function unicode_utf8_EncodeRune(p0, p1, p2) {
 function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483642, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l0, l1, l4, l3] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    p1 = load_i32(l3, 4);
+    p2 = load_i32(l3, 8);
+    p3 = load_i32(l3, 12);
+    p4 = load_i32(l3, 16);
+    l0 = load_i32(l3, 20);
+    l1 = load_i32(l3, 24);
+    l4 = load_i32(l3, 28);
+    l3 = load_i32(l3, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -2392,10 +2511,13 @@ function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(96, 80);
-      l0 = g0;
+      l0 = ((g0 - 96) | 0);
+      g0 = l0;
       store_i32(l0, 0, 92);
       store_i64(l0, 2n, 84);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l0 + 80) | 0));
+      store_i32(l0, l4, 80);
       l1 = (u32(p4) >= 128 ? 1 : 0);
     }
     block_4: {
@@ -2510,14 +2632,39 @@ function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l2 = l2147483642;
-  asyncify_unwind(l2, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l1], ["i32", 28, l4], ["i32", 32, l3]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, l0, 20);
+  store_i32(l2, l1, 24);
+  store_i32(l2, l4, 28);
+  store_i32(l2, l3, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // runtime.sliceAppend
 function runtime_sliceAppend(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, l2, l3, l4, l5, l1] = asyncify_rewind(48, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    p5 = load_i32(l1, 20);
+    p6 = load_i32(l1, 24);
+    l2 = load_i32(l1, 28);
+    l3 = load_i32(l1, 32);
+    l4 = load_i32(l1, 36);
+    l5 = load_i32(l1, 40);
+    l1 = load_i32(l1, 44);
   }
   block_1: {
     if (g1 === 2) {
@@ -2525,12 +2672,15 @@ function runtime_sliceAppend(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(32, 8);
-      l3 = g0;
+      l3 = ((g0 - 32) | 0);
+      g0 = l3;
       store_i32(((l3 + 28) | 0), 0);
       store_i64(l3, 0n, 20);
       store_i32(l3, 4, 12);
+      l5 = load_i32(138276);
       l2 = ((l3 + 8) | 0);
+      store_i32(138276, l2);
+      store_i32(l3, l5, 8);
       l4 = ((p3 + p5) | 0);
     }
     block_4: {
@@ -2580,14 +2730,34 @@ function runtime_sliceAppend(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 48, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l2], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l2, 28);
+  store_i32(l0, l3, 32);
+  store_i32(l0, l4, 36);
+  store_i32(l0, l5, 40);
+  store_i32(l0, l1, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // (*reflect.rawType).Size
 function _reflect_rawType_Size(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l2, l4, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l2 = load_i32(l0, 8);
+    l4 = load_i32(l0, 12);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -2595,11 +2765,14 @@ function _reflect_rawType_Size(p0) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 8);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i64(((l2 + 24) | 0), 0n);
       store_i64(l2, 0n, 16);
       store_i32(l2, 4, 12);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l2 + 8) | 0));
+      store_i32(l2, l4, 8);
       l0 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -2734,7 +2907,8 @@ function _reflect_rawType_Size(p0) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l4, 32);
+        store_i32(138276, l4);
+        g0 = ((l2 + 32) | 0);
         return l0;
       }
     }
@@ -2752,7 +2926,14 @@ function _reflect_rawType_Size(p0) {
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 16, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l2], ["i32", 12, l4]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, l0, 4);
+  store_i32(l1, l2, 8);
+  store_i32(l1, l4, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -2760,7 +2941,11 @@ function _reflect_rawType_Size(p0) {
 function _reflect_rawType_elem(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l2, l1] = asyncify_rewind(12, ["i32", 0], ["i32", 8], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l2 = load_i32(l0, 8);
+    l1 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -2771,9 +2956,12 @@ function _reflect_rawType_elem(p0) {
       if (g1) {
         l2147483646 = 0;
       } else {
-        l2 = deferSetup(32, 0);
-        l1 = g0;
+        l1 = ((g0 - 32) | 0);
+        g0 = l1;
         store_i64(l1, 6n, 4);
+        l2 = load_i32(138276);
+        store_i32(138276, l1);
+        store_i32(l1, l2);
         l2147483646 = (((p0 & 3) === 0) ? 1 : 0);
       }
       if (((l2147483646 | g1) === 0)) {
@@ -2821,14 +3009,21 @@ function _reflect_rawType_elem(p0) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l2, 32);
+      store_i32(138276, l2);
+      g0 = ((l1 + 32) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483647 = 0;
   }
   l0 = l2147483647;
-  asyncify_unwind(l0, 12, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l2]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -2836,7 +3031,11 @@ function _reflect_rawType_elem(p0) {
 function _reflect_rawType_Len(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l0, l1] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    l0 = load_i32(l1, 4);
+    l1 = load_i32(l1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -2847,10 +3046,13 @@ function _reflect_rawType_Len(p0) {
       if (g1) {
         l2147483646 = 0;
       } else {
-        l1 = deferSetup(32, 8);
-        l0 = g0;
+        l0 = ((g0 - 32) | 0);
+        g0 = l0;
         store_i64(l0, 0n, 20);
         store_i64(l0, 3n, 12);
+        l1 = load_i32(138276);
+        store_i32(138276, ((l0 + 8) | 0));
+        store_i32(l0, l1, 8);
         l2147483646 = ((p0 === 0) ? 1 : 0);
       }
       if (((g1 | (l2147483646 | (p0 & 3))) === 0)) {
@@ -2885,7 +3087,13 @@ function _reflect_rawType_Len(p0) {
     l2147483647 = 0;
   }
   l2 = l2147483647;
-  asyncify_unwind(l2, 12, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l0, 4);
+  store_i32(l2, l1, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -2893,7 +3101,10 @@ function _reflect_rawType_Len(p0) {
 function _reflect_rawType_underlying(p0) {
   let l0 = 0, l1 = 0, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, l1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -2921,7 +3132,12 @@ function _reflect_rawType_underlying(p0) {
     l2147483647 = 0;
   }
   l0 = l2147483647;
-  asyncify_unwind(l0, 8, ["i32", 0, p0], ["i32", 4, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
   return 0;
 }
 
@@ -2929,7 +3145,10 @@ function _reflect_rawType_underlying(p0) {
 function runtime__panic(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l2147483645, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, p1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -2942,7 +3161,10 @@ function runtime__panic(p0, p1) {
       l6 = p0;
       l7 = p1;
       if (g1 === 2) {
-        [l6, l7] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+        store_i32(g2, ((load_i32(g2) - 8) | 0));
+        l7 = load_i32(g2);
+        l6 = load_i32(l7);
+        l7 = load_i32(l7, 4);
       }
       block_5: {
         block_6: {
@@ -2961,7 +3183,14 @@ function runtime__panic(p0, p1) {
             l0 = l6;
             l3 = l7;
             if (g1 === 2) {
-              [l0, l3, l1, l4, l9, l5] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i64", 16], ["i32", 24]);
+              store_i32(g2, ((load_i32(g2) - 28) | 0));
+              l5 = load_i32(g2);
+              l0 = load_i32(l5);
+              l3 = load_i32(l5, 4);
+              l1 = load_i32(l5, 8);
+              l4 = load_i32(l5, 12);
+              l9 = load_i64(l5, 16);
+              l5 = load_i32(l5, 24);
             }
             block_11: {
               block_12: {
@@ -2970,10 +3199,13 @@ function runtime__panic(p0, p1) {
                   l2 = load_i32(load_i32(g2));
                 }
                 if ((g1 === 0)) {
-                  l5 = deferSetup(32, 16);
-                  l4 = g0;
+                  l4 = ((g0 - 32) | 0);
+                  g0 = l4;
                   store_i32(l4, 0, 28);
                   store_i64(l4, 2n, 20);
+                  l5 = load_i32(138276);
+                  store_i32(138276, ((l4 + 16) | 0));
+                  store_i32(l4, l5, 16);
                   l1 = (l0 !== 103480 ? 1 : 0);
                 }
                 block_15: {
@@ -3250,13 +3482,23 @@ function runtime__panic(p0, p1) {
                   }
                 }
                 if ((g1 === 0)) {
-                  deferCleanup(l5, 32);
+                  store_i32(138276, l5);
+                  g0 = ((l4 + 32) | 0);
                 }
                 break block_11;
                 l2147483647 = 0;
               }
               l2 = l2147483647;
-              asyncify_unwind(l2, 28, ["i32", 0, l0], ["i32", 4, l3], ["i32", 8, l1], ["i32", 12, l4], ["i64", 16, l9], ["i32", 24, l5]);
+              store_i32(load_i32(g2), l2);
+              store_i32(g2, ((load_i32(g2) + 4) | 0));
+              l2 = load_i32(g2);
+              store_i32(l2, l0);
+              store_i32(l2, l3, 4);
+              store_i32(l2, l1, 8);
+              store_i32(l2, l4, 12);
+              store_i64(l2, l9, 16);
+              store_i32(l2, l5, 24);
+              store_i32(g2, ((load_i32(g2) + 28) | 0));
             }
             if (g1 === 1) {
               l2147483646 = 1;
@@ -3277,7 +3519,12 @@ function runtime__panic(p0, p1) {
           l2147483646 = 0;
         }
         l0 = l2147483646;
-        asyncify_unwind(l0, 8, ["i32", 0, l6], ["i32", 4, l7]);
+        store_i32(load_i32(g2), l0);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l0 = load_i32(g2);
+        store_i32(l0, l6);
+        store_i32(l0, l7, 4);
+        store_i32(g2, ((load_i32(g2) + 8) | 0));
       }
       if (g1 === 1) {
         l2147483648 = 0;
@@ -3291,7 +3538,12 @@ function runtime__panic(p0, p1) {
     l2147483648 = 0;
   }
   l6 = l2147483648;
-  asyncify_unwind(l6, 8, ["i32", 0, p0], ["i32", 4, p1]);
+  store_i32(load_i32(g2), l6);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l6 = load_i32(g2);
+  store_i32(l6, p0);
+  store_i32(l6, p1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // (*reflect.rawType).isNamed
@@ -3341,7 +3593,11 @@ function runtime_nilPanic() {
 function _reflect_rawType_Elem(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l2, l1] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    l2 = load_i32(l1, 4);
+    l1 = load_i32(l1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -3349,8 +3605,10 @@ function _reflect_rawType_Elem(p0) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
+      l1 = load_i32(138276);
+      store_i32(138276, l2);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -3360,14 +3618,21 @@ function _reflect_rawType_Elem(p0) {
       p0 = _reflect_rawType_elem(p0);
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l2 + 16) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483646 = 0;
   }
   l0 = l2147483646;
-  asyncify_unwind(l0, 12, ["i32", 0, p0], ["i32", 4, l2], ["i32", 8, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l2, 4);
+  store_i32(l0, l1, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -3375,7 +3640,11 @@ function _reflect_rawType_Elem(p0) {
 function _reflect_rawType_Key(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l2, l1] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    l2 = load_i32(l1, 4);
+    l1 = load_i32(l1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -3383,8 +3652,10 @@ function _reflect_rawType_Key(p0) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
+      l1 = load_i32(138276);
+      store_i32(138276, l2);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -3394,14 +3665,21 @@ function _reflect_rawType_Key(p0) {
       p0 = _reflect_rawType_key(p0);
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l2 + 16) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483646 = 0;
   }
   l0 = l2147483646;
-  asyncify_unwind(l0, 12, ["i32", 0, p0], ["i32", 4, l2], ["i32", 8, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l2, 4);
+  store_i32(l0, l1, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -3409,7 +3687,12 @@ function _reflect_rawType_Key(p0) {
 function _reflect_rawType_key(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l2, l3, l1] = asyncify_rewind(16, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l2 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l1 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -3417,11 +3700,14 @@ function _reflect_rawType_key(p0) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 8);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i32(l1, 0, 28);
       store_i32(l1, 4, 12);
+      l3 = load_i32(138276);
       l2 = ((l1 + 8) | 0);
+      store_i32(138276, l2);
+      store_i32(l1, l3, 8);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -3452,14 +3738,22 @@ function _reflect_rawType_key(p0) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l3, 32);
+      store_i32(138276, l3);
+      g0 = ((l1 + 32) | 0);
       return load_i32(p0, 12);
     }
     throw new Error('unreachable');
     l2147483646 = 0;
   }
   l0 = l2147483646;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l2], ["i32", 12, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(l0, l3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -3467,7 +3761,11 @@ function _reflect_rawType_key(p0) {
 function _reflect_rawType_NumField(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l1, l0] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 4);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -3478,10 +3776,13 @@ function _reflect_rawType_NumField(p0) {
       if (g1) {
         l2147483646 = 0;
       } else {
-        l0 = deferSetup(32, 8);
-        l1 = g0;
+        l1 = ((g0 - 32) | 0);
+        g0 = l1;
         store_i64(l1, 0n, 20);
         store_i64(l1, 3n, 12);
+        l0 = load_i32(138276);
+        store_i32(138276, ((l1 + 8) | 0));
+        store_i32(l1, l0, 8);
         l2147483646 = ((p0 === 0) ? 1 : 0);
       }
       if (((g1 | (l2147483646 | (p0 & 3))) === 0)) {
@@ -3515,7 +3816,13 @@ function _reflect_rawType_NumField(p0) {
     l2147483647 = 0;
   }
   l2 = l2147483647;
-  asyncify_unwind(l2, 12, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l0]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -3523,7 +3830,27 @@ function _reflect_rawType_NumField(p0) {
 function _reflect_rawType_String(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l2, l3, l5, l6, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, p1] = asyncify_rewind(76, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 76) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    l6 = load_i32(p1, 28);
+    l8 = load_i32(p1, 32);
+    l9 = load_i32(p1, 36);
+    l10 = load_i32(p1, 40);
+    l11 = load_i32(p1, 44);
+    l12 = load_i32(p1, 48);
+    l13 = load_i32(p1, 52);
+    l14 = load_i32(p1, 56);
+    l15 = load_i32(p1, 60);
+    l16 = load_i32(p1, 64);
+    l17 = load_i32(p1, 68);
+    l18 = load_i32(p1, 72);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -3531,11 +3858,14 @@ function _reflect_rawType_String(p0, p1) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l17 = deferSetup(976, 680);
-      l0 = g0;
+      l0 = ((g0 - 976) | 0);
+      g0 = l0;
       store_i32(l0, 71, 684);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 688) | 0), ((l0 + 688) | 0) + 284);
+      l17 = load_i32(138276);
+      store_i32(l0, l17, 680);
       l1 = ((l0 + 680) | 0);
+      store_i32(138276, l1);
       l9 = 0;
     }
     if (((g1 ? l4 : 0) === 0)) {
@@ -4768,7 +5098,29 @@ function _reflect_rawType_String(p0, p1) {
     l2147483645 = 0;
   }
   l7 = l2147483645;
-  asyncify_unwind(l7, 76, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l5], ["i32", 28, l6], ["i32", 32, l8], ["i32", 36, l9], ["i32", 40, l10], ["i32", 44, l11], ["i32", 48, l12], ["i32", 52, l13], ["i32", 56, l14], ["i32", 60, l15], ["i32", 64, l16], ["i32", 68, l17], ["i32", 72, l18]);
+  store_i32(load_i32(g2), l7);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l7 = load_i32(g2);
+  store_i32(l7, p0);
+  store_i32(l7, p1, 4);
+  store_i32(l7, l0, 8);
+  store_i32(l7, l1, 12);
+  store_i32(l7, l2, 16);
+  store_i32(l7, l3, 20);
+  store_i32(l7, l5, 24);
+  store_i32(l7, l6, 28);
+  store_i32(l7, l8, 32);
+  store_i32(l7, l9, 36);
+  store_i32(l7, l10, 40);
+  store_i32(l7, l11, 44);
+  store_i32(l7, l12, 48);
+  store_i32(l7, l13, 52);
+  store_i32(l7, l14, 56);
+  store_i32(l7, l15, 60);
+  store_i32(l7, l16, 64);
+  store_i32(l7, l17, 68);
+  store_i32(l7, l18, 72);
+  store_i32(g2, ((load_i32(g2) + 76) | 0));
 }
 
 // reflect.readStringZ
@@ -4789,7 +5141,14 @@ function reflect_readStringZ(p0, p1) {
 function _reflect_Kind_String(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l0, l1, l2, l3] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    p1 = load_i32(l3, 4);
+    l0 = load_i32(l3, 8);
+    l1 = load_i32(l3, 12);
+    l2 = load_i32(l3, 16);
+    l3 = load_i32(l3, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -4797,10 +5156,13 @@ function _reflect_Kind_String(p0, p1) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 0, 28);
       store_i32(l2, 2, 20);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l2 + 16) | 0));
+      store_i32(l2, l3, 16);
       l1 = 7;
       l0 = 66267;
       l4 = (p1 & 255);
@@ -5030,14 +5392,38 @@ function _reflect_Kind_String(p0, p1) {
     l2147483645 = 0;
   }
   l4 = l2147483645;
-  asyncify_unwind(l4, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i32(l4, p0);
+  store_i32(l4, p1, 4);
+  store_i32(l4, l0, 8);
+  store_i32(l4, l1, 12);
+  store_i32(l4, l2, 16);
+  store_i32(l4, l3, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // (*reflect.rawType).rawField
 function _reflect_rawType_rawField(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, l0, l2, l3, l5, l4, l6, l10, l8, l9, l11, l12, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l6 = load_i32(p1, 32);
+    l10 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    l11 = load_i32(p1, 48);
+    l12 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -5045,10 +5431,13 @@ function _reflect_rawType_rawField(p0, p1, p2) {
       l7 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l12 = deferSetup(112, 24);
-      l0 = g0;
+      l0 = ((g0 - 112) | 0);
+      g0 = l0;
       store_i32(l0, 20, 28);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 32) | 0), ((l0 + 32) | 0) + 80);
+      l12 = load_i32(138276);
+      store_i32(l0, l12, 24);
+      store_i32(138276, ((l0 + 24) | 0));
       l2 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -5206,14 +5595,40 @@ function _reflect_rawType_rawField(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l5], ["i32", 28, l4], ["i32", 32, l6], ["i32", 36, l10], ["i32", 40, l8], ["i32", 44, l9], ["i32", 48, l11], ["i32", 52, l12]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l5, 24);
+  store_i32(l1, l4, 28);
+  store_i32(l1, l6, 32);
+  store_i32(l1, l10, 36);
+  store_i32(l1, l8, 40);
+  store_i32(l1, l9, 44);
+  store_i32(l1, l11, 48);
+  store_i32(l1, l12, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
 }
 
 // runtime.alloc
 function runtime_alloc(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l2147483645, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, l0, l1, l3, l4, l5, l6, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l4 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    l6 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -5422,7 +5837,18 @@ function runtime_alloc(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l3], ["i32", 20, l4], ["i32", 24, l5], ["i32", 28, l6]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l1, 12);
+  store_i32(l2, l3, 16);
+  store_i32(l2, l4, 20);
+  store_i32(l2, l5, 24);
+  store_i32(l2, l6, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -5493,7 +5919,13 @@ function _reflect_Value_Kind(p0) {
 function _reflect_Value_Len(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l0] = asyncify_rewind(20, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l2 = load_i32(l0, 12);
+    l0 = load_i32(l0, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -5501,11 +5933,14 @@ function _reflect_Value_Len(p0, p1, p2) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(32, 8);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i64(((l2 + 24) | 0), 0n);
       store_i64(l2, 0n, 16);
       store_i32(l2, 4, 12);
+      l0 = load_i32(138276);
+      store_i32(138276, ((l2 + 8) | 0));
+      store_i32(l2, l0, 8);
       l1 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -5607,14 +6042,23 @@ function _reflect_Value_Len(p0, p1, p2) {
       p0 = (g1 ? p0 : 0);
     }
     if ((g1 === 0)) {
-      deferCleanup(l0, 32);
+      store_i32(138276, l0);
+      g0 = ((l2 + 32) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l2], ["i32", 16, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l0, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -5622,7 +6066,18 @@ function _reflect_Value_Len(p0, p1, p2) {
 function _reflect_Value_Index(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l1, l2, l4, l5, l6, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l1 = load_i32(p1, 20);
+    l2 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -5630,10 +6085,13 @@ function _reflect_Value_Index(p0, p1, p2, p3, p4) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(112, 8);
-      l2 = g0;
+      l2 = ((g0 - 112) | 0);
+      g0 = l2;
       store_i32(l2, 23, 12);
       new Uint8Array(memory.buffer).fill(0, ((l2 + 16) | 0), ((l2 + 16) | 0) + 92);
+      l6 = load_i32(138276);
+      store_i32(l2, l6, 8);
+      store_i32(138276, ((l2 + 8) | 0));
       l1 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -5856,7 +6314,20 @@ function _reflect_Value_Index(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l1], ["i32", 24, l2], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l6]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, l1, 20);
+  store_i32(l0, l2, 24);
+  store_i32(l0, l4, 28);
+  store_i32(l0, l5, 32);
+  store_i32(l0, l6, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // reflect.loadValue
@@ -5879,7 +6350,12 @@ function reflect_loadValue(p0, p1) {
 function _reflect_Value_IsNil(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l0, l1] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    l0 = load_i32(l1, 8);
+    l1 = load_i32(l1, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -5887,11 +6363,14 @@ function _reflect_Value_IsNil(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       store_i64(((l0 + 24) | 0), 0n);
       store_i64(l0, 0n, 16);
       store_i32(l0, 4, 12);
+      l1 = load_i32(138276);
+      store_i32(138276, ((l0 + 8) | 0));
+      store_i32(l0, l1, 8);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -5977,14 +6456,22 @@ function _reflect_Value_IsNil(p0, p1, p2) {
     }
     p0 = l2147483645;
     if ((g1 === 0)) {
-      deferCleanup(l1, 32);
+      store_i32(138276, l1);
+      g0 = ((l0 + 32) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   p2 = l2147483644;
-  asyncify_unwind(p2, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, l0, 8);
+  store_i32(p2, l1, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -5992,7 +6479,12 @@ function _reflect_Value_IsNil(p0, p1, p2) {
 function _reflect_Value_UnsafePointer(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, l1, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    l1 = load_i32(l0, 8);
+    l0 = load_i32(l0, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -6000,11 +6492,14 @@ function _reflect_Value_UnsafePointer(p0, p1, p2) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       store_i64(((l0 + 24) | 0), 0n);
       store_i64(l0, 0n, 16);
       store_i32(l0, 4, 12);
+      l1 = load_i32(138276);
+      store_i32(138276, ((l0 + 8) | 0));
+      store_i32(l0, l1, 8);
       l2 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -6077,14 +6572,22 @@ function _reflect_Value_UnsafePointer(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 32);
+      store_i32(138276, l1);
+      g0 = ((l0 + 32) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   p2 = l2147483644;
-  asyncify_unwind(p2, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l0]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, l1, 8);
+  store_i32(p2, l0, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -6092,7 +6595,15 @@ function _reflect_Value_UnsafePointer(p0, p1, p2) {
 function _reflect_Value_Elem(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l2, l4, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -6198,14 +6709,36 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l2], ["i32", 24, l4]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l0, 16);
+  store_i32(l1, l2, 20);
+  store_i32(l1, l4, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (reflect.Value).Field
 function _reflect_Value_Field(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l2, l4, l6, l7, l5, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l2 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l6 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -6213,10 +6746,13 @@ function _reflect_Value_Field(p0, p1, p2, p3, p4) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(112, 40);
-      l0 = g0;
+      l0 = ((g0 - 112) | 0);
+      g0 = l0;
       store_i32(l0, 15, 44);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 48) | 0), ((l0 + 48) | 0) + 60);
+      l6 = load_i32(138276);
+      store_i32(l0, l6, 40);
+      store_i32(138276, ((l0 + 40) | 0));
       l2 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -6324,14 +6860,36 @@ function _reflect_Value_Field(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l1 = l2147483642;
-  asyncify_unwind(l1, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l2], ["i32", 28, l4], ["i32", 32, l6], ["i32", 36, l7], ["i32", 40, l5]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, l0, 20);
+  store_i32(l1, l2, 24);
+  store_i32(l1, l4, 28);
+  store_i32(l1, l6, 32);
+  store_i32(l1, l7, 36);
+  store_i32(l1, l5, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // reflect.valueInterfaceUnsafe
 function reflect_valueInterfaceUnsafe(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l3, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -6339,12 +6897,15 @@ function reflect_valueInterfaceUnsafe(p0, p1, p2, p3) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 0);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i64(((l1 + 16) | 0), 0n);
       store_i32(((l1 + 24) | 0), 0);
       store_i64(l1, 0n, 8);
       store_i32(l1, 5, 4);
+      l3 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l3);
       l2 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -6406,14 +6967,31 @@ function reflect_valueInterfaceUnsafe(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // reflect.New
 function reflect_New(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l1, l2, l3, l5, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l1 = load_i32(p1, 8);
+    l2 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l5 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -6421,13 +6999,16 @@ function reflect_New(p0, p1) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 8);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       l5 = ((l1 + 24) | 0);
       store_i64(l5, 0n);
       store_i64(l1, 0n, 16);
       store_i32(l1, 4, 12);
+      l3 = load_i32(138276);
       l2 = ((l1 + 8) | 0);
+      store_i32(138276, l2);
+      store_i32(l1, l3, 8);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -6464,14 +7045,28 @@ function reflect_New(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l5]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l1, 8);
+  store_i32(l0, l2, 12);
+  store_i32(l0, l3, 16);
+  store_i32(l0, l5, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // reflect.pointerTo
 function reflect_pointerTo(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, l2, l3, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l2 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -6479,9 +7074,12 @@ function reflect_pointerTo(p0) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
       store_i64(l2, 1n, 4);
+      l3 = load_i32(138276);
+      store_i32(138276, l2);
+      store_i32(l2, l3);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -6531,14 +7129,22 @@ function reflect_pointerTo(p0) {
     }
     p0 = l2147483647;
     if ((g1 === 0)) {
-      deferCleanup(l3, 16);
+      store_i32(138276, l3);
+      g0 = ((l2 + 16) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 16, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l2], ["i32", 12, l3]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, l0, 4);
+  store_i32(l1, l2, 8);
+  store_i32(l1, l3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -6546,7 +7152,15 @@ function reflect_pointerTo(p0) {
 function _reflect_Value_Interface(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l3, l0] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    l2 = load_i32(l0, 16);
+    l3 = load_i32(l0, 20);
+    l0 = load_i32(l0, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -6554,10 +7168,13 @@ function _reflect_Value_Interface(p0, p1, p2, p3) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 0, 28);
       store_i64(l2, 2n, 20);
+      l0 = load_i32(138276);
+      store_i32(138276, ((l2 + 16) | 0));
+      store_i32(l2, l0, 16);
       l3 = (((p3 & 2) === 0) ? 1 : 0);
     }
     block_4: {
@@ -6595,7 +7212,17 @@ function _reflect_Value_Interface(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l0, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // reflect.contains
@@ -6622,7 +7249,12 @@ function reflect_contains(p0, p1, p2) {
 function reflect_PointerTo(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l2, l1] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    l2 = load_i32(l1, 8);
+    l1 = load_i32(l1, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -6630,8 +7262,10 @@ function reflect_PointerTo(p0, p1) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
+      l1 = load_i32(138276);
+      store_i32(138276, l2);
       p0 = (p0 === 128608 ? 1 : 0);
     }
     if (((g1 ? l0 : 0) === 0)) {
@@ -6650,14 +7284,22 @@ function reflect_PointerTo(p0, p1) {
       p0 = reflect_pointerTo(p0);
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l2 + 16) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l2], ["i32", 12, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -6694,7 +7336,11 @@ function runtime_interfaceTypeAssert(p0) {
 function _reflect_Value_Bool(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, l1, l0] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 4);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -6702,10 +7348,13 @@ function _reflect_Value_Bool(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l0 = g0;
+      l0 = ((g0 - 16) | 0);
+      g0 = l0;
       store_i32(l0, 0, 12);
       store_i64(l0, 2n, 4);
+      l1 = load_i32(138276);
+      store_i32(138276, l0);
+      store_i32(l0, l1);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -6748,14 +7397,21 @@ function _reflect_Value_Bool(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l0 + 16) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   p1 = l2147483644;
-  asyncify_unwind(p1, 12, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l0]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, l1, 4);
+  store_i32(p1, l0, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -6763,7 +7419,15 @@ function _reflect_Value_Bool(p0, p1, p2) {
 function _reflect_Value_Bytes(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l4, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -6771,10 +7435,13 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 0);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i32(l1, 9, 4);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 8) | 0), ((l1 + 8) | 0) + 36);
+      l4 = load_i32(138276);
+      store_i32(l1, l4);
+      store_i32(138276, l1);
       l2 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -6954,7 +7621,17 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l4]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l4, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // interface:{Align:func:{}{basic:int},AssignableTo:func:{named:reflect.Type}{basic:bool},Bits:func:{}{basic:int},ChanDir:func:{}{named:reflect.ChanDir},Comparable:func:{}{basic:bool},ConvertibleTo:func:{named:reflect.Type}{basic:bool},Elem:func:{}{named:reflect.Type},Field:func:{basic:int}{named:reflect.StructField},FieldAlign:func:{}{basic:int},FieldByIndex:func:{slice:basic:int}{named:reflect.StructField},FieldByName:func:{basic:string}{named:reflect.StructField,basic:bool},FieldByNameFunc:func:{func:{basic:string}{basic:bool}}{named:reflect.StructField,basic:bool},Implements:func:{named:reflect.Type}{basic:bool},In:func:{basic:int}{named:reflect.Type},IsVariadic:func:{}{basic:bool},Key:func:{}{named:reflect.Type},Kind:func:{}{named:reflect.Kind},Len:func:{}{basic:int},Method:func:{basic:int}{named:reflect.Method},MethodByName:func:{basic:string}{named:reflect.Method,basic:bool},Name:func:{}{basic:string},NumField:func:{}{basic:int},NumIn:func:{}{basic:int},NumMethod:func:{}{basic:int},NumOut:func:{}{basic:int},Out:func:{basic:int}{named:reflect.Type},OverflowComplex:func:{basic:complex128}{basic:bool},OverflowFloat:func:{basic:float64}{basic:bool},OverflowInt:func:{basic:int64}{basic:bool},OverflowUint:func:{basic:uint64}{basic:bool},PkgPath:func:{}{basic:string},Size:func:{}{basic:uintptr},String:func:{}{basic:string}}.Elem$invoke
@@ -7006,7 +7683,11 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
 function _reflect_Value_Float(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, l1, l0] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 4);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -7014,10 +7695,13 @@ function _reflect_Value_Float(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l0 = g0;
+      l0 = ((g0 - 16) | 0);
+      g0 = l0;
       store_i32(l0, 0, 12);
       store_i64(l0, 2n, 4);
+      l1 = load_i32(138276);
+      store_i32(138276, l0);
+      store_i32(l0, l1);
       block_4: {
         if (((p0 === 0) | (p0 & 3))) break block_4;
         try {
@@ -7041,7 +7725,8 @@ function _reflect_Value_Float(p0, p1, p2) {
           l2147483644 = load_f64(p1);
           return l2147483644;
         } finally {
-          deferCleanup(l1, 16);
+          store_i32(138276, l1);
+          g0 = ((l0 + 16) | 0);
         }
       }
     }
@@ -7073,7 +7758,13 @@ function _reflect_Value_Float(p0, p1, p2) {
     l2147483645 = 0;
   }
   p1 = l2147483645;
-  asyncify_unwind(p1, 12, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l0]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, l1, 4);
+  store_i32(p1, l0, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0;
 }
 
@@ -7081,7 +7772,13 @@ function _reflect_Value_Float(p0, p1, p2) {
 function _reflect_Value_Uint(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l4, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i64", 16], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l4 = load_i64(p1, 16);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -7089,10 +7786,13 @@ function _reflect_Value_Uint(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 0, 12);
       store_i64(l1, 2n, 4);
+      l0 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l0);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -7175,14 +7875,23 @@ function _reflect_Value_Uint(p0, p1, p2) {
     }
     l4 = l2147483644;
     if ((g1 === 0)) {
-      deferCleanup(l0, 16);
+      store_i32(138276, l0);
+      g0 = ((l1 + 16) | 0);
       return l4;
     }
     throw new Error('unreachable');
     l2147483645 = 0;
   }
   p2 = l2147483645;
-  asyncify_unwind(p2, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i64", 16, l4]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, l0, 8);
+  store_i32(p2, l1, 12);
+  store_i64(p2, l4, 16);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0n;
 }
 
@@ -7190,7 +7899,13 @@ function _reflect_Value_Uint(p0, p1, p2) {
 function _reflect_Value_Int(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l4, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i64", 16], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l4 = load_i64(p1, 16);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -7198,10 +7913,13 @@ function _reflect_Value_Int(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 0, 12);
       store_i64(l1, 2n, 4);
+      l0 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l0);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -7284,14 +8002,23 @@ function _reflect_Value_Int(p0, p1, p2) {
     }
     l4 = l2147483644;
     if ((g1 === 0)) {
-      deferCleanup(l0, 16);
+      store_i32(138276, l0);
+      g0 = ((l1 + 16) | 0);
       return l4;
     }
     throw new Error('unreachable');
     l2147483645 = 0;
   }
   p2 = l2147483645;
-  asyncify_unwind(p2, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i64", 16, l4]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, l0, 8);
+  store_i32(p2, l1, 12);
+  store_i64(p2, l4, 16);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0n;
 }
 
@@ -7299,7 +8026,14 @@ function _reflect_Value_Int(p0, p1, p2) {
 function _reflect_Value_Complex(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, l0, l1, l4, l5, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i64", 16], ["i64", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l4 = load_f64(p1, 16);
+    l5 = load_f64(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -7307,10 +8041,13 @@ function _reflect_Value_Complex(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 0, 12);
       store_i64(l1, 2n, 4);
+      l0 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l0);
       l3 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -7372,14 +8109,28 @@ function _reflect_Value_Complex(p0, p1, p2) {
     l2147483644 = 0;
   }
   p2 = l2147483644;
-  asyncify_unwind(p2, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i64", 16, l4], ["i64", 24, l5]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, l0, 8);
+  store_i32(p2, l1, 12);
+  store_f64(p2, l4, 16);
+  store_f64(p2, l5, 24);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // interface:{Align:func:{}{basic:int},AssignableTo:func:{named:reflect.Type}{basic:bool},Bits:func:{}{basic:int},ChanDir:func:{}{named:reflect.ChanDir},Comparable:func:{}{basic:bool},ConvertibleTo:func:{named:reflect.Type}{basic:bool},Elem:func:{}{named:reflect.Type},Field:func:{basic:int}{named:reflect.StructField},FieldAlign:func:{}{basic:int},FieldByIndex:func:{slice:basic:int}{named:reflect.StructField},FieldByName:func:{basic:string}{named:reflect.StructField,basic:bool},FieldByNameFunc:func:{func:{basic:string}{basic:bool}}{named:reflect.StructField,basic:bool},Implements:func:{named:reflect.Type}{basic:bool},In:func:{basic:int}{named:reflect.Type},IsVariadic:func:{}{basic:bool},Key:func:{}{named:reflect.Type},Kind:func:{}{named:reflect.Kind},Len:func:{}{basic:int},Method:func:{basic:int}{named:reflect.Method},MethodByName:func:{basic:string}{named:reflect.Method,basic:bool},Name:func:{}{basic:string},NumField:func:{}{basic:int},NumIn:func:{}{basic:int},NumMethod:func:{}{basic:int},NumOut:func:{}{basic:int},Out:func:{basic:int}{named:reflect.Type},OverflowComplex:func:{basic:complex128}{basic:bool},OverflowFloat:func:{basic:float64}{basic:bool},OverflowInt:func:{basic:int64}{basic:bool},OverflowUint:func:{basic:uint64}{basic:bool},PkgPath:func:{}{basic:string},Size:func:{}{basic:uintptr},String:func:{}{basic:string}}.String$invoke
 function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l0 = load_i32(l0, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -7425,14 +8176,34 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (reflect.Value).IsZero
 function _reflect_Value_IsZero(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l10 = 0n, l11 = 0, l12 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l3, l2, l5, l6, l7, l9, l8, l11, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 36], ["i32", 44], ["i64", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    l6 = load_i32(p1, 28);
+    l7 = load_i32(p1, 32);
+    l9 = load_i64(p1, 36);
+    l8 = load_i32(p1, 44);
+    l11 = load_f64(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -7440,10 +8211,13 @@ function _reflect_Value_IsZero(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(160, 96);
-      l0 = g0;
+      l0 = ((g0 - 160) | 0);
+      g0 = l0;
       store_i32(l0, 13, 100);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 104) | 0), ((l0 + 104) | 0) + 52);
+      l8 = load_i32(138276);
+      store_i32(l0, l8, 96);
+      store_i32(138276, ((l0 + 96) | 0));
       l2 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -7743,14 +8517,30 @@ function _reflect_Value_IsZero(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l8, 160);
+      store_i32(138276, l8);
+      g0 = ((l0 + 160) | 0);
       return l2;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l3], ["i32", 20, l2], ["i32", 24, l5], ["i32", 28, l6], ["i32", 32, l7], ["i64", 36, l9], ["i32", 44, l8], ["i64", 48, l11]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l2, 20);
+  store_i32(l1, l5, 24);
+  store_i32(l1, l6, 28);
+  store_i32(l1, l7, 32);
+  store_i64(l1, l9, 36);
+  store_i32(l1, l8, 44);
+  store_f64(l1, l11, 48);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
   return 0;
 }
 
@@ -7758,7 +8548,21 @@ function _reflect_Value_IsZero(p0, p1, p2) {
 function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l2, l3, l4, l6, l7, l8, l9, l10, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l6 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    l10 = load_i32(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -7766,11 +8570,14 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(112, 40);
-      l0 = g0;
+      l0 = ((g0 - 112) | 0);
+      g0 = l0;
       store_i32(l0, 15, 44);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 48) | 0), ((l0 + 48) | 0) + 60);
+      l6 = load_i32(138276);
+      store_i32(l0, l6, 40);
       l2 = ((l0 + 40) | 0);
+      store_i32(138276, l2);
       p3 = (p3 !== 128608 ? 1 : 0);
     }
     if ((p3 ? g1 : 1)) {
@@ -7843,7 +8650,23 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l2], ["i32", 24, l3], ["i32", 28, l4], ["i32", 32, l6], ["i32", 36, l7], ["i32", 40, l8], ["i32", 44, l9], ["i32", 48, l10]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l0, 16);
+  store_i32(l1, l2, 20);
+  store_i32(l1, l3, 24);
+  store_i32(l1, l4, 28);
+  store_i32(l1, l6, 32);
+  store_i32(l1, l7, 36);
+  store_i32(l1, l8, 40);
+  store_i32(l1, l9, 44);
+  store_i32(l1, l10, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // runtime.stringEqual
@@ -7871,7 +8694,18 @@ function runtime_stringEqual(p0, p1, p2, p3) {
 function _reflect_Value_MapRange(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l2, l3, l4, l6, l7, l8, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    l6 = load_i32(p1, 28);
+    l7 = load_i32(p1, 32);
+    l8 = load_i32(p1, 36);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -7879,13 +8713,16 @@ function _reflect_Value_MapRange(p0, p1, p2) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(48, 8);
-      l3 = g0;
+      l3 = ((g0 - 48) | 0);
+      g0 = l3;
       store_i64(((l3 + 24) | 0), 0n);
       store_i64(((l3 + 32) | 0), 0n);
       store_i32(((l3 + 40) | 0), 0);
       store_i64(l3, 0n, 16);
       store_i32(l3, 7, 12);
+      l7 = load_i32(138276);
+      store_i32(138276, ((l3 + 8) | 0));
+      store_i32(l3, l7, 8);
       l2 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -8044,14 +8881,28 @@ function _reflect_Value_MapRange(p0, p1, p2) {
       store_i32(l0, p0);
       store_i8(l0, l6, 41);
       store_i32(l0, l2, 12);
-      deferCleanup(l7, 48);
+      store_i32(138276, l7);
+      g0 = ((l3 + 48) | 0);
       return l0;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l6], ["i32", 32, l7], ["i32", 36, l8]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l4, 24);
+  store_i32(l1, l6, 28);
+  store_i32(l1, l7, 32);
+  store_i32(l1, l8, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
   return 0;
 }
 
@@ -8059,7 +8910,13 @@ function _reflect_Value_MapRange(p0, p1, p2) {
 function _reflect_Value_Pointer(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l1] = asyncify_rewind(20, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    l2 = load_i32(l1, 12);
+    l1 = load_i32(l1, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -8067,8 +8924,10 @@ function _reflect_Value_Pointer(p0, p1, p2) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
+      l1 = load_i32(138276);
+      store_i32(138276, l2);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -8078,14 +8937,23 @@ function _reflect_Value_Pointer(p0, p1, p2) {
       p2 = _reflect_Value_UnsafePointer(p0, p1, p2);
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l2 + 16) | 0);
       return p2;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l2], ["i32", 16, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l2, 12);
+  store_i32(l0, l1, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -8093,7 +8961,14 @@ function _reflect_Value_Pointer(p0, p1, p2) {
 function _reflect_Value_String(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0, l3, l2] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    l0 = load_i32(l2, 12);
+    l3 = load_i32(l2, 16);
+    l2 = load_i32(l2, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -8101,10 +8976,13 @@ function _reflect_Value_String(p0, p1, p2) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(48, 24);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       store_i64(l0, 0n, 36);
       store_i64(l0, 3n, 28);
+      l2 = load_i32(138276);
+      store_i32(138276, ((l0 + 24) | 0));
+      store_i32(l0, l2, 24);
       l3 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -8168,14 +9046,31 @@ function _reflect_Value_String(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l3], ["i32", 20, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l2, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // (*reflect.MapIter).Key
 function _reflect_MapIter_Key(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, p1, l0, l1, l4, l5, l3] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    p1 = load_i32(l3, 4);
+    l0 = load_i32(l3, 8);
+    l1 = load_i32(l3, 12);
+    l4 = load_i32(l3, 16);
+    l5 = load_i32(l3, 20);
+    l3 = load_i32(l3, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -8275,14 +9170,32 @@ function _reflect_MapIter_Key(p0, p1) {
     l2147483646 = 0;
   }
   l2 = l2147483646;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l3]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l1, 12);
+  store_i32(l2, l4, 16);
+  store_i32(l2, l5, 20);
+  store_i32(l2, l3, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*reflect.MapIter).Next
 function _reflect_MapIter_Next(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l1, l3, l5, l6, l7, l0] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l5 = load_i32(l0, 16);
+    l6 = load_i32(l0, 20);
+    l7 = load_i32(l0, 24);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -8290,10 +9203,13 @@ function _reflect_MapIter_Next(p0) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(80, 16);
-      l1 = g0;
+      l1 = ((g0 - 80) | 0);
+      g0 = l1;
       store_i32(l1, 14, 20);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 28) | 0), ((l1 + 28) | 0) + 52);
+      l7 = load_i32(138276);
+      store_i32(l1, l7, 16);
+      store_i32(138276, ((l1 + 16) | 0));
       l0 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -8401,7 +9317,17 @@ function _reflect_MapIter_Next(p0) {
     l2147483646 = 0;
   }
   l2 = l2147483646;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l5], ["i32", 20, l6], ["i32", 24, l7]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l0, 4);
+  store_i32(l2, l1, 8);
+  store_i32(l2, l3, 12);
+  store_i32(l2, l5, 16);
+  store_i32(l2, l6, 20);
+  store_i32(l2, l7, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
   return 0;
 }
 
@@ -8409,7 +9335,19 @@ function _reflect_MapIter_Next(p0) {
 function runtime_hashmapNext(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l3, l1, l4, l5, l7, l8, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -8417,10 +9355,13 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
       l6 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(80, 0);
-      l1 = g0;
+      l1 = ((g0 - 80) | 0);
+      g0 = l1;
       store_i32(l1, 18, 4);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 12) | 0), ((l1 + 12) | 0) + 68);
+      l7 = load_i32(138276);
+      store_i32(l1, l7);
+      store_i32(138276, l1);
       l4 = 0;
       l0 = ((p0 === 0) ? 1 : 0);
     }
@@ -8557,7 +9498,8 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l7, 80);
+        store_i32(138276, l7);
+        g0 = ((l1 + 80) | 0);
         return l4;
       }
     }
@@ -8575,7 +9517,21 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l3], ["i32", 24, l1], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l7], ["i32", 40, l8]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, l0, 16);
+  store_i32(l2, l3, 20);
+  store_i32(l2, l1, 24);
+  store_i32(l2, l4, 28);
+  store_i32(l2, l5, 32);
+  store_i32(l2, l7, 36);
+  store_i32(l2, l8, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
   return 0;
 }
 
@@ -8583,7 +9539,15 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
 function _reflect_MapIter_Value(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l1, l3, l4, l5, l2] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    l1 = load_i32(l2, 8);
+    l3 = load_i32(l2, 12);
+    l4 = load_i32(l2, 16);
+    l5 = load_i32(l2, 20);
+    l2 = load_i32(l2, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -8591,11 +9555,14 @@ function _reflect_MapIter_Value(p0, p1) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 24);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 40) | 0), 0n);
       store_i64(l1, 0n, 32);
       store_i32(l1, 4, 28);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l1 + 24) | 0));
+      store_i32(l1, l4, 24);
       l3 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -8655,7 +9622,17 @@ function _reflect_MapIter_Value(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l2]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l1, 8);
+  store_i32(l0, l3, 12);
+  store_i32(l0, l4, 16);
+  store_i32(l0, l5, 20);
+  store_i32(l0, l2, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // interface:{Align:func:{}{basic:int},AssignableTo:func:{named:reflect.Type}{basic:bool},Bits:func:{}{basic:int},ChanDir:func:{}{named:reflect.ChanDir},Comparable:func:{}{basic:bool},ConvertibleTo:func:{named:reflect.Type}{basic:bool},Elem:func:{}{named:reflect.Type},Field:func:{basic:int}{named:reflect.StructField},FieldAlign:func:{}{basic:int},FieldByIndex:func:{slice:basic:int}{named:reflect.StructField},FieldByName:func:{basic:string}{named:reflect.StructField,basic:bool},FieldByNameFunc:func:{func:{basic:string}{basic:bool}}{named:reflect.StructField,basic:bool},Implements:func:{named:reflect.Type}{basic:bool},In:func:{basic:int}{named:reflect.Type},IsVariadic:func:{}{basic:bool},Key:func:{}{named:reflect.Type},Kind:func:{}{named:reflect.Kind},Len:func:{}{basic:int},Method:func:{basic:int}{named:reflect.Method},MethodByName:func:{basic:string}{named:reflect.Method,basic:bool},Name:func:{}{basic:string},NumField:func:{}{basic:int},NumIn:func:{}{basic:int},NumMethod:func:{}{basic:int},NumOut:func:{}{basic:int},Out:func:{basic:int}{named:reflect.Type},OverflowComplex:func:{basic:complex128}{basic:bool},OverflowFloat:func:{basic:float64}{basic:bool},OverflowInt:func:{basic:int64}{basic:bool},OverflowUint:func:{basic:uint64}{basic:bool},PkgPath:func:{}{basic:string},Size:func:{}{basic:uintptr},String:func:{}{basic:string}}.Key$invoke
@@ -8707,7 +9684,21 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
 function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0n, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, l0, l1, l2, l3, l11, l6, l7, l8, l9, l10, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i64", 28], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    l11 = load_i64(p1, 28);
+    l6 = load_i32(p1, 36);
+    l7 = load_i32(p1, 40);
+    l8 = load_i32(p1, 44);
+    l9 = load_i32(p1, 48);
+    l10 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -8715,10 +9706,13 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l9 = deferSetup(624, 328);
-      l0 = g0;
+      l0 = ((g0 - 624) | 0);
+      g0 = l0;
       store_i32(l0, 65, 332);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 336) | 0), ((l0 + 336) | 0) + 260);
+      l9 = load_i32(138276);
+      store_i32(l0, l9, 328);
+      store_i32(138276, ((l0 + 328) | 0));
       l1 = (p2 !== 128824 ? 1 : 0);
     }
     block_4: {
@@ -9494,7 +10488,23 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
     l2147483644 = 0;
   }
   l5 = l2147483644;
-  asyncify_unwind(l5, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3], ["i64", 28, l11], ["i32", 36, l6], ["i32", 40, l7], ["i32", 44, l8], ["i32", 48, l9], ["i32", 52, l10]);
+  store_i32(load_i32(g2), l5);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l5 = load_i32(g2);
+  store_i32(l5, p0);
+  store_i32(l5, p1, 4);
+  store_i32(l5, p2, 8);
+  store_i32(l5, l0, 12);
+  store_i32(l5, l1, 16);
+  store_i32(l5, l2, 20);
+  store_i32(l5, l3, 24);
+  store_i64(l5, l11, 28);
+  store_i32(l5, l6, 36);
+  store_i32(l5, l7, 40);
+  store_i32(l5, l8, 44);
+  store_i32(l5, l9, 48);
+  store_i32(l5, l10, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
 }
 
 // (syscall/js.Type).String
@@ -9591,7 +10601,15 @@ function _syscall_js_Type_String(p0, p1) {
 function _syscall_js_Error_Error(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0, l3, l4, l2] = asyncify_rewind(32, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i64(l2, 4);
+    p2 = load_i32(l2, 12);
+    l0 = load_i32(l2, 16);
+    l3 = load_i32(l2, 20);
+    l4 = load_i32(l2, 24);
+    l2 = load_i32(l2, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -9652,14 +10670,37 @@ function _syscall_js_Error_Error(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, l0], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i64(l1, p1, 4);
+  store_i32(l1, p2, 12);
+  store_i32(l1, l0, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l4, 24);
+  store_i32(l1, l2, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // strconv.appendQuotedWith
 function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l3, l4, l5, l7, p1] = asyncify_rewind(48, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -9667,10 +10708,13 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
       l6 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(160, 112);
-      l0 = g0;
+      l0 = ((g0 - 160) | 0);
+      g0 = l0;
       store_i32(l0, 10, 116);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 120) | 0), ((l0 + 120) | 0) + 40);
+      l7 = load_i32(138276);
+      store_i32(l0, l7, 112);
+      store_i32(138276, ((l0 + 112) | 0));
       l1 = (p2 >= p4 ? 1 : 0);
     }
     block_4: {
@@ -9859,14 +10903,36 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l2 = l2147483641;
-  asyncify_unwind(l2, 48, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l7]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, l0, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l3, 32);
+  store_i32(l2, l4, 36);
+  store_i32(l2, l5, 40);
+  store_i32(l2, l7, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // (encoding/base64.CorruptInputError).Error
 function _encoding_base64_CorruptInputError_Error(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l0, l4, l3, l2] = asyncify_rewind(28, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i64(l2, 4);
+    l0 = load_i32(l2, 12);
+    l4 = load_i32(l2, 16);
+    l3 = load_i32(l2, 20);
+    l2 = load_i32(l2, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -9874,10 +10940,13 @@ function _encoding_base64_CorruptInputError_Error(p0, p1) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 16);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       store_i32(l0, 0, 28);
       store_i32(l0, 2, 20);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l0 + 16) | 0));
+      store_i32(l0, l4, 16);
       l3 = ((l0 + 8) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
@@ -9910,7 +10979,16 @@ function _encoding_base64_CorruptInputError_Error(p0, p1) {
     l2147483645 = 0;
   }
   l1 = l2147483645;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, l0], ["i32", 16, l4], ["i32", 20, l3], ["i32", 24, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i64(l1, p1, 4);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l4, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l2, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*internal/task.Stack).Push
@@ -10026,7 +11104,10 @@ function internal_task_Pause() {
 function runtime_runtimePanic(p0, p1) {
   let l0 = 0, l2147483645, l2147483646;
   if (g1 === 2) {
-    [p0, p1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10049,14 +11130,26 @@ function runtime_runtimePanic(p0, p1) {
     l2147483646 = 0;
   }
   l0 = l2147483646;
-  asyncify_unwind(l0, 8, ["i32", 0, p0], ["i32", 4, p1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // internal/task.start
 function internal_task_start(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l3, l5, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l5 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10064,12 +11157,15 @@ function internal_task_start(p0, p1) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 8);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       l5 = ((l0 + 28) | 0);
       store_i32(l5, 0);
       store_i64(l0, 0n, 20);
+      l3 = load_i32(138276);
       l1 = ((l0 + 8) | 0);
+      store_i32(138276, l1);
+      store_i32(l0, l3, 8);
       store_i32(l0, 4, 12);
     }
     if (((g1 ? l4 : 0) === 0)) {
@@ -10109,13 +11205,23 @@ function internal_task_start(p0, p1) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l3, 32);
+      store_i32(138276, l3);
+      g0 = ((l0 + 32) | 0);
     }
     return;
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l3], ["i32", 20, l5]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l1, 12);
+  store_i32(l2, l3, 16);
+  store_i32(l2, l5, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // runtime.scheduleTask
@@ -10162,7 +11268,15 @@ function runtime_scheduleTask(p0) {
 function _sync_Map_Load(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l2, l3, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10170,10 +11284,13 @@ function _sync_Map_Load(p0, p1, p2, p3) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(48, 24);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       store_i64(l0, 0n, 36);
       store_i64(l0, 3n, 28);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l0 + 24) | 0));
+      store_i32(l0, l3, 24);
       l2 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -10227,14 +11344,34 @@ function _sync_Map_Load(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l2], ["i32", 24, l3]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l0, 16);
+  store_i32(l1, l2, 20);
+  store_i32(l1, l3, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // runtime.hashmapInterfaceGet
 function runtime_hashmapInterfaceGet(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l1, l2, l3, l4, p1] = asyncify_rewind(36, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l1 = load_i32(p1, 20);
+    l2 = load_i32(p1, 24);
+    l3 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10242,9 +11379,12 @@ function runtime_hashmapInterfaceGet(p0, p1, p2, p3, p4) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 2, 4);
+      l4 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l4);
       l3 = 0;
     }
     if (((g1 ? l5 : 0) === 0)) {
@@ -10284,14 +11424,27 @@ function runtime_hashmapInterfaceGet(p0, p1, p2, p3, p4) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l4, 16);
+      store_i32(138276, l4);
+      g0 = ((l1 + 16) | 0);
       return l3;
     }
     throw new Error('unreachable');
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l1], ["i32", 24, l2], ["i32", 28, l3], ["i32", 32, l4]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, l1, 20);
+  store_i32(l0, l2, 24);
+  store_i32(l0, l3, 28);
+  store_i32(l0, l4, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
   return 0;
 }
 
@@ -10299,7 +11452,18 @@ function runtime_hashmapInterfaceGet(p0, p1, p2, p3, p4) {
 function _sync_Map_LoadOrStore(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l3, l5, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10410,14 +11574,36 @@ function _sync_Map_LoadOrStore(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l2 = l2147483641;
-  asyncify_unwind(l2, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l5]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, l0, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l3, 32);
+  store_i32(l2, l5, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // runtime.hashmapMake
 function runtime_hashmapMake(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, l0, l2, l3, l4, l5, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    l5 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10425,11 +11611,14 @@ function runtime_hashmapMake(p0, p1, p2) {
       l6 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 8);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       l0 = 0;
       store_i32(l2, 0, 28);
       store_i32(l2, 4, 12);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l2 + 8) | 0));
+      store_i32(l2, l3, 8);
       block_4: {
         loop_5: while (true) {
           if (l0 === 30) {
@@ -10481,14 +11670,26 @@ function runtime_hashmapMake(p0, p1, p2) {
       store_i32(l0, 8, 12);
       store_i32(l0, l1, 4);
       store_i32(l0, p1);
-      deferCleanup(l3, 32);
+      store_i32(138276, l3);
+      g0 = ((l2 + 32) | 0);
       return l0;
     }
     throw new Error('unreachable');
     l2147483645 = 0;
   }
   l1 = l2147483645;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l5]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l4, 24);
+  store_i32(l1, l5, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -10496,7 +11697,16 @@ function runtime_hashmapMake(p0, p1, p2) {
 function runtime_hashmapInterfaceSet(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l4, l5, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    l5 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10504,9 +11714,12 @@ function runtime_hashmapInterfaceSet(p0, p1, p2, p3) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 2, 4);
+      l4 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l4);
     }
     if (((g1 ? l3 : 0) === 0)) {
       if (g1 === 1) {
@@ -10551,20 +11764,35 @@ function runtime_hashmapInterfaceSet(p0, p1, p2, p3) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l4, 16);
+      store_i32(138276, l4);
+      g0 = ((l1 + 16) | 0);
     }
     return;
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l4], ["i32", 28, l5]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l4, 24);
+  store_i32(l0, l5, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // (*sync.Mutex).Lock
 function _sync_Mutex_Lock(p0) {
   let l0 = 0, l1 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l0] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10620,14 +11848,24 @@ function _sync_Mutex_Lock(p0) {
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 8, ["i32", 0, p0], ["i32", 4, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, l0, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // (*sync.Mutex).Unlock
 function _sync_Mutex_Unlock(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l0, l3, l2] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    l0 = load_i32(l2, 4);
+    l3 = load_i32(l2, 8);
+    l2 = load_i32(l2, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -10635,9 +11873,12 @@ function _sync_Mutex_Unlock(p0) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(16, 0);
-      l3 = g0;
+      l3 = ((g0 - 16) | 0);
+      g0 = l3;
       store_i64(l3, 1n, 4);
+      l2 = load_i32(138276);
+      store_i32(138276, l3);
+      store_i32(l3, l2);
       l0 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -10696,20 +11937,34 @@ function _sync_Mutex_Unlock(p0) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l2, 16);
+      store_i32(138276, l2);
+      g0 = ((l3 + 16) | 0);
     }
     return;
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 16, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l3], ["i32", 12, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, l0, 4);
+  store_i32(l1, l3, 8);
+  store_i32(l1, l2, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*sync.Once).Do
 function _sync_Once_Do(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l0] = asyncify_rewind(20, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l2 = load_i32(l0, 12);
+    l0 = load_i32(l0, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -10816,14 +12071,30 @@ function _sync_Once_Do(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l2], ["i32", 16, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l0, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
 }
 
 // (*sync.Pool).Get
 function _sync_Pool_Get(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l2, l4, l5, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l4 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -10831,10 +12102,13 @@ function _sync_Pool_Get(p0, p1) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(80, 16);
-      l0 = g0;
+      l0 = ((g0 - 80) | 0);
+      g0 = l0;
       store_i32(l0, 13, 20);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 28) | 0), ((l0 + 28) | 0) + 48);
+      l5 = load_i32(138276);
+      store_i32(l0, l5, 16);
+      store_i32(138276, ((l0 + 16) | 0));
       l1 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -10919,14 +12193,34 @@ function _sync_Pool_Get(p0, p1) {
     l2147483645 = 0;
   }
   l3 = l2147483645;
-  asyncify_unwind(l3, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l4], ["i32", 24, l5]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, l0, 8);
+  store_i32(l3, l1, 12);
+  store_i32(l3, l2, 16);
+  store_i32(l3, l4, 20);
+  store_i32(l3, l5, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*sync.Pool).Put
 function _sync_Pool_Put(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l1, l3, l4, l5, l6, l0] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l1 = load_i32(l0, 12);
+    l3 = load_i32(l0, 16);
+    l4 = load_i32(l0, 20);
+    l5 = load_i32(l0, 24);
+    l6 = load_i32(l0, 28);
+    l0 = load_i32(l0, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -10934,10 +12228,13 @@ function _sync_Pool_Put(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 32);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i32(l1, 0, 44);
       store_i32(l1, 2, 36);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l1 + 32) | 0));
+      store_i32(l1, l4, 32);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -10983,14 +12280,31 @@ function _sync_Pool_Put(p0, p1, p2) {
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1], ["i32", 16, l3], ["i32", 20, l4], ["i32", 24, l5], ["i32", 28, l6], ["i32", 32, l0]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l1, 12);
+  store_i32(l2, l3, 16);
+  store_i32(l2, l4, 20);
+  store_i32(l2, l5, 24);
+  store_i32(l2, l6, 28);
+  store_i32(l2, l0, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // (*sync.WaitGroup).Add
 function _sync_WaitGroup_Add(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l2, l1] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    l2 = load_i32(l1, 8);
+    l1 = load_i32(l1, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -10998,10 +12312,13 @@ function _sync_WaitGroup_Add(p0, p1) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
       store_i32(l2, 0, 12);
       store_i64(l2, 2n, 4);
+      l1 = load_i32(138276);
+      store_i32(138276, l2);
+      store_i32(l2, l1);
       l3 = (p1 <= 0 ? 1 : 0);
     }
     block_4: {
@@ -11078,13 +12395,21 @@ function _sync_WaitGroup_Add(p0, p1) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l2 + 16) | 0);
     }
     return;
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l2], ["i32", 12, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // internal/stringslite.IndexByte
@@ -11148,7 +12473,22 @@ function internal_stringslite_IndexByte(p0, p1, p2) {
 function internal_stringslite_Index(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483643, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l0, l3, l4, l5, l6, l7, l8, l10, l11, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l7 = load_i32(p1, 40);
+    l8 = load_i32(p1, 44);
+    l10 = load_i32(p1, 48);
+    l11 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -11351,7 +12691,24 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l2 = l2147483643;
-  asyncify_unwind(l2, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l0], ["i32", 24, l3], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l6], ["i32", 40, l7], ["i32", 44, l8], ["i32", 48, l10], ["i32", 52, l11]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, l1, 16);
+  store_i32(l2, l0, 20);
+  store_i32(l2, l3, 24);
+  store_i32(l2, l4, 28);
+  store_i32(l2, l5, 32);
+  store_i32(l2, l6, 36);
+  store_i32(l2, l7, 40);
+  store_i32(l2, l8, 44);
+  store_i32(l2, l10, 48);
+  store_i32(l2, l11, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
   return 0;
 }
 
@@ -11359,7 +12716,14 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
 function internal_stringslite_Clone(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l1, l2, l3, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -11367,8 +12731,10 @@ function internal_stringslite_Clone(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(16, 0);
-      l2 = g0;
+      l2 = ((g0 - 16) | 0);
+      g0 = l2;
+      l3 = load_i32(138276);
+      store_i32(138276, l2);
     }
     block_4: {
       if ((g1 === 0)) {
@@ -11413,7 +12779,16 @@ function internal_stringslite_Clone(p0, p1, p2) {
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l3, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // strconv.syntaxError
@@ -11425,7 +12800,18 @@ function strconv_syntaxError(p0, p1, p2, p3) {
 function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l0, l3, l4, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -11433,10 +12819,13 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(352, 296);
-      l0 = g0;
+      l0 = ((g0 - 352) | 0);
+      g0 = l0;
       store_i32(l0, 11, 300);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 304) | 0), ((l0 + 304) | 0) + 44);
+      l4 = load_i32(138276);
+      store_i32(l0, l4, 296);
+      store_i32(138276, ((l0 + 296) | 0));
       l3 = (p4 === 92 ? 1 : 0);
     }
     block_4: {
@@ -11836,14 +13225,32 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l2 = l2147483640;
-  asyncify_unwind(l2, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l0], ["i32", 32, l3], ["i32", 36, l4]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, p6, 24);
+  store_i32(l2, l0, 28);
+  store_i32(l2, l3, 32);
+  store_i32(l2, l4, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // strconv.IsPrint
 function strconv_IsPrint(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l0, l1, l2] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    l0 = load_i32(l2, 4);
+    l1 = load_i32(l2, 8);
+    l2 = load_i32(l2, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -11959,7 +13366,14 @@ function strconv_IsPrint(p0) {
     l2147483646 = 0;
   }
   l3 = l2147483646;
-  asyncify_unwind(l3, 16, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l1], ["i32", 12, l2]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, l0, 4);
+  store_i32(l3, l1, 8);
+  store_i32(l3, l2, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -12024,7 +13438,14 @@ function strconv_rangeError(p0, p1, p2, p3) {
 function strconv_leftShift(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l0, l2, l3, l4, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    l0 = load_i32(l1, 8);
+    l2 = load_i32(l1, 12);
+    l3 = load_i32(l1, 16);
+    l4 = load_i32(l1, 20);
+    p1 = load_i32(l1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -12157,7 +13578,16 @@ function strconv_leftShift(p0, p1) {
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l4]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, l0, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l4, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // strconv.trim
@@ -12212,7 +13642,16 @@ function strconv_trim(p0) {
 function strconv_rightShift(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l1, l3, l2, l4, l5, l7, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l2 = load_i32(l0, 16);
+    l4 = load_i32(l0, 20);
+    l5 = load_i32(l0, 24);
+    l7 = load_i32(l0, 28);
+    p1 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -12325,14 +13764,32 @@ function strconv_rightShift(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l2], ["i32", 20, l4], ["i32", 24, l5], ["i32", 28, l7]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l1, 8);
+  store_i32(l0, l3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l4, 20);
+  store_i32(l0, l5, 24);
+  store_i32(l0, l7, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // strconv.FormatInt
 function strconv_FormatInt(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l3, l1] = asyncify_rewind(28, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i64(l1, 4);
+    p2 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l3 = load_i32(l1, 20);
+    l1 = load_i32(l1, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -12340,8 +13797,10 @@ function strconv_FormatInt(p0, p1, p2) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(48, 24);
-      l3 = g0;
+      l3 = ((g0 - 48) | 0);
+      g0 = l3;
+      l1 = load_i32(138276);
+      store_i32(138276, ((l3 + 24) | 0));
       l2 = (BigInt.asUintN(64, BigInt(p1)) > BigInt.asUintN(64, BigInt(99n)) ? 1 : 0);
     }
     block_4: {
@@ -12379,14 +13838,35 @@ function strconv_FormatInt(p0, p1, p2) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l3, 20);
+  store_i32(l0, l1, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // strconv.formatBits
 function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l11 = 0n, l2147483639, l2147483640, l2147483641, l2147483642, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p2, p3, p5, l0, l1, l2, l3, l4, l6, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p5 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l2 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l6 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -12394,10 +13874,13 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
       l7 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(112, 96);
-      l1 = g0;
+      l1 = ((g0 - 112) | 0);
+      g0 = l1;
       store_i32(l1, 0, 108);
       store_i64(l1, 2n, 100);
+      l6 = load_i32(138276);
+      store_i32(138276, ((l1 + 96) | 0));
+      store_i32(l1, l6, 96);
       l5 = 65;
       new Uint8Array(memory.buffer).fill(0, ((l1 + 31) | 0), ((l1 + 31) | 0) + 65);
       l2 = (p5 !== 10 ? 1 : 0);
@@ -12579,14 +14062,45 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
     l2147483642 = 0;
   }
   p6 = l2147483642;
-  asyncify_unwind(p6, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p5], ["i32", 20, l0], ["i32", 24, l1], ["i32", 28, l2], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l6]);
+  store_i32(load_i32(g2), p6);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p6 = load_i32(g2);
+  store_i32(p6, p0);
+  store_i32(p6, p1, 4);
+  store_i32(p6, p2, 8);
+  store_i32(p6, p3, 12);
+  store_i32(p6, p5, 16);
+  store_i32(p6, l0, 20);
+  store_i32(p6, l1, 24);
+  store_i32(p6, l2, 28);
+  store_i32(p6, l3, 32);
+  store_i32(p6, l4, 36);
+  store_i32(p6, l6, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // strconv.ParseInt
 function strconv_ParseInt(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0n, l13 = 0n, l14 = 0n, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l2, l12, l3, l13, l5, l6, l7, l8, l9, l10, l11, p1] = asyncify_rewind(72, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i64", 24], ["i32", 32], ["i64", 36], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 72) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l12 = load_i64(p1, 24);
+    l3 = load_i32(p1, 32);
+    l13 = load_i64(p1, 36);
+    l5 = load_i32(p1, 44);
+    l6 = load_i32(p1, 48);
+    l7 = load_i32(p1, 52);
+    l8 = load_i32(p1, 56);
+    l9 = load_i32(p1, 60);
+    l10 = load_i32(p1, 64);
+    l11 = load_i32(p1, 68);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -12594,11 +14108,14 @@ function strconv_ParseInt(p0, p1, p2, p3) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l10 = deferSetup(80, 8);
-      l3 = g0;
+      l3 = ((g0 - 80) | 0);
+      g0 = l3;
       store_i32(l3, 16, 12);
       new Uint8Array(memory.buffer).fill(0, ((l3 + 16) | 0), ((l3 + 16) | 0) + 64);
+      l10 = load_i32(138276);
+      store_i32(l3, l10, 8);
       l2 = ((l3 + 8) | 0);
+      store_i32(138276, l2);
       l8 = 0;
     }
     block_4: {
@@ -12872,14 +14389,40 @@ function strconv_ParseInt(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 72, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l2], ["i64", 24, l12], ["i32", 32, l3], ["i64", 36, l13], ["i32", 44, l5], ["i32", 48, l6], ["i32", 52, l7], ["i32", 56, l8], ["i32", 60, l9], ["i32", 64, l10], ["i32", 68, l11]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l0, 16);
+  store_i32(l1, l2, 20);
+  store_i64(l1, l12, 24);
+  store_i32(l1, l3, 32);
+  store_i64(l1, l13, 36);
+  store_i32(l1, l5, 44);
+  store_i32(l1, l6, 48);
+  store_i32(l1, l7, 52);
+  store_i32(l1, l8, 56);
+  store_i32(l1, l9, 60);
+  store_i32(l1, l10, 64);
+  store_i32(l1, l11, 68);
+  store_i32(g2, ((load_i32(g2) + 72) | 0));
 }
 
 // runtime.interfaceEqual
 function runtime_interfaceEqual(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l1] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l1 = load_i32(l1, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -12887,13 +14430,16 @@ function runtime_interfaceEqual(p0, p1, p2, p3) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 4, 12);
       store_i32(l2, p3, 28);
       store_i32(l2, p2, 24);
       store_i32(l2, p1, 20);
       store_i32(l2, p0, 16);
+      l1 = load_i32(138276);
+      store_i32(138276, ((l2 + 8) | 0));
+      store_i32(l2, l1, 8);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -12903,14 +14449,24 @@ function runtime_interfaceEqual(p0, p1, p2, p3) {
       p3 = runtime_reflectValueEqual(p0, p1, 2, p2, p3, 2);
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 32);
+      store_i32(138276, l1);
+      g0 = ((l2 + 32) | 0);
       return p3;
     }
     throw new Error('unreachable');
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0;
 }
 
@@ -12918,7 +14474,33 @@ function runtime_interfaceEqual(p0, p1, p2, p3) {
 function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0n, l14 = 0n, l15 = 0n, l16 = 0n, l17 = 0n, l18 = 0n, l19 = 0n, l20 = 0n, l2147483639, l2147483640, l2147483641, l2147483642, l2147483643, l2147483644, l2147483645, l2147483646, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653;
   if (g1 === 2) {
-    [p0, p2, p3, p5, p6, p7, l0, l1, l2, l3, l4, l13, l14, l6, l8, l15, l16, l17, l10, l9, l18, l19, l11, l12, p1] = asyncify_rewind(128, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i64", 48], ["i64", 56], ["i32", 64], ["i32", 68], ["i64", 72], ["i64", 80], ["i64", 88], ["i32", 96], ["i32", 100], ["i64", 104], ["i64", 112], ["i32", 120], ["i32", 124], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 128) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p5 = load_i32(p1, 16);
+    p6 = load_i32(p1, 20);
+    p7 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l1 = load_i32(p1, 32);
+    l2 = load_i32(p1, 36);
+    l3 = load_i32(p1, 40);
+    l4 = load_i32(p1, 44);
+    l13 = load_i64(p1, 48);
+    l14 = load_i64(p1, 56);
+    l6 = load_i32(p1, 64);
+    l8 = load_i32(p1, 68);
+    l15 = load_i64(p1, 72);
+    l16 = load_i64(p1, 80);
+    l17 = load_i64(p1, 88);
+    l10 = load_i32(p1, 96);
+    l9 = load_i32(p1, 100);
+    l18 = load_i64(p1, 104);
+    l19 = load_i64(p1, 112);
+    l11 = load_i32(p1, 120);
+    l12 = load_i32(p1, 124);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -12926,11 +14508,14 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l12 = deferSetup(656, 488);
-      l0 = g0;
+      l0 = ((g0 - 656) | 0);
+      g0 = l0;
       store_i32(l0, 33, 492);
       l8 = 0;
       new Uint8Array(memory.buffer).fill(0, ((l0 + 496) | 0), ((l0 + 496) | 0) + 132);
+      l12 = load_i32(138276);
+      store_i32(l0, l12, 488);
+      store_i32(138276, ((l0 + 488) | 0));
       l2 = (p7 === 64 ? 1 : 0);
     }
     block_4: {
@@ -14303,14 +15888,54 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
     l2147483639 = 0;
   }
   l7 = l2147483639;
-  asyncify_unwind(l7, 128, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p5], ["i32", 20, p6], ["i32", 24, p7], ["i32", 28, l0], ["i32", 32, l1], ["i32", 36, l2], ["i32", 40, l3], ["i32", 44, l4], ["i64", 48, l13], ["i64", 56, l14], ["i32", 64, l6], ["i32", 68, l8], ["i64", 72, l15], ["i64", 80, l16], ["i64", 88, l17], ["i32", 96, l10], ["i32", 100, l9], ["i64", 104, l18], ["i64", 112, l19], ["i32", 120, l11], ["i32", 124, l12]);
+  store_i32(load_i32(g2), l7);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l7 = load_i32(g2);
+  store_i32(l7, p0);
+  store_i32(l7, p1, 4);
+  store_i32(l7, p2, 8);
+  store_i32(l7, p3, 12);
+  store_i32(l7, p5, 16);
+  store_i32(l7, p6, 20);
+  store_i32(l7, p7, 24);
+  store_i32(l7, l0, 28);
+  store_i32(l7, l1, 32);
+  store_i32(l7, l2, 36);
+  store_i32(l7, l3, 40);
+  store_i32(l7, l4, 44);
+  store_i64(l7, l13, 48);
+  store_i64(l7, l14, 56);
+  store_i32(l7, l6, 64);
+  store_i32(l7, l8, 68);
+  store_i64(l7, l15, 72);
+  store_i64(l7, l16, 80);
+  store_i64(l7, l17, 88);
+  store_i32(l7, l10, 96);
+  store_i32(l7, l9, 100);
+  store_i64(l7, l18, 104);
+  store_i64(l7, l19, 112);
+  store_i32(l7, l11, 120);
+  store_i32(l7, l12, 124);
+  store_i32(g2, ((load_i32(g2) + 128) | 0));
 }
 
 // strconv.ryuDigits
 function strconv_ryuDigits(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p5, l0, l2, l3, l4, l5, l6, l7, l8, p4] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p4 = load_i32(g2);
+    p0 = load_i32(p4);
+    p5 = load_i32(p4, 8);
+    l0 = load_i32(p4, 12);
+    l2 = load_i32(p4, 16);
+    l3 = load_i32(p4, 20);
+    l4 = load_i32(p4, 24);
+    l5 = load_i32(p4, 28);
+    l6 = load_i32(p4, 32);
+    l7 = load_i32(p4, 36);
+    l8 = load_i32(p4, 40);
+    p4 = load_i32(p4, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -14482,7 +16107,21 @@ function strconv_ryuDigits(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 44, ["i32", 0, p0], ["i32", 4, p4], ["i32", 8, p5], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l5], ["i32", 32, l6], ["i32", 36, l7], ["i32", 40, l8]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p4, 4);
+  store_i32(l1, p5, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l4, 24);
+  store_i32(l1, l5, 28);
+  store_i32(l1, l6, 32);
+  store_i32(l1, l7, 36);
+  store_i32(l1, l8, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // strconv.mult64bitPow10
@@ -14616,7 +16255,16 @@ function strconv_mult128bitPow10(p0, p1, p2, p3) {
 function strconv_formatDecimal(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l5 = 0n, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l1, l4, l5, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i64", 28], ["i64", 36], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p2 = load_i32(l0, 12);
+    p3 = load_i32(l0, 16);
+    p4 = load_i32(l0, 20);
+    l1 = load_i32(l0, 24);
+    l4 = load_i64(l0, 28);
+    l5 = load_i64(l0, 36);
+    p1 = load_i64(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -14740,14 +16388,43 @@ function strconv_formatDecimal(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 44, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, l1], ["i64", 28, l4], ["i64", 36, l5]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, p3, 16);
+  store_i32(l0, p4, 20);
+  store_i32(l0, l1, 24);
+  store_i64(l0, l4, 28);
+  store_i64(l0, l5, 36);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // strconv.formatDigits
 function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483634, l2147483635, l2147483636;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, l0, l3, l4, l2] = asyncify_rewind(68, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64]);
+    store_i32(g2, ((load_i32(g2) - 68) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    p3 = load_i32(l2, 12);
+    p4 = load_i32(l2, 16);
+    p5 = load_i32(l2, 20);
+    p6 = load_i32(l2, 24);
+    p7 = load_i32(l2, 28);
+    p8 = load_i32(l2, 32);
+    p9 = load_i32(l2, 36);
+    p10 = load_i32(l2, 40);
+    p11 = load_i32(l2, 44);
+    p12 = load_i32(l2, 48);
+    l0 = load_i32(l2, 52);
+    l3 = load_i32(l2, 56);
+    l4 = load_i32(l2, 60);
+    l2 = load_i32(l2, 64);
   }
   block_1: {
     if (g1 === 2) {
@@ -14755,13 +16432,16 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(112, 80);
-      l0 = g0;
+      l0 = ((g0 - 112) | 0);
+      g0 = l0;
       store_i64(l0, 5n, 84);
       store_i32(l0, p6, 104);
       store_i32(l0, p6, 100);
       store_i32(l0, p6, 96);
       store_i32(l0, p6, 92);
+      l2 = load_i32(138276);
+      store_i32(138276, ((l0 + 80) | 0));
+      store_i32(l0, l2, 80);
       l4 = (p12 & 255);
       l3 = ((l4 - 101) | 0);
     }
@@ -14905,14 +16585,50 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
     l2147483634 = 0;
   }
   l1 = l2147483634;
-  asyncify_unwind(l1, 68, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, p7], ["i32", 32, p8], ["i32", 36, p9], ["i32", 40, p10], ["i32", 44, p11], ["i32", 48, p12], ["i32", 52, l0], ["i32", 56, l3], ["i32", 60, l4], ["i32", 64, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, p7, 28);
+  store_i32(l1, p8, 32);
+  store_i32(l1, p9, 36);
+  store_i32(l1, p10, 40);
+  store_i32(l1, p11, 44);
+  store_i32(l1, p12, 48);
+  store_i32(l1, l0, 52);
+  store_i32(l1, l3, 56);
+  store_i32(l1, l4, 60);
+  store_i32(l1, l2, 64);
+  store_i32(g2, ((load_i32(g2) + 68) | 0));
 }
 
 // strconv.fmtE
 function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483635, l2147483636;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, l0, l3, l2] = asyncify_rewind(60, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56]);
+    store_i32(g2, ((load_i32(g2) - 60) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    p3 = load_i32(l2, 12);
+    p4 = load_i32(l2, 16);
+    p5 = load_i32(l2, 20);
+    p6 = load_i32(l2, 24);
+    p7 = load_i32(l2, 28);
+    p8 = load_i32(l2, 32);
+    p9 = load_i32(l2, 36);
+    p10 = load_i32(l2, 40);
+    p11 = load_i32(l2, 44);
+    l0 = load_i32(l2, 48);
+    l3 = load_i32(l2, 52);
+    l2 = load_i32(l2, 56);
   }
   block_1: {
     if (g1 === 2) {
@@ -14920,12 +16636,15 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(240, 176);
-      l0 = g0;
+      l0 = ((g0 - 240) | 0);
+      g0 = l0;
       store_i32(l0, 14, 180);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 184) | 0), ((l0 + 184) | 0) + 56);
       store_i32(l0, p5, 192);
+      l2 = load_i32(138276);
+      store_i32(l0, l2, 176);
       l3 = ((l0 + 176) | 0);
+      store_i32(138276, l3);
       p4 = (((p4 & 1) === 0) ? 1 : 0);
     }
     block_4: {
@@ -15196,14 +16915,47 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
     l2147483635 = 0;
   }
   l1 = l2147483635;
-  asyncify_unwind(l1, 60, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, p7], ["i32", 32, p8], ["i32", 36, p9], ["i32", 40, p10], ["i32", 44, p11], ["i32", 48, l0], ["i32", 52, l3], ["i32", 56, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, p7, 28);
+  store_i32(l1, p8, 32);
+  store_i32(l1, p9, 36);
+  store_i32(l1, p10, 40);
+  store_i32(l1, p11, 44);
+  store_i32(l1, l0, 48);
+  store_i32(l1, l3, 52);
+  store_i32(l1, l2, 56);
+  store_i32(g2, ((load_i32(g2) + 60) | 0));
 }
 
 // strconv.fmtF
 function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483636, l2147483637;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, l0, l3, l2] = asyncify_rewind(56, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    p3 = load_i32(l2, 12);
+    p4 = load_i32(l2, 16);
+    p5 = load_i32(l2, 20);
+    p6 = load_i32(l2, 24);
+    p7 = load_i32(l2, 28);
+    p8 = load_i32(l2, 32);
+    p9 = load_i32(l2, 36);
+    p10 = load_i32(l2, 40);
+    l0 = load_i32(l2, 44);
+    l3 = load_i32(l2, 48);
+    l2 = load_i32(l2, 52);
   }
   block_1: {
     if (g1 === 2) {
@@ -15211,12 +16963,15 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(176, 112);
-      l0 = g0;
+      l0 = ((g0 - 176) | 0);
+      g0 = l0;
       store_i32(l0, 13, 116);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 120) | 0), ((l0 + 120) | 0) + 52);
       store_i32(l0, p5, 128);
+      l2 = load_i32(138276);
+      store_i32(l0, l2, 112);
       l3 = ((l0 + 112) | 0);
+      store_i32(138276, l3);
       p4 = (((p4 & 1) === 0) ? 1 : 0);
     }
     block_4: {
@@ -15407,7 +17162,24 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
     l2147483636 = 0;
   }
   l1 = l2147483636;
-  asyncify_unwind(l1, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, p7], ["i32", 32, p8], ["i32", 36, p9], ["i32", 40, p10], ["i32", 44, l0], ["i32", 48, l3], ["i32", 52, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, p7, 28);
+  store_i32(l1, p8, 32);
+  store_i32(l1, p9, 36);
+  store_i32(l1, p10, 40);
+  store_i32(l1, l0, 44);
+  store_i32(l1, l3, 48);
+  store_i32(l1, l2, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
 }
 
 // strconv.divmod1e9
@@ -15426,7 +17198,10 @@ function strconv_divmod1e9(p0, p1) {
 function strconv_ryuDigits32(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483640, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p6] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p6 = load_i32(g2);
+    p0 = load_i32(p6);
+    p6 = load_i32(p6, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -15529,14 +17304,30 @@ function strconv_ryuDigits32(p0, p1, p2, p3, p4, p5, p6) {
     l2147483643 = 0;
   }
   p1 = l2147483643;
-  asyncify_unwind(p1, 8, ["i32", 0, p0], ["i32", 4, p6]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, p6, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // strconv.AppendFloat
 function strconv_AppendFloat(p0, p1, p2, p3, p4, p5, p6, p7) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483639;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, p7, l2, l0] = asyncify_rewind(44, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i64", 16], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    p4 = load_f64(l0, 16);
+    p5 = load_i32(l0, 24);
+    p6 = load_i32(l0, 28);
+    p7 = load_i32(l0, 32);
+    l2 = load_i32(l0, 36);
+    l0 = load_i32(l0, 40);
   }
   block_1: {
     if (g1 === 2) {
@@ -15544,8 +17335,10 @@ function strconv_AppendFloat(p0, p1, p2, p3, p4, p5, p6, p7) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
+      l0 = load_i32(138276);
+      store_i32(138276, ((l2 + 16) | 0));
     }
     if (((g1 ? l1 : 0) === 0)) {
       strconv_genericFtoa(l2, p1, p2, p3, p4, p5, p6, p7);
@@ -15567,14 +17360,36 @@ function strconv_AppendFloat(p0, p1, p2, p3, p4, p5, p6, p7) {
     l2147483639 = 0;
   }
   l1 = l2147483639;
-  asyncify_unwind(l1, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i64", 16, p4], ["i32", 24, p5], ["i32", 28, p6], ["i32", 32, p7], ["i32", 36, l2], ["i32", 40, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_f64(l1, p4, 16);
+  store_i32(l1, p5, 24);
+  store_i32(l1, p6, 28);
+  store_i32(l1, p7, 32);
+  store_i32(l1, l2, 36);
+  store_i32(l1, l0, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // strconv.appendQuotedRuneWith
 function strconv_appendQuotedRuneWith(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l0, l3, l4, l1] = asyncify_rewind(32, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l0 = load_i32(l1, 16);
+    l3 = load_i32(l1, 20);
+    l4 = load_i32(l1, 24);
+    l1 = load_i32(l1, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -15631,14 +17446,34 @@ function strconv_appendQuotedRuneWith(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l2 = l2147483643;
-  asyncify_unwind(l2, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, l0, 16);
+  store_i32(l2, l3, 20);
+  store_i32(l2, l4, 24);
+  store_i32(l2, l1, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // unicode.isExcludingLatin
 function unicode_isExcludingLatin(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l2147483645, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, l2, l4, l5, l6, l7, l8, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l2 = load_i32(p1, 8);
+    l4 = load_i32(p1, 12);
+    l5 = load_i32(p1, 16);
+    l6 = load_i32(p1, 20);
+    l7 = load_i32(p1, 24);
+    l8 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -15880,7 +17715,18 @@ function unicode_isExcludingLatin(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l2], ["i32", 12, l4], ["i32", 16, l5], ["i32", 20, l6], ["i32", 24, l7], ["i32", 28, l8]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(l0, l4, 12);
+  store_i32(l0, l5, 16);
+  store_i32(l0, l6, 20);
+  store_i32(l0, l7, 24);
+  store_i32(l0, l8, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -15888,7 +17734,15 @@ function unicode_isExcludingLatin(p0, p1) {
 function unicode_To(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l2147483645;
   if (g1 === 2) {
-    [p1, l2, l1, l3, l4, l5, l0] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l0 = load_i32(g2);
+    p1 = load_i32(l0);
+    l2 = load_i32(l0, 8);
+    l1 = load_i32(l0, 12);
+    l3 = load_i32(l0, 16);
+    l4 = load_i32(l0, 20);
+    l5 = load_i32(l0, 24);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -15973,7 +17827,17 @@ function unicode_To(p0, p1) {
     l2147483645 = 0;
   }
   p0 = l2147483645;
-  asyncify_unwind(p0, 28, ["i32", 0, p1], ["i32", 4, l0], ["i32", 8, l2], ["i32", 12, l1], ["i32", 16, l3], ["i32", 20, l4], ["i32", 24, l5]);
+  store_i32(load_i32(g2), p0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p0 = load_i32(g2);
+  store_i32(p0, p1);
+  store_i32(p0, l0, 4);
+  store_i32(p0, l2, 8);
+  store_i32(p0, l1, 12);
+  store_i32(p0, l3, 16);
+  store_i32(p0, l4, 20);
+  store_i32(p0, l5, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
   return 0;
 }
 
@@ -16017,7 +17881,19 @@ function _bytes_Buffer_AvailableBuffer(p0, p1) {
 function _bytes_Buffer_grow(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l2, l3, l5, l6, l8, l7, l10, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    l6 = load_i32(p1, 28);
+    l8 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l10 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -16025,10 +17901,13 @@ function _bytes_Buffer_grow(p0, p1) {
       l9 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l10 = deferSetup(96, 40);
-      l1 = g0;
+      l1 = ((g0 - 96) | 0);
+      g0 = l1;
       store_i32(l1, 12, 44);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 52) | 0), ((l1 + 52) | 0) + 44);
+      l10 = load_i32(138276);
+      store_i32(l1, l10, 40);
+      store_i32(138276, ((l1 + 40) | 0));
       store_i32(l1, load_i32(p0), 48);
       l3 = load_i32(p0, 12);
       l8 = ((load_i32(p0, 4) - l3) | 0);
@@ -16188,7 +18067,8 @@ function _bytes_Buffer_grow(p0, p1) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l10, 96);
+        store_i32(138276, l10);
+        g0 = ((l1 + 96) | 0);
         return l8;
       }
     }
@@ -16206,7 +18086,21 @@ function _bytes_Buffer_grow(p0, p1) {
     l2147483645 = 0;
   }
   l4 = l2147483645;
-  asyncify_unwind(l4, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l5], ["i32", 28, l6], ["i32", 32, l8], ["i32", 36, l7], ["i32", 40, l10]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i32(l4, p0);
+  store_i32(l4, p1, 4);
+  store_i32(l4, l0, 8);
+  store_i32(l4, l1, 12);
+  store_i32(l4, l2, 16);
+  store_i32(l4, l3, 20);
+  store_i32(l4, l5, 24);
+  store_i32(l4, l6, 28);
+  store_i32(l4, l8, 32);
+  store_i32(l4, l7, 36);
+  store_i32(l4, l10, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
   return 0;
 }
 
@@ -16258,7 +18152,15 @@ function _bytes_Buffer_tryGrowByReslice(p0, p1, p2) {
 function _bytes_Buffer_String(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l2, l3, l4, l5, l0] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    l2 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l4 = load_i32(l0, 16);
+    l5 = load_i32(l0, 20);
+    l0 = load_i32(l0, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -16266,11 +18168,14 @@ function _bytes_Buffer_String(p0, p1) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 0, 28);
       store_i32(l2, 2, 20);
+      l0 = load_i32(138276);
       l3 = ((l2 + 16) | 0);
+      store_i32(138276, l3);
+      store_i32(l2, l0, 16);
     }
     block_4: {
       if ((g1 === 0)) {
@@ -16327,14 +18232,32 @@ function _bytes_Buffer_String(p0, p1) {
     l2147483645 = 0;
   }
   l1 = l2147483645;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l2], ["i32", 12, l3], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, l2, 8);
+  store_i32(l1, l3, 12);
+  store_i32(l1, l4, 16);
+  store_i32(l1, l5, 20);
+  store_i32(l1, l0, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*bytes.Buffer).Write
 function _bytes_Buffer_Write(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l3, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -16342,10 +18265,13 @@ function _bytes_Buffer_Write(p0, p1, p2, p3) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i8(p1, 0, 16);
       store_i32(l2, 1, 20);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l2 + 16) | 0));
+      store_i32(l2, l3, 16);
       l1 = ((l2 + 8) | 0);
     }
     if (((g1 ? l0 : 0) === 0)) {
@@ -16405,14 +18331,30 @@ function _bytes_Buffer_Write(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*bytes.Buffer).WriteByte
 function _bytes_Buffer_WriteByte(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l1, l2, l3, p1] = asyncify_rewind(20, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l1 = load_i32(p1, 8);
+    l2 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -16420,10 +18362,13 @@ function _bytes_Buffer_WriteByte(p0, p1) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i8(p0, 0, 16);
       store_i32(l1, 1, 20);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l1 + 16) | 0));
+      store_i32(l1, l3, 16);
       l2 = ((l1 + 8) | 0);
     }
     if (((g1 ? l0 : 0) === 0)) {
@@ -16458,7 +18403,8 @@ function _bytes_Buffer_WriteByte(p0, p1) {
       store_i32(l1, l4, 24);
       if (u32(load_i32(p0, 4)) > u32(l2)) {
         store_i8(((l2 + l4) | 0), p1);
-        deferCleanup(l3, 32);
+        store_i32(138276, l3);
+        g0 = ((l1 + 32) | 0);
         return;
       }
     }
@@ -16476,7 +18422,15 @@ function _bytes_Buffer_WriteByte(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l2], ["i32", 16, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l1, 8);
+  store_i32(l0, l2, 12);
+  store_i32(l0, l3, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
 }
 
 // runtime.memequal
@@ -16514,7 +18468,12 @@ function runtime_hash32(p0, p1, p2, p3) {
 function malloc(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l1, l3, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 12], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 4);
+    l3 = load_i32(l0, 12);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -16522,9 +18481,12 @@ function malloc(p0) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i32(l1, 2, 20);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l1 + 16) | 0));
+      store_i32(l1, l3, 16);
       l2 = ((p0 === 0) ? 1 : 0);
       l0 = 0;
     }
@@ -16560,7 +18522,8 @@ function malloc(p0) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l3, 32);
+        store_i32(138276, l3);
+        g0 = ((l1 + 32) | 0);
         return l0;
       }
     }
@@ -16578,7 +18541,14 @@ function malloc(p0) {
     l2147483646 = 0;
   }
   l2 = l2147483646;
-  asyncify_unwind(l2, 16, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l0], ["i32", 12, l3]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -16586,7 +18556,12 @@ function malloc(p0) {
 function runtime_hashmapBinarySet(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l0 = load_i32(l0, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -16619,13 +18594,24 @@ function runtime_hashmapBinarySet(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 function free(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l1, l0] = asyncify_rewind(12, ["i32", 0], ["i32", 8], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 8);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -16682,14 +18668,25 @@ function free(p0) {
     l2147483646 = 0;
   }
   l2 = l2147483646;
-  asyncify_unwind(l2, 12, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l0, 4);
+  store_i32(l2, l1, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
 }
 
 // runtime.hashmapBinaryGet
 function runtime_hashmapBinaryGet(p0, p1, p2, p3) {
   let l0 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p1 = load_i32(p3, 4);
+    p2 = load_i32(p3, 8);
+    p3 = load_i32(p3, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -16717,7 +18714,14 @@ function runtime_hashmapBinaryGet(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
   return 0;
 }
 
@@ -16725,7 +18729,10 @@ function runtime_hashmapBinaryGet(p0, p1, p2, p3) {
 function runtime_hashmapBinaryDelete(p0) {
   let l0 = 0, l1 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l0] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -16746,7 +18753,12 @@ function runtime_hashmapBinaryDelete(p0) {
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 8, ["i32", 0, p0], ["i32", 4, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, l0, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // runtime.resume$1$gowrapper
@@ -16760,7 +18772,25 @@ function runtime_resume$1$gowrapper(p0) {
     if (((g1 ? l14 : 0) === 0)) {
       p0 = 0;
       if (g1 === 2) {
-        [l0, l1, l4, l15, l5, l6, l7, l8, l17, l16, l18, l10, l9, l12, l11, l13, p0] = asyncify_rewind(84, ["i32", 0], ["i32", 4], ["i32", 12], ["i64", 16], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i64", 40], ["i64", 48], ["i64", 56], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 8]);
+        store_i32(g2, ((load_i32(g2) - 84) | 0));
+        p0 = load_i32(g2);
+        l0 = load_i32(p0);
+        l1 = load_i32(p0, 4);
+        l4 = load_i32(p0, 12);
+        l15 = load_i64(p0, 16);
+        l5 = load_i32(p0, 24);
+        l6 = load_i32(p0, 28);
+        l7 = load_i32(p0, 32);
+        l8 = load_i32(p0, 36);
+        l17 = load_i64(p0, 40);
+        l16 = load_i64(p0, 48);
+        l18 = load_i64(p0, 56);
+        l10 = load_i32(p0, 64);
+        l9 = load_i32(p0, 68);
+        l12 = load_i32(p0, 72);
+        l11 = load_i32(p0, 76);
+        l13 = load_i32(p0, 80);
+        p0 = load_i32(p0, 8);
       }
       block_4: {
         block_5: {
@@ -16769,10 +18799,13 @@ function runtime_resume$1$gowrapper(p0) {
             l3 = load_i32(load_i32(g2));
           }
           if ((g1 === 0)) {
-            l12 = deferSetup(272, 144);
-            l0 = g0;
+            l0 = ((g0 - 272) | 0);
+            g0 = l0;
             store_i32(l0, 29, 148);
             new Uint8Array(memory.buffer).fill(0, ((l0 + 152) | 0), ((l0 + 152) | 0) + 116);
+            l12 = load_i32(138276);
+            store_i32(l0, l12, 144);
+            store_i32(138276, ((l0 + 144) | 0));
             l1 = ((l0 + 112) | 0);
           }
           if (((g1 ? l3 : 0) === 0)) {
@@ -17093,7 +19126,8 @@ function runtime_resume$1$gowrapper(p0) {
                     }
                   }
                   if ((g1 === 0)) {
-                    deferCleanup(l12, 272);
+                    store_i32(138276, l12);
+                    g0 = ((l0 + 272) | 0);
                     break block_4;
                   }
                 }
@@ -17195,7 +19229,27 @@ function runtime_resume$1$gowrapper(p0) {
           l2147483646 = 0;
         }
         l2 = l2147483646;
-        asyncify_unwind(l2, 84, ["i32", 0, l0], ["i32", 4, l1], ["i32", 8, p0], ["i32", 12, l4], ["i64", 16, l15], ["i32", 24, l5], ["i32", 28, l6], ["i32", 32, l7], ["i32", 36, l8], ["i64", 40, l17], ["i64", 48, l16], ["i64", 56, l18], ["i32", 64, l10], ["i32", 68, l9], ["i32", 72, l12], ["i32", 76, l11], ["i32", 80, l13]);
+        store_i32(load_i32(g2), l2);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l2 = load_i32(g2);
+        store_i32(l2, l0);
+        store_i32(l2, l1, 4);
+        store_i32(l2, p0, 8);
+        store_i32(l2, l4, 12);
+        store_i64(l2, l15, 16);
+        store_i32(l2, l5, 24);
+        store_i32(l2, l6, 28);
+        store_i32(l2, l7, 32);
+        store_i32(l2, l8, 36);
+        store_i64(l2, l17, 40);
+        store_i64(l2, l16, 48);
+        store_i64(l2, l18, 56);
+        store_i32(l2, l10, 64);
+        store_i32(l2, l9, 68);
+        store_i32(l2, l12, 72);
+        store_i32(l2, l11, 76);
+        store_i32(l2, l13, 80);
+        store_i32(g2, ((load_i32(g2) + 84) | 0));
       }
       if (g1 === 1) {
         l2147483647 = 0;
@@ -17315,7 +19369,15 @@ function runtime_run$1$gowrapper(p0) {
           }
           if (((g1 ? p0 : 0) === 0)) {
             if (g1 === 2) {
-              [l1, l0, l7, l4, l5, l6, l9] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i64", 16], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 8]);
+              store_i32(g2, ((load_i32(g2) - 36) | 0));
+              l2 = load_i32(g2);
+              l1 = load_i32(l2);
+              l0 = load_i32(l2, 4);
+              l7 = load_i64(l2, 16);
+              l4 = load_i32(l2, 24);
+              l5 = load_i32(l2, 28);
+              l6 = load_i32(l2, 32);
+              l9 = load_f64(l2, 8);
             }
             block_8: {
               block_9: {
@@ -17324,10 +19386,13 @@ function runtime_run$1$gowrapper(p0) {
                   l3 = load_i32(load_i32(g2));
                 }
                 if ((g1 === 0)) {
-                  l4 = deferSetup(112, 88);
-                  l1 = g0;
+                  l1 = ((g0 - 112) | 0);
+                  g0 = l1;
                   store_i32(l1, 0, 104);
                   store_i32(l1, 3, 92);
+                  l4 = load_i32(138276);
+                  store_i32(138276, ((l1 + 88) | 0));
+                  store_i32(l1, l4, 88);
                   l0 = (memory.buffer.byteLength / 65536 << 16);
                   store_i32(138084, l0);
                 }
@@ -17386,13 +19451,24 @@ function runtime_run$1$gowrapper(p0) {
                   store_i64(l0, 0n);
                   store_i32(((l0 + 16) | 0), 0);
                   store_i64(((l0 + 8) | 0), 0n);
-                  deferCleanup(l4, 112);
+                  store_i32(138276, l4);
+                  g0 = ((l1 + 112) | 0);
                 }
                 break block_8;
                 l2147483647 = 0;
               }
               l2 = l2147483647;
-              asyncify_unwind(l2, 36, ["i32", 0, l1], ["i32", 4, l0], ["i64", 8, l9], ["i64", 16, l7], ["i32", 24, l4], ["i32", 28, l5], ["i32", 32, l6]);
+              store_i32(load_i32(g2), l2);
+              store_i32(g2, ((load_i32(g2) + 4) | 0));
+              l2 = load_i32(g2);
+              store_i32(l2, l1);
+              store_i32(l2, l0, 4);
+              store_f64(l2, l9, 8);
+              store_i64(l2, l7, 16);
+              store_i32(l2, l4, 24);
+              store_i32(l2, l5, 28);
+              store_i32(l2, l6, 32);
+              store_i32(g2, ((load_i32(g2) + 36) | 0));
             }
             if (g1 === 1) {
               l2147483648 = 0;
@@ -17407,7 +19483,13 @@ function runtime_run$1$gowrapper(p0) {
             l4 = 0;
             l7 = 0n;
             if (g1 === 2) {
-              [l0, l3, l4, l7, p0] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i64", 16], ["i32", 4]);
+              store_i32(g2, ((load_i32(g2) - 24) | 0));
+              p0 = load_i32(g2);
+              l0 = load_i32(p0);
+              l3 = load_i32(p0, 8);
+              l4 = load_i32(p0, 12);
+              l7 = load_i64(p0, 16);
+              p0 = load_i32(p0, 4);
             }
             block_22: {
               block_23: {
@@ -17416,11 +19498,14 @@ function runtime_run$1$gowrapper(p0) {
                   l2 = load_i32(load_i32(g2));
                 }
                 if ((g1 === 0)) {
-                  p0 = deferSetup(48, 24);
-                  l0 = g0;
+                  l0 = ((g0 - 48) | 0);
+                  g0 = l0;
                   store_i64(l0, 0n, 36);
                   store_i64(l0, 3n, 28);
+                  p0 = load_i32(138276);
                   l3 = ((l0 + 24) | 0);
+                  store_i32(138276, l3);
+                  store_i32(l0, p0, 24);
                 }
                 if (((g1 ? l2 : 0) === 0)) {
                   syscall_js_FuncOf(l0, l0, 7);
@@ -17470,7 +19555,15 @@ function runtime_run$1$gowrapper(p0) {
                 l2147483649 = 0;
               }
               l1 = l2147483649;
-              asyncify_unwind(l1, 24, ["i32", 0, l0], ["i32", 4, p0], ["i32", 8, l3], ["i32", 12, l4], ["i64", 16, l7]);
+              store_i32(load_i32(g2), l1);
+              store_i32(g2, ((load_i32(g2) + 4) | 0));
+              l1 = load_i32(g2);
+              store_i32(l1, l0);
+              store_i32(l1, p0, 4);
+              store_i32(l1, l3, 8);
+              store_i32(l1, l4, 12);
+              store_i64(l1, l7, 16);
+              store_i32(g2, ((load_i32(g2) + 24) | 0));
             }
             if (g1 === 1) {
               l2147483648 = 1;
@@ -17507,7 +19600,11 @@ function runtime_run$1$gowrapper(p0) {
 function runtime_printstring(p0, p1) {
   let l0 = 0, l1 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l0] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -17543,7 +19640,13 @@ function runtime_printstring(p0, p1) {
     l2147483645 = 0;
   }
   l1 = l2147483645;
-  asyncify_unwind(l1, 12, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, l0, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
 }
 
 // runtime.putchar
@@ -17642,7 +19745,13 @@ function runtime_printuint32(p0) {
 function runtime_printuint64(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l1, l2, l3, l0] = asyncify_rewind(24, ["i64", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i64(l0);
+    l1 = load_i32(l0, 8);
+    l2 = load_i32(l0, 12);
+    l3 = load_i32(l0, 16);
+    l0 = load_i32(l0, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -17709,7 +19818,15 @@ function runtime_printuint64(p0) {
     l2147483646 = 0;
   }
   l4 = l2147483646;
-  asyncify_unwind(l4, 24, ["i64", 0, p0], ["i32", 8, l1], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l0]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i64(l4, p0);
+  store_i32(l4, l1, 8);
+  store_i32(l4, l2, 12);
+  store_i32(l4, l3, 16);
+  store_i32(l4, l0, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // runtime.printnl
@@ -17741,7 +19858,10 @@ function runtime_printnl() {
 function runtime_runtimePanicAt(p0, p1) {
   let l0 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -17776,7 +19896,12 @@ function runtime_runtimePanicAt(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 8, ["i32", 0, p0], ["i32", 4, p1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // runtime.deadlock
@@ -17865,7 +19990,15 @@ function interface_String_func_basic_string_$typeassert(p0) {
 function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483644, l2147483645, l2147483646;
   if (g1 === 2) {
-    [p0, p1, p2, l0, l1, l4, l3] = asyncify_rewind(32, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i64", 20], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    p1 = load_i32(l3, 4);
+    p2 = load_i32(l3, 8);
+    l0 = load_i32(l3, 12);
+    l1 = load_i32(l3, 16);
+    l4 = load_i64(l3, 20);
+    l3 = load_i32(l3, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -17873,10 +20006,13 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(288, 168);
-      l1 = g0;
+      l1 = ((g0 - 288) | 0);
+      g0 = l1;
       store_i32(l1, 27, 172);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 176) | 0), ((l1 + 176) | 0) + 108);
+      l3 = load_i32(138276);
+      store_i32(l1, l3, 168);
+      store_i32(138276, ((l1 + 168) | 0));
       l0 = (p2 !== 128796 ? 1 : 0);
     }
     block_4: {
@@ -18360,14 +20496,33 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i64", 20, l4], ["i32", 28, l3]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l1, 16);
+  store_i64(l2, l4, 20);
+  store_i32(l2, l3, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // (syscall/js.Value).String
 function _syscall_js_Value_String(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0, l1, l2, l6, l3] = asyncify_rewind(36, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    p1 = load_i64(l3, 4);
+    p2 = load_i32(l3, 12);
+    l0 = load_i32(l3, 16);
+    l1 = load_i32(l3, 20);
+    l2 = load_i32(l3, 24);
+    l6 = load_i32(l3, 28);
+    l3 = load_i32(l3, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -18375,13 +20530,16 @@ function _syscall_js_Value_String(p0, p1, p2) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(96, 56);
-      l0 = g0;
+      l0 = ((g0 - 96) | 0);
+      g0 = l0;
       store_i64(((l0 + 72) | 0), 0n);
       store_i64(((l0 + 80) | 0), 0n);
       store_i32(((l0 + 88) | 0), 0);
       store_i64(l0, 0n, 64);
       store_i32(l0, 7, 60);
+      l6 = load_i32(138276);
+      store_i32(138276, ((l0 + 56) | 0));
+      store_i32(l0, l6, 56);
       l2 = 94656;
       l1 = 11;
     }
@@ -18546,14 +20704,30 @@ function _syscall_js_Value_String(p0, p1, p2) {
     l2147483644 = 0;
   }
   l4 = l2147483644;
-  asyncify_unwind(l4, 36, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, l0], ["i32", 20, l1], ["i32", 24, l2], ["i32", 28, l6], ["i32", 32, l3]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i32(l4, p0);
+  store_i64(l4, p1, 4);
+  store_i32(l4, p2, 12);
+  store_i32(l4, l0, 16);
+  store_i32(l4, l1, 20);
+  store_i32(l4, l2, 24);
+  store_i32(l4, l6, 28);
+  store_i32(l4, l3, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // runtime.markRoots
 function runtime_markRoots(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l1, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    l1 = load_i32(l0, 8);
+    l0 = load_i32(l0, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -18598,7 +20772,14 @@ function runtime_markRoots(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l0]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l1, 8);
+  store_i32(l2, l0, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (runtime.gcBlock).state
@@ -18799,7 +20980,10 @@ function _runtime_gcBlock_findHead(p0) {
 function runtime_hardwareRand() {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483647;
   if (g1 === 2) {
-    [l2, l0] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    l0 = load_i32(g2);
+    l2 = load_i32(l0);
+    l0 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -18827,7 +21011,12 @@ function runtime_hardwareRand() {
     l2147483647 = 0;
   }
   l1 = l2147483647;
-  asyncify_unwind(l1, 8, ["i32", 0, l2], ["i32", 4, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, l2);
+  store_i32(l1, l0, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
   return 0n;
 }
 
@@ -18835,7 +21024,18 @@ function runtime_hardwareRand() {
 function _syscall_js_Value_Get(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l7 = 0n, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l1, l6, l3, l4, l5, p1] = asyncify_rewind(48, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i64", 28], ["i32", 36], ["i32", 40], ["i32", 44], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p2 = load_i32(l0, 12);
+    p3 = load_i32(l0, 16);
+    p4 = load_i32(l0, 20);
+    l1 = load_i32(l0, 24);
+    l6 = load_i64(l0, 28);
+    l3 = load_i32(l0, 36);
+    l4 = load_i32(l0, 40);
+    l5 = load_i32(l0, 44);
+    p1 = load_i64(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -18843,13 +21043,16 @@ function _syscall_js_Value_Get(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 16);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 32) | 0), 0n);
       store_i32(((l1 + 40) | 0), 0);
       store_i64(l1, 0n, 24);
       store_i32(l1, 5, 20);
+      l4 = load_i32(138276);
       l3 = ((l1 + 16) | 0);
+      store_i32(138276, l3);
+      store_i32(l1, l4, 16);
     }
     if (((g1 ? l2 : 0) === 0)) {
       if (g1 === 1) {
@@ -18925,14 +21128,39 @@ function _syscall_js_Value_Get(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 48, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, l1], ["i64", 28, l6], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l5]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, p3, 16);
+  store_i32(l0, p4, 20);
+  store_i32(l0, l1, 24);
+  store_i64(l0, l6, 28);
+  store_i32(l0, l3, 36);
+  store_i32(l0, l4, 40);
+  store_i32(l0, l5, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // (syscall/js.Value).Set
 function _syscall_js_Value_Set(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l2, l6, l4, l5, p1] = asyncify_rewind(52, ["i64", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 36], ["i32", 44], ["i32", 48], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i64(p1);
+    p2 = load_i32(p1, 12);
+    p3 = load_i32(p1, 16);
+    p4 = load_i32(p1, 20);
+    p5 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l2 = load_i32(p1, 32);
+    l6 = load_i64(p1, 36);
+    l4 = load_i32(p1, 44);
+    l5 = load_i32(p1, 48);
+    p1 = load_i32(p1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -19043,14 +21271,32 @@ function _syscall_js_Value_Set(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 52, ["i64", 0, p0], ["i32", 8, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, p5], ["i32", 28, l0], ["i32", 32, l2], ["i64", 36, l6], ["i32", 44, l4], ["i32", 48, l5]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i64(l1, p0);
+  store_i32(l1, p1, 8);
+  store_i32(l1, p2, 12);
+  store_i32(l1, p3, 16);
+  store_i32(l1, p4, 20);
+  store_i32(l1, p5, 24);
+  store_i32(l1, l0, 28);
+  store_i32(l1, l2, 32);
+  store_i64(l1, l6, 36);
+  store_i32(l1, l4, 44);
+  store_i32(l1, l5, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // (syscall/js.Value).Type
 function _syscall_js_Value_Type(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0n, l2147483646;
   if (g1 === 2) {
-    [p0, l3, l0] = asyncify_rewind(20, ["i64", 0], ["i64", 12], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i64(l0);
+    l3 = load_i64(l0, 12);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -19122,7 +21368,13 @@ function _syscall_js_Value_Type(p0) {
     l2147483646 = 0;
   }
   l1 = l2147483646;
-  asyncify_unwind(l1, 20, ["i64", 0, p0], ["i32", 8, l0], ["i64", 12, l3]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i64(l1, p0);
+  store_i32(l1, l0, 8);
+  store_i64(l1, l3, 12);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -19130,7 +21382,13 @@ function _syscall_js_Value_Type(p0) {
 function syscall_js_makeValue(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l2, l3, l1] = asyncify_rewind(24, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i64(l1, 4);
+    l2 = load_i32(l1, 12);
+    l3 = load_i32(l1, 16);
+    l1 = load_i32(l1, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -19138,8 +21396,10 @@ function syscall_js_makeValue(p0, p1) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l3 = g0;
+      l3 = ((g0 - 32) | 0);
+      g0 = l3;
+      l1 = load_i32(138276);
+      store_i32(138276, ((l3 + 8) | 0));
       l2 = 0;
       l0 = ((p1 & 9221120237041090560n) !== 9221120237041090560n ? 1 : 0);
     }
@@ -19170,14 +21430,38 @@ function syscall_js_makeValue(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, l2, 12);
+  store_i32(l0, l3, 16);
+  store_i32(l0, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // (syscall/js.Value).Call
 function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l4, l5, l6, l10, l8, l9, l7, p1] = asyncify_rewind(68, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i64", 48], ["i32", 56], ["i32", 60], ["i32", 64], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 68) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p2 = load_i32(l2, 12);
+    p3 = load_i32(l2, 16);
+    p4 = load_i32(l2, 20);
+    p5 = load_i32(l2, 24);
+    l0 = load_i32(l2, 28);
+    l1 = load_i32(l2, 32);
+    l4 = load_i32(l2, 36);
+    l5 = load_i32(l2, 40);
+    l6 = load_i32(l2, 44);
+    l10 = load_i64(l2, 48);
+    l8 = load_i32(l2, 56);
+    l9 = load_i32(l2, 60);
+    l7 = load_i32(l2, 64);
+    p1 = load_i64(l2, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -19185,10 +21469,13 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(224, 120);
-      l0 = g0;
+      l0 = ((g0 - 224) | 0);
+      g0 = l0;
       store_i32(l0, 23, 124);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 128) | 0), ((l0 + 128) | 0) + 92);
+      l8 = load_i32(138276);
+      store_i32(l0, l8, 120);
+      store_i32(138276, ((l0 + 120) | 0));
       l1 = ((l0 + 96) | 0);
     }
     if (((g1 ? l3 : 0) === 0)) {
@@ -19453,14 +21740,47 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l2 = l2147483641;
-  asyncify_unwind(l2, 68, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, p5], ["i32", 28, l0], ["i32", 32, l1], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i64", 48, l10], ["i32", 56, l8], ["i32", 60, l9], ["i32", 64, l7]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i64(l2, p1, 4);
+  store_i32(l2, p2, 12);
+  store_i32(l2, p3, 16);
+  store_i32(l2, p4, 20);
+  store_i32(l2, p5, 24);
+  store_i32(l2, l0, 28);
+  store_i32(l2, l1, 32);
+  store_i32(l2, l4, 36);
+  store_i32(l2, l5, 40);
+  store_i32(l2, l6, 44);
+  store_i64(l2, l10, 48);
+  store_i32(l2, l8, 56);
+  store_i32(l2, l9, 60);
+  store_i32(l2, l7, 64);
+  store_i32(g2, ((load_i32(g2) + 68) | 0));
 }
 
 // runtime.hashmapGet
 function runtime_hashmapGet(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l7 = load_i32(p1, 40);
+    l8 = load_i32(p1, 44);
+    l9 = load_i32(p1, 48);
+    l10 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -19468,12 +21788,15 @@ function runtime_hashmapGet(p0, p1, p2, p3) {
       l11 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(48, 8);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 32) | 0), 0n);
       store_i32(((l1 + 40) | 0), 0);
       store_i64(l1, 0n, 24);
       store_i32(l1, 7, 12);
+      l5 = load_i32(138276);
+      store_i32(138276, ((l1 + 8) | 0));
+      store_i32(l1, l5, 8);
       l3 = runtime_hashmapBucketAddrForHash(p0, p3);
       store_i32(l1, l3, 16);
       p3 = (p3 >>> 24);
@@ -19545,7 +21868,8 @@ function runtime_hashmapGet(p0, p1, p2, p3) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l5, 48);
+        store_i32(138276, l5);
+        g0 = ((l1 + 48) | 0);
         return (l3 !== 0 ? 1 : 0);
       }
     }
@@ -19563,7 +21887,24 @@ function runtime_hashmapGet(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l6], ["i32", 40, l7], ["i32", 44, l8], ["i32", 48, l9], ["i32", 52, l10]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(l0, l4, 28);
+  store_i32(l0, l5, 32);
+  store_i32(l0, l6, 36);
+  store_i32(l0, l7, 40);
+  store_i32(l0, l8, 44);
+  store_i32(l0, l9, 48);
+  store_i32(l0, l10, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
   return 0;
 }
 
@@ -19571,7 +21912,21 @@ function runtime_hashmapGet(p0, p1, p2, p3) {
 function runtime_hashmapDelete(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    l5 = load_i32(p1, 28);
+    l6 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    l10 = load_i32(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -19579,12 +21934,15 @@ function runtime_hashmapDelete(p0, p1, p2) {
       l11 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(48, 8);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 32) | 0), 0n);
       store_i32(((l1 + 40) | 0), 0);
       store_i64(l1, 0n, 24);
       store_i32(l1, 7, 12);
+      l5 = load_i32(138276);
+      store_i32(138276, ((l1 + 8) | 0));
+      store_i32(l1, l5, 8);
       l3 = runtime_hashmapBucketAddrForHash(p0, p2);
       store_i32(l1, l3, 16);
       p2 = (p2 >>> 24);
@@ -19665,13 +22023,30 @@ function runtime_hashmapDelete(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l5, 48);
+      store_i32(138276, l5);
+      g0 = ((l1 + 48) | 0);
     }
     return;
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l5], ["i32", 32, l6], ["i32", 36, l7], ["i32", 40, l8], ["i32", 44, l9], ["i32", 48, l10]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l3, 20);
+  store_i32(l0, l4, 24);
+  store_i32(l0, l5, 28);
+  store_i32(l0, l6, 32);
+  store_i32(l0, l7, 36);
+  store_i32(l0, l8, 40);
+  store_i32(l0, l9, 44);
+  store_i32(l0, l10, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // runtime.nilMapPanic
@@ -19683,7 +22058,25 @@ function runtime_nilMapPanic() {
 function runtime_hashmapSet(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l1, l2, l4, l5, l6, l7, l9, l10, l11, l12, l13, l14, p1] = asyncify_rewind(68, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 68) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l1 = load_i32(p1, 20);
+    l2 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l7 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    l10 = load_i32(p1, 48);
+    l11 = load_i32(p1, 52);
+    l12 = load_i32(p1, 56);
+    l13 = load_i32(p1, 60);
+    l14 = load_i32(p1, 64);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -19691,10 +22084,13 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
       l8 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l14 = deferSetup(224, 32);
-      l0 = g0;
+      l0 = ((g0 - 224) | 0);
+      g0 = l0;
       store_i32(l0, 45, 36);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 40) | 0), ((l0 + 40) | 0) + 180);
+      l14 = load_i32(138276);
+      store_i32(l0, l14, 32);
+      store_i32(138276, ((l0 + 32) | 0));
       l1 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -19999,13 +22395,34 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l14, 224);
+      store_i32(138276, l14);
+      g0 = ((l0 + 224) | 0);
     }
     return;
     l2147483643 = 0;
   }
   l3 = l2147483643;
-  asyncify_unwind(l3, 68, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l1], ["i32", 24, l2], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l6], ["i32", 40, l7], ["i32", 44, l9], ["i32", 48, l10], ["i32", 52, l11], ["i32", 56, l12], ["i32", 60, l13], ["i32", 64, l14]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, p2, 8);
+  store_i32(l3, p3, 12);
+  store_i32(l3, l0, 16);
+  store_i32(l3, l1, 20);
+  store_i32(l3, l2, 24);
+  store_i32(l3, l4, 28);
+  store_i32(l3, l5, 32);
+  store_i32(l3, l6, 36);
+  store_i32(l3, l7, 40);
+  store_i32(l3, l9, 44);
+  store_i32(l3, l10, 48);
+  store_i32(l3, l11, 52);
+  store_i32(l3, l12, 56);
+  store_i32(l3, l13, 60);
+  store_i32(l3, l14, 64);
+  store_i32(g2, ((load_i32(g2) + 68) | 0));
 }
 
 // runtime.fastrand
@@ -20036,7 +22453,14 @@ function runtime_hashmapStringEqual(p0, p1, p2, p3) {
 function runtime_hashmapInterfaceEqual(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l1] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l1 = load_i32(l1, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -20044,9 +22468,12 @@ function runtime_hashmapInterfaceEqual(p0, p1, p2, p3) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      p3 = deferSetup(32, 8);
-      p2 = g0;
+      p2 = ((g0 - 32) | 0);
+      g0 = p2;
+      p3 = load_i32(138276);
+      store_i32(138276, ((p2 + 8) | 0));
       store_i32(p2, 4, 12);
+      store_i32(p2, p3, 8);
       l2 = load_i32(p0, 4);
       store_i32(p2, l2, 20);
       l1 = load_i32(p1, 4);
@@ -20064,14 +22491,24 @@ function runtime_hashmapInterfaceEqual(p0, p1, p2, p3) {
       p0 = runtime_interfaceEqual(p0, l2, p1, l1);
     }
     if ((g1 === 0)) {
-      deferCleanup(p3, 32);
+      store_i32(138276, p3);
+      g0 = ((p2 + 32) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0;
 }
 
@@ -20084,7 +22521,13 @@ function runtime_hashmapStringPtrHash(p0, p1, p2, p3) {
 function runtime_hashmapInterfacePtrHash(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l1] = asyncify_rewind(20, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l1 = load_i32(l1, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -20092,9 +22535,12 @@ function runtime_hashmapInterfacePtrHash(p0, p1, p2, p3) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      p3 = deferSetup(16, 0);
-      p1 = g0;
+      p1 = ((g0 - 16) | 0);
+      g0 = p1;
+      p3 = load_i32(138276);
+      store_i32(138276, p1);
       store_i32(p1, 2, 4);
+      store_i32(p1, p3);
       l1 = load_i32(p0, 4);
       store_i32(p1, l1, 12);
       p0 = load_i32(p0);
@@ -20108,14 +22554,23 @@ function runtime_hashmapInterfacePtrHash(p0, p1, p2, p3) {
       p0 = runtime_hashmapInterfaceHash(p0, l1, p2);
     }
     if ((g1 === 0)) {
-      deferCleanup(p3, 16);
+      store_i32(138276, p3);
+      g0 = ((p1 + 16) | 0);
       return p0;
     }
     throw new Error('unreachable');
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -20123,7 +22578,27 @@ function runtime_hashmapInterfacePtrHash(p0, p1, p2, p3) {
 function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0n, l12 = 0n, l13 = 0n, l14 = 0, l15 = 0, l16 = 0, l2147483641, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l3, l4, l5, l11, l12, l14, l15, l6, l7, l8, l9, l10, p1] = asyncify_rewind(92, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i64", 40], ["i64", 48], ["i64", 56], ["i64", 64], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 92) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l3 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l11 = load_i64(p1, 40);
+    l12 = load_i64(p1, 48);
+    l14 = load_f64(p1, 56);
+    l15 = load_f64(p1, 64);
+    l6 = load_i32(p1, 72);
+    l7 = load_i32(p1, 76);
+    l8 = load_i32(p1, 80);
+    l9 = load_i32(p1, 84);
+    l10 = load_i32(p1, 88);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -20131,10 +22606,13 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l10 = deferSetup(224, 152);
-      l0 = g0;
+      l0 = ((g0 - 224) | 0);
+      g0 = l0;
       store_i32(l0, 16, 156);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 160) | 0), ((l0 + 160) | 0) + 64);
+      l10 = load_i32(138276);
+      store_i32(l0, l10, 152);
+      store_i32(138276, ((l0 + 152) | 0));
       l3 = (((p0 === 0) ? 1 : 0) | ((p3 === 0) ? 1 : 0));
       l4 = (p0 === p3 ? 1 : 0);
       p3 = (l3 & l4);
@@ -20538,14 +23016,37 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
       p3 = (g1 ? p3 : ((l2147483642 ^ p1) ^ 1));
     }
     if ((g1 === 0)) {
-      deferCleanup(l10, 224);
+      store_i32(138276, l10);
+      g0 = ((l0 + 224) | 0);
       return p3;
     }
     throw new Error('unreachable');
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 92, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l3], ["i32", 32, l4], ["i32", 36, l5], ["i64", 40, l11], ["i64", 48, l12], ["i64", 56, l14], ["i64", 64, l15], ["i32", 72, l6], ["i32", 76, l7], ["i32", 80, l8], ["i32", 84, l9], ["i32", 88, l10]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, l0, 24);
+  store_i32(l1, l3, 28);
+  store_i32(l1, l4, 32);
+  store_i32(l1, l5, 36);
+  store_i64(l1, l11, 40);
+  store_i64(l1, l12, 48);
+  store_f64(l1, l14, 56);
+  store_f64(l1, l15, 64);
+  store_i32(l1, l6, 72);
+  store_i32(l1, l7, 76);
+  store_i32(l1, l8, 80);
+  store_i32(l1, l9, 84);
+  store_i32(l1, l10, 88);
+  store_i32(g2, ((load_i32(g2) + 92) | 0));
   return 0;
 }
 
@@ -20553,7 +23054,19 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
 function runtime_hashmapInterfaceHash(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l2, l1, l5, l6, l7, l8, l9, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l1 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    l6 = load_i32(p1, 28);
+    l7 = load_i32(p1, 32);
+    l8 = load_i32(p1, 36);
+    l9 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -20561,8 +23074,8 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l9 = deferSetup(144, 56);
-      l0 = g0;
+      l0 = ((g0 - 144) | 0);
+      g0 = l0;
       store_i32(l0, 20, 60);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 76) | 0), ((l0 + 76) | 0) + 68);
       store_i32(l0, p0, 108);
@@ -20573,6 +23086,9 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
       store_i32(l0, p0, 72);
       store_i32(l0, p1, 68);
       store_i32(l0, p0, 64);
+      l9 = load_i32(138276);
+      store_i32(l0, l9, 56);
+      store_i32(138276, ((l0 + 56) | 0));
       l2 = 0;
       l1 = ((p0 === 0) ? 1 : 0);
     }
@@ -20874,14 +23390,29 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l9, 144);
+      store_i32(138276, l9);
+      g0 = ((l0 + 144) | 0);
       return l2;
     }
     throw new Error('unreachable');
     l2147483644 = 0;
   }
   l3 = l2147483644;
-  asyncify_unwind(l3, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l1], ["i32", 24, l5], ["i32", 28, l6], ["i32", 32, l7], ["i32", 36, l8], ["i32", 40, l9]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, p2, 8);
+  store_i32(l3, l0, 12);
+  store_i32(l3, l2, 16);
+  store_i32(l3, l1, 20);
+  store_i32(l3, l5, 24);
+  store_i32(l3, l6, 28);
+  store_i32(l3, l7, 32);
+  store_i32(l3, l8, 36);
+  store_i32(l3, l9, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
   return 0;
 }
 
@@ -20973,7 +23504,14 @@ function _runtime_chanQueue_pop(p0) {
 function runtime_chanSend(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483644, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, p2, l0, l2, l4, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l4 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -20981,12 +23519,15 @@ function runtime_chanSend(p0, p1, p2) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 0);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i64(((l2 + 16) | 0), 0n);
       store_i32(((l2 + 24) | 0), 0);
       store_i64(l2, 0n, 8);
       store_i32(l2, 5, 4);
+      l4 = load_i32(138276);
+      store_i32(138276, l2);
+      store_i32(l2, l4);
       l0 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -21179,20 +23720,38 @@ function runtime_chanSend(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l4, 32);
+      store_i32(138276, l4);
+      g0 = ((l2 + 32) | 0);
     }
     return;
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l4]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l4, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // runtime.hashmapStringSet
 function runtime_hashmapStringSet(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l3, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -21200,9 +23759,12 @@ function runtime_hashmapStringSet(p0, p1, p2, p3) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 2, 4);
+      l3 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l3);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -21240,20 +23802,39 @@ function runtime_hashmapStringSet(p0, p1, p2, p3) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l3, 16);
+      store_i32(138276, l3);
+      g0 = ((l1 + 16) | 0);
     }
     return;
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // runtime.hashmapInterfaceDelete
 function runtime_hashmapInterfaceDelete(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l1, l2, l3, l4, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -21261,9 +23842,12 @@ function runtime_hashmapInterfaceDelete(p0, p1, p2) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 2, 4);
+      l4 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l4);
     }
     if (((g1 ? l5 : 0) === 0)) {
       if (g1 === 1) {
@@ -21300,13 +23884,24 @@ function runtime_hashmapInterfaceDelete(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l4, 16);
+      store_i32(138276, l4);
+      g0 = ((l1 + 16) | 0);
     }
     return;
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l3, 20);
+  store_i32(l0, l4, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // runtime.stringLess
@@ -21332,7 +23927,16 @@ function runtime_stringLess(p0, p1, p2, p3) {
 function runtime_stringFromRunes(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, l0, l1, l4, l5, l7, l8, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l4 = load_i32(p1, 16);
+    l5 = load_i32(p1, 20);
+    l7 = load_i32(p1, 24);
+    l8 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -21433,7 +24037,18 @@ function runtime_stringFromRunes(p0, p1, p2) {
     l2147483644 = 0;
   }
   p2 = l2147483644;
-  asyncify_unwind(p2, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l7], ["i32", 28, l8]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, l0, 8);
+  store_i32(p2, l1, 12);
+  store_i32(p2, l4, 16);
+  store_i32(p2, l5, 20);
+  store_i32(p2, l7, 24);
+  store_i32(p2, l8, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // runtime.encodeUTF8
@@ -21488,7 +24103,12 @@ function runtime_encodeUTF8(p0, p1) {
 function runtime_stringNext(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p3, l2, p1] = asyncify_rewind(16, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p3 = load_i32(p1, 8);
+    l2 = load_i32(p1, 12);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -21579,14 +24199,29 @@ function runtime_stringNext(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   p2 = l2147483643;
-  asyncify_unwind(p2, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p3], ["i32", 12, l2]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, p3, 8);
+  store_i32(p2, l2, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*crypto/sha256.digest).Write
 function _crypto_sha256_digest_Write(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l0, l1] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    l0 = load_i32(l1, 20);
+    l1 = load_i32(l1, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -21691,14 +24326,40 @@ function _crypto_sha256_digest_Write(p0, p1, p2, p3, p4) {
     l2147483643 = 0;
   }
   l2 = l2147483643;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, l0, 20);
+  store_i32(l2, l1, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // crypto/sha256.block
 function crypto_sha256_block(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l6, l8, l9, l10, l11, l12, l13, l14, l7, p1] = asyncify_rewind(60, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 60) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l6 = load_i32(p1, 24);
+    l8 = load_i32(p1, 28);
+    l9 = load_i32(p1, 32);
+    l10 = load_i32(p1, 36);
+    l11 = load_i32(p1, 40);
+    l12 = load_i32(p1, 44);
+    l13 = load_i32(p1, 48);
+    l14 = load_i32(p1, 52);
+    l7 = load_i32(p1, 56);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -21832,14 +24493,46 @@ function crypto_sha256_block(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 60, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l6], ["i32", 28, l8], ["i32", 32, l9], ["i32", 36, l10], ["i32", 40, l11], ["i32", 44, l12], ["i32", 48, l13], ["i32", 52, l14], ["i32", 56, l7]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l6, 24);
+  store_i32(l0, l8, 28);
+  store_i32(l0, l9, 32);
+  store_i32(l0, l10, 36);
+  store_i32(l0, l11, 40);
+  store_i32(l0, l12, 44);
+  store_i32(l0, l13, 48);
+  store_i32(l0, l14, 52);
+  store_i32(l0, l7, 56);
+  store_i32(g2, ((load_i32(g2) + 60) | 0));
 }
 
 // (*encoding/base64.Encoding).decodeQuantum
 function _encoding_base64_Encoding_decodeQuantum(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l1, l0, l3, l4, l5, l7, l8, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -21847,11 +24540,14 @@ function _encoding_base64_Encoding_decodeQuantum(p0, p1, p2, p3, p4, p5) {
       l6 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(96, 8);
-      l3 = g0;
+      l3 = ((g0 - 96) | 0);
+      g0 = l3;
       store_i32(l3, 20, 12);
       new Uint8Array(memory.buffer).fill(0, ((l3 + 16) | 0), ((l3 + 16) | 0) + 80);
       store_i32(l3, 0, 4);
+      l8 = load_i32(138276);
+      store_i32(l3, l8, 8);
+      store_i32(138276, ((l3 + 8) | 0));
       l1 = (u32(p4) < u32(p5) ? 1 : 0);
       l7 = (l1 ? p5 : p4);
       l5 = 0;
@@ -22188,14 +24884,39 @@ function _encoding_base64_Encoding_decodeQuantum(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l2 = l2147483641;
-  asyncify_unwind(l2, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l1], ["i32", 28, l0], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l7], ["i32", 48, l8]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, l1, 24);
+  store_i32(l2, l0, 28);
+  store_i32(l2, l3, 32);
+  store_i32(l2, l4, 36);
+  store_i32(l2, l5, 40);
+  store_i32(l2, l7, 44);
+  store_i32(l2, l8, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // internal/fmtsort.Sort$1
 function internal_fmtsort_Sort$1(p0, p1, p2, p3, p4, p5, p6, p7) {
   let l0 = 0, l2147483639;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, p7, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    p7 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -22203,13 +24924,16 @@ function internal_fmtsort_Sort$1(p0, p1, p2, p3, p4, p5, p6, p7) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      p4 = deferSetup(32, 8);
-      p3 = g0;
+      p3 = ((g0 - 32) | 0);
+      g0 = p3;
       store_i32(p3, 4, 12);
       store_i32(p3, p6, 28);
       store_i32(p3, p5, 24);
       store_i32(p3, p1, 20);
       store_i32(p3, p0, 16);
+      p4 = load_i32(138276);
+      store_i32(138276, ((p3 + 8) | 0));
+      store_i32(p3, p4, 8);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -22219,14 +24943,26 @@ function internal_fmtsort_Sort$1(p0, p1, p2, p3, p4, p5, p6, p7) {
       p6 = internal_fmtsort_compare(p0, p1, p2, p5, p6, p7);
     }
     if ((g1 === 0)) {
-      deferCleanup(p4, 32);
+      store_i32(138276, p4);
+      g0 = ((p3 + 32) | 0);
       return p6;
     }
     throw new Error('unreachable');
     l2147483639 = 0;
   }
   l0 = l2147483639;
-  asyncify_unwind(l0, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, p7]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, p7, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -22234,7 +24970,28 @@ function internal_fmtsort_Sort$1(p0, p1, p2, p3, p4, p5, p6, p7) {
 function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l17 = 0n, l2147483641, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l4, l11, l12, l5, l15, l16, l6, l14, l7, l8, l9, l10, p1] = asyncify_rewind(100, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 36], ["i64", 44], ["i32", 52], ["i64", 56], ["i64", 64], ["i32", 72], ["i64", 76], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 100) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    l11 = load_f64(p1, 36);
+    l12 = load_f64(p1, 44);
+    l5 = load_i32(p1, 52);
+    l15 = load_i64(p1, 56);
+    l16 = load_i64(p1, 64);
+    l6 = load_i32(p1, 72);
+    l14 = load_f64(p1, 76);
+    l7 = load_i32(p1, 84);
+    l8 = load_i32(p1, 88);
+    l9 = load_i32(p1, 92);
+    l10 = load_i32(p1, 96);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -22242,12 +24999,15 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l10 = deferSetup(336, 208);
-      l0 = g0;
+      l0 = ((g0 - 336) | 0);
+      g0 = l0;
       store_i32(l0, 30, 212);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 224) | 0), ((l0 + 224) | 0) + 112);
       store_i32(l0, p3, 220);
       store_i32(l0, p0, 216);
+      l10 = load_i32(138276);
+      store_i32(l0, l10, 208);
+      store_i32(138276, ((l0 + 208) | 0));
       l1 = -1;
     }
     if (((g1 ? l3 : 0) === 0)) {
@@ -22832,14 +25592,38 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
       l1 = (g1 ? l1 : 1);
     }
     if ((g1 === 0)) {
-      deferCleanup(l10, 336);
+      store_i32(138276, l10);
+      g0 = ((l0 + 336) | 0);
       return l1;
     }
     throw new Error('unreachable');
     l2147483641 = 0;
   }
   l2 = l2147483641;
-  asyncify_unwind(l2, 100, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l4], ["i64", 36, l11], ["i64", 44, l12], ["i32", 52, l5], ["i64", 56, l15], ["i64", 64, l16], ["i32", 72, l6], ["i64", 76, l14], ["i32", 84, l7], ["i32", 88, l8], ["i32", 92, l9], ["i32", 96, l10]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, l0, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l4, 32);
+  store_f64(l2, l11, 36);
+  store_f64(l2, l12, 44);
+  store_i32(l2, l5, 52);
+  store_i64(l2, l15, 56);
+  store_i64(l2, l16, 64);
+  store_i32(l2, l6, 72);
+  store_f64(l2, l14, 76);
+  store_i32(l2, l7, 84);
+  store_i32(l2, l8, 88);
+  store_i32(l2, l9, 92);
+  store_i32(l2, l10, 96);
+  store_i32(g2, ((load_i32(g2) + 100) | 0));
   return 0;
 }
 
@@ -22847,7 +25631,38 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
 function slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l4, l3, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, l26, l0] = asyncify_rewind(120, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 100], ["i32", 104], ["i32", 108], ["i32", 112], ["i32", 116]);
+    store_i32(g2, ((load_i32(g2) - 120) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    l2 = load_i32(l0, 16);
+    l4 = load_i32(l0, 20);
+    l3 = load_i32(l0, 24);
+    l5 = load_i32(l0, 28);
+    l6 = load_i32(l0, 32);
+    l7 = load_i32(l0, 36);
+    l8 = load_i32(l0, 40);
+    l9 = load_i32(l0, 44);
+    l10 = load_i32(l0, 48);
+    l11 = load_i32(l0, 52);
+    l12 = load_i32(l0, 56);
+    l13 = load_i32(l0, 60);
+    l14 = load_i32(l0, 64);
+    l15 = load_i32(l0, 68);
+    l16 = load_i32(l0, 72);
+    l17 = load_i32(l0, 76);
+    l18 = load_i32(l0, 80);
+    l19 = load_i32(l0, 84);
+    l20 = load_i32(l0, 88);
+    l21 = load_i32(l0, 92);
+    l22 = load_i32(l0, 96);
+    l23 = load_i32(l0, 100);
+    l24 = load_i32(l0, 104);
+    l25 = load_i32(l0, 108);
+    l26 = load_i32(l0, 112);
+    l0 = load_i32(l0, 116);
   }
   block_1: {
     if (g1 === 2) {
@@ -22855,10 +25670,13 @@ function slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3) {
       l27 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l26 = deferSetup(80, 8);
-      l2 = g0;
+      l2 = ((g0 - 80) | 0);
+      g0 = l2;
       store_i32(l2, 16, 12);
       new Uint8Array(memory.buffer).fill(0, ((l2 + 16) | 0), ((l2 + 16) | 0) + 64);
+      l26 = load_i32(138276);
+      store_i32(l2, l26, 8);
+      store_i32(138276, ((l2 + 8) | 0));
       l8 = ((Math.imul(p2, 24) + p0) | 0);
       l4 = p2;
     }
@@ -22963,7 +25781,8 @@ function slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3) {
             }
           }
           if ((g1 === 0)) {
-            deferCleanup(l26, 80);
+            store_i32(138276, l26);
+            g0 = ((l2 + 80) | 0);
             return;
           }
         }
@@ -22989,14 +25808,72 @@ function slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 120, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l4], ["i32", 24, l3], ["i32", 28, l5], ["i32", 32, l6], ["i32", 36, l7], ["i32", 40, l8], ["i32", 44, l9], ["i32", 48, l10], ["i32", 52, l11], ["i32", 56, l12], ["i32", 60, l13], ["i32", 64, l14], ["i32", 68, l15], ["i32", 72, l16], ["i32", 76, l17], ["i32", 80, l18], ["i32", 84, l19], ["i32", 88, l20], ["i32", 92, l21], ["i32", 96, l22], ["i32", 100, l23], ["i32", 104, l24], ["i32", 108, l25], ["i32", 112, l26], ["i32", 116, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l4, 20);
+  store_i32(l1, l3, 24);
+  store_i32(l1, l5, 28);
+  store_i32(l1, l6, 32);
+  store_i32(l1, l7, 36);
+  store_i32(l1, l8, 40);
+  store_i32(l1, l9, 44);
+  store_i32(l1, l10, 48);
+  store_i32(l1, l11, 52);
+  store_i32(l1, l12, 56);
+  store_i32(l1, l13, 60);
+  store_i32(l1, l14, 64);
+  store_i32(l1, l15, 68);
+  store_i32(l1, l16, 72);
+  store_i32(l1, l17, 76);
+  store_i32(l1, l18, 80);
+  store_i32(l1, l19, 84);
+  store_i32(l1, l20, 88);
+  store_i32(l1, l21, 92);
+  store_i32(l1, l22, 96);
+  store_i32(l1, l23, 100);
+  store_i32(l1, l24, 104);
+  store_i32(l1, l25, 108);
+  store_i32(l1, l26, 112);
+  store_i32(l1, l0, 116);
+  store_i32(g2, ((load_i32(g2) + 120) | 0));
 }
 
 // slices.symMergeCmpFunc[internal/fmtsort.KeyValue]
 function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l1, l2, l4, l5, l6, l7, l8, l11, l9, l10, l12, l14, l15, l16, l17, l18, l19, l20, p1] = asyncify_rewind(96, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 96) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l2 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l6 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    l11 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    l10 = load_i32(p1, 60);
+    l12 = load_i32(p1, 64);
+    l14 = load_i32(p1, 68);
+    l15 = load_i32(p1, 72);
+    l16 = load_i32(p1, 76);
+    l17 = load_i32(p1, 80);
+    l18 = load_i32(p1, 84);
+    l19 = load_i32(p1, 88);
+    l20 = load_i32(p1, 92);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -23004,10 +25881,13 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
       l13 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l19 = deferSetup(176, 8);
-      l1 = g0;
+      l1 = ((g0 - 176) | 0);
+      g0 = l1;
       store_i32(l1, 40, 12);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 16) | 0), ((l1 + 16) | 0) + 160);
+      l19 = load_i32(138276);
+      store_i32(l1, l19, 8);
+      store_i32(138276, ((l1 + 8) | 0));
       l0 = (((p3 - p2) | 0) !== 1 ? 1 : 0);
     }
     block_4: {
@@ -23361,7 +26241,8 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l19, 176);
+        store_i32(138276, l19);
+        g0 = ((l1 + 176) | 0);
         return;
       }
     }
@@ -23379,7 +26260,34 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l3 = l2147483642;
-  asyncify_unwind(l3, 96, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l1], ["i32", 28, l2], ["i32", 32, l4], ["i32", 36, l5], ["i32", 40, l6], ["i32", 44, l7], ["i32", 48, l8], ["i32", 52, l11], ["i32", 56, l9], ["i32", 60, l10], ["i32", 64, l12], ["i32", 68, l14], ["i32", 72, l15], ["i32", 76, l16], ["i32", 80, l17], ["i32", 84, l18], ["i32", 88, l19], ["i32", 92, l20]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, p2, 8);
+  store_i32(l3, p3, 12);
+  store_i32(l3, p4, 16);
+  store_i32(l3, l0, 20);
+  store_i32(l3, l1, 24);
+  store_i32(l3, l2, 28);
+  store_i32(l3, l4, 32);
+  store_i32(l3, l5, 36);
+  store_i32(l3, l6, 40);
+  store_i32(l3, l7, 44);
+  store_i32(l3, l8, 48);
+  store_i32(l3, l11, 52);
+  store_i32(l3, l9, 56);
+  store_i32(l3, l10, 60);
+  store_i32(l3, l12, 64);
+  store_i32(l3, l14, 68);
+  store_i32(l3, l15, 72);
+  store_i32(l3, l16, 76);
+  store_i32(l3, l17, 80);
+  store_i32(l3, l18, 84);
+  store_i32(l3, l19, 88);
+  store_i32(l3, l20, 92);
+  store_i32(g2, ((load_i32(g2) + 96) | 0));
 }
 
 // slices.swapRangeCmpFunc[internal/fmtsort.KeyValue]
@@ -23466,7 +26374,15 @@ function cmp_isNaN_string(p0, p1) {
 function internal_fmtsort_nilCompare(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2147483640, l2147483641;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p6 = load_i32(g2);
+    p0 = load_i32(p6);
+    p1 = load_i32(p6, 4);
+    p2 = load_i32(p6, 8);
+    p3 = load_i32(p6, 12);
+    p4 = load_i32(p6, 16);
+    p5 = load_i32(p6, 20);
+    p6 = load_i32(p6, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -23497,14 +26413,31 @@ function internal_fmtsort_nilCompare(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*internal/godebug.Setting).register$bound
 function _internal_godebug_Setting_register$bound(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483646;
   if (g1 === 2) {
-    [p0, l1, l3, l5, l6, l0] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    l1 = load_i32(l2, 8);
+    l3 = load_i32(l2, 12);
+    l5 = load_i32(l2, 16);
+    l6 = load_i32(l2, 20);
+    l0 = load_i32(l2, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -23512,10 +26445,13 @@ function _internal_godebug_Setting_register$bound(p0) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(96, 40);
-      l0 = g0;
+      l0 = ((g0 - 96) | 0);
+      g0 = l0;
       store_i32(l0, 12, 44);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 52) | 0), ((l0 + 52) | 0) + 44);
+      l6 = load_i32(138276);
+      store_i32(l0, l6, 40);
+      store_i32(138276, ((l0 + 40) | 0));
       l1 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -23578,7 +26514,8 @@ function _internal_godebug_Setting_register$bound(p0) {
           p0 = load_i32(p0, 20);
           store_i32(l0, p0, 92);
           if ((p0 === 0)) break block_4;
-          deferCleanup(l6, 96);
+          store_i32(138276, l6);
+          g0 = ((l0 + 96) | 0);
           return;
         }
       }
@@ -23638,7 +26575,16 @@ function _internal_godebug_Setting_register$bound(p0) {
     l2147483646 = 0;
   }
   l2 = l2147483646;
-  asyncify_unwind(l2, 24, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l5], ["i32", 20, l6]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l0, 4);
+  store_i32(l2, l1, 8);
+  store_i32(l2, l3, 12);
+  store_i32(l2, l5, 16);
+  store_i32(l2, l6, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // (*internal/godebug.Setting).Name
@@ -23687,7 +26633,18 @@ function _internal_godebug_Setting_Name(p0, p1) {
 function _internal_godebug_Setting_Value$1(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, l1, l2, l4, l5, l7, l8, l9, l10, l0] = asyncify_rewind(40, ["i32", 0], ["i32", 4], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 4);
+    l2 = load_i32(l0, 12);
+    l4 = load_i32(l0, 16);
+    l5 = load_i32(l0, 20);
+    l7 = load_i32(l0, 24);
+    l8 = load_i32(l0, 28);
+    l9 = load_i32(l0, 32);
+    l10 = load_i32(l0, 36);
+    l0 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -23695,10 +26652,13 @@ function _internal_godebug_Setting_Value$1(p0) {
       l6 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l10 = deferSetup(176, 56);
-      l1 = g0;
+      l1 = ((g0 - 176) | 0);
+      g0 = l1;
       store_i32(l1, 27, 60);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 72) | 0), ((l1 + 72) | 0) + 100);
+      l10 = load_i32(138276);
+      store_i32(138276, ((l1 + 56) | 0));
+      store_i32(l1, l10, 56);
       l8 = load_i32(p0);
       store_i32(l1, l8, 68);
       store_i32(l1, l8, 64);
@@ -23861,7 +26821,8 @@ function _internal_godebug_Setting_Value$1(p0) {
               p0 = (load_u8(l2) !== 35 ? 1 : 0);
               if (p0) break block_10;
             }
-            deferCleanup(l10, 176);
+            store_i32(138276, l10);
+            g0 = ((l1 + 176) | 0);
             return;
           }
         }
@@ -23933,14 +26894,36 @@ function _internal_godebug_Setting_Value$1(p0) {
     l2147483646 = 0;
   }
   l3 = l2147483646;
-  asyncify_unwind(l3, 40, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l0], ["i32", 12, l2], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l7], ["i32", 28, l8], ["i32", 32, l9], ["i32", 36, l10]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, l1, 4);
+  store_i32(l3, l0, 8);
+  store_i32(l3, l2, 12);
+  store_i32(l3, l4, 16);
+  store_i32(l3, l5, 20);
+  store_i32(l3, l7, 24);
+  store_i32(l3, l8, 28);
+  store_i32(l3, l9, 32);
+  store_i32(l3, l10, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // syscall/js.jsString
 function syscall_js_jsString(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, l1, l2, l3, l5, l6, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i64", 32], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p2 = load_i32(l0, 12);
+    l1 = load_i32(l0, 16);
+    l2 = load_i32(l0, 20);
+    l3 = load_i32(l0, 24);
+    l5 = load_i32(l0, 28);
+    l6 = load_i64(l0, 32);
+    p1 = load_i64(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -23948,11 +26931,14 @@ function syscall_js_jsString(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(48, 24);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 40) | 0), 0n);
       store_i64(l1, 0n, 32);
       store_i32(l1, 4, 28);
+      l5 = load_i32(138276);
+      store_i32(138276, ((l1 + 24) | 0));
+      store_i32(l1, l5, 24);
       l2 = ((l1 + 8) | 0);
     }
     if (((g1 ? l4 : 0) === 0)) {
@@ -24037,14 +27023,36 @@ function syscall_js_jsString(p0, p1, p2) {
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 40, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3], ["i32", 28, l5], ["i64", 32, l6]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(l0, l5, 28);
+  store_i64(l0, l6, 32);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // syscall/js.ValueOf
 function syscall_js_ValueOf(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0n, l9 = 0n, l10 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l1, l8, l4, l5, l6, l7, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i64", 20], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l8 = load_i64(p1, 20);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l7 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -24052,10 +27060,13 @@ function syscall_js_ValueOf(p0, p1, p2) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(288, 216);
-      l0 = g0;
+      l0 = ((g0 - 288) | 0);
+      g0 = l0;
       store_i32(l0, 16, 220);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 224) | 0), ((l0 + 224) | 0) + 64);
+      l5 = load_i32(138276);
+      store_i32(l0, l5, 216);
+      store_i32(138276, ((l0 + 216) | 0));
       l1 = (p1 === 128340 ? 1 : 0);
     }
     block_4: {
@@ -24242,7 +27253,20 @@ function syscall_js_ValueOf(p0, p1, p2) {
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i64", 20, l8], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l6], ["i32", 40, l7]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l1, 16);
+  store_i64(l2, l8, 20);
+  store_i32(l2, l4, 28);
+  store_i32(l2, l5, 32);
+  store_i32(l2, l6, 36);
+  store_i32(l2, l7, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // syscall/js.floatValue
@@ -24291,10 +27315,13 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(144, 72);
-      l1 = g0;
+      l1 = ((g0 - 144) | 0);
+      g0 = l1;
       store_i32(l1, 15, 76);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 80) | 0), ((l1 + 80) | 0) + 60);
+      l7 = load_i32(138276);
+      store_i32(l1, l7, 72);
+      store_i32(138276, ((l1 + 72) | 0));
       l3 = ((l1 + 48) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
@@ -24480,7 +27507,14 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
 function syscall_js_makeArgSlices(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l1, l2, l3, l4, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l1 = load_i32(p1, 8);
+    l2 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l4 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -24488,11 +27522,14 @@ function syscall_js_makeArgSlices(p0, p1) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 8);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i64(l1, 0n, 20);
       store_i32(l1, 4, 12);
+      l3 = load_i32(138276);
       l2 = ((l1 + 8) | 0);
+      store_i32(138276, l2);
+      store_i32(l1, l3, 8);
     }
     if (((g1 ? l5 : 0) === 0)) {
       if (g1 === 1) {
@@ -24526,14 +27563,35 @@ function syscall_js_makeArgSlices(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l4]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l1, 8);
+  store_i32(l0, l2, 12);
+  store_i32(l0, l3, 16);
+  store_i32(l0, l4, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // syscall/js.storeArgs
 function syscall_js_storeArgs(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483641;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, l2, l3, l4, l5, l0] = asyncify_rewind(44, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    p4 = load_i32(l0, 16);
+    p5 = load_i32(l0, 20);
+    l2 = load_i32(l0, 24);
+    l3 = load_i32(l0, 28);
+    l4 = load_i32(l0, 32);
+    l5 = load_i32(l0, 36);
+    l0 = load_i32(l0, 40);
   }
   block_1: {
     if (g1 === 2) {
@@ -24541,11 +27599,14 @@ function syscall_js_storeArgs(p0, p1, p2, p3, p4, p5) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(48, 24);
-      l2 = g0;
+      l2 = ((g0 - 48) | 0);
+      g0 = l2;
       store_i64(l2, 0n, 40);
       store_i32(l2, 4, 28);
+      l5 = load_i32(138276);
       l4 = ((l2 + 24) | 0);
+      store_i32(138276, l4);
+      store_i32(l2, l5, 24);
       l3 = 0;
     }
     block_4: {
@@ -24584,7 +27645,8 @@ function syscall_js_storeArgs(p0, p1, p2, p3, p4, p5) {
         break;
       }
       if ((g1 === 0)) {
-        deferCleanup(l5, 48);
+        store_i32(138276, l5);
+        g0 = ((l2 + 48) | 0);
         return;
       }
     }
@@ -24602,7 +27664,21 @@ function syscall_js_storeArgs(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l2], ["i32", 28, l3], ["i32", 32, l4], ["i32", 36, l5], ["i32", 40, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, l2, 24);
+  store_i32(l1, l3, 28);
+  store_i32(l1, l4, 32);
+  store_i32(l1, l5, 36);
+  store_i32(l1, l0, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // (syscall/js.Value).Invoke
@@ -24632,10 +27708,13 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(144, 72);
-      l1 = g0;
+      l1 = ((g0 - 144) | 0);
+      g0 = l1;
       store_i32(l1, 15, 76);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 80) | 0), ((l1 + 80) | 0) + 60);
+      l7 = load_i32(138276);
+      store_i32(l1, l7, 72);
+      store_i32(138276, ((l1 + 72) | 0));
       l3 = ((l1 + 48) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
@@ -24821,7 +27900,14 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
 function syscall_js_FuncOf(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0, l3, l2] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    l0 = load_i32(l2, 12);
+    l3 = load_i32(l2, 16);
+    l2 = load_i32(l2, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -24894,14 +27980,49 @@ function syscall_js_FuncOf(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l3], ["i32", 20, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l2, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // slices.pdqsortOrdered[int]
 function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0n, l25 = 0n, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l1, l2, l3, l5, l6, l7, l8, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, p1] = asyncify_rewind(100, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 100) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l2 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l6 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    l10 = load_i32(p1, 52);
+    l11 = load_i32(p1, 56);
+    l12 = load_i32(p1, 60);
+    l13 = load_i32(p1, 64);
+    l14 = load_i32(p1, 68);
+    l15 = load_i32(p1, 72);
+    l16 = load_i32(p1, 76);
+    l17 = load_i32(p1, 80);
+    l18 = load_i32(p1, 84);
+    l19 = load_i32(p1, 88);
+    l20 = load_i32(p1, 92);
+    l21 = load_i32(p1, 96);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -25453,7 +28574,35 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l4 = l2147483642;
-  asyncify_unwind(l4, 100, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l1], ["i32", 28, l2], ["i32", 32, l3], ["i32", 36, l5], ["i32", 40, l6], ["i32", 44, l7], ["i32", 48, l8], ["i32", 52, l10], ["i32", 56, l11], ["i32", 60, l12], ["i32", 64, l13], ["i32", 68, l14], ["i32", 72, l15], ["i32", 76, l16], ["i32", 80, l17], ["i32", 84, l18], ["i32", 88, l19], ["i32", 92, l20], ["i32", 96, l21]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i32(l4, p0);
+  store_i32(l4, p1, 4);
+  store_i32(l4, p2, 8);
+  store_i32(l4, p3, 12);
+  store_i32(l4, p4, 16);
+  store_i32(l4, l0, 20);
+  store_i32(l4, l1, 24);
+  store_i32(l4, l2, 28);
+  store_i32(l4, l3, 32);
+  store_i32(l4, l5, 36);
+  store_i32(l4, l6, 40);
+  store_i32(l4, l7, 44);
+  store_i32(l4, l8, 48);
+  store_i32(l4, l10, 52);
+  store_i32(l4, l11, 56);
+  store_i32(l4, l12, 60);
+  store_i32(l4, l13, 64);
+  store_i32(l4, l14, 68);
+  store_i32(l4, l15, 72);
+  store_i32(l4, l16, 76);
+  store_i32(l4, l17, 80);
+  store_i32(l4, l18, 84);
+  store_i32(l4, l19, 88);
+  store_i32(l4, l20, 92);
+  store_i32(l4, l21, 96);
+  store_i32(g2, ((load_i32(g2) + 100) | 0));
 }
 
 // slices.siftDownOrdered[int]
@@ -25519,7 +28668,14 @@ function slices_siftDownOrdered_int(p0, p1, p2, p3, p4) {
 function slices_medianAdjacentOrdered_int(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l1] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l1 = load_i32(l1, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -25544,7 +28700,16 @@ function slices_medianAdjacentOrdered_int(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0;
 }
 
@@ -25552,7 +28717,16 @@ function slices_medianAdjacentOrdered_int(p0, p1, p2, p3) {
 function slices_medianOrdered_int(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, l2, l0] = asyncify_rewind(32, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    p4 = load_i32(l0, 16);
+    p5 = load_i32(l0, 20);
+    l2 = load_i32(l0, 24);
+    l0 = load_i32(l0, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -25602,7 +28776,18 @@ function slices_medianOrdered_int(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l2], ["i32", 28, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, l2, 24);
+  store_i32(l1, l0, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -25610,7 +28795,11 @@ function slices_medianOrdered_int(p0, p1, p2, p3, p4, p5) {
 function slices_order2Ordered_int(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p2 = load_i32(p3, 4);
+    p3 = load_i32(p3, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -25667,14 +28856,28 @@ function slices_order2Ordered_int(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   p1 = l2147483641;
-  asyncify_unwind(p1, 12, ["i32", 0, p0], ["i32", 4, p2], ["i32", 8, p3]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, p2, 4);
+  store_i32(p1, p3, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
 }
 
 // (*strings.Builder).Grow
 function _strings_Builder_Grow(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l1, l0, l3, l4, l6, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l1 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l4 = load_i32(p1, 20);
+    l6 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -25682,14 +28885,17 @@ function _strings_Builder_Grow(p0, p1) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(48, 8);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 24) | 0), 0n);
       store_i64(((l1 + 32) | 0), 0n);
       store_i32(((l1 + 40) | 0), 0);
       store_i64(l1, 0n, 16);
       store_i32(l1, 7, 12);
+      l6 = load_i32(138276);
       l0 = ((l1 + 8) | 0);
+      store_i32(138276, l0);
+      store_i32(l1, l6, 8);
     }
     if (((g1 ? l5 : 0) === 0)) {
       _strings_Builder_copyCheck(p0);
@@ -25743,7 +28949,8 @@ function _strings_Builder_Grow(p0, p1) {
             }
           }
           if ((g1 === 0)) {
-            deferCleanup(l6, 48);
+            store_i32(138276, l6);
+            g0 = ((l1 + 48) | 0);
             return;
           }
         }
@@ -25783,14 +28990,27 @@ function _strings_Builder_Grow(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l0], ["i32", 16, l3], ["i32", 20, l4], ["i32", 24, l6]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l1, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l3, 16);
+  store_i32(l2, l4, 20);
+  store_i32(l2, l6, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*strings.Builder).copyCheck
 function _strings_Builder_copyCheck(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646;
   if (g1 === 2) {
-    [l0, l1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    l1 = load_i32(g2);
+    l0 = load_i32(l1);
+    l1 = load_i32(l1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -25798,9 +29018,12 @@ function _strings_Builder_copyCheck(p0) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(16, 0);
-      l0 = g0;
+      l0 = ((g0 - 16) | 0);
+      g0 = l0;
       store_i32(l0, 2, 4);
+      l1 = load_i32(138276);
+      store_i32(138276, l0);
+      store_i32(l0, l1);
       l2 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -25839,13 +29062,19 @@ function _strings_Builder_copyCheck(p0) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 16);
+      store_i32(138276, l1);
+      g0 = ((l0 + 16) | 0);
     }
     return;
     l2147483646 = 0;
   }
   p0 = l2147483646;
-  asyncify_unwind(p0, 8, ["i32", 0, l0], ["i32", 4, l1]);
+  store_i32(load_i32(g2), p0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p0 = load_i32(g2);
+  store_i32(p0, l0);
+  store_i32(p0, l1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // (*strings.Builder).String
@@ -25899,7 +29128,18 @@ function _strings_Builder_String(p0, p1) {
 function _strings_Builder_WriteString(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l3, l4, l5, l6, l1] = asyncify_rewind(40, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l3 = load_i32(l1, 20);
+    l4 = load_i32(l1, 24);
+    l5 = load_i32(l1, 28);
+    l6 = load_i32(l1, 32);
+    l1 = load_i32(l1, 36);
   }
   block_1: {
     if (g1 === 2) {
@@ -25907,11 +29147,14 @@ function _strings_Builder_WriteString(p0, p1, p2, p3) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 0, 28);
       store_i32(l2, 2, 20);
+      l4 = load_i32(138276);
       l3 = ((l2 + 16) | 0);
+      store_i32(138276, l3);
+      store_i32(l2, l4, 16);
     }
     if (((g1 ? l0 : 0) === 0)) {
       _strings_Builder_copyCheck(p1);
@@ -25961,14 +29204,37 @@ function _strings_Builder_WriteString(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l5], ["i32", 32, l6], ["i32", 36, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l3, 20);
+  store_i32(l0, l4, 24);
+  store_i32(l0, l5, 28);
+  store_i32(l0, l6, 32);
+  store_i32(l0, l1, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // strings.Compare
 function strings_Compare(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l3, l4, l5, l0] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    l2 = load_i32(l0, 16);
+    l3 = load_i32(l0, 20);
+    l4 = load_i32(l0, 24);
+    l5 = load_i32(l0, 28);
+    l0 = load_i32(l0, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -26025,7 +29291,19 @@ function strings_Compare(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l5], ["i32", 32, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l4, 24);
+  store_i32(l1, l5, 28);
+  store_i32(l1, l0, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
   return 0;
 }
 
@@ -26033,7 +29311,14 @@ function strings_Compare(p0, p1, p2, p3) {
 function strings_Count(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l1, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l1 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -26112,7 +29397,16 @@ function strings_Count(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l2 = l2147483643;
-  asyncify_unwind(l2, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, l0, 16);
+  store_i32(l2, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0;
 }
 
@@ -26120,7 +29414,20 @@ function strings_Count(p0, p1, p2, p3) {
 function strings_Split(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l4, l3, l5, l6, l7, l9, p1] = asyncify_rewind(48, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    l3 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l7 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -26128,10 +29435,13 @@ function strings_Split(p0, p1, p2, p3) {
       l8 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l9 = deferSetup(32, 8);
-      l4 = g0;
+      l4 = ((g0 - 32) | 0);
+      g0 = l4;
       store_i32(l4, 3, 12);
+      l9 = load_i32(138276);
       l1 = ((l4 + 8) | 0);
+      store_i32(138276, l1);
+      store_i32(l4, l9, 8);
     }
     if (((g1 ? l8 : 0) === 0)) {
       if (g1 === 1) {
@@ -26247,7 +29557,22 @@ function strings_Split(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 48, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l4], ["i32", 28, l3], ["i32", 32, l5], ["i32", 36, l6], ["i32", 40, l7], ["i32", 44, l9]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l4, 24);
+  store_i32(l0, l3, 28);
+  store_i32(l0, l5, 32);
+  store_i32(l0, l6, 36);
+  store_i32(l0, l7, 40);
+  store_i32(l0, l9, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // strings.Cut
@@ -26255,7 +29580,13 @@ function strings_Cut(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644, l2147483645;
   l1 = 98258;
   if (g1 === 2) {
-    [p0, p2, l1, l2, p1] = asyncify_rewind(20, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     l2 = (g1 ? l2 : 0);
@@ -26303,14 +29634,27 @@ function strings_Cut(p0, p1, p2) {
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1], ["i32", 16, l2]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(l0, l2, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
 }
 
 // fmt.init$1
 function fmt_init$1(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l2, l1] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    l2 = load_i32(l1, 8);
+    l1 = load_i32(l1, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -26318,8 +29662,10 @@ function fmt_init$1(p0, p1) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(16, 0);
-      p1 = g0;
+      p1 = ((g0 - 16) | 0);
+      g0 = p1;
+      l2 = load_i32(138276);
+      store_i32(138276, p1);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -26338,14 +29684,30 @@ function fmt_init$1(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l2], ["i32", 12, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*fmt.buffer).write
 function _fmt_buffer_write(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l4, l3, l5, l0] = asyncify_rewind(32, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l2 = load_i32(l0, 12);
+    l4 = load_i32(l0, 16);
+    l3 = load_i32(l0, 20);
+    l5 = load_i32(l0, 24);
+    l0 = load_i32(l0, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -26353,10 +29715,13 @@ function _fmt_buffer_write(p0, p1, p2) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 0, 28);
       store_i32(l2, 2, 20);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l2 + 16) | 0));
+      store_i32(l2, l4, 16);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -26397,14 +29762,33 @@ function _fmt_buffer_write(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l2], ["i32", 16, l4], ["i32", 20, l3], ["i32", 24, l5], ["i32", 28, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l4, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l5, 24);
+  store_i32(l1, l0, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // (*fmt.buffer).writeByte
 function _fmt_buffer_writeByte(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l0, l3, l4, l5, l1] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    l0 = load_i32(l1, 8);
+    l3 = load_i32(l1, 12);
+    l4 = load_i32(l1, 16);
+    l5 = load_i32(l1, 20);
+    l1 = load_i32(l1, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -26412,10 +29796,13 @@ function _fmt_buffer_writeByte(p0, p1) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 16);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       store_i32(l0, 0, 28);
       store_i32(l0, 2, 20);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l0 + 16) | 0));
+      store_i32(l0, l4, 16);
       l3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -26458,14 +29845,32 @@ function _fmt_buffer_writeByte(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l3], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l3, 12);
+  store_i32(l2, l4, 16);
+  store_i32(l2, l5, 20);
+  store_i32(l2, l1, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*fmt.buffer).writeRune
 function _fmt_buffer_writeRune(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l1, l3, l4, l5, l0] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    l1 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l4 = load_i32(l0, 16);
+    l5 = load_i32(l0, 20);
+    l0 = load_i32(l0, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -26473,10 +29878,13 @@ function _fmt_buffer_writeRune(p0, p1) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i32(l1, 0, 28);
       store_i32(l1, 2, 20);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l1 + 16) | 0));
+      store_i32(l1, l3, 16);
       l5 = load_i32(p0);
       store_i32(l1, l5, 24);
       l4 = load_i32(p0, 4);
@@ -26500,14 +29908,29 @@ function _fmt_buffer_writeRune(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l0]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l1, 8);
+  store_i32(l2, l3, 12);
+  store_i32(l2, l4, 16);
+  store_i32(l2, l5, 20);
+  store_i32(l2, l0, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*fmt.fmt).fmtBx
 function _fmt_fmt_fmtBx(p0, p1, p2, p3) {
   let l0 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, p3] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p1 = load_i32(p3, 4);
+    p2 = load_i32(p3, 8);
+    p3 = load_i32(p3, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -26527,7 +29950,14 @@ function _fmt_fmt_fmtBx(p0, p1, p2, p3) {
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*fmt.fmt).fmtSbx
@@ -26559,10 +29989,13 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
       l7 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l11 = deferSetup(128, 80);
-      l0 = g0;
+      l0 = ((g0 - 128) | 0);
+      g0 = l0;
       store_i32(l0, 10, 84);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 92) | 0), ((l0 + 92) | 0) + 36);
+      l11 = load_i32(138276);
+      store_i32(l0, l11, 80);
+      store_i32(138276, ((l0 + 80) | 0));
       l2 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -26801,7 +30234,8 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l11, 128);
+      store_i32(138276, l11);
+      g0 = ((l0 + 128) | 0);
     }
     return;
     l2147483641 = 0;
@@ -26833,7 +30267,27 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
 function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l1, l3, l4, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, p1] = asyncify_rewind(80, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 80) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p2 = load_i32(l2, 12);
+    p3 = load_i32(l2, 16);
+    p4 = load_i32(l2, 20);
+    l0 = load_i32(l2, 24);
+    l1 = load_i32(l2, 28);
+    l3 = load_i32(l2, 32);
+    l4 = load_i32(l2, 36);
+    l6 = load_i32(l2, 40);
+    l7 = load_i32(l2, 44);
+    l8 = load_i32(l2, 48);
+    l9 = load_i32(l2, 52);
+    l10 = load_i32(l2, 56);
+    l11 = load_i32(l2, 60);
+    l12 = load_i32(l2, 64);
+    l13 = load_i32(l2, 68);
+    l14 = load_i32(l2, 72);
+    l15 = load_i32(l2, 76);
+    p1 = load_f64(l2, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -26841,10 +30295,13 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l14 = deferSetup(176, 96);
-      l0 = g0;
+      l0 = ((g0 - 176) | 0);
+      g0 = l0;
       store_i32(l0, 17, 100);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 108) | 0), ((l0 + 108) | 0) + 64);
+      l14 = load_i32(138276);
+      store_i32(l0, l14, 96);
+      store_i32(138276, ((l0 + 96) | 0));
       l1 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -27267,20 +30724,53 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l14, 176);
+      store_i32(138276, l14);
+      g0 = ((l0 + 176) | 0);
     }
     return;
     l2147483643 = 0;
   }
   l2 = l2147483643;
-  asyncify_unwind(l2, 80, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l6], ["i32", 44, l7], ["i32", 48, l8], ["i32", 52, l9], ["i32", 56, l10], ["i32", 60, l11], ["i32", 64, l12], ["i32", 68, l13], ["i32", 72, l14], ["i32", 76, l15]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_f64(l2, p1, 4);
+  store_i32(l2, p2, 12);
+  store_i32(l2, p3, 16);
+  store_i32(l2, p4, 20);
+  store_i32(l2, l0, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l3, 32);
+  store_i32(l2, l4, 36);
+  store_i32(l2, l6, 40);
+  store_i32(l2, l7, 44);
+  store_i32(l2, l8, 48);
+  store_i32(l2, l9, 52);
+  store_i32(l2, l10, 56);
+  store_i32(l2, l11, 60);
+  store_i32(l2, l12, 64);
+  store_i32(l2, l13, 68);
+  store_i32(l2, l14, 72);
+  store_i32(l2, l15, 76);
+  store_i32(g2, ((load_i32(g2) + 80) | 0));
 }
 
 // (*fmt.fmt).pad
 function _fmt_fmt_pad(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, l0, l1, l3, l4, l5, l8, p1] = asyncify_rewind(36, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l4 = load_i32(p1, 24);
+    l5 = load_i32(p1, 28);
+    l8 = load_i32(p1, 32);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -27288,10 +30778,13 @@ function _fmt_fmt_pad(p0, p1, p2) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(32, 8);
-      l3 = g0;
+      l3 = ((g0 - 32) | 0);
+      g0 = l3;
       store_i64(l3, 0n, 20);
       store_i64(l3, 3n, 12);
+      l8 = load_i32(138276);
+      store_i32(138276, ((l3 + 8) | 0));
+      store_i32(l3, l8, 8);
       l0 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -27451,20 +30944,42 @@ function _fmt_fmt_pad(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l8, 32);
+      store_i32(138276, l8);
+      g0 = ((l3 + 32) | 0);
     }
     return;
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i32", 20, l3], ["i32", 24, l4], ["i32", 28, l5], ["i32", 32, l8]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l1, 16);
+  store_i32(l2, l3, 20);
+  store_i32(l2, l4, 24);
+  store_i32(l2, l5, 28);
+  store_i32(l2, l8, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // (*fmt.fmt).writePadding
 function _fmt_fmt_writePadding(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l1, l3, l4, l5, l6, l7, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 8);
+    l3 = load_i32(l0, 12);
+    l4 = load_i32(l0, 16);
+    l5 = load_i32(l0, 20);
+    l6 = load_i32(l0, 24);
+    l7 = load_i32(l0, 28);
+    p1 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -27472,12 +30987,15 @@ function _fmt_fmt_writePadding(p0, p1) {
       l8 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(48, 8);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 28) | 0), 0n);
       store_i64(((l1 + 36) | 0), 0n);
       store_i64(l1, 0n, 20);
       store_i32(l1, 7, 12);
+      l6 = load_i32(138276);
+      store_i32(138276, ((l1 + 8) | 0));
+      store_i32(l1, l6, 8);
       l2 = (p1 <= 0 ? 1 : 0);
     }
     block_4: {
@@ -27545,7 +31063,8 @@ function _fmt_fmt_writePadding(p0, p1) {
           }
         }
         if ((g1 === 0)) {
-          deferCleanup(l6, 48);
+          store_i32(138276, l6);
+          g0 = ((l1 + 48) | 0);
           return;
         }
       }
@@ -27574,14 +31093,41 @@ function _fmt_fmt_writePadding(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l4], ["i32", 20, l5], ["i32", 24, l6], ["i32", 28, l7]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, l1, 8);
+  store_i32(l0, l3, 12);
+  store_i32(l0, l4, 16);
+  store_i32(l0, l5, 20);
+  store_i32(l0, l6, 24);
+  store_i32(l0, l7, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // (*fmt.fmt).fmtInteger
 function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l2, l3, l4, l5, l6, l10, l8, l9, p1] = asyncify_rewind(68, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i64", 52], ["i32", 60], ["i32", 64], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 68) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p2 = load_i32(l1, 12);
+    p3 = load_i32(l1, 16);
+    p4 = load_i32(l1, 20);
+    p5 = load_i32(l1, 24);
+    l0 = load_i32(l1, 28);
+    l2 = load_i32(l1, 32);
+    l3 = load_i32(l1, 36);
+    l4 = load_i32(l1, 40);
+    l5 = load_i32(l1, 44);
+    l6 = load_i32(l1, 48);
+    l10 = load_i64(l1, 52);
+    l8 = load_i32(l1, 60);
+    l9 = load_i32(l1, 64);
+    p1 = load_i64(l1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -27589,9 +31135,12 @@ function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
       l7 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l9 = deferSetup(16, 0);
-      l6 = g0;
+      l6 = ((g0 - 16) | 0);
+      g0 = l6;
       store_i64(l6, 2n, 4);
+      l9 = load_i32(138276);
+      store_i32(138276, l6);
+      store_i32(l6, l9);
       l0 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -27910,20 +31459,48 @@ function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l9, 16);
+      store_i32(138276, l9);
+      g0 = ((l6 + 16) | 0);
     }
     return;
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 68, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, p5], ["i32", 28, l0], ["i32", 32, l2], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l5], ["i32", 48, l6], ["i64", 52, l10], ["i32", 60, l8], ["i32", 64, l9]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i64(l1, p1, 4);
+  store_i32(l1, p2, 12);
+  store_i32(l1, p3, 16);
+  store_i32(l1, p4, 20);
+  store_i32(l1, p5, 24);
+  store_i32(l1, l0, 28);
+  store_i32(l1, l2, 32);
+  store_i32(l1, l3, 36);
+  store_i32(l1, l4, 40);
+  store_i32(l1, l5, 44);
+  store_i32(l1, l6, 48);
+  store_i64(l1, l10, 52);
+  store_i32(l1, l8, 60);
+  store_i32(l1, l9, 64);
+  store_i32(g2, ((load_i32(g2) + 68) | 0));
 }
 
 // (*fmt.fmt).fmtQ
 function _fmt_fmt_fmtQ(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l0, l3, l4, l5, l2] = asyncify_rewind(32, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    l0 = load_i32(l2, 12);
+    l3 = load_i32(l2, 16);
+    l4 = load_i32(l2, 20);
+    l5 = load_i32(l2, 24);
+    l2 = load_i32(l2, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -27931,13 +31508,16 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(96, 56);
-      l0 = g0;
+      l0 = ((g0 - 96) | 0);
+      g0 = l0;
       store_i64(((l0 + 76) | 0), 0n);
       store_i64(((l0 + 84) | 0), 0n);
       store_i32(((l0 + 92) | 0), 0);
       store_i64(l0, 0n, 68);
       store_i32(l0, 8, 60);
+      l2 = load_i32(138276);
+      store_i32(138276, ((l0 + 56) | 0));
+      store_i32(l0, l2, 56);
       l4 = ((l0 + 48) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
@@ -28096,7 +31676,8 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l2, 96);
+        store_i32(138276, l2);
+        g0 = ((l0 + 96) | 0);
         return;
       }
     }
@@ -28114,14 +31695,33 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l3], ["i32", 20, l4], ["i32", 24, l5], ["i32", 28, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l4, 20);
+  store_i32(l1, l5, 24);
+  store_i32(l1, l2, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // (*fmt.fmt).truncateString
 function _fmt_fmt_truncateString(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l3, l1] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l3 = load_i32(l1, 20);
+    l1 = load_i32(l1, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -28204,14 +31804,31 @@ function _fmt_fmt_truncateString(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l3, 20);
+  store_i32(l0, l1, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*fmt.fmt).fmtS
 function _fmt_fmt_fmtS(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l2, l3, l0] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l2 = load_i32(l0, 12);
+    l3 = load_i32(l0, 16);
+    l0 = load_i32(l0, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -28219,9 +31836,12 @@ function _fmt_fmt_fmtS(p0, p1, p2) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 1, 20);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l2 + 16) | 0));
+      store_i32(l2, l3, 16);
       l0 = ((l2 + 8) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
@@ -28244,20 +31864,35 @@ function _fmt_fmt_fmtS(p0, p1, p2) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l3, 32);
+      store_i32(138276, l3);
+      g0 = ((l2 + 32) | 0);
     }
     return;
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l0, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // (*fmt.fmt).fmtSx
 function _fmt_fmt_fmtSx(p0, p1, p2, p3) {
   let l0 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, p3] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p1 = load_i32(p3, 4);
+    p2 = load_i32(p3, 8);
+    p3 = load_i32(p3, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -28277,14 +31912,33 @@ function _fmt_fmt_fmtSx(p0, p1, p2, p3) {
     l2147483644 = 0;
   }
   l0 = l2147483644;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*fmt.pp).argNumber
 function _fmt_pp_argNumber(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, l2, l3, l4, l5, l0] = asyncify_rewind(44, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    p4 = load_i32(l0, 16);
+    p5 = load_i32(l0, 20);
+    l2 = load_i32(l0, 24);
+    l3 = load_i32(l0, 28);
+    l4 = load_i32(l0, 32);
+    l5 = load_i32(l0, 36);
+    l0 = load_i32(l0, 40);
   }
   block_1: {
     if (g1 === 2) {
@@ -28395,14 +32049,33 @@ function _fmt_pp_argNumber(p0, p1, p2, p3, p4, p5) {
     l2147483642 = 0;
   }
   l1 = l2147483642;
-  asyncify_unwind(l1, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l2], ["i32", 28, l3], ["i32", 32, l4], ["i32", 36, l5], ["i32", 40, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, l2, 24);
+  store_i32(l1, l3, 28);
+  store_i32(l1, l4, 32);
+  store_i32(l1, l5, 36);
+  store_i32(l1, l0, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // fmt.parsenum
 function fmt_parsenum(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p4, l1, l0] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p4 = load_i32(l0, 4);
+    l1 = load_i32(l0, 8);
+    l0 = load_i32(l0, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -28463,14 +32136,29 @@ function fmt_parsenum(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   p1 = l2147483642;
-  asyncify_unwind(p1, 16, ["i32", 0, p0], ["i32", 4, p4], ["i32", 8, l1], ["i32", 12, l0]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, p4, 4);
+  store_i32(p1, l1, 8);
+  store_i32(p1, l0, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*fmt.pp).badVerb
 function _fmt_pp_badVerb(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, p1, l0, l2, l3, l5, l4] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l4 = load_i32(g2);
+    p0 = load_i32(l4);
+    p1 = load_i32(l4, 4);
+    l0 = load_i32(l4, 8);
+    l2 = load_i32(l4, 12);
+    l3 = load_i32(l4, 16);
+    l5 = load_i32(l4, 20);
+    l4 = load_i32(l4, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -28478,12 +32166,15 @@ function _fmt_pp_badVerb(p0, p1) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(96, 16);
-      l0 = g0;
+      l0 = ((g0 - 96) | 0);
+      g0 = l0;
       store_i32(l0, 17, 20);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 32) | 0), ((l0 + 32) | 0) + 60);
       store_i8(p0, 1, 127);
+      l4 = load_i32(138276);
+      store_i32(l0, l4, 16);
       l2 = ((l0 + 16) | 0);
+      store_i32(138276, l2);
     }
     if (((g1 ? l1 : 0) === 0)) {
       _fmt_buffer_write(p0, 96033 /* "%!" */, 2);
@@ -28645,14 +32336,34 @@ function _fmt_pp_badVerb(p0, p1) {
     l2147483645 = 0;
   }
   l1 = l2147483645;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l2], ["i32", 16, l3], ["i32", 20, l5], ["i32", 24, l4]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, l0, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l3, 16);
+  store_i32(l1, l5, 20);
+  store_i32(l1, l4, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*fmt.pp).printArg
 function _fmt_pp_printArg(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l0, l1, l6, l4, l5, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i64", 24], ["i32", 32], ["i32", 36], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l0 = load_i32(p1, 16);
+    l1 = load_i32(p1, 20);
+    l6 = load_i64(p1, 24);
+    l4 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -28986,14 +32697,46 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l3 = l2147483643;
-  asyncify_unwind(l3, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l1], ["i64", 24, l6], ["i32", 32, l4], ["i32", 36, l5]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, p2, 8);
+  store_i32(l3, p3, 12);
+  store_i32(l3, l0, 16);
+  store_i32(l3, l1, 20);
+  store_i64(l3, l6, 24);
+  store_i32(l3, l4, 32);
+  store_i32(l3, l5, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
 }
 
 // (*fmt.pp).printValue
 function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483641, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l3, l5, l6, l7, l8, l12, l15, l9, l10, l13, l11, p1] = asyncify_rewind(88, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i64", 52], ["i64", 60], ["i32", 68], ["i32", 72], ["i64", 76], ["i32", 84], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 88) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l6 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    l12 = load_f64(p1, 52);
+    l15 = load_i64(p1, 60);
+    l9 = load_i32(p1, 68);
+    l10 = load_i32(p1, 72);
+    l13 = load_f64(p1, 76);
+    l11 = load_i32(p1, 84);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -29001,10 +32744,13 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l11 = deferSetup(624, 344);
-      l0 = g0;
+      l0 = ((g0 - 624) | 0);
+      g0 = l0;
       store_i32(l0, 67, 348);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 352) | 0), ((l0 + 352) | 0) + 268);
+      l11 = load_i32(138276);
+      store_i32(l0, l11, 344);
+      store_i32(138276, ((l0 + 344) | 0));
       l1 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -30424,20 +34170,64 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l11, 624);
+      store_i32(138276, l11);
+      g0 = ((l0 + 624) | 0);
     }
     return;
     l2147483641 = 0;
   }
   l4 = l2147483641;
-  asyncify_unwind(l4, 88, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l5], ["i32", 40, l6], ["i32", 44, l7], ["i32", 48, l8], ["i64", 52, l12], ["i64", 60, l15], ["i32", 68, l9], ["i32", 72, l10], ["i64", 76, l13], ["i32", 84, l11]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i32(l4, p0);
+  store_i32(l4, p1, 4);
+  store_i32(l4, p2, 8);
+  store_i32(l4, p3, 12);
+  store_i32(l4, p4, 16);
+  store_i32(l4, p5, 20);
+  store_i32(l4, l0, 24);
+  store_i32(l4, l1, 28);
+  store_i32(l4, l3, 32);
+  store_i32(l4, l5, 36);
+  store_i32(l4, l6, 40);
+  store_i32(l4, l7, 44);
+  store_i32(l4, l8, 48);
+  store_f64(l4, l12, 52);
+  store_i64(l4, l15, 60);
+  store_i32(l4, l9, 68);
+  store_i32(l4, l10, 72);
+  store_f64(l4, l13, 76);
+  store_i32(l4, l11, 84);
+  store_i32(g2, ((load_i32(g2) + 88) | 0));
 }
 
 // (*fmt.pp).doPrintf
 function _fmt_pp_doPrintf(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l2147483643, l2147483644, l2147483645, l2147483646;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l0, l1, l2, l4, l6, l5, l8, l9, l10, l11, l12, l13, l14, l15, l16, l7] = asyncify_rewind(80, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76]);
+    store_i32(g2, ((load_i32(g2) - 80) | 0));
+    l7 = load_i32(g2);
+    p0 = load_i32(l7);
+    p1 = load_i32(l7, 4);
+    p2 = load_i32(l7, 8);
+    p3 = load_i32(l7, 12);
+    l0 = load_i32(l7, 16);
+    l1 = load_i32(l7, 20);
+    l2 = load_i32(l7, 24);
+    l4 = load_i32(l7, 28);
+    l6 = load_i32(l7, 32);
+    l5 = load_i32(l7, 36);
+    l8 = load_i32(l7, 40);
+    l9 = load_i32(l7, 44);
+    l10 = load_i32(l7, 48);
+    l11 = load_i32(l7, 52);
+    l12 = load_i32(l7, 56);
+    l13 = load_i32(l7, 60);
+    l14 = load_i32(l7, 64);
+    l15 = load_i32(l7, 68);
+    l16 = load_i32(l7, 72);
+    l7 = load_i32(l7, 76);
   }
   block_1: {
     if (g1 === 2) {
@@ -30445,12 +34235,15 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l13 = deferSetup(224, 160);
-      l2 = g0;
+      l2 = ((g0 - 224) | 0);
+      g0 = l2;
       store_i32(l2, 13, 164);
       new Uint8Array(memory.buffer).fill(0, ((l2 + 168) | 0), ((l2 + 168) | 0) + 52);
       store_i8(p0, 0, 124);
+      l13 = load_i32(138276);
+      store_i32(l2, l13, 160);
       l0 = ((l2 + 160) | 0);
+      store_i32(138276, l0);
       l14 = ((p0 + 40) | 0);
       l15 = ((p0 + 39) | 0);
       l16 = ((p0 + 38) | 0);
@@ -31173,20 +34966,53 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l13, 224);
+      store_i32(138276, l13);
+      g0 = ((l2 + 224) | 0);
     }
     return;
     l2147483643 = 0;
   }
   l3 = l2147483643;
-  asyncify_unwind(l3, 80, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l0], ["i32", 20, l1], ["i32", 24, l2], ["i32", 28, l4], ["i32", 32, l6], ["i32", 36, l5], ["i32", 40, l8], ["i32", 44, l9], ["i32", 48, l10], ["i32", 52, l11], ["i32", 56, l12], ["i32", 60, l13], ["i32", 64, l14], ["i32", 68, l15], ["i32", 72, l16], ["i32", 76, l7]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, p2, 8);
+  store_i32(l3, p3, 12);
+  store_i32(l3, l0, 16);
+  store_i32(l3, l1, 20);
+  store_i32(l3, l2, 24);
+  store_i32(l3, l4, 28);
+  store_i32(l3, l6, 32);
+  store_i32(l3, l5, 36);
+  store_i32(l3, l8, 40);
+  store_i32(l3, l9, 44);
+  store_i32(l3, l10, 48);
+  store_i32(l3, l11, 52);
+  store_i32(l3, l12, 56);
+  store_i32(l3, l13, 60);
+  store_i32(l3, l14, 64);
+  store_i32(l3, l15, 68);
+  store_i32(l3, l16, 72);
+  store_i32(l3, l7, 76);
+  store_i32(g2, ((load_i32(g2) + 80) | 0));
 }
 
 // fmt.intFromArg
 function fmt_intFromArg(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l7 = 0n, l2147483644;
   if (g1 === 2) {
-    [p0, p1, p2, l1, l2, l3, l6, l0] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i64", 24], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    l1 = load_i32(l0, 12);
+    l2 = load_i32(l0, 16);
+    l3 = load_i32(l0, 20);
+    l6 = load_i64(l0, 24);
+    l0 = load_i32(l0, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -31194,9 +35020,12 @@ function fmt_intFromArg(p0, p1, p2) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(32, 0);
-      l3 = g0;
+      l3 = ((g0 - 32) | 0);
+      g0 = l3;
       store_i32(l3, 6, 4);
+      l0 = load_i32(138276);
+      store_i32(138276, l3);
+      store_i32(l3, l0);
       l1 = 0;
       l2 = 0;
       p2 = (p2 > 0 ? 1 : 0);
@@ -31301,14 +35130,30 @@ function fmt_intFromArg(p0, p1, p2) {
     l2147483644 = 0;
   }
   l4 = l2147483644;
-  asyncify_unwind(l4, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l3], ["i64", 24, l6], ["i32", 32, l0]);
+  store_i32(load_i32(g2), l4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l4 = load_i32(g2);
+  store_i32(l4, p0);
+  store_i32(l4, p1, 4);
+  store_i32(l4, p2, 8);
+  store_i32(l4, l1, 12);
+  store_i32(l4, l2, 16);
+  store_i32(l4, l3, 20);
+  store_i64(l4, l6, 24);
+  store_i32(l4, l0, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // (*fmt.pp).fmt0x64
 function _fmt_pp_fmt0x64(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p1, l1, l0] = asyncify_rewind(20, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i64(l0, 4);
+    l1 = load_i32(l0, 12);
+    l0 = load_i32(l0, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -31335,14 +35180,24 @@ function _fmt_pp_fmt0x64(p0, p1, p2) {
     l2147483644 = 0;
   }
   p2 = l2147483644;
-  asyncify_unwind(p2, 20, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, l1], ["i32", 16, l0]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i64(p2, p1, 4);
+  store_i32(p2, l1, 12);
+  store_i32(p2, l0, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
 }
 
 // (*fmt.pp).fmtBool
 function _fmt_pp_fmtBool(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p2 = load_i32(g2);
+    p0 = load_i32(p2);
+    p2 = load_i32(p2, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -31400,14 +35255,32 @@ function _fmt_pp_fmtBool(p0, p1, p2) {
     l2147483644 = 0;
   }
   p1 = l2147483644;
-  asyncify_unwind(p1, 8, ["i32", 0, p0], ["i32", 4, p2]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, p2, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
 }
 
 // (*fmt.pp).fmtBytes
 function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, l3, l6, l4, l5, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 36], ["i32", 44], ["i32", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l6 = load_i64(p1, 36);
+    l4 = load_i32(p1, 44);
+    l5 = load_i32(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -31415,12 +35288,15 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 16);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 32) | 0), 0n);
       store_i32(((l1 + 40) | 0), 0);
       store_i64(l1, 0n, 24);
       store_i32(l1, 5, 20);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l1 + 16) | 0));
+      store_i32(l1, l4, 16);
       l3 = ((p4 - 113) | 0);
     }
     block_4: {
@@ -31728,20 +35604,44 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l4, 48);
+      store_i32(138276, l4);
+      g0 = ((l1 + 48) | 0);
     }
     return;
     l2147483640 = 0;
   }
   l2 = l2147483640;
-  asyncify_unwind(l2, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l1], ["i32", 32, l3], ["i64", 36, l6], ["i32", 44, l4], ["i32", 48, l5]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, p6, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l3, 32);
+  store_i64(l2, l6, 36);
+  store_i32(l2, l4, 44);
+  store_i32(l2, l5, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // (*fmt.pp).fmtComplex
 function _fmt_pp_fmtComplex(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l2, l1] = asyncify_rewind(36, ["i32", 0], ["i64", 4], ["i64", 12], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_f64(l1, 4);
+    p2 = load_f64(l1, 12);
+    p3 = load_i32(l1, 20);
+    p4 = load_i32(l1, 24);
+    l2 = load_i32(l1, 28);
+    l1 = load_i32(l1, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -31817,14 +35717,29 @@ function _fmt_pp_fmtComplex(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i64", 4, p1], ["i64", 12, p2], ["i32", 20, p3], ["i32", 24, p4], ["i32", 28, l2], ["i32", 32, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_f64(l0, p1, 4);
+  store_f64(l0, p2, 12);
+  store_i32(l0, p3, 20);
+  store_i32(l0, p4, 24);
+  store_i32(l0, l2, 28);
+  store_i32(l0, l1, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // (*fmt.pp).fmtFloat
 function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3] = asyncify_rewind(20, ["i32", 0], ["i64", 4], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p1 = load_f64(p3, 4);
+    p2 = load_i32(p3, 12);
+    p3 = load_i32(p3, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -31939,14 +35854,34 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 20, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_f64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, p3, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
 }
 
 // (*fmt.pp).fmtInteger
 function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483643, l2147483644, l2147483645, l2147483646;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l3, l5, l6, l7, l8, l9, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p2 = load_i32(l0, 12);
+    p3 = load_i32(l0, 16);
+    l1 = load_i32(l0, 20);
+    l2 = load_i32(l0, 24);
+    l3 = load_i32(l0, 28);
+    l5 = load_i32(l0, 32);
+    l6 = load_i32(l0, 36);
+    l7 = load_i32(l0, 40);
+    l8 = load_i32(l0, 44);
+    l9 = load_i32(l0, 48);
+    p1 = load_i64(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -31954,12 +35889,15 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(80, 48);
-      l3 = g0;
+      l3 = ((g0 - 80) | 0);
+      g0 = l3;
       store_i64(((l3 - -64) | 0), 0n);
       store_i64(((l3 + 72) | 0), 0n);
       store_i64(l3, 0n, 56);
       store_i32(l3, 6, 52);
+      l8 = load_i32(138276);
+      store_i32(138276, ((l3 + 48) | 0));
+      store_i32(l3, l8, 48);
       l1 = ((p3 - 111) | 0);
     }
     block_4: {
@@ -32373,20 +36311,45 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l8, 80);
+      store_i32(138276, l8);
+      g0 = ((l3 + 80) | 0);
     }
     return;
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 52, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, l1], ["i32", 24, l2], ["i32", 28, l3], ["i32", 32, l5], ["i32", 36, l6], ["i32", 40, l7], ["i32", 44, l8], ["i32", 48, l9]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, p3, 16);
+  store_i32(l0, l1, 20);
+  store_i32(l0, l2, 24);
+  store_i32(l0, l3, 28);
+  store_i32(l0, l5, 32);
+  store_i32(l0, l6, 36);
+  store_i32(l0, l7, 40);
+  store_i32(l0, l8, 44);
+  store_i32(l0, l9, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // (*fmt.pp).fmtPointer
 function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483642;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l3, l4, l2] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i64", 24], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    p3 = load_i32(l2, 12);
+    p4 = load_i32(l2, 16);
+    l3 = load_i32(l2, 20);
+    l4 = load_i64(l2, 24);
+    l2 = load_i32(l2, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -32394,10 +36357,13 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(32, 8);
-      l3 = g0;
+      l3 = ((g0 - 32) | 0);
+      g0 = l3;
       store_i64(l3, 0n, 20);
       store_i32(l3, 3, 12);
+      l2 = load_i32(138276);
+      store_i32(138276, ((l3 + 8) | 0));
+      store_i32(l3, l2, 8);
       l0 = ((p1 === 0) ? 1 : 0);
     }
     block_4: {
@@ -32590,20 +36556,37 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l2, 32);
+      store_i32(138276, l2);
+      g0 = ((l3 + 32) | 0);
     }
     return;
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l3], ["i64", 24, l4], ["i32", 32, l2]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, l3, 20);
+  store_i64(l0, l4, 24);
+  store_i32(l0, l2, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // (*fmt.pp).fmtString
 function _fmt_pp_fmtString(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p1 = load_i32(p3, 4);
+    p2 = load_i32(p3, 8);
+    p3 = load_i32(p3, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -32726,14 +36709,25 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // (*fmt.pp).free
 function _fmt_pp_free(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l2, l1] = asyncify_rewind(12, ["i32", 0], ["i32", 8], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l2 = load_i32(l0, 8);
+    l1 = load_i32(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -32741,10 +36735,13 @@ function _fmt_pp_free(p0) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(32, 8);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i32(l1, 0, 28);
       store_i32(l1, 4, 12);
+      l2 = load_i32(138276);
+      store_i32(138276, ((l1 + 8) | 0));
+      store_i32(l1, l2, 8);
       l0 = load_i32(p0);
       store_i32(l1, l0, 16);
       l4 = load_i32(p0, 8);
@@ -32780,20 +36777,35 @@ function _fmt_pp_free(p0) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l2, 32);
+      store_i32(138276, l2);
+      g0 = ((l1 + 32) | 0);
     }
     return;
     l2147483647 = 0;
   }
   l0 = l2147483647;
-  asyncify_unwind(l0, 12, ["i32", 0, p0], ["i32", 4, l1], ["i32", 8, l2]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l1, 4);
+  store_i32(l0, l2, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
 }
 
 // (*fmt.pp).handleMethods
 function _fmt_pp_handleMethods(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l2, l4, l6, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l3 = load_i32(g2);
+    p0 = load_i32(l3);
+    l0 = load_i32(l3, 8);
+    l1 = load_i32(l3, 12);
+    l2 = load_i32(l3, 16);
+    l4 = load_i32(l3, 20);
+    l6 = load_i32(l3, 24);
+    p1 = load_i32(l3, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -32801,10 +36813,13 @@ function _fmt_pp_handleMethods(p0, p1) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(144, 80);
-      l0 = g0;
+      l0 = ((g0 - 144) | 0);
+      g0 = l0;
       store_i32(l0, 14, 84);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 88) | 0), ((l0 + 88) | 0) + 56);
+      l6 = load_i32(138276);
+      store_i32(l0, l6, 80);
+      store_i32(138276, ((l0 + 80) | 0));
       l2 = load_u8(p0, 127);
       l1 = 0;
     }
@@ -32946,14 +36961,25 @@ function _fmt_pp_handleMethods(p0, p1) {
       l1 = (g1 ? l1 : 1);
     }
     if ((g1 === 0)) {
-      deferCleanup(l6, 144);
+      store_i32(138276, l6);
+      g0 = ((l0 + 144) | 0);
       return l1;
     }
     throw new Error('unreachable');
     l2147483645 = 0;
   }
   l3 = l2147483645;
-  asyncify_unwind(l3, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l2], ["i32", 20, l4], ["i32", 24, l6]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, l0, 8);
+  store_i32(l3, l1, 12);
+  store_i32(l3, l2, 16);
+  store_i32(l3, l4, 20);
+  store_i32(l3, l6, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
   return 0;
 }
 
@@ -32961,7 +36987,13 @@ function _fmt_pp_handleMethods(p0, p1) {
 function fmt_newPrinter() {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483647;
   if (g1 === 2) {
-    [l0, l1, l4, l5, l3] = asyncify_rewind(20, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    l3 = load_i32(g2);
+    l0 = load_i32(l3);
+    l1 = load_i32(l3, 4);
+    l4 = load_i32(l3, 8);
+    l5 = load_i32(l3, 12);
+    l3 = load_i32(l3, 16);
   }
   block_1: {
     if (g1 === 2) {
@@ -32969,9 +37001,12 @@ function fmt_newPrinter() {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 16);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i32(l1, 2, 20);
+      l4 = load_i32(138276);
+      store_i32(138276, ((l1 + 16) | 0));
+      store_i32(l1, l4, 16);
       l0 = ((l1 + 8) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
@@ -33020,7 +37055,15 @@ function fmt_newPrinter() {
     l2147483647 = 0;
   }
   l2 = l2147483647;
-  asyncify_unwind(l2, 20, ["i32", 0, l0], ["i32", 4, l1], ["i32", 8, l4], ["i32", 12, l5], ["i32", 16, l3]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, l0);
+  store_i32(l2, l1, 4);
+  store_i32(l2, l4, 8);
+  store_i32(l2, l5, 12);
+  store_i32(l2, l3, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -33029,7 +37072,14 @@ function fmt_Sprintf(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645;
   l2 = 97620;
   if (g1 === 2) {
-    [p0, l1, l3, l5, l2, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    l1 = load_i32(l0, 12);
+    l3 = load_i32(l0, 16);
+    l5 = load_i32(l0, 20);
+    l2 = load_i32(l0, 4);
+    p1 = load_i32(l0, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -33037,11 +37087,14 @@ function fmt_Sprintf(p0, p1) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l5 = deferSetup(32, 8);
-      l1 = g0;
+      l1 = ((g0 - 32) | 0);
+      g0 = l1;
       store_i64(l1, 0n, 20);
       store_i32(l1, 3, 12);
+      l5 = load_i32(138276);
       l3 = ((l1 + 8) | 0);
+      store_i32(138276, l3);
+      store_i32(l1, l5, 8);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -33094,14 +37147,36 @@ function fmt_Sprintf(p0, p1) {
     l2147483645 = 0;
   }
   l0 = l2147483645;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, l2], ["i32", 8, p1], ["i32", 12, l1], ["i32", 16, l3], ["i32", 20, l5]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, l2, 4);
+  store_i32(l0, p1, 8);
+  store_i32(l0, l1, 12);
+  store_i32(l0, l3, 16);
+  store_i32(l0, l5, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // (encoding/json.floatEncoder).encode$bound
 function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l2147483640, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l4, l13, l5, l11, l12, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i64", 32], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l13 = load_f64(p1, 32);
+    l5 = load_i32(p1, 40);
+    l11 = load_i32(p1, 44);
+    l12 = load_i32(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -33109,11 +37184,14 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l11 = deferSetup(128, 80);
-      p5 = g0;
+      p5 = ((g0 - 128) | 0);
+      g0 = p5;
       store_i32(p5, 10, 84);
       new Uint8Array(memory.buffer).fill(0, ((p5 + 88) | 0), ((p5 + 88) | 0) + 40);
+      l11 = load_i32(138276);
+      store_i32(p5, l11, 80);
       l4 = ((p5 + 80) | 0);
+      store_i32(138276, l4);
     }
     if (((g1 ? l3 : 0) === 0)) {
       if (g1 === 1) {
@@ -33202,7 +37280,15 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
             l6 = p6;
             l0 = 0;
             if (g1 === 2) {
-              [l10, l6, l2, l7, l8, l14, l0] = asyncify_rewind(32, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 24], ["i32", 28], ["i64", 4], ["i32", 20]);
+              store_i32(g2, ((load_i32(g2) - 32) | 0));
+              l1 = load_i32(g2);
+              l10 = load_i32(l1);
+              l6 = load_i32(l1, 12);
+              l2 = load_i32(l1, 16);
+              l7 = load_i32(l1, 24);
+              l8 = load_i32(l1, 28);
+              l14 = load_f64(l1, 4);
+              l0 = load_i32(l1, 20);
             }
             block_19: {
               block_20: {
@@ -33211,11 +37297,14 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   l9 = load_i32(load_i32(g2));
                 }
                 if ((g1 === 0)) {
-                  l7 = deferSetup(48, 24);
-                  l2 = g0;
+                  l2 = ((g0 - 48) | 0);
+                  g0 = l2;
                   store_i64(l2, 0n, 36);
                   store_i32(l2, 3, 28);
+                  l7 = load_i32(138276);
                   l0 = ((l2 + 24) | 0);
+                  store_i32(138276, l0);
+                  store_i32(l2, l7, 24);
                 }
                 if (((g1 ? l9 : 0) === 0)) {
                   if (g1 === 1) {
@@ -33258,7 +37347,17 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483641 = 0;
               }
               l1 = l2147483641;
-              asyncify_unwind(l1, 32, ["i32", 0, l10], ["i64", 4, l14], ["i32", 12, l6], ["i32", 16, l2], ["i32", 20, l0], ["i32", 24, l7], ["i32", 28, l8]);
+              store_i32(load_i32(g2), l1);
+              store_i32(g2, ((load_i32(g2) + 4) | 0));
+              l1 = load_i32(g2);
+              store_i32(l1, l10);
+              store_f64(l1, l14, 4);
+              store_i32(l1, l6, 12);
+              store_i32(l1, l2, 16);
+              store_i32(l1, l0, 20);
+              store_i32(l1, l7, 24);
+              store_i32(l1, l8, 28);
+              store_i32(g2, ((load_i32(g2) + 32) | 0));
             }
             if (g1 === 1) {
               l2147483640 = 4;
@@ -33355,7 +37454,8 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l11, 128);
+        store_i32(138276, l11);
+        g0 = ((p5 + 128) | 0);
         return;
       }
     }
@@ -33373,14 +37473,37 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l4], ["i64", 32, l13], ["i32", 40, l5], ["i32", 44, l11], ["i32", 48, l12]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l4, 28);
+  store_f64(l0, l13, 32);
+  store_i32(l0, l5, 40);
+  store_i32(l0, l11, 44);
+  store_i32(l0, l12, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // encoding/json.mayAppendQuote
 function encoding_json_mayAppendQuote(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l0, l1] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    l0 = load_i32(l1, 20);
+    l1 = load_i32(l1, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -33388,10 +37511,13 @@ function encoding_json_mayAppendQuote(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 16);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       store_i32(l0, 0, 28);
       store_i64(l0, 2n, 20);
+      l1 = load_i32(138276);
+      store_i32(138276, ((l0 + 16) | 0));
+      store_i32(l0, l1, 16);
       p4 = (((p4 & 1) === 0) ? 1 : 0);
     }
     block_4: {
@@ -33424,14 +37550,29 @@ function encoding_json_mayAppendQuote(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l2 = l2147483642;
-  asyncify_unwind(l2, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, l0, 20);
+  store_i32(l2, l1, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (*encoding/json.encodeState).error
 function _encoding_json_encodeState_error(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, p1] = asyncify_rewind(16, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -33439,10 +37580,13 @@ function _encoding_json_encodeState_error(p0, p1) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l0 = deferSetup(16, 0);
-      l1 = g0;
+      l1 = ((g0 - 16) | 0);
+      g0 = l1;
       store_i32(l1, 0, 12);
       store_i64(l1, 2n, 4);
+      l0 = load_i32(138276);
+      store_i32(138276, l1);
+      store_i32(l1, l0);
     }
     if (((g1 ? l3 : 0) === 0)) {
       if (g1 === 1) {
@@ -33471,14 +37615,28 @@ function _encoding_json_encodeState_error(p0, p1) {
     l2147483645 = 0;
   }
   l2 = l2147483645;
-  asyncify_unwind(l2, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, l0, 8);
+  store_i32(l2, l1, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // interface:{Align:func:{}{basic:int},AssignableTo:func:{named:reflect.Type}{basic:bool},Bits:func:{}{basic:int},ChanDir:func:{}{named:reflect.ChanDir},Comparable:func:{}{basic:bool},ConvertibleTo:func:{named:reflect.Type}{basic:bool},Elem:func:{}{named:reflect.Type},Field:func:{basic:int}{named:reflect.StructField},FieldAlign:func:{}{basic:int},FieldByIndex:func:{slice:basic:int}{named:reflect.StructField},FieldByName:func:{basic:string}{named:reflect.StructField,basic:bool},FieldByNameFunc:func:{func:{basic:string}{basic:bool}}{named:reflect.StructField,basic:bool},Implements:func:{named:reflect.Type}{basic:bool},In:func:{basic:int}{named:reflect.Type},IsVariadic:func:{}{basic:bool},Key:func:{}{named:reflect.Type},Kind:func:{}{named:reflect.Kind},Len:func:{}{basic:int},Method:func:{basic:int}{named:reflect.Method},MethodByName:func:{basic:string}{named:reflect.Method,basic:bool},Name:func:{}{basic:string},NumField:func:{}{basic:int},NumIn:func:{}{basic:int},NumMethod:func:{}{basic:int},NumOut:func:{}{basic:int},Out:func:{basic:int}{named:reflect.Type},OverflowComplex:func:{basic:complex128}{basic:bool},OverflowFloat:func:{basic:float64}{basic:bool},OverflowInt:func:{basic:int64}{basic:bool},OverflowUint:func:{basic:uint64}{basic:bool},PkgPath:func:{}{basic:string},Size:func:{}{basic:uintptr},String:func:{}{basic:string}}.Name$invoke
 function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Name$invoke(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483644, l2147483645;
   if (g1 === 2) {
-    [p0, p2, l0, l1, l4, p1] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l4 = load_i32(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -33486,11 +37644,14 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(32, 16);
-      l0 = g0;
+      l0 = ((g0 - 32) | 0);
+      g0 = l0;
       store_i32(l0, 0, 28);
       store_i32(l0, 2, 20);
+      l4 = load_i32(138276);
       l1 = ((l0 + 16) | 0);
+      store_i32(138276, l1);
+      store_i32(l0, l4, 16);
       p2 = (p2 !== 128608 ? 1 : 0);
     }
     if ((p2 ? g1 : 1)) {
@@ -33601,14 +37762,38 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i32", 20, l4]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l1, 16);
+  store_i32(l2, l4, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // encoding/json.foldName
 function encoding_json_foldName(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, l1, l2, l3, l4, l5, l7, l8, l9, l10, l11, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l2 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    l10 = load_i32(p1, 48);
+    l11 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -33616,11 +37801,14 @@ function encoding_json_foldName(p0, p1, p2, p3) {
       l6 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l9 = deferSetup(80, 48);
-      l1 = g0;
+      l1 = ((g0 - 80) | 0);
+      g0 = l1;
       store_i64(l1, 0n, 64);
       store_i32(l1, 5, 52);
+      l9 = load_i32(138276);
       l2 = ((l1 + 48) | 0);
+      store_i32(138276, l2);
+      store_i32(l1, l9, 48);
       l7 = 32;
     }
     if (((g1 ? l6 : 0) === 0)) {
@@ -33811,14 +37999,38 @@ function encoding_json_foldName(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l3], ["i32", 28, l4], ["i32", 32, l5], ["i32", 36, l7], ["i32", 40, l8], ["i32", 44, l9], ["i32", 48, l10], ["i32", 52, l11]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l1, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l3, 24);
+  store_i32(l0, l4, 28);
+  store_i32(l0, l5, 32);
+  store_i32(l0, l7, 36);
+  store_i32(l0, l8, 40);
+  store_i32(l0, l9, 44);
+  store_i32(l0, l10, 48);
+  store_i32(l0, l11, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
 }
 
 // (encoding/json.tagOptions).Contains
 function _encoding_json_tagOptions_Contains(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l0] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    l2 = load_i32(l0, 16);
+    l0 = load_i32(l0, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -33862,7 +38074,16 @@ function _encoding_json_tagOptions_Contains(p0, p1, p2, p3) {
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l0, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0;
 }
 
@@ -33870,7 +38091,18 @@ function _encoding_json_tagOptions_Contains(p0, p1, p2, p3) {
 function encoding_json_typeFields$1(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38) {
   let l0 = 0, l2147483608;
   if (g1 === 2) {
-    [p0, p9, p10, p11, p19, p20, p28, p29, p30, p1] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 40) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p9 = load_i32(p1, 8);
+    p10 = load_i32(p1, 12);
+    p11 = load_i32(p1, 16);
+    p19 = load_i32(p1, 20);
+    p20 = load_i32(p1, 24);
+    p28 = load_i32(p1, 28);
+    p29 = load_i32(p1, 32);
+    p30 = load_i32(p1, 36);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -33909,7 +38141,20 @@ function encoding_json_typeFields$1(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
     l2147483608 = 0;
   }
   p2 = l2147483608;
-  asyncify_unwind(p2, 40, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p9], ["i32", 12, p10], ["i32", 16, p11], ["i32", 20, p19], ["i32", 24, p20], ["i32", 28, p28], ["i32", 32, p29], ["i32", 36, p30]);
+  store_i32(load_i32(g2), p2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p2 = load_i32(g2);
+  store_i32(p2, p0);
+  store_i32(p2, p1, 4);
+  store_i32(p2, p9, 8);
+  store_i32(p2, p10, 12);
+  store_i32(p2, p11, 16);
+  store_i32(p2, p19, 20);
+  store_i32(p2, p20, 24);
+  store_i32(p2, p28, 28);
+  store_i32(p2, p29, 32);
+  store_i32(p2, p30, 36);
+  store_i32(g2, ((load_i32(g2) + 40) | 0));
   return 0;
 }
 
@@ -33918,7 +38163,12 @@ function slices_SortFunc_encoding_json_field_encoding_json_field(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2147483644, l2147483645, l2147483646;
   block_0: {
     if (g1 === 2) {
-      [p0, p1, p2, l2147483644] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+      store_i32(g2, ((load_i32(g2) - 16) | 0));
+      l0 = load_i32(g2);
+      p0 = load_i32(l0);
+      p1 = load_i32(l0, 4);
+      p2 = load_i32(l0, 8);
+      l2147483644 = load_i32(l0, 12);
     } else {
       l2147483644 = 0;
     }
@@ -33940,14 +38190,27 @@ function slices_SortFunc_encoding_json_field_encoding_json_field(p0, p1, p2) {
     l2147483646 = 0;
   }
   l0 = l2147483646;
-  asyncify_unwind(l0, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, l1, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // encoding/json.typeFields$2
 function encoding_json_typeFields$2(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38) {
   let l2147483608, l2147483609;
   if (g1 === 2) {
-    [p0, p11, p29, p30, p10] = asyncify_rewind(20, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p11 = load_i32(p1, 8);
+    p29 = load_i32(p1, 12);
+    p30 = load_i32(p1, 16);
+    p10 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -33970,7 +38233,15 @@ function encoding_json_typeFields$2(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
     l2147483609 = 0;
   }
   p1 = l2147483609;
-  asyncify_unwind(p1, 20, ["i32", 0, p0], ["i32", 4, p10], ["i32", 8, p11], ["i32", 12, p29], ["i32", 16, p30]);
+  store_i32(load_i32(g2), p1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p1 = load_i32(g2);
+  store_i32(p1, p0);
+  store_i32(p1, p10, 4);
+  store_i32(p1, p11, 8);
+  store_i32(p1, p29, 12);
+  store_i32(p1, p30, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -34002,11 +38273,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
       l18 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l70 = deferSetup(448, 152);
-      l5 = g0;
+      l5 = ((g0 - 448) | 0);
+      g0 = l5;
       store_i32(l5, 72, 156);
       l32 = 0;
       new Uint8Array(memory.buffer).fill(0, ((l5 + 168) | 0), ((l5 + 168) | 0) + 280);
+      l70 = load_i32(138276);
+      store_i32(l5, l70, 152);
+      store_i32(138276, ((l5 + 152) | 0));
       l4 = ((l5 + 112) | 0);
     }
     if (((g1 ? l18 : 0) === 0)) {
@@ -34284,7 +38558,64 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                               l45 = p2;
                               l1 = 0;
                               if (g1 === 2) {
-                                [l56, l45, l0, l1, l2, l6, l8, l9, l11, l13, l14, l15, l16, l17, l19, l20, l21, l24, l23, l25, l36, l26, l27, l28, l29, l30, l31, l33, l34, l35, l37, l38, l39, l40, l41, l42, l46, l47, l43, l49, l44, l50, l51, l52, l54, l55, l57, l59, l60, l61, l62, l63, l64, l65, l69, l10] = asyncify_rewind(224, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 100], ["i32", 104], ["i32", 108], ["i32", 112], ["i32", 116], ["i32", 120], ["i32", 124], ["i32", 128], ["i32", 132], ["i32", 136], ["i32", 140], ["i32", 144], ["i32", 148], ["i32", 152], ["i32", 156], ["i32", 160], ["i32", 164], ["i32", 168], ["i32", 172], ["i32", 176], ["i32", 180], ["i32", 184], ["i32", 188], ["i32", 192], ["i32", 196], ["i32", 200], ["i32", 204], ["i32", 208], ["i32", 212], ["i32", 216], ["i32", 220], ["i32", 4]);
+                                store_i32(g2, ((load_i32(g2) - 224) | 0));
+                                l10 = load_i32(g2);
+                                l56 = load_i32(l10);
+                                l45 = load_i32(l10, 8);
+                                l0 = load_i32(l10, 12);
+                                l1 = load_i32(l10, 16);
+                                l2 = load_i32(l10, 20);
+                                l6 = load_i32(l10, 24);
+                                l8 = load_i32(l10, 28);
+                                l9 = load_i32(l10, 32);
+                                l11 = load_i32(l10, 36);
+                                l13 = load_i32(l10, 40);
+                                l14 = load_i32(l10, 44);
+                                l15 = load_i32(l10, 48);
+                                l16 = load_i32(l10, 52);
+                                l17 = load_i32(l10, 56);
+                                l19 = load_i32(l10, 60);
+                                l20 = load_i32(l10, 64);
+                                l21 = load_i32(l10, 68);
+                                l24 = load_i32(l10, 72);
+                                l23 = load_i32(l10, 76);
+                                l25 = load_i32(l10, 80);
+                                l36 = load_i32(l10, 84);
+                                l26 = load_i32(l10, 88);
+                                l27 = load_i32(l10, 92);
+                                l28 = load_i32(l10, 96);
+                                l29 = load_i32(l10, 100);
+                                l30 = load_i32(l10, 104);
+                                l31 = load_i32(l10, 108);
+                                l33 = load_i32(l10, 112);
+                                l34 = load_i32(l10, 116);
+                                l35 = load_i32(l10, 120);
+                                l37 = load_i32(l10, 124);
+                                l38 = load_i32(l10, 128);
+                                l39 = load_i32(l10, 132);
+                                l40 = load_i32(l10, 136);
+                                l41 = load_i32(l10, 140);
+                                l42 = load_i32(l10, 144);
+                                l46 = load_i32(l10, 148);
+                                l47 = load_i32(l10, 152);
+                                l43 = load_i32(l10, 156);
+                                l49 = load_i32(l10, 160);
+                                l44 = load_i32(l10, 164);
+                                l50 = load_i32(l10, 168);
+                                l51 = load_i32(l10, 172);
+                                l52 = load_i32(l10, 176);
+                                l54 = load_i32(l10, 180);
+                                l55 = load_i32(l10, 184);
+                                l57 = load_i32(l10, 188);
+                                l59 = load_i32(l10, 192);
+                                l60 = load_i32(l10, 196);
+                                l61 = load_i32(l10, 200);
+                                l62 = load_i32(l10, 204);
+                                l63 = load_i32(l10, 208);
+                                l64 = load_i32(l10, 212);
+                                l65 = load_i32(l10, 216);
+                                l69 = load_i32(l10, 220);
+                                l10 = load_i32(l10, 4);
                               }
                               block_54: {
                                 block_55: {
@@ -34293,11 +38624,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                     l12 = load_i32(load_i32(g2));
                                   }
                                   if ((g1 === 0)) {
-                                    l69 = deferSetup(1840, 856);
-                                    l0 = g0;
+                                    l0 = ((g0 - 1840) | 0);
+                                    g0 = l0;
                                     store_i32(l0, 238, 860);
                                     new Uint8Array(memory.buffer).fill(0, ((l0 + 864) | 0), ((l0 + 864) | 0) + 952);
+                                    l69 = load_i32(138276);
+                                    store_i32(l0, l69, 856);
                                     l1 = ((l0 + 856) | 0);
+                                    store_i32(138276, l1);
                                   }
                                   if (((g1 ? l12 : 0) === 0)) {
                                     if (g1 === 1) {
@@ -36542,7 +40876,66 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                   l2147483645 = 0;
                                 }
                                 l3 = l2147483645;
-                                asyncify_unwind(l3, 224, ["i32", 0, l56], ["i32", 4, l10], ["i32", 8, l45], ["i32", 12, l0], ["i32", 16, l1], ["i32", 20, l2], ["i32", 24, l6], ["i32", 28, l8], ["i32", 32, l9], ["i32", 36, l11], ["i32", 40, l13], ["i32", 44, l14], ["i32", 48, l15], ["i32", 52, l16], ["i32", 56, l17], ["i32", 60, l19], ["i32", 64, l20], ["i32", 68, l21], ["i32", 72, l24], ["i32", 76, l23], ["i32", 80, l25], ["i32", 84, l36], ["i32", 88, l26], ["i32", 92, l27], ["i32", 96, l28], ["i32", 100, l29], ["i32", 104, l30], ["i32", 108, l31], ["i32", 112, l33], ["i32", 116, l34], ["i32", 120, l35], ["i32", 124, l37], ["i32", 128, l38], ["i32", 132, l39], ["i32", 136, l40], ["i32", 140, l41], ["i32", 144, l42], ["i32", 148, l46], ["i32", 152, l47], ["i32", 156, l43], ["i32", 160, l49], ["i32", 164, l44], ["i32", 168, l50], ["i32", 172, l51], ["i32", 176, l52], ["i32", 180, l54], ["i32", 184, l55], ["i32", 188, l57], ["i32", 192, l59], ["i32", 196, l60], ["i32", 200, l61], ["i32", 204, l62], ["i32", 208, l63], ["i32", 212, l64], ["i32", 216, l65], ["i32", 220, l69]);
+                                store_i32(load_i32(g2), l3);
+                                store_i32(g2, ((load_i32(g2) + 4) | 0));
+                                l3 = load_i32(g2);
+                                store_i32(l3, l56);
+                                store_i32(l3, l10, 4);
+                                store_i32(l3, l45, 8);
+                                store_i32(l3, l0, 12);
+                                store_i32(l3, l1, 16);
+                                store_i32(l3, l2, 20);
+                                store_i32(l3, l6, 24);
+                                store_i32(l3, l8, 28);
+                                store_i32(l3, l9, 32);
+                                store_i32(l3, l11, 36);
+                                store_i32(l3, l13, 40);
+                                store_i32(l3, l14, 44);
+                                store_i32(l3, l15, 48);
+                                store_i32(l3, l16, 52);
+                                store_i32(l3, l17, 56);
+                                store_i32(l3, l19, 60);
+                                store_i32(l3, l20, 64);
+                                store_i32(l3, l21, 68);
+                                store_i32(l3, l24, 72);
+                                store_i32(l3, l23, 76);
+                                store_i32(l3, l25, 80);
+                                store_i32(l3, l36, 84);
+                                store_i32(l3, l26, 88);
+                                store_i32(l3, l27, 92);
+                                store_i32(l3, l28, 96);
+                                store_i32(l3, l29, 100);
+                                store_i32(l3, l30, 104);
+                                store_i32(l3, l31, 108);
+                                store_i32(l3, l33, 112);
+                                store_i32(l3, l34, 116);
+                                store_i32(l3, l35, 120);
+                                store_i32(l3, l37, 124);
+                                store_i32(l3, l38, 128);
+                                store_i32(l3, l39, 132);
+                                store_i32(l3, l40, 136);
+                                store_i32(l3, l41, 140);
+                                store_i32(l3, l42, 144);
+                                store_i32(l3, l46, 148);
+                                store_i32(l3, l47, 152);
+                                store_i32(l3, l43, 156);
+                                store_i32(l3, l49, 160);
+                                store_i32(l3, l44, 164);
+                                store_i32(l3, l50, 168);
+                                store_i32(l3, l51, 172);
+                                store_i32(l3, l52, 176);
+                                store_i32(l3, l54, 180);
+                                store_i32(l3, l55, 184);
+                                store_i32(l3, l57, 188);
+                                store_i32(l3, l59, 192);
+                                store_i32(l3, l60, 196);
+                                store_i32(l3, l61, 200);
+                                store_i32(l3, l62, 204);
+                                store_i32(l3, l63, 208);
+                                store_i32(l3, l64, 212);
+                                store_i32(l3, l65, 216);
+                                store_i32(l3, l69, 220);
+                                store_i32(g2, ((load_i32(g2) + 224) | 0));
                               }
                               if (g1 === 1) {
                                 l2147483644 = 13;
@@ -37078,7 +41471,90 @@ function slices_Compare_int_int(p0, p1, p2, p3) {
 function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l28 = 0, l29 = 0, l30 = 0, l31 = 0, l32 = 0, l33 = 0, l34 = 0, l35 = 0, l36 = 0, l37 = 0, l38 = 0, l39 = 0, l40 = 0, l41 = 0, l42 = 0, l43 = 0, l44 = 0, l45 = 0, l46 = 0, l47 = 0, l48 = 0, l49 = 0, l50 = 0, l51 = 0, l52 = 0, l53 = 0, l54 = 0, l55 = 0, l56 = 0, l57 = 0, l58 = 0, l59 = 0, l60 = 0, l61 = 0, l62 = 0, l63 = 0, l64 = 0, l65 = 0, l66 = 0, l67 = 0, l68 = 0, l69 = 0, l70 = 0, l71 = 0, l72 = 0, l73 = 0, l74 = 0, l75 = 0, l76 = 0, l77 = 0, l78 = 0n, l79 = 0n, l80 = 0n, l81 = 0n, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l2, l3, l4, l5, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l32, l33, l34, l35, l36, l37, l38, l39, l40, l41, l42, l43, l44, l45, l47, l48, l49, l50, l51, l52, l53, l54, l55, l56, l57, l64, l58, l59, l60, l61, l62, l63, l65, l66, l67, l68, l69, l70, l71, l72, l73, l74, l75, l76, l77, p1] = asyncify_rewind(328, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 100], ["i32", 104], ["i32", 108], ["i32", 112], ["i32", 116], ["i32", 120], ["i32", 124], ["i32", 128], ["i32", 132], ["i32", 136], ["i32", 140], ["i32", 144], ["i32", 148], ["i32", 152], ["i32", 156], ["i32", 160], ["i32", 164], ["i32", 168], ["i32", 172], ["i32", 176], ["i32", 180], ["i32", 184], ["i32", 188], ["i32", 192], ["i32", 196], ["i32", 200], ["i32", 204], ["i32", 208], ["i32", 212], ["i32", 216], ["i32", 220], ["i32", 224], ["i32", 228], ["i32", 232], ["i32", 236], ["i32", 240], ["i32", 244], ["i32", 248], ["i32", 252], ["i32", 256], ["i32", 260], ["i32", 264], ["i32", 268], ["i32", 272], ["i32", 276], ["i32", 280], ["i32", 284], ["i32", 288], ["i32", 292], ["i32", 296], ["i32", 300], ["i32", 304], ["i32", 308], ["i32", 312], ["i32", 316], ["i32", 320], ["i32", 324], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 328) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l2 = load_i32(p1, 32);
+    l3 = load_i32(p1, 36);
+    l4 = load_i32(p1, 40);
+    l5 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    l10 = load_i32(p1, 60);
+    l11 = load_i32(p1, 64);
+    l12 = load_i32(p1, 68);
+    l13 = load_i32(p1, 72);
+    l14 = load_i32(p1, 76);
+    l15 = load_i32(p1, 80);
+    l16 = load_i32(p1, 84);
+    l17 = load_i32(p1, 88);
+    l18 = load_i32(p1, 92);
+    l19 = load_i32(p1, 96);
+    l20 = load_i32(p1, 100);
+    l21 = load_i32(p1, 104);
+    l22 = load_i32(p1, 108);
+    l23 = load_i32(p1, 112);
+    l24 = load_i32(p1, 116);
+    l25 = load_i32(p1, 120);
+    l26 = load_i32(p1, 124);
+    l27 = load_i32(p1, 128);
+    l28 = load_i32(p1, 132);
+    l29 = load_i32(p1, 136);
+    l30 = load_i32(p1, 140);
+    l31 = load_i32(p1, 144);
+    l32 = load_i32(p1, 148);
+    l33 = load_i32(p1, 152);
+    l34 = load_i32(p1, 156);
+    l35 = load_i32(p1, 160);
+    l36 = load_i32(p1, 164);
+    l37 = load_i32(p1, 168);
+    l38 = load_i32(p1, 172);
+    l39 = load_i32(p1, 176);
+    l40 = load_i32(p1, 180);
+    l41 = load_i32(p1, 184);
+    l42 = load_i32(p1, 188);
+    l43 = load_i32(p1, 192);
+    l44 = load_i32(p1, 196);
+    l45 = load_i32(p1, 200);
+    l47 = load_i32(p1, 204);
+    l48 = load_i32(p1, 208);
+    l49 = load_i32(p1, 212);
+    l50 = load_i32(p1, 216);
+    l51 = load_i32(p1, 220);
+    l52 = load_i32(p1, 224);
+    l53 = load_i32(p1, 228);
+    l54 = load_i32(p1, 232);
+    l55 = load_i32(p1, 236);
+    l56 = load_i32(p1, 240);
+    l57 = load_i32(p1, 244);
+    l64 = load_i32(p1, 248);
+    l58 = load_i32(p1, 252);
+    l59 = load_i32(p1, 256);
+    l60 = load_i32(p1, 260);
+    l61 = load_i32(p1, 264);
+    l62 = load_i32(p1, 268);
+    l63 = load_i32(p1, 272);
+    l65 = load_i32(p1, 276);
+    l66 = load_i32(p1, 280);
+    l67 = load_i32(p1, 284);
+    l68 = load_i32(p1, 288);
+    l69 = load_i32(p1, 292);
+    l70 = load_i32(p1, 296);
+    l71 = load_i32(p1, 300);
+    l72 = load_i32(p1, 304);
+    l73 = load_i32(p1, 308);
+    l74 = load_i32(p1, 312);
+    l75 = load_i32(p1, 316);
+    l76 = load_i32(p1, 320);
+    l77 = load_i32(p1, 324);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -37086,11 +41562,14 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
       l46 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l72 = deferSetup(1824, 16);
-      l1 = g0;
+      l1 = ((g0 - 1824) | 0);
+      g0 = l1;
       store_i32(l1, 450, 20);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 24) | 0), ((l1 + 24) | 0) + 1800);
+      l72 = load_i32(138276);
+      store_i32(l1, l72, 16);
       l4 = ((l1 + 16) | 0);
+      store_i32(138276, l4);
       l69 = ((p0 + 72) | 0);
       l73 = ((p0 - 144) | 0);
       l70 = 1;
@@ -39691,20 +44170,118 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
       break;
     }
     if ((g1 === 0)) {
-      deferCleanup(l72, 1824);
+      store_i32(138276, l72);
+      g0 = ((l1 + 1824) | 0);
     }
     return;
     l2147483641 = 0;
   }
   l6 = l2147483641;
-  asyncify_unwind(l6, 328, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l2], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l5], ["i32", 48, l7], ["i32", 52, l8], ["i32", 56, l9], ["i32", 60, l10], ["i32", 64, l11], ["i32", 68, l12], ["i32", 72, l13], ["i32", 76, l14], ["i32", 80, l15], ["i32", 84, l16], ["i32", 88, l17], ["i32", 92, l18], ["i32", 96, l19], ["i32", 100, l20], ["i32", 104, l21], ["i32", 108, l22], ["i32", 112, l23], ["i32", 116, l24], ["i32", 120, l25], ["i32", 124, l26], ["i32", 128, l27], ["i32", 132, l28], ["i32", 136, l29], ["i32", 140, l30], ["i32", 144, l31], ["i32", 148, l32], ["i32", 152, l33], ["i32", 156, l34], ["i32", 160, l35], ["i32", 164, l36], ["i32", 168, l37], ["i32", 172, l38], ["i32", 176, l39], ["i32", 180, l40], ["i32", 184, l41], ["i32", 188, l42], ["i32", 192, l43], ["i32", 196, l44], ["i32", 200, l45], ["i32", 204, l47], ["i32", 208, l48], ["i32", 212, l49], ["i32", 216, l50], ["i32", 220, l51], ["i32", 224, l52], ["i32", 228, l53], ["i32", 232, l54], ["i32", 236, l55], ["i32", 240, l56], ["i32", 244, l57], ["i32", 248, l64], ["i32", 252, l58], ["i32", 256, l59], ["i32", 260, l60], ["i32", 264, l61], ["i32", 268, l62], ["i32", 272, l63], ["i32", 276, l65], ["i32", 280, l66], ["i32", 284, l67], ["i32", 288, l68], ["i32", 292, l69], ["i32", 296, l70], ["i32", 300, l71], ["i32", 304, l72], ["i32", 308, l73], ["i32", 312, l74], ["i32", 316, l75], ["i32", 320, l76], ["i32", 324, l77]);
+  store_i32(load_i32(g2), l6);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l6 = load_i32(g2);
+  store_i32(l6, p0);
+  store_i32(l6, p1, 4);
+  store_i32(l6, p2, 8);
+  store_i32(l6, p3, 12);
+  store_i32(l6, p4, 16);
+  store_i32(l6, p5, 20);
+  store_i32(l6, l0, 24);
+  store_i32(l6, l1, 28);
+  store_i32(l6, l2, 32);
+  store_i32(l6, l3, 36);
+  store_i32(l6, l4, 40);
+  store_i32(l6, l5, 44);
+  store_i32(l6, l7, 48);
+  store_i32(l6, l8, 52);
+  store_i32(l6, l9, 56);
+  store_i32(l6, l10, 60);
+  store_i32(l6, l11, 64);
+  store_i32(l6, l12, 68);
+  store_i32(l6, l13, 72);
+  store_i32(l6, l14, 76);
+  store_i32(l6, l15, 80);
+  store_i32(l6, l16, 84);
+  store_i32(l6, l17, 88);
+  store_i32(l6, l18, 92);
+  store_i32(l6, l19, 96);
+  store_i32(l6, l20, 100);
+  store_i32(l6, l21, 104);
+  store_i32(l6, l22, 108);
+  store_i32(l6, l23, 112);
+  store_i32(l6, l24, 116);
+  store_i32(l6, l25, 120);
+  store_i32(l6, l26, 124);
+  store_i32(l6, l27, 128);
+  store_i32(l6, l28, 132);
+  store_i32(l6, l29, 136);
+  store_i32(l6, l30, 140);
+  store_i32(l6, l31, 144);
+  store_i32(l6, l32, 148);
+  store_i32(l6, l33, 152);
+  store_i32(l6, l34, 156);
+  store_i32(l6, l35, 160);
+  store_i32(l6, l36, 164);
+  store_i32(l6, l37, 168);
+  store_i32(l6, l38, 172);
+  store_i32(l6, l39, 176);
+  store_i32(l6, l40, 180);
+  store_i32(l6, l41, 184);
+  store_i32(l6, l42, 188);
+  store_i32(l6, l43, 192);
+  store_i32(l6, l44, 196);
+  store_i32(l6, l45, 200);
+  store_i32(l6, l47, 204);
+  store_i32(l6, l48, 208);
+  store_i32(l6, l49, 212);
+  store_i32(l6, l50, 216);
+  store_i32(l6, l51, 220);
+  store_i32(l6, l52, 224);
+  store_i32(l6, l53, 228);
+  store_i32(l6, l54, 232);
+  store_i32(l6, l55, 236);
+  store_i32(l6, l56, 240);
+  store_i32(l6, l57, 244);
+  store_i32(l6, l64, 248);
+  store_i32(l6, l58, 252);
+  store_i32(l6, l59, 256);
+  store_i32(l6, l60, 260);
+  store_i32(l6, l61, 264);
+  store_i32(l6, l62, 268);
+  store_i32(l6, l63, 272);
+  store_i32(l6, l65, 276);
+  store_i32(l6, l66, 280);
+  store_i32(l6, l67, 284);
+  store_i32(l6, l68, 288);
+  store_i32(l6, l69, 292);
+  store_i32(l6, l70, 296);
+  store_i32(l6, l71, 300);
+  store_i32(l6, l72, 304);
+  store_i32(l6, l73, 308);
+  store_i32(l6, l74, 312);
+  store_i32(l6, l75, 316);
+  store_i32(l6, l76, 320);
+  store_i32(l6, l77, 324);
+  store_i32(g2, ((load_i32(g2) + 328) | 0));
 }
 
 // encoding/json.typeEncoder$1
 function encoding_json_typeEncoder$1(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, l2, l3, l4, l1] = asyncify_rewind(44, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    p5 = load_i32(l1, 20);
+    p6 = load_i32(l1, 24);
+    l2 = load_i32(l1, 28);
+    l3 = load_i32(l1, 32);
+    l4 = load_i32(l1, 36);
+    l1 = load_i32(l1, 40);
   }
   block_1: {
     if (g1 === 2) {
@@ -39712,10 +44289,13 @@ function encoding_json_typeEncoder$1(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l1 = deferSetup(32, 8);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
+      l1 = load_i32(138276);
+      store_i32(138276, ((l2 + 8) | 0));
       store_i64(l2, 0n, 20);
       store_i64(l2, 3n, 12);
+      store_i32(l2, l1, 8);
       l3 = load_i32(p6);
       l4 = ((l3 === 0) ? 1 : 0);
     }
@@ -39775,20 +44355,47 @@ function encoding_json_typeEncoder$1(p0, p1, p2, p3, p4, p5, p6) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l1, 32);
+      store_i32(138276, l1);
+      g0 = ((l2 + 32) | 0);
     }
     return;
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l2], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l2, 28);
+  store_i32(l0, l3, 32);
+  store_i32(l0, l4, 36);
+  store_i32(l0, l1, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // encoding/json.boolEncoder
 function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483640, l2147483641, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l2, l3, l4, l5, p1] = asyncify_rewind(44, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l2 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -39796,13 +44403,16 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(128, 88);
-      p5 = g0;
+      p5 = ((g0 - 128) | 0);
+      g0 = p5;
       store_i64(((p5 + 104) | 0), 0n);
       store_i64(((p5 + 112) | 0), 0n);
       store_i32(((p5 + 120) | 0), 0);
       store_i64(p5, 0n, 96);
       store_i32(p5, 7, 92);
+      l4 = load_i32(138276);
+      store_i32(138276, ((p5 + 88) | 0));
+      store_i32(p5, l4, 88);
       p6 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -39908,7 +44518,8 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l4, 128);
+        store_i32(138276, l4);
+        g0 = ((p5 + 128) | 0);
         return;
       }
     }
@@ -39926,14 +44537,41 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l2], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l2, 28);
+  store_i32(l0, l3, 32);
+  store_i32(l0, l4, 36);
+  store_i32(l0, l5, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // encoding/json.intEncoder
 function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l6 = 0n, l2147483640, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, l3, l2, l5, l4, l1] = asyncify_rewind(52, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 36], ["i32", 44], ["i32", 48]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    p5 = load_i32(l1, 20);
+    p6 = load_i32(l1, 24);
+    l3 = load_i32(l1, 28);
+    l2 = load_i32(l1, 32);
+    l5 = load_i64(l1, 36);
+    l4 = load_i32(l1, 44);
+    l1 = load_i32(l1, 48);
   }
   block_1: {
     if (g1 === 2) {
@@ -39941,10 +44579,13 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(144, 96);
-      p6 = g0;
+      p6 = ((g0 - 144) | 0);
+      g0 = p6;
       store_i32(p6, 9, 100);
       new Uint8Array(memory.buffer).fill(0, ((p6 + 104) | 0), ((p6 + 104) | 0) + 36);
+      l4 = load_i32(138276);
+      store_i32(p6, l4, 96);
+      store_i32(138276, ((p6 + 96) | 0));
       p5 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -40062,7 +44703,8 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l4, 144);
+        store_i32(138276, l4);
+        g0 = ((p6 + 144) | 0);
         return;
       }
     }
@@ -40080,14 +44722,42 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l3], ["i32", 32, l2], ["i64", 36, l5], ["i32", 44, l4], ["i32", 48, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l3, 28);
+  store_i32(l0, l2, 32);
+  store_i64(l0, l5, 36);
+  store_i32(l0, l4, 44);
+  store_i32(l0, l1, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // encoding/json.uintEncoder
 function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l6 = 0n, l2147483640, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, l3, l2, l5, l4, l1] = asyncify_rewind(52, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 36], ["i32", 44], ["i32", 48]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    p5 = load_i32(l1, 20);
+    p6 = load_i32(l1, 24);
+    l3 = load_i32(l1, 28);
+    l2 = load_i32(l1, 32);
+    l5 = load_i64(l1, 36);
+    l4 = load_i32(l1, 44);
+    l1 = load_i32(l1, 48);
   }
   block_1: {
     if (g1 === 2) {
@@ -40095,10 +44765,13 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(144, 96);
-      p6 = g0;
+      p6 = ((g0 - 144) | 0);
+      g0 = p6;
       store_i32(p6, 9, 100);
       new Uint8Array(memory.buffer).fill(0, ((p6 + 104) | 0), ((p6 + 104) | 0) + 36);
+      l4 = load_i32(138276);
+      store_i32(p6, l4, 96);
+      store_i32(138276, ((p6 + 96) | 0));
       p5 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -40213,7 +44886,8 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l4, 144);
+        store_i32(138276, l4);
+        g0 = ((p6 + 144) | 0);
         return;
       }
     }
@@ -40231,14 +44905,45 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l3], ["i32", 32, l2], ["i64", 36, l5], ["i32", 44, l4], ["i32", 48, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l3, 28);
+  store_i32(l0, l2, 32);
+  store_i64(l0, l5, 36);
+  store_i32(l0, l4, 44);
+  store_i32(l0, l1, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // encoding/json.stringEncoder
 function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l2147483640, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l0, l2, l6, l8, l12, l15, l16, l25, p1] = asyncify_rewind(60, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 60) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l2 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    l12 = load_i32(p1, 44);
+    l15 = load_i32(p1, 48);
+    l16 = load_i32(p1, 52);
+    l25 = load_i32(p1, 56);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -40246,12 +44951,15 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l25 = deferSetup(640, 480);
-      l0 = g0;
+      l0 = ((g0 - 640) | 0);
+      g0 = l0;
       store_i32(l0, 38, 484);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 492) | 0), ((l0 + 492) | 0) + 148);
       store_i32(l0, p1, 488);
+      l25 = load_i32(138276);
+      store_i32(l0, l25, 480);
       p3 = ((l0 + 480) | 0);
+      store_i32(138276, p3);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -40981,7 +45689,23 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
               l7 = p1;
               l1 = 0;
               if (g1 === 2) {
-                [l22, l1, l3, l9, l10, l11, l14, l18, l17, l19, l20, l21, l23, l24, l7] = asyncify_rewind(60, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 4]);
+                store_i32(g2, ((load_i32(g2) - 60) | 0));
+                l7 = load_i32(g2);
+                l22 = load_i32(l7);
+                l1 = load_i32(l7, 8);
+                l3 = load_i32(l7, 12);
+                l9 = load_i32(l7, 16);
+                l10 = load_i32(l7, 20);
+                l11 = load_i32(l7, 24);
+                l14 = load_i32(l7, 28);
+                l18 = load_i32(l7, 32);
+                l17 = load_i32(l7, 36);
+                l19 = load_i32(l7, 40);
+                l20 = load_i32(l7, 44);
+                l21 = load_i32(l7, 48);
+                l23 = load_i32(l7, 52);
+                l24 = load_i32(l7, 56);
+                l7 = load_i32(l7, 4);
               }
               block_129: {
                 block_130: {
@@ -40990,11 +45714,14 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     l13 = load_i32(load_i32(g2));
                   }
                   if ((g1 === 0)) {
-                    l23 = deferSetup(128, 32);
-                    l3 = g0;
+                    l3 = ((g0 - 128) | 0);
+                    g0 = l3;
                     store_i32(l3, 22, 36);
                     new Uint8Array(memory.buffer).fill(0, ((l3 + 44) | 0), ((l3 + 44) | 0) + 84);
+                    l23 = load_i32(138276);
+                    store_i32(l3, l23, 32);
                     l1 = ((l3 + 32) | 0);
+                    store_i32(138276, l1);
                   }
                   if (((g1 ? l13 : 0) === 0)) {
                     if (g1 === 1) {
@@ -41229,7 +45956,25 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                   l2147483643 = 0;
                 }
                 l5 = l2147483643;
-                asyncify_unwind(l5, 60, ["i32", 0, l22], ["i32", 4, l7], ["i32", 8, l1], ["i32", 12, l3], ["i32", 16, l9], ["i32", 20, l10], ["i32", 24, l11], ["i32", 28, l14], ["i32", 32, l18], ["i32", 36, l17], ["i32", 40, l19], ["i32", 44, l20], ["i32", 48, l21], ["i32", 52, l23], ["i32", 56, l24]);
+                store_i32(load_i32(g2), l5);
+                store_i32(g2, ((load_i32(g2) + 4) | 0));
+                l5 = load_i32(g2);
+                store_i32(l5, l22);
+                store_i32(l5, l7, 4);
+                store_i32(l5, l1, 8);
+                store_i32(l5, l3, 12);
+                store_i32(l5, l9, 16);
+                store_i32(l5, l10, 20);
+                store_i32(l5, l11, 24);
+                store_i32(l5, l14, 28);
+                store_i32(l5, l18, 32);
+                store_i32(l5, l17, 36);
+                store_i32(l5, l19, 40);
+                store_i32(l5, l20, 44);
+                store_i32(l5, l21, 48);
+                store_i32(l5, l23, 52);
+                store_i32(l5, l24, 56);
+                store_i32(g2, ((load_i32(g2) + 60) | 0));
               }
               if (g1 === 1) {
                 l2147483640 = 30;
@@ -41325,7 +46070,8 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l25, 640);
+        store_i32(138276, l25);
+        g0 = ((l0 + 640) | 0);
         return;
       }
     }
@@ -41343,14 +46089,42 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l1 = l2147483640;
-  asyncify_unwind(l1, 60, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l0], ["i32", 32, l2], ["i32", 36, l6], ["i32", 40, l8], ["i32", 44, l12], ["i32", 48, l15], ["i32", 52, l16], ["i32", 56, l25]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, l0, 28);
+  store_i32(l1, l2, 32);
+  store_i32(l1, l6, 36);
+  store_i32(l1, l8, 40);
+  store_i32(l1, l12, 44);
+  store_i32(l1, l15, 48);
+  store_i32(l1, l16, 52);
+  store_i32(l1, l25, 56);
+  store_i32(g2, ((load_i32(g2) + 60) | 0));
 }
 
 // encoding/json.interfaceEncoder
 function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, l3, p1] = asyncify_rewind(36, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -41358,11 +46132,14 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(48, 24);
-      p6 = g0;
+      p6 = ((g0 - 48) | 0);
+      g0 = p6;
       store_i64(p6, 0n, 32);
       store_i32(p6, 4, 28);
+      l3 = load_i32(138276);
       l1 = ((p6 + 24) | 0);
+      store_i32(138276, l1);
+      store_i32(p6, l3, 24);
     }
     if (((g1 ? l2 : 0) === 0)) {
       if (g1 === 1) {
@@ -41413,7 +46190,8 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l3, 48);
+        store_i32(138276, l3);
+        g0 = ((p6 + 48) | 0);
         return;
       }
     }
@@ -41431,14 +46209,48 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l1], ["i32", 32, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l1, 28);
+  store_i32(l0, l3, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // (encoding/json.structEncoder).encode$bound
 function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, l0, l5, l3, l6, l7, l8, l9, l12, l10, l13, l14, l15, l11, p1] = asyncify_rewind(84, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 84) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l0 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l3 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    l12 = load_i32(p1, 60);
+    l10 = load_i32(p1, 64);
+    l13 = load_i32(p1, 68);
+    l14 = load_i32(p1, 72);
+    l15 = load_i32(p1, 76);
+    l11 = load_i32(p1, 80);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -41446,11 +46258,14 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l13 = deferSetup(128, 48);
-      l1 = g0;
+      l1 = ((g0 - 128) | 0);
+      g0 = l1;
       store_i32(l1, 18, 52);
       new Uint8Array(memory.buffer).fill(0, ((l1 + 60) | 0), ((l1 + 60) | 0) + 68);
+      l13 = load_i32(138276);
       p4 = ((l1 + 48) | 0);
+      store_i32(138276, p4);
+      store_i32(l1, l13, 48);
       l14 = load_i32(p6);
       store_i32(l1, l14, 56);
       l15 = load_i32(p6, 4);
@@ -41676,7 +46491,8 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
           }
         }
         if ((g1 === 0)) {
-          deferCleanup(l13, 128);
+          store_i32(138276, l13);
+          g0 = ((l1 + 128) | 0);
           return;
         }
       }
@@ -41705,14 +46521,60 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l2 = l2147483640;
-  asyncify_unwind(l2, 84, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l1], ["i32", 32, l0], ["i32", 36, l5], ["i32", 40, l3], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i32", 56, l9], ["i32", 60, l12], ["i32", 64, l10], ["i32", 68, l13], ["i32", 72, l14], ["i32", 76, l15], ["i32", 80, l11]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, p6, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l0, 32);
+  store_i32(l2, l5, 36);
+  store_i32(l2, l3, 40);
+  store_i32(l2, l6, 44);
+  store_i32(l2, l7, 48);
+  store_i32(l2, l8, 52);
+  store_i32(l2, l9, 56);
+  store_i32(l2, l12, 60);
+  store_i32(l2, l10, 64);
+  store_i32(l2, l13, 68);
+  store_i32(l2, l14, 72);
+  store_i32(l2, l15, 76);
+  store_i32(l2, l11, 80);
+  store_i32(g2, ((load_i32(g2) + 84) | 0));
 }
 
 // (encoding/json.mapEncoder).encode$bound
 function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483640, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l0, l5, l3, l4, l6, l7, l8, l15, l9, l10, l11, l12, l13, l14, p1] = asyncify_rewind(88, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i64", 56], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 88) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l5 = load_i32(p1, 32);
+    l3 = load_i32(p1, 36);
+    l4 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l15 = load_i64(p1, 56);
+    l9 = load_i32(p1, 64);
+    l10 = load_i32(p1, 68);
+    l11 = load_i32(p1, 72);
+    l12 = load_i32(p1, 76);
+    l13 = load_i32(p1, 80);
+    l14 = load_i32(p1, 84);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -41720,11 +46582,14 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l11 = deferSetup(336, 168);
-      l0 = g0;
+      l0 = ((g0 - 336) | 0);
+      g0 = l0;
       store_i32(l0, 38, 172);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 176) | 0), ((l0 + 176) | 0) + 152);
+      l11 = load_i32(138276);
       l4 = ((l0 + 168) | 0);
+      store_i32(138276, l4);
+      store_i32(l0, l11, 168);
       l12 = load_i32(p6);
       l10 = load_i32(p6, 4);
     }
@@ -42279,20 +47144,49 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l11, 336);
+      store_i32(138276, l11);
+      g0 = ((l0 + 336) | 0);
     }
     return;
     l2147483640 = 0;
   }
   l1 = l2147483640;
-  asyncify_unwind(l1, 88, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l0], ["i32", 32, l5], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i64", 56, l15], ["i32", 64, l9], ["i32", 68, l10], ["i32", 72, l11], ["i32", 76, l12], ["i32", 80, l13], ["i32", 84, l14]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, l0, 28);
+  store_i32(l1, l5, 32);
+  store_i32(l1, l3, 36);
+  store_i32(l1, l4, 40);
+  store_i32(l1, l6, 44);
+  store_i32(l1, l7, 48);
+  store_i32(l1, l8, 52);
+  store_i64(l1, l15, 56);
+  store_i32(l1, l9, 64);
+  store_i32(l1, l10, 68);
+  store_i32(l1, l11, 72);
+  store_i32(l1, l12, 76);
+  store_i32(l1, l13, 80);
+  store_i32(l1, l14, 84);
+  store_i32(g2, ((load_i32(g2) + 88) | 0));
 }
 
 // encoding/json.unsupportedTypeEncoder
 function encoding_json_unsupportedTypeEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p1, p2] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    p2 = load_i32(g2);
+    p0 = load_i32(p2);
+    p1 = load_i32(p2, 4);
+    p2 = load_i32(p2, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -42300,9 +47194,12 @@ function encoding_json_unsupportedTypeEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      p2 = deferSetup(32, 8);
-      p0 = g0;
+      p0 = ((g0 - 32) | 0);
+      g0 = p0;
       store_i32(p0, 3, 12);
+      p2 = load_i32(138276);
+      store_i32(138276, ((p0 + 8) | 0));
+      store_i32(p0, p2, 8);
     }
     if (((g1 ? l0 : 0) === 0)) {
       if (g1 === 1) {
@@ -42332,14 +47229,34 @@ function encoding_json_unsupportedTypeEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   p3 = l2147483640;
-  asyncify_unwind(p3, 12, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2]);
+  store_i32(load_i32(g2), p3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p3 = load_i32(g2);
+  store_i32(p3, p0);
+  store_i32(p3, p1, 4);
+  store_i32(p3, p2, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
 }
 
 // encoding/json.encodeByteSlice
 function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, l3, l4, l5, l6, l7, p1] = asyncify_rewind(52, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -42347,11 +47264,14 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l7 = deferSetup(160, 104);
-      p4 = g0;
+      p4 = ((g0 - 160) | 0);
+      g0 = p4;
       store_i32(p4, 11, 108);
       new Uint8Array(memory.buffer).fill(0, ((p4 + 112) | 0), ((p4 + 112) | 0) + 44);
+      l7 = load_i32(138276);
+      store_i32(p4, l7, 104);
       p5 = ((p4 + 104) | 0);
+      store_i32(138276, p5);
     }
     if (((g1 ? l2 : 0) === 0)) {
       if (g1 === 1) {
@@ -42555,7 +47475,8 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
               }
             }
             if ((g1 === 0)) {
-              deferCleanup(l7, 160);
+              store_i32(138276, l7);
+              g0 = ((p4 + 160) | 0);
               return;
             }
           }
@@ -42606,14 +47527,38 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 52, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l1, 28);
+  store_i32(l0, l3, 32);
+  store_i32(l0, l4, 36);
+  store_i32(l0, l5, 40);
+  store_i32(l0, l6, 44);
+  store_i32(l0, l7, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // encoding/json.newArrayEncoder
 function encoding_json_newArrayEncoder(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l2, l3, l5, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l5 = load_i32(p1, 24);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -42621,8 +47566,8 @@ function encoding_json_newArrayEncoder(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(48, 8);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       l2 = ((l0 + 24) | 0);
       store_i64(l2, 0n);
       l5 = ((l0 + 32) | 0);
@@ -42630,6 +47575,9 @@ function encoding_json_newArrayEncoder(p0, p1, p2) {
       store_i32(((l0 + 40) | 0), 0);
       store_i64(l0, 0n, 16);
       store_i32(l0, 7, 12);
+      l3 = load_i32(138276);
+      store_i32(138276, ((l0 + 8) | 0));
+      store_i32(l0, l3, 8);
     }
     if (((g1 ? l4 : 0) === 0)) {
       if (g1 === 1) {
@@ -42675,14 +47623,40 @@ function encoding_json_newArrayEncoder(p0, p1, p2) {
     l2147483644 = 0;
   }
   l1 = l2147483644;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l2], ["i32", 20, l3], ["i32", 24, l5]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, l0, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l3, 20);
+  store_i32(l1, l5, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
 }
 
 // (encoding/json.arrayEncoder).encode$bound
 function _encoding_json_arrayEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, l2, l4, l5, l6, l7, l8, l9, p1] = asyncify_rewind(60, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 60) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l2 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -42690,12 +47664,15 @@ function _encoding_json_arrayEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(48, 24);
-      l1 = g0;
+      l1 = ((g0 - 48) | 0);
+      g0 = l1;
       store_i64(((l1 + 40) | 0), 0n);
       l4 = 0;
+      l6 = load_i32(138276);
+      store_i32(138276, ((l1 + 24) | 0));
       store_i64(l1, 0n, 32);
       store_i32(l1, 4, 28);
+      store_i32(l1, l6, 24);
       l2 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -42788,20 +47765,55 @@ function _encoding_json_arrayEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l6, 48);
+      store_i32(138276, l6);
+      g0 = ((l1 + 48) | 0);
     }
     return;
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 60, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l1], ["i32", 32, l2], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i32", 56, l9]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l1, 28);
+  store_i32(l0, l2, 32);
+  store_i32(l0, l4, 36);
+  store_i32(l0, l5, 40);
+  store_i32(l0, l6, 44);
+  store_i32(l0, l7, 48);
+  store_i32(l0, l8, 52);
+  store_i32(l0, l9, 56);
+  store_i32(g2, ((load_i32(g2) + 60) | 0));
 }
 
 // (encoding/json.sliceEncoder).encode$bound
 function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483640, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l0, l1, l4, l5, l6, l7, l8, l9, p1] = asyncify_rewind(60, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 60) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l1 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -42809,11 +47821,14 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(144, 48);
-      l0 = g0;
+      l0 = ((g0 - 144) | 0);
+      g0 = l0;
       store_i32(l0, 22, 52);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 56) | 0), ((l0 + 56) | 0) + 80);
+      l6 = load_i32(138276);
       l1 = ((l0 + 48) | 0);
+      store_i32(138276, l1);
+      store_i32(l0, l6, 48);
       l8 = load_i32(p6, 4);
       store_i32(l0, l8, 140);
       l9 = load_i32(p6);
@@ -43047,20 +48062,54 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l6, 144);
+      store_i32(138276, l6);
+      g0 = ((l0 + 144) | 0);
     }
     return;
     l2147483640 = 0;
   }
   l2 = l2147483640;
-  asyncify_unwind(l2, 60, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l0], ["i32", 32, l1], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i32", 56, l9]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, p6, 24);
+  store_i32(l2, l0, 28);
+  store_i32(l2, l1, 32);
+  store_i32(l2, l4, 36);
+  store_i32(l2, l5, 40);
+  store_i32(l2, l6, 44);
+  store_i32(l2, l7, 48);
+  store_i32(l2, l8, 52);
+  store_i32(l2, l9, 56);
+  store_i32(g2, ((load_i32(g2) + 60) | 0));
 }
 
 // (encoding/json.ptrEncoder).encode$bound
 function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l0, l3, l4, l5, l6, l7, l8, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -43068,11 +48117,14 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(144, 64);
-      l0 = g0;
+      l0 = ((g0 - 144) | 0);
+      g0 = l0;
       store_i32(l0, 15, 68);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 72) | 0), ((l0 + 72) | 0) + 60);
+      l6 = load_i32(138276);
       l3 = ((l0 - -64) | 0);
+      store_i32(138276, l3);
+      store_i32(l0, l6, 64);
       l8 = load_i32(p6);
       l7 = load_i32(p6, 4);
     }
@@ -43271,20 +48323,54 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l6, 144);
+      store_i32(138276, l6);
+      g0 = ((l0 + 144) | 0);
     }
     return;
     l2147483640 = 0;
   }
   l1 = l2147483640;
-  asyncify_unwind(l1, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l0], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, l0, 28);
+  store_i32(l1, l3, 32);
+  store_i32(l1, l4, 36);
+  store_i32(l1, l5, 40);
+  store_i32(l1, l6, 44);
+  store_i32(l1, l7, 48);
+  store_i32(l1, l8, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
 }
 
 // encoding/json.appendString[string]
 function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, l0, l1, l3, l4, l6, l7, l8, l5] = asyncify_rewind(60, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56]);
+    store_i32(g2, ((load_i32(g2) - 60) | 0));
+    l5 = load_i32(g2);
+    p0 = load_i32(l5);
+    p1 = load_i32(l5, 4);
+    p2 = load_i32(l5, 8);
+    p3 = load_i32(l5, 12);
+    p4 = load_i32(l5, 16);
+    p5 = load_i32(l5, 20);
+    p6 = load_i32(l5, 24);
+    l0 = load_i32(l5, 28);
+    l1 = load_i32(l5, 32);
+    l3 = load_i32(l5, 36);
+    l4 = load_i32(l5, 40);
+    l6 = load_i32(l5, 44);
+    l7 = load_i32(l5, 48);
+    l8 = load_i32(l5, 52);
+    l5 = load_i32(l5, 56);
   }
   block_1: {
     if (g1 === 2) {
@@ -43292,11 +48378,14 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(336, 280);
-      l0 = g0;
+      l0 = ((g0 - 336) | 0);
+      g0 = l0;
       store_i32(l0, 11, 284);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 288) | 0), ((l0 + 288) | 0) + 44);
       store_i8(l0, 34, 279);
+      l8 = load_i32(138276);
+      store_i32(l0, l8, 280);
+      store_i32(138276, ((l0 + 280) | 0));
       l3 = ((l0 + 279) | 0);
       l1 = ((l0 + 240) | 0);
     }
@@ -43723,14 +48812,44 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l2 = l2147483640;
-  asyncify_unwind(l2, 60, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l0], ["i32", 32, l1], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i32", 56, l5]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, p6, 24);
+  store_i32(l2, l0, 28);
+  store_i32(l2, l1, 32);
+  store_i32(l2, l3, 36);
+  store_i32(l2, l4, 40);
+  store_i32(l2, l6, 44);
+  store_i32(l2, l7, 48);
+  store_i32(l2, l8, 52);
+  store_i32(l2, l5, 56);
+  store_i32(g2, ((load_i32(g2) + 60) | 0));
 }
 
 // (*encoding/json.encodeState).reflectValue
 function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641, l2147483642;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, l0, l3, l4, l5, l2] = asyncify_rewind(44, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40]);
+    store_i32(g2, ((load_i32(g2) - 44) | 0));
+    l2 = load_i32(g2);
+    p0 = load_i32(l2);
+    p1 = load_i32(l2, 4);
+    p2 = load_i32(l2, 8);
+    p3 = load_i32(l2, 12);
+    p4 = load_i32(l2, 16);
+    p5 = load_i32(l2, 20);
+    l0 = load_i32(l2, 24);
+    l3 = load_i32(l2, 28);
+    l4 = load_i32(l2, 32);
+    l5 = load_i32(l2, 36);
+    l2 = load_i32(l2, 40);
   }
   block_1: {
     if (g1 === 2) {
@@ -43738,13 +48857,16 @@ function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
       l1 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(48, 16);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       store_i64(((l0 + 32) | 0), 0n);
       store_i32(((l0 + 40) | 0), 0);
       store_i64(l0, 0n, 24);
       store_i32(l0, 5, 20);
+      l4 = load_i32(138276);
       l3 = ((l0 + 16) | 0);
+      store_i32(138276, l3);
+      store_i32(l0, l4, 16);
     }
     block_4: {
       if ((g1 === 0)) {
@@ -43785,7 +48907,8 @@ function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(l4, 48);
+        store_i32(138276, l4);
+        g0 = ((l0 + 48) | 0);
         return;
       }
     }
@@ -43803,14 +48926,73 @@ function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 44, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l3], ["i32", 32, l4], ["i32", 36, l5], ["i32", 40, l2]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, l0, 24);
+  store_i32(l1, l3, 28);
+  store_i32(l1, l4, 32);
+  store_i32(l1, l5, 36);
+  store_i32(l1, l2, 40);
+  store_i32(g2, ((load_i32(g2) + 44) | 0));
 }
 
 // slices.pdqsortCmpFunc[encoding/json.reflectWithString]
 function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l28 = 0, l29 = 0, l30 = 0, l31 = 0, l32 = 0, l33 = 0, l34 = 0, l35 = 0, l36 = 0, l37 = 0, l38 = 0, l39 = 0, l40 = 0, l41 = 0n, l42 = 0n, l43 = 0n, l44 = 0n, l2147483642, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l1, l2, l4, l6, l5, l7, l8, l10, l9, l13, l11, l12, l16, l14, l18, l19, l17, l21, l20, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l33, l34, l32, l35, l36, l37, l38, l39, l40, p1] = asyncify_rewind(176, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 100], ["i32", 104], ["i32", 108], ["i32", 112], ["i32", 116], ["i32", 120], ["i32", 124], ["i32", 128], ["i32", 132], ["i32", 136], ["i32", 140], ["i32", 144], ["i32", 148], ["i32", 152], ["i32", 156], ["i32", 160], ["i32", 164], ["i32", 168], ["i32", 172], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 176) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l2 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    l6 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    l10 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    l13 = load_i32(p1, 60);
+    l11 = load_i32(p1, 64);
+    l12 = load_i32(p1, 68);
+    l16 = load_i32(p1, 72);
+    l14 = load_i32(p1, 76);
+    l18 = load_i32(p1, 80);
+    l19 = load_i32(p1, 84);
+    l17 = load_i32(p1, 88);
+    l21 = load_i32(p1, 92);
+    l20 = load_i32(p1, 96);
+    l22 = load_i32(p1, 100);
+    l23 = load_i32(p1, 104);
+    l24 = load_i32(p1, 108);
+    l25 = load_i32(p1, 112);
+    l26 = load_i32(p1, 116);
+    l27 = load_i32(p1, 120);
+    l28 = load_i32(p1, 124);
+    l29 = load_i32(p1, 128);
+    l30 = load_i32(p1, 132);
+    l31 = load_i32(p1, 136);
+    l33 = load_i32(p1, 140);
+    l34 = load_i32(p1, 144);
+    l32 = load_i32(p1, 148);
+    l35 = load_i32(p1, 152);
+    l36 = load_i32(p1, 156);
+    l37 = load_i32(p1, 160);
+    l38 = load_i32(p1, 164);
+    l39 = load_i32(p1, 168);
+    l40 = load_i32(p1, 172);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -44859,14 +50041,67 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
     l2147483642 = 0;
   }
   l3 = l2147483642;
-  asyncify_unwind(l3, 176, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l1], ["i32", 28, l2], ["i32", 32, l4], ["i32", 36, l6], ["i32", 40, l5], ["i32", 44, l7], ["i32", 48, l8], ["i32", 52, l10], ["i32", 56, l9], ["i32", 60, l13], ["i32", 64, l11], ["i32", 68, l12], ["i32", 72, l16], ["i32", 76, l14], ["i32", 80, l18], ["i32", 84, l19], ["i32", 88, l17], ["i32", 92, l21], ["i32", 96, l20], ["i32", 100, l22], ["i32", 104, l23], ["i32", 108, l24], ["i32", 112, l25], ["i32", 116, l26], ["i32", 120, l27], ["i32", 124, l28], ["i32", 128, l29], ["i32", 132, l30], ["i32", 136, l31], ["i32", 140, l33], ["i32", 144, l34], ["i32", 148, l32], ["i32", 152, l35], ["i32", 156, l36], ["i32", 160, l37], ["i32", 164, l38], ["i32", 168, l39], ["i32", 172, l40]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, p2, 8);
+  store_i32(l3, p3, 12);
+  store_i32(l3, p4, 16);
+  store_i32(l3, l0, 20);
+  store_i32(l3, l1, 24);
+  store_i32(l3, l2, 28);
+  store_i32(l3, l4, 32);
+  store_i32(l3, l6, 36);
+  store_i32(l3, l5, 40);
+  store_i32(l3, l7, 44);
+  store_i32(l3, l8, 48);
+  store_i32(l3, l10, 52);
+  store_i32(l3, l9, 56);
+  store_i32(l3, l13, 60);
+  store_i32(l3, l11, 64);
+  store_i32(l3, l12, 68);
+  store_i32(l3, l16, 72);
+  store_i32(l3, l14, 76);
+  store_i32(l3, l18, 80);
+  store_i32(l3, l19, 84);
+  store_i32(l3, l17, 88);
+  store_i32(l3, l21, 92);
+  store_i32(l3, l20, 96);
+  store_i32(l3, l22, 100);
+  store_i32(l3, l23, 104);
+  store_i32(l3, l24, 108);
+  store_i32(l3, l25, 112);
+  store_i32(l3, l26, 116);
+  store_i32(l3, l27, 120);
+  store_i32(l3, l28, 124);
+  store_i32(l3, l29, 128);
+  store_i32(l3, l30, 132);
+  store_i32(l3, l31, 136);
+  store_i32(l3, l33, 140);
+  store_i32(l3, l34, 144);
+  store_i32(l3, l32, 148);
+  store_i32(l3, l35, 152);
+  store_i32(l3, l36, 156);
+  store_i32(l3, l37, 160);
+  store_i32(l3, l38, 164);
+  store_i32(l3, l39, 168);
+  store_i32(l3, l40, 172);
+  store_i32(g2, ((load_i32(g2) + 176) | 0));
 }
 
 // (encoding/json.mapEncoder).encode$1
 function _encoding_json_mapEncoder_encode$1(p0, p1, p2, p3, p4) {
   let l0 = 0, l2147483642, l2147483643;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p1] = asyncify_rewind(20, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 20) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -44889,7 +50124,15 @@ function _encoding_json_mapEncoder_encode$1(p0, p1, p2, p3, p4) {
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 20, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(g2, ((load_i32(g2) + 20) | 0));
   return 0;
 }
 
@@ -44897,7 +50140,28 @@ function _encoding_json_mapEncoder_encode$1(p0, p1, p2, p3, p4) {
 function slices_siftDownCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0n, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l14, l15, l16, p1] = asyncify_rewind(80, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 80) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l2 = load_i32(p1, 24);
+    l3 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l6 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    l9 = load_i32(p1, 52);
+    l10 = load_i32(p1, 56);
+    l11 = load_i32(p1, 60);
+    l12 = load_i32(p1, 64);
+    l14 = load_i32(p1, 68);
+    l15 = load_i32(p1, 72);
+    l16 = load_i32(p1, 76);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -45014,14 +50278,44 @@ function slices_siftDownCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, 
     l2147483642 = 0;
   }
   l1 = l2147483642;
-  asyncify_unwind(l1, 80, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l0], ["i32", 24, l2], ["i32", 28, l3], ["i32", 32, l4], ["i32", 36, l5], ["i32", 40, l6], ["i32", 44, l7], ["i32", 48, l8], ["i32", 52, l9], ["i32", 56, l10], ["i32", 60, l11], ["i32", 64, l12], ["i32", 68, l14], ["i32", 72, l15], ["i32", 76, l16]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, l0, 20);
+  store_i32(l1, l2, 24);
+  store_i32(l1, l3, 28);
+  store_i32(l1, l4, 32);
+  store_i32(l1, l5, 36);
+  store_i32(l1, l6, 40);
+  store_i32(l1, l7, 44);
+  store_i32(l1, l8, 48);
+  store_i32(l1, l9, 52);
+  store_i32(l1, l10, 56);
+  store_i32(l1, l11, 60);
+  store_i32(l1, l12, 64);
+  store_i32(l1, l14, 68);
+  store_i32(l1, l15, 72);
+  store_i32(l1, l16, 76);
+  store_i32(g2, ((load_i32(g2) + 80) | 0));
 }
 
 // slices.medianAdjacentCmpFunc[encoding/json.reflectWithString]
 function slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483643;
   if (g1 === 2) {
-    [p0, p1, p2, p3, l2, l1] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    l2 = load_i32(l1, 16);
+    l1 = load_i32(l1, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -45046,7 +50340,16 @@ function slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, p2
     l2147483643 = 0;
   }
   l0 = l2147483643;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, l2, 16);
+  store_i32(l0, l1, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
   return 0;
 }
 
@@ -45054,7 +50357,16 @@ function slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, p2
 function slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, l2, l0] = asyncify_rewind(32, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    p4 = load_i32(l0, 16);
+    p5 = load_i32(l0, 20);
+    l2 = load_i32(l0, 24);
+    l0 = load_i32(l0, 28);
   }
   block_1: {
     if (g1 === 2) {
@@ -45104,7 +50416,18 @@ function slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
     l2147483641 = 0;
   }
   l1 = l2147483641;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l2], ["i32", 28, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, l2, 24);
+  store_i32(l1, l0, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -45112,7 +50435,22 @@ function slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
 function slices_order2CmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l1, l3, l4, l5, l6, l7, l8, l9, p1] = asyncify_rewind(56, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 56) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l1 = load_i32(p1, 24);
+    l3 = load_i32(p1, 28);
+    l4 = load_i32(p1, 32);
+    l5 = load_i32(p1, 36);
+    l6 = load_i32(p1, 40);
+    l7 = load_i32(p1, 44);
+    l8 = load_i32(p1, 48);
+    l9 = load_i32(p1, 52);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -45189,14 +50527,36 @@ function slices_order2CmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
     l2147483641 = 0;
   }
   l0 = l2147483641;
-  asyncify_unwind(l0, 56, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l1], ["i32", 28, l3], ["i32", 32, l4], ["i32", 36, l5], ["i32", 40, l6], ["i32", 44, l7], ["i32", 48, l8], ["i32", 52, l9]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, l1, 24);
+  store_i32(l0, l3, 28);
+  store_i32(l0, l4, 32);
+  store_i32(l0, l5, 36);
+  store_i32(l0, l6, 40);
+  store_i32(l0, l7, 44);
+  store_i32(l0, l8, 48);
+  store_i32(l0, l9, 52);
+  store_i32(g2, ((load_i32(g2) + 56) | 0));
 }
 
 // encoding/json.invalidValueEncoder
 function encoding_json_invalidValueEncoder(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p1, p2, p3] = asyncify_rewind(16, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12]);
+    store_i32(g2, ((load_i32(g2) - 16) | 0));
+    p3 = load_i32(g2);
+    p0 = load_i32(p3);
+    p1 = load_i32(p3, 4);
+    p2 = load_i32(p3, 8);
+    p3 = load_i32(p3, 12);
   }
   block_1: {
     if (g1 === 2) {
@@ -45204,8 +50564,10 @@ function encoding_json_invalidValueEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l0 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      p2 = deferSetup(32, 16);
-      p1 = g0;
+      p1 = ((g0 - 32) | 0);
+      g0 = p1;
+      p2 = load_i32(138276);
+      store_i32(138276, ((p1 + 16) | 0));
       p3 = ((p0 === 0) ? 1 : 0);
     }
     block_4: {
@@ -45221,7 +50583,8 @@ function encoding_json_invalidValueEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
       }
       if ((g1 === 0)) {
-        deferCleanup(p2, 32);
+        store_i32(138276, p2);
+        g0 = ((p1 + 32) | 0);
         return;
       }
     }
@@ -45239,14 +50602,70 @@ function encoding_json_invalidValueEncoder(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   p4 = l2147483640;
-  asyncify_unwind(p4, 16, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3]);
+  store_i32(load_i32(g2), p4);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  p4 = load_i32(g2);
+  store_i32(p4, p0);
+  store_i32(p4, p1, 4);
+  store_i32(p4, p2, 8);
+  store_i32(p4, p3, 12);
+  store_i32(g2, ((load_i32(g2) + 16) | 0));
 }
 
 // slices.siftDownCmpFunc[encoding/json.field]
 function slices_siftDownCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l28 = 0, l29 = 0, l30 = 0, l31 = 0, l32 = 0, l33 = 0, l34 = 0, l35 = 0, l36 = 0, l37 = 0, l38 = 0, l39 = 0, l40 = 0, l41 = 0, l42 = 0, l43 = 0, l44 = 0n, l45 = 0n, l46 = 0n, l47 = 0n, l2147483641;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, l0, l1, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l19, l20, l21, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l32, l33, l34, l35, l36, l37, l38, l39, l40, l41, l43, p1] = asyncify_rewind(192, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 100], ["i32", 104], ["i32", 108], ["i32", 112], ["i32", 116], ["i32", 120], ["i32", 124], ["i32", 128], ["i32", 132], ["i32", 136], ["i32", 140], ["i32", 144], ["i32", 148], ["i32", 152], ["i32", 156], ["i32", 160], ["i32", 164], ["i32", 168], ["i32", 172], ["i32", 176], ["i32", 180], ["i32", 184], ["i32", 188], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 192) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    l0 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l9 = load_i32(p1, 56);
+    l10 = load_i32(p1, 60);
+    l11 = load_i32(p1, 64);
+    l12 = load_i32(p1, 68);
+    l13 = load_i32(p1, 72);
+    l14 = load_i32(p1, 76);
+    l15 = load_i32(p1, 80);
+    l16 = load_i32(p1, 84);
+    l17 = load_i32(p1, 88);
+    l18 = load_i32(p1, 92);
+    l19 = load_i32(p1, 96);
+    l20 = load_i32(p1, 100);
+    l21 = load_i32(p1, 104);
+    l22 = load_i32(p1, 108);
+    l23 = load_i32(p1, 112);
+    l24 = load_i32(p1, 116);
+    l25 = load_i32(p1, 120);
+    l26 = load_i32(p1, 124);
+    l27 = load_i32(p1, 128);
+    l28 = load_i32(p1, 132);
+    l29 = load_i32(p1, 136);
+    l30 = load_i32(p1, 140);
+    l31 = load_i32(p1, 144);
+    l32 = load_i32(p1, 148);
+    l33 = load_i32(p1, 152);
+    l34 = load_i32(p1, 156);
+    l35 = load_i32(p1, 160);
+    l36 = load_i32(p1, 164);
+    l37 = load_i32(p1, 168);
+    l38 = load_i32(p1, 172);
+    l39 = load_i32(p1, 176);
+    l40 = load_i32(p1, 180);
+    l41 = load_i32(p1, 184);
+    l43 = load_i32(p1, 188);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -45254,11 +50673,14 @@ function slices_siftDownCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
       l42 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l43 = deferSetup(224, 0);
-      l1 = g0;
+      l1 = ((g0 - 224) | 0);
+      g0 = l1;
       store_i32(l1, 54, 4);
       l18 = ((l1 + 8) | 0);
       new Uint8Array(memory.buffer).fill(0, l18, l18 + 216);
+      l43 = load_i32(138276);
+      store_i32(l1, l43);
+      store_i32(138276, l1);
     }
     block_4: {
       block_5: {
@@ -45542,20 +50964,80 @@ function slices_siftDownCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l43, 224);
+      store_i32(138276, l43);
+      g0 = ((l1 + 224) | 0);
     }
     return;
     l2147483641 = 0;
   }
   l2 = l2147483641;
-  asyncify_unwind(l2, 192, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, l0], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i32", 56, l9], ["i32", 60, l10], ["i32", 64, l11], ["i32", 68, l12], ["i32", 72, l13], ["i32", 76, l14], ["i32", 80, l15], ["i32", 84, l16], ["i32", 88, l17], ["i32", 92, l18], ["i32", 96, l19], ["i32", 100, l20], ["i32", 104, l21], ["i32", 108, l22], ["i32", 112, l23], ["i32", 116, l24], ["i32", 120, l25], ["i32", 124, l26], ["i32", 128, l27], ["i32", 132, l28], ["i32", 136, l29], ["i32", 140, l30], ["i32", 144, l31], ["i32", 148, l32], ["i32", 152, l33], ["i32", 156, l34], ["i32", 160, l35], ["i32", 164, l36], ["i32", 168, l37], ["i32", 172, l38], ["i32", 176, l39], ["i32", 180, l40], ["i32", 184, l41], ["i32", 188, l43]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, p3, 12);
+  store_i32(l2, p4, 16);
+  store_i32(l2, p5, 20);
+  store_i32(l2, l0, 24);
+  store_i32(l2, l1, 28);
+  store_i32(l2, l3, 32);
+  store_i32(l2, l4, 36);
+  store_i32(l2, l5, 40);
+  store_i32(l2, l6, 44);
+  store_i32(l2, l7, 48);
+  store_i32(l2, l8, 52);
+  store_i32(l2, l9, 56);
+  store_i32(l2, l10, 60);
+  store_i32(l2, l11, 64);
+  store_i32(l2, l12, 68);
+  store_i32(l2, l13, 72);
+  store_i32(l2, l14, 76);
+  store_i32(l2, l15, 80);
+  store_i32(l2, l16, 84);
+  store_i32(l2, l17, 88);
+  store_i32(l2, l18, 92);
+  store_i32(l2, l19, 96);
+  store_i32(l2, l20, 100);
+  store_i32(l2, l21, 104);
+  store_i32(l2, l22, 108);
+  store_i32(l2, l23, 112);
+  store_i32(l2, l24, 116);
+  store_i32(l2, l25, 120);
+  store_i32(l2, l26, 124);
+  store_i32(l2, l27, 128);
+  store_i32(l2, l28, 132);
+  store_i32(l2, l29, 136);
+  store_i32(l2, l30, 140);
+  store_i32(l2, l31, 144);
+  store_i32(l2, l32, 148);
+  store_i32(l2, l33, 152);
+  store_i32(l2, l34, 156);
+  store_i32(l2, l35, 160);
+  store_i32(l2, l36, 164);
+  store_i32(l2, l37, 168);
+  store_i32(l2, l38, 172);
+  store_i32(l2, l39, 176);
+  store_i32(l2, l40, 180);
+  store_i32(l2, l41, 184);
+  store_i32(l2, l43, 188);
+  store_i32(g2, ((load_i32(g2) + 192) | 0));
 }
 
 // slices.medianAdjacentCmpFunc[encoding/json.field]
 function slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, l2, l1] = asyncify_rewind(28, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p1 = load_i32(l1, 4);
+    p2 = load_i32(l1, 8);
+    p3 = load_i32(l1, 12);
+    p4 = load_i32(l1, 16);
+    l2 = load_i32(l1, 20);
+    l1 = load_i32(l1, 24);
   }
   block_1: {
     if (g1 === 2) {
@@ -45580,7 +51062,17 @@ function slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, l2], ["i32", 24, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, l2, 20);
+  store_i32(l0, l1, 24);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
   return 0;
 }
 
@@ -45588,7 +51080,17 @@ function slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, p2, p3, p4) {
 function slices_medianCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p1, p2, p3, p4, p5, p6, l2, l0] = asyncify_rewind(36, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p1 = load_i32(l0, 4);
+    p2 = load_i32(l0, 8);
+    p3 = load_i32(l0, 12);
+    p4 = load_i32(l0, 16);
+    p5 = load_i32(l0, 20);
+    p6 = load_i32(l0, 24);
+    l2 = load_i32(l0, 28);
+    l0 = load_i32(l0, 32);
   }
   block_1: {
     if (g1 === 2) {
@@ -45638,7 +51140,19 @@ function slices_medianCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l1 = l2147483640;
-  asyncify_unwind(l1, 36, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l2], ["i32", 32, l0]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, p4, 16);
+  store_i32(l1, p5, 20);
+  store_i32(l1, p6, 24);
+  store_i32(l1, l2, 28);
+  store_i32(l1, l0, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
   return 0;
 }
 
@@ -45646,7 +51160,53 @@ function slices_medianCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
 function slices_order2CmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l28 = 0, l29 = 0, l30 = 0, l31 = 0, l32 = 0, l33 = 0, l34 = 0, l35 = 0, l36 = 0, l37 = 0, l38 = 0, l39 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, l2, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l18, l19, l20, l21, l22, l23, l24, l25, l26, l27, l28, l29, l30, l31, l32, l33, l34, l35, l36, l37, l38, l39, p1] = asyncify_rewind(180, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i32", 100], ["i32", 104], ["i32", 108], ["i32", 112], ["i32", 116], ["i32", 120], ["i32", 124], ["i32", 128], ["i32", 132], ["i32", 136], ["i32", 140], ["i32", 144], ["i32", 148], ["i32", 152], ["i32", 156], ["i32", 160], ["i32", 164], ["i32", 168], ["i32", 172], ["i32", 176], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 180) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    p4 = load_i32(p1, 16);
+    p5 = load_i32(p1, 20);
+    p6 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l2 = load_i32(p1, 32);
+    l3 = load_i32(p1, 36);
+    l4 = load_i32(p1, 40);
+    l5 = load_i32(p1, 44);
+    l6 = load_i32(p1, 48);
+    l7 = load_i32(p1, 52);
+    l8 = load_i32(p1, 56);
+    l9 = load_i32(p1, 60);
+    l10 = load_i32(p1, 64);
+    l11 = load_i32(p1, 68);
+    l12 = load_i32(p1, 72);
+    l13 = load_i32(p1, 76);
+    l14 = load_i32(p1, 80);
+    l15 = load_i32(p1, 84);
+    l16 = load_i32(p1, 88);
+    l18 = load_i32(p1, 92);
+    l19 = load_i32(p1, 96);
+    l20 = load_i32(p1, 100);
+    l21 = load_i32(p1, 104);
+    l22 = load_i32(p1, 108);
+    l23 = load_i32(p1, 112);
+    l24 = load_i32(p1, 116);
+    l25 = load_i32(p1, 120);
+    l26 = load_i32(p1, 124);
+    l27 = load_i32(p1, 128);
+    l28 = load_i32(p1, 132);
+    l29 = load_i32(p1, 136);
+    l30 = load_i32(p1, 140);
+    l31 = load_i32(p1, 144);
+    l32 = load_i32(p1, 148);
+    l33 = load_i32(p1, 152);
+    l34 = load_i32(p1, 156);
+    l35 = load_i32(p1, 160);
+    l36 = load_i32(p1, 164);
+    l37 = load_i32(p1, 168);
+    l38 = load_i32(p1, 172);
+    l39 = load_i32(p1, 176);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -45654,10 +51214,13 @@ function slices_order2CmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
       l17 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l18 = deferSetup(80, 0);
-      l2 = g0;
+      l2 = ((g0 - 80) | 0);
+      g0 = l2;
       store_i32(l2, 18, 4);
       new Uint8Array(memory.buffer).fill(0, ((l2 + 44) | 0), ((l2 + 44) | 0) + 36);
+      l18 = load_i32(138276);
+      store_i32(l2, l18);
+      store_i32(138276, l2);
       l1 = (u32(p2) <= u32(p4) ? 1 : 0);
     }
     block_4: {
@@ -45777,14 +51340,66 @@ function slices_order2CmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 180, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, p4], ["i32", 20, p5], ["i32", 24, p6], ["i32", 28, l1], ["i32", 32, l2], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l5], ["i32", 48, l6], ["i32", 52, l7], ["i32", 56, l8], ["i32", 60, l9], ["i32", 64, l10], ["i32", 68, l11], ["i32", 72, l12], ["i32", 76, l13], ["i32", 80, l14], ["i32", 84, l15], ["i32", 88, l16], ["i32", 92, l18], ["i32", 96, l19], ["i32", 100, l20], ["i32", 104, l21], ["i32", 108, l22], ["i32", 112, l23], ["i32", 116, l24], ["i32", 120, l25], ["i32", 124, l26], ["i32", 128, l27], ["i32", 132, l28], ["i32", 136, l29], ["i32", 140, l30], ["i32", 144, l31], ["i32", 148, l32], ["i32", 152, l33], ["i32", 156, l34], ["i32", 160, l35], ["i32", 164, l36], ["i32", 168, l37], ["i32", 172, l38], ["i32", 176, l39]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(l0, p2, 8);
+  store_i32(l0, p3, 12);
+  store_i32(l0, p4, 16);
+  store_i32(l0, p5, 20);
+  store_i32(l0, p6, 24);
+  store_i32(l0, l1, 28);
+  store_i32(l0, l2, 32);
+  store_i32(l0, l3, 36);
+  store_i32(l0, l4, 40);
+  store_i32(l0, l5, 44);
+  store_i32(l0, l6, 48);
+  store_i32(l0, l7, 52);
+  store_i32(l0, l8, 56);
+  store_i32(l0, l9, 60);
+  store_i32(l0, l10, 64);
+  store_i32(l0, l11, 68);
+  store_i32(l0, l12, 72);
+  store_i32(l0, l13, 76);
+  store_i32(l0, l14, 80);
+  store_i32(l0, l15, 84);
+  store_i32(l0, l16, 88);
+  store_i32(l0, l18, 92);
+  store_i32(l0, l19, 96);
+  store_i32(l0, l20, 100);
+  store_i32(l0, l21, 104);
+  store_i32(l0, l22, 108);
+  store_i32(l0, l23, 112);
+  store_i32(l0, l24, 116);
+  store_i32(l0, l25, 120);
+  store_i32(l0, l26, 124);
+  store_i32(l0, l27, 128);
+  store_i32(l0, l28, 132);
+  store_i32(l0, l29, 136);
+  store_i32(l0, l30, 140);
+  store_i32(l0, l31, 144);
+  store_i32(l0, l32, 148);
+  store_i32(l0, l33, 152);
+  store_i32(l0, l34, 156);
+  store_i32(l0, l35, 160);
+  store_i32(l0, l36, 164);
+  store_i32(l0, l37, 168);
+  store_i32(l0, l38, 172);
+  store_i32(l0, l39, 176);
+  store_i32(g2, ((load_i32(g2) + 180) | 0));
 }
 
 // (*math/rand.rngSource).Int63
 function _math_rand_rngSource_Int63(p0) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483646, l2147483647;
   if (g1 === 2) {
-    [p0, l0, l1] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 12) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    l0 = load_i32(l1, 4);
+    l1 = load_i32(l1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -45842,7 +51457,13 @@ function _math_rand_rngSource_Int63(p0) {
     l2147483647 = 0;
   }
   l2 = l2147483647;
-  asyncify_unwind(l2, 12, ["i32", 0, p0], ["i32", 4, l0], ["i32", 8, l1]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, l0, 4);
+  store_i32(l2, l1, 8);
+  store_i32(g2, ((load_i32(g2) + 12) | 0));
   return 0n;
 }
 
@@ -45905,7 +51526,18 @@ function _math_rand_rngSource_Seed(p0) {
 function main_eval(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0n, l8 = 0n, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l1, l3, l7, l5, l8, l6, p1] = asyncify_rewind(48, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i64", 24], ["i32", 32], ["i64", 36], ["i32", 44], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l3 = load_i32(p1, 20);
+    l7 = load_i64(p1, 24);
+    l5 = load_i32(p1, 32);
+    l8 = load_i64(p1, 36);
+    l6 = load_i32(p1, 44);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -45913,8 +51545,8 @@ function main_eval(p0, p1, p2) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l6 = deferSetup(368, 240);
-      l0 = g0;
+      l0 = ((g0 - 368) | 0);
+      g0 = l0;
       store_i32(l0, 30, 244);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 248) | 0), ((l0 + 248) | 0) + 120);
       store_i64(l0, 498216206453n, 184);
@@ -45922,6 +51554,9 @@ function main_eval(p0, p1, p2) {
       store_i64(l0, 468151435369n, 168);
       store_i64(l0, 360777252980n, 160);
       store_i64(l0, 433791697011n, 152);
+      l6 = load_i32(138276);
+      store_i32(l0, l6, 240);
+      store_i32(138276, ((l0 + 240) | 0));
       l3 = ((l0 + 152) | 0);
       l1 = ((l0 + 136) | 0);
     }
@@ -46243,14 +51878,36 @@ function main_eval(p0, p1, p2) {
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 48, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i32", 20, l3], ["i64", 24, l7], ["i32", 32, l5], ["i64", 36, l8], ["i32", 44, l6]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l1, 16);
+  store_i32(l2, l3, 20);
+  store_i64(l2, l7, 24);
+  store_i32(l2, l5, 32);
+  store_i64(l2, l8, 36);
+  store_i32(l2, l6, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // main.promiseThen$1
 function main_promiseThen$1(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l1, p1] = asyncify_rewind(36, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p2 = load_i32(l0, 12);
+    p3 = load_i32(l0, 16);
+    p4 = load_i32(l0, 20);
+    p5 = load_i32(l0, 24);
+    p6 = load_i32(l0, 28);
+    l1 = load_i32(l0, 32);
+    p1 = load_i64(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -46319,14 +51976,32 @@ function main_promiseThen$1(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, p5], ["i32", 28, p6], ["i32", 32, l1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, p3, 16);
+  store_i32(l0, p4, 20);
+  store_i32(l0, p5, 24);
+  store_i32(l0, p6, 28);
+  store_i32(l0, l1, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // main.promiseThen$2
 function main_promiseThen$2(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6] = asyncify_rewind(24, ["i32", 0], ["i32", 4], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20]);
+    store_i32(g2, ((load_i32(g2) - 24) | 0));
+    p6 = load_i32(g2);
+    p0 = load_i32(p6);
+    p2 = load_i32(p6, 4);
+    p3 = load_i32(p6, 8);
+    p4 = load_i32(p6, 12);
+    p5 = load_i32(p6, 16);
+    p6 = load_i32(p6, 20);
   }
   block_1: {
     if (g1 === 2) {
@@ -46374,14 +52049,32 @@ function main_promiseThen$2(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 24, ["i32", 0, p0], ["i32", 4, p2], ["i32", 8, p3], ["i32", 12, p4], ["i32", 16, p5], ["i32", 20, p6]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p2, 4);
+  store_i32(l0, p3, 8);
+  store_i32(l0, p4, 12);
+  store_i32(l0, p5, 16);
+  store_i32(l0, p6, 20);
+  store_i32(g2, ((load_i32(g2) + 24) | 0));
 }
 
 // main.Solve
 function main_Solve(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l2, p1] = asyncify_rewind(36, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 36) | 0));
+    l0 = load_i32(g2);
+    p0 = load_i32(l0);
+    p2 = load_i32(l0, 12);
+    p3 = load_i32(l0, 16);
+    p4 = load_i32(l0, 20);
+    p5 = load_i32(l0, 24);
+    p6 = load_i32(l0, 28);
+    l2 = load_i32(l0, 32);
+    p1 = load_i64(l0, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -46477,14 +52170,37 @@ function main_Solve(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 36, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, p5], ["i32", 28, p6], ["i32", 32, l2]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i64(l0, p1, 4);
+  store_i32(l0, p2, 12);
+  store_i32(l0, p3, 16);
+  store_i32(l0, p4, 20);
+  store_i32(l0, p5, 24);
+  store_i32(l0, p6, 28);
+  store_i32(l0, l2, 32);
+  store_i32(g2, ((load_i32(g2) + 36) | 0));
 }
 
 // main.Solve$1
 function main_Solve$1(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l1, l3, l4, l5, l6, l7, p1] = asyncify_rewind(52, ["i64", 0], ["i64", 12], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 52) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i64(p1);
+    p2 = load_i64(p1, 12);
+    p3 = load_i32(p1, 20);
+    p4 = load_i32(p1, 24);
+    l1 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    p1 = load_i32(p1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -46492,8 +52208,8 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(112, 64);
-      p3 = g0;
+      p3 = ((g0 - 112) | 0);
+      g0 = p3;
       l5 = ((p3 + 84) | 0);
       store_i64(l5, 0n);
       l6 = ((p3 + 92) | 0);
@@ -46502,7 +52218,10 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
       store_i64(l7, 0n);
       store_i64(p3, 0n, 76);
       store_i32(p3, 9, 68);
+      l3 = load_i32(138276);
       l1 = ((p3 - -64) | 0);
+      store_i32(138276, l1);
+      store_i32(p3, l3, 64);
     }
     if (((g1 ? l2 : 0) === 0)) {
       if (g1 === 1) {
@@ -46582,20 +52301,46 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l3, 112);
+      store_i32(138276, l3);
+      g0 = ((p3 + 112) | 0);
     }
     return;
     l2147483642 = 0;
   }
   l0 = l2147483642;
-  asyncify_unwind(l0, 52, ["i64", 0, p0], ["i32", 8, p1], ["i64", 12, p2], ["i32", 20, p3], ["i32", 24, p4], ["i32", 28, l1], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i64(l0, p0);
+  store_i32(l0, p1, 8);
+  store_i64(l0, p2, 12);
+  store_i32(l0, p3, 20);
+  store_i32(l0, p4, 24);
+  store_i32(l0, l1, 28);
+  store_i32(l0, l3, 32);
+  store_i32(l0, l4, 36);
+  store_i32(l0, l5, 40);
+  store_i32(l0, l6, 44);
+  store_i32(l0, l7, 48);
+  store_i32(g2, ((load_i32(g2) + 52) | 0));
 }
 
 // main.newPromise
 function main_newPromise(p0, p1, p2) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0n, l8 = 0n, l2147483644;
   if (g1 === 2) {
-    [p0, p2, l0, l1, l7, l4, l8, l5, l6, p1] = asyncify_rewind(48, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i64", 20], ["i32", 28], ["i64", 32], ["i32", 40], ["i32", 44], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    l0 = load_i32(p1, 12);
+    l1 = load_i32(p1, 16);
+    l7 = load_i64(p1, 20);
+    l4 = load_i32(p1, 28);
+    l8 = load_i64(p1, 32);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -46603,14 +52348,17 @@ function main_newPromise(p0, p1, p2) {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l4 = deferSetup(112, 72);
-      l0 = g0;
+      l0 = ((g0 - 112) | 0);
+      g0 = l0;
       l5 = ((l0 + 96) | 0);
       store_i64(l5, 0n);
       store_i32(((l0 + 104) | 0), 0);
       store_i64(l0, 0n, 88);
       store_i32(l0, 7, 76);
+      l4 = load_i32(138276);
       l1 = ((l0 + 72) | 0);
+      store_i32(138276, l1);
+      store_i32(l0, l4, 72);
     }
     if (((g1 ? l3 : 0) === 0)) {
       if (g1 === 1) {
@@ -46688,14 +52436,42 @@ function main_newPromise(p0, p1, p2) {
     l2147483644 = 0;
   }
   l2 = l2147483644;
-  asyncify_unwind(l2, 48, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, l0], ["i32", 16, l1], ["i64", 20, l7], ["i32", 28, l4], ["i64", 32, l8], ["i32", 40, l5], ["i32", 44, l6]);
+  store_i32(load_i32(g2), l2);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l2 = load_i32(g2);
+  store_i32(l2, p0);
+  store_i32(l2, p1, 4);
+  store_i32(l2, p2, 8);
+  store_i32(l2, l0, 12);
+  store_i32(l2, l1, 16);
+  store_i64(l2, l7, 20);
+  store_i32(l2, l4, 28);
+  store_i64(l2, l8, 32);
+  store_i32(l2, l5, 40);
+  store_i32(l2, l6, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // main.verifyBrowser$1
 function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l2147483642, l2147483643, l2147483644;
   if (g1 === 2) {
-    [p0, p2, p3, p4, l0, l3, l4, l5, l6, l7, l8, l10, l9, p1] = asyncify_rewind(68, ["i64", 0], ["i64", 12], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i64", 56], ["i32", 64], ["i32", 8]);
+    store_i32(g2, ((load_i32(g2) - 68) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i64(p1);
+    p2 = load_i64(p1, 12);
+    p3 = load_i32(p1, 20);
+    p4 = load_i32(p1, 24);
+    l0 = load_i32(p1, 28);
+    l3 = load_i32(p1, 32);
+    l4 = load_i32(p1, 36);
+    l5 = load_i32(p1, 40);
+    l6 = load_i32(p1, 44);
+    l7 = load_i32(p1, 48);
+    l8 = load_i32(p1, 52);
+    l10 = load_i64(p1, 56);
+    l9 = load_i32(p1, 64);
+    p1 = load_i32(p1, 8);
   }
   block_1: {
     if (g1 === 2) {
@@ -46703,10 +52479,13 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l8 = deferSetup(576, 432);
-      p3 = g0;
+      p3 = ((g0 - 576) | 0);
+      g0 = p3;
       store_i32(p3, 34, 436);
       new Uint8Array(memory.buffer).fill(0, ((p3 + 440) | 0), ((p3 + 440) | 0) + 136);
+      l8 = load_i32(138276);
+      store_i32(p3, l8, 432);
+      store_i32(138276, ((p3 + 432) | 0));
       store_i32(p3, 115, 428);
       store_i64(p3, 498216206448n, 420);
       store_i64(p3, 450971566194n, 412);
@@ -47238,20 +53017,69 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
       }
     }
     if ((g1 === 0)) {
-      deferCleanup(l8, 576);
+      store_i32(138276, l8);
+      g0 = ((p3 + 576) | 0);
     }
     return;
     l2147483642 = 0;
   }
   l1 = l2147483642;
-  asyncify_unwind(l1, 68, ["i64", 0, p0], ["i32", 8, p1], ["i64", 12, p2], ["i32", 20, p3], ["i32", 24, p4], ["i32", 28, l0], ["i32", 32, l3], ["i32", 36, l4], ["i32", 40, l5], ["i32", 44, l6], ["i32", 48, l7], ["i32", 52, l8], ["i64", 56, l10], ["i32", 64, l9]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i64(l1, p0);
+  store_i32(l1, p1, 8);
+  store_i64(l1, p2, 12);
+  store_i32(l1, p3, 20);
+  store_i32(l1, p4, 24);
+  store_i32(l1, l0, 28);
+  store_i32(l1, l3, 32);
+  store_i32(l1, l4, 36);
+  store_i32(l1, l5, 40);
+  store_i32(l1, l6, 44);
+  store_i32(l1, l7, 48);
+  store_i32(l1, l8, 52);
+  store_i64(l1, l10, 56);
+  store_i32(l1, l9, 64);
+  store_i32(g2, ((load_i32(g2) + 68) | 0));
 }
 
 // main.Solve$1$1
 function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0n, l26 = 0n, l27 = 0n, l28 = 0n, l2147483640, l2147483641, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, p4, p5, p6, l0, l3, l4, l5, l6, l7, l8, l9, l10, l11, l12, l13, l14, l15, l16, l17, l18, l25, l20, l21, l22, l23, l24, p1] = asyncify_rewind(128, ["i32", 0], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 48], ["i32", 52], ["i32", 56], ["i32", 60], ["i32", 64], ["i32", 68], ["i32", 72], ["i32", 76], ["i32", 80], ["i32", 84], ["i32", 88], ["i32", 92], ["i32", 96], ["i64", 100], ["i32", 108], ["i32", 112], ["i32", 116], ["i32", 120], ["i32", 124], ["i64", 4]);
+    store_i32(g2, ((load_i32(g2) - 128) | 0));
+    l1 = load_i32(g2);
+    p0 = load_i32(l1);
+    p2 = load_i32(l1, 12);
+    p3 = load_i32(l1, 16);
+    p4 = load_i32(l1, 20);
+    p5 = load_i32(l1, 24);
+    p6 = load_i32(l1, 28);
+    l0 = load_i32(l1, 32);
+    l3 = load_i32(l1, 36);
+    l4 = load_i32(l1, 40);
+    l5 = load_i32(l1, 44);
+    l6 = load_i32(l1, 48);
+    l7 = load_i32(l1, 52);
+    l8 = load_i32(l1, 56);
+    l9 = load_i32(l1, 60);
+    l10 = load_i32(l1, 64);
+    l11 = load_i32(l1, 68);
+    l12 = load_i32(l1, 72);
+    l13 = load_i32(l1, 76);
+    l14 = load_i32(l1, 80);
+    l15 = load_i32(l1, 84);
+    l16 = load_i32(l1, 88);
+    l17 = load_i32(l1, 92);
+    l18 = load_i32(l1, 96);
+    l25 = load_i64(l1, 100);
+    l20 = load_i32(l1, 108);
+    l21 = load_i32(l1, 112);
+    l22 = load_i32(l1, 116);
+    l23 = load_i32(l1, 120);
+    l24 = load_i32(l1, 124);
+    p1 = load_i64(l1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -47259,10 +53087,13 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l20 = deferSetup(912, 472);
-      l0 = g0;
+      l0 = ((g0 - 912) | 0);
+      g0 = l0;
       store_i32(l0, 107, 476);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 484) | 0), ((l0 + 484) | 0) + 424);
+      l20 = load_i32(138276);
+      store_i32(l0, l20, 472);
+      store_i32(138276, ((l0 + 472) | 0));
       p2 = ((p4 === 0) ? 1 : 0);
     }
     block_4: {
@@ -48429,14 +54260,56 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l1 = l2147483640;
-  asyncify_unwind(l1, 128, ["i32", 0, p0], ["i64", 4, p1], ["i32", 12, p2], ["i32", 16, p3], ["i32", 20, p4], ["i32", 24, p5], ["i32", 28, p6], ["i32", 32, l0], ["i32", 36, l3], ["i32", 40, l4], ["i32", 44, l5], ["i32", 48, l6], ["i32", 52, l7], ["i32", 56, l8], ["i32", 60, l9], ["i32", 64, l10], ["i32", 68, l11], ["i32", 72, l12], ["i32", 76, l13], ["i32", 80, l14], ["i32", 84, l15], ["i32", 88, l16], ["i32", 92, l17], ["i32", 96, l18], ["i64", 100, l25], ["i32", 108, l20], ["i32", 112, l21], ["i32", 116, l22], ["i32", 120, l23], ["i32", 124, l24]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i64(l1, p1, 4);
+  store_i32(l1, p2, 12);
+  store_i32(l1, p3, 16);
+  store_i32(l1, p4, 20);
+  store_i32(l1, p5, 24);
+  store_i32(l1, p6, 28);
+  store_i32(l1, l0, 32);
+  store_i32(l1, l3, 36);
+  store_i32(l1, l4, 40);
+  store_i32(l1, l5, 44);
+  store_i32(l1, l6, 48);
+  store_i32(l1, l7, 52);
+  store_i32(l1, l8, 56);
+  store_i32(l1, l9, 60);
+  store_i32(l1, l10, 64);
+  store_i32(l1, l11, 68);
+  store_i32(l1, l12, 72);
+  store_i32(l1, l13, 76);
+  store_i32(l1, l14, 80);
+  store_i32(l1, l15, 84);
+  store_i32(l1, l16, 88);
+  store_i32(l1, l17, 92);
+  store_i32(l1, l18, 96);
+  store_i64(l1, l25, 100);
+  store_i32(l1, l20, 108);
+  store_i32(l1, l21, 112);
+  store_i32(l1, l22, 116);
+  store_i32(l1, l23, 120);
+  store_i32(l1, l24, 124);
+  store_i32(g2, ((load_i32(g2) + 128) | 0));
 }
 
 // main.newPromise$1
 function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483640;
   if (g1 === 2) {
-    [p0, p3, p4, p5, p6, l1, l3, p2] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p2 = load_i32(g2);
+    p0 = load_i32(p2);
+    p3 = load_i32(p2, 8);
+    p4 = load_i32(p2, 12);
+    p5 = load_i32(p2, 16);
+    p6 = load_i32(p2, 20);
+    l1 = load_i32(p2, 24);
+    l3 = load_i32(p2, 28);
+    p2 = load_i32(p2, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -48444,13 +54317,16 @@ function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
       l2 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 0);
-      p2 = g0;
+      p2 = ((g0 - 32) | 0);
+      g0 = p2;
       store_i64(((p2 + 20) | 0), 0n);
       p5 = ((p2 + 28) | 0);
       store_i32(p5, 0);
       store_i64(p2, 0n, 12);
       store_i32(p2, 6, 4);
+      l3 = load_i32(138276);
+      store_i32(138276, p2);
+      store_i32(p2, l3);
     }
     if (((g1 ? l2 : 0) === 0)) {
       if (g1 === 1) {
@@ -48528,7 +54404,18 @@ function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
     l2147483640 = 0;
   }
   l0 = l2147483640;
-  asyncify_unwind(l0, 32, ["i32", 0, p0], ["i32", 4, p2], ["i32", 8, p3], ["i32", 12, p4], ["i32", 16, p5], ["i32", 20, p6], ["i32", 24, l1], ["i32", 28, l3]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p2, 4);
+  store_i32(l0, p3, 8);
+  store_i32(l0, p4, 12);
+  store_i32(l0, p5, 16);
+  store_i32(l0, p6, 20);
+  store_i32(l0, l1, 24);
+  store_i32(l0, l3, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
 }
 
 // main.newPromise$1$1$gowrapper
@@ -48546,7 +54433,16 @@ function main_newPromise$1$1$gowrapper(p0) {
     if (((g1 ? l7 : 0) === 0)) {
       l2 = p0;
       if (g1 === 2) {
-        [l2, l3, l4, l5, l6, l9, l10, l0] = asyncify_rewind(40, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i64", 24], ["i64", 32], ["i32", 4]);
+        store_i32(g2, ((load_i32(g2) - 40) | 0));
+        l0 = load_i32(g2);
+        l2 = load_i32(l0);
+        l3 = load_i32(l0, 8);
+        l4 = load_i32(l0, 12);
+        l5 = load_i32(l0, 16);
+        l6 = load_i32(l0, 20);
+        l9 = load_i64(l0, 24);
+        l10 = load_i64(l0, 32);
+        l0 = load_i32(l0, 4);
       }
       block_5: {
         block_6: {
@@ -48557,12 +54453,15 @@ function main_newPromise$1$1$gowrapper(p0) {
           if (g1) {
             l2147483647 = 0;
           } else {
-            l5 = deferSetup(32, 8);
-            l0 = g0;
+            l0 = ((g0 - 32) | 0);
+            g0 = l0;
             l4 = ((l0 + 24) | 0);
             store_i64(l4, 0n);
+            l5 = load_i32(138276);
+            store_i32(138276, ((l0 + 8) | 0));
             store_i64(l0, 0n, 16);
             store_i32(l0, 4, 12);
+            store_i32(l0, l5, 8);
             l3 = load_i32(l2);
             l6 = load_i32(l3);
             store_i32(l0, l6, 16);
@@ -48588,7 +54487,8 @@ function main_newPromise$1$1$gowrapper(p0) {
               }
             }
             if ((g1 === 0)) {
-              deferCleanup(l5, 32);
+              store_i32(138276, l5);
+              g0 = ((l0 + 32) | 0);
               break block_5;
             }
           }
@@ -48606,7 +54506,18 @@ function main_newPromise$1$1$gowrapper(p0) {
           l2147483648 = 0;
         }
         l1 = l2147483648;
-        asyncify_unwind(l1, 40, ["i32", 0, l2], ["i32", 4, l0], ["i32", 8, l3], ["i32", 12, l4], ["i32", 16, l5], ["i32", 20, l6], ["i64", 24, l9], ["i64", 32, l10]);
+        store_i32(load_i32(g2), l1);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l1 = load_i32(g2);
+        store_i32(l1, l2);
+        store_i32(l1, l0, 4);
+        store_i32(l1, l3, 8);
+        store_i32(l1, l4, 12);
+        store_i32(l1, l5, 16);
+        store_i32(l1, l6, 20);
+        store_i64(l1, l9, 24);
+        store_i64(l1, l10, 32);
+        store_i32(g2, ((load_i32(g2) + 40) | 0));
       }
       if (g1 === 1) {
         l2147483649 = 0;
@@ -48637,7 +54548,19 @@ function main_newPromise$1$1$gowrapper(p0) {
 function main_randomHex(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l11 = 0n, l2147483645;
   if (g1 === 2) {
-    [p0, l0, l1, l2, l10, l5, l6, l7, l8, l9, p1] = asyncify_rewind(48, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i64", 20], ["i32", 28], ["i32", 32], ["i32", 36], ["i32", 40], ["i32", 44], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 48) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l1 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l10 = load_i64(p1, 20);
+    l5 = load_i32(p1, 28);
+    l6 = load_i32(p1, 32);
+    l7 = load_i32(p1, 36);
+    l8 = load_i32(p1, 40);
+    l9 = load_i32(p1, 44);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -48645,10 +54568,13 @@ function main_randomHex(p0, p1) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l9 = deferSetup(192, 24);
-      l0 = g0;
+      l0 = ((g0 - 192) | 0);
+      g0 = l0;
       store_i32(l0, 40, 28);
       new Uint8Array(memory.buffer).fill(0, ((l0 + 36) | 0), ((l0 + 36) | 0) + 156);
+      l9 = load_i32(138276);
+      store_i32(l0, l9, 24);
+      store_i32(138276, ((l0 + 24) | 0));
       l1 = (p1 > 0 ? 1 : 0);
       l6 = (l1 ? p1 : 0);
       l7 = 0;
@@ -49002,7 +54928,21 @@ function main_randomHex(p0, p1) {
     l2147483645 = 0;
   }
   l3 = l2147483645;
-  asyncify_unwind(l3, 48, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l2], ["i64", 20, l10], ["i32", 28, l5], ["i32", 32, l6], ["i32", 36, l7], ["i32", 40, l8], ["i32", 44, l9]);
+  store_i32(load_i32(g2), l3);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l3 = load_i32(g2);
+  store_i32(l3, p0);
+  store_i32(l3, p1, 4);
+  store_i32(l3, l0, 8);
+  store_i32(l3, l1, 12);
+  store_i32(l3, l2, 16);
+  store_i64(l3, l10, 20);
+  store_i32(l3, l5, 28);
+  store_i32(l3, l6, 32);
+  store_i32(l3, l7, 36);
+  store_i32(l3, l8, 40);
+  store_i32(l3, l9, 44);
+  store_i32(g2, ((load_i32(g2) + 48) | 0));
 }
 
 // main.checkGlobalFunction
@@ -49082,7 +55022,10 @@ function free_319(p0) {
 function calloc(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483645, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, p1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -49095,7 +55038,11 @@ function calloc(p0, p1) {
       block_4: {
         l0 = p0;
         if (g1 === 2) {
-          [l0, l3, l2] = asyncify_rewind(12, ["i32", 0], ["i32", 4], ["i32", 8]);
+          store_i32(g2, ((load_i32(g2) - 12) | 0));
+          l2 = load_i32(g2);
+          l0 = load_i32(l2);
+          l3 = load_i32(l2, 4);
+          l2 = load_i32(l2, 8);
         }
         block_6: {
           if (g1 === 2) {
@@ -49103,8 +55050,10 @@ function calloc(p0, p1) {
             l1 = load_i32(load_i32(g2));
           }
           if ((g1 === 0)) {
-            l2 = deferSetup(16, 0);
-            l3 = g0;
+            l3 = ((g0 - 16) | 0);
+            g0 = l3;
+            l2 = load_i32(138276);
+            store_i32(138276, l3);
             l0 = Math.imul(p1, l0);
           }
           if (((g1 ? l1 : 0) === 0)) {
@@ -49115,7 +55064,8 @@ function calloc(p0, p1) {
             l0 = malloc(l0);
           }
           if ((g1 === 0)) {
-            deferCleanup(l2, 16);
+            store_i32(138276, l2);
+            g0 = ((l3 + 16) | 0);
             l2147483647 = l0;
             break block_4;
           }
@@ -49123,7 +55073,13 @@ function calloc(p0, p1) {
           l2147483646 = 0;
         }
         l1 = l2147483646;
-        asyncify_unwind(l1, 12, ["i32", 0, l0], ["i32", 4, l3], ["i32", 8, l2]);
+        store_i32(load_i32(g2), l1);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l1 = load_i32(g2);
+        store_i32(l1, l0);
+        store_i32(l1, l3, 4);
+        store_i32(l1, l2, 8);
+        store_i32(g2, ((load_i32(g2) + 12) | 0));
         l2147483647 = 0;
       }
       if (g1 === 1) {
@@ -49139,14 +55095,22 @@ function calloc(p0, p1) {
     l2147483648 = 0;
   }
   l0 = l2147483648;
-  asyncify_unwind(l0, 8, ["i32", 0, p0], ["i32", 4, p1]);
+  store_i32(load_i32(g2), l0);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l0 = load_i32(g2);
+  store_i32(l0, p0);
+  store_i32(l0, p1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
   return 0;
 }
 
 function realloc(p0, p1) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483645, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
-    [p0, p1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 8) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -49160,7 +55124,14 @@ function realloc(p0, p1) {
         l5 = p0;
         l2 = p1;
         if (g1 === 2) {
-          [l5, l0, l1, l3, l7, l2] = asyncify_rewind(24, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 4]);
+          store_i32(g2, ((load_i32(g2) - 24) | 0));
+          l2 = load_i32(g2);
+          l5 = load_i32(l2);
+          l0 = load_i32(l2, 8);
+          l1 = load_i32(l2, 12);
+          l3 = load_i32(l2, 16);
+          l7 = load_i32(l2, 20);
+          l2 = load_i32(l2, 4);
         }
         block_6: {
           if (g1 === 2) {
@@ -49168,10 +55139,13 @@ function realloc(p0, p1) {
             l6 = load_i32(load_i32(g2));
           }
           if ((g1 === 0)) {
-            l7 = deferSetup(32, 16);
-            l0 = g0;
+            l0 = ((g0 - 32) | 0);
+            g0 = l0;
             store_i32(l0, 2, 20);
+            l7 = load_i32(138276);
             l1 = ((l0 + 16) | 0);
+            store_i32(138276, l1);
+            store_i32(l0, l7, 16);
             l3 = 0;
           }
           block_9: {
@@ -49246,7 +55220,8 @@ function realloc(p0, p1) {
                 }
               }
               if ((g1 === 0)) {
-                deferCleanup(l7, 32);
+                store_i32(138276, l7);
+                g0 = ((l0 + 32) | 0);
                 l2147483647 = l3;
                 break block_4;
               }
@@ -49276,7 +55251,16 @@ function realloc(p0, p1) {
           l2147483646 = 0;
         }
         l4 = l2147483646;
-        asyncify_unwind(l4, 24, ["i32", 0, l5], ["i32", 4, l2], ["i32", 8, l0], ["i32", 12, l1], ["i32", 16, l3], ["i32", 20, l7]);
+        store_i32(load_i32(g2), l4);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l4 = load_i32(g2);
+        store_i32(l4, l5);
+        store_i32(l4, l2, 4);
+        store_i32(l4, l0, 8);
+        store_i32(l4, l1, 12);
+        store_i32(l4, l3, 16);
+        store_i32(l4, l7, 20);
+        store_i32(g2, ((load_i32(g2) + 24) | 0));
         l2147483647 = 0;
       }
       if (g1 === 1) {
@@ -49292,7 +55276,12 @@ function realloc(p0, p1) {
     l2147483648 = 0;
   }
   l1 = l2147483648;
-  asyncify_unwind(l1, 8, ["i32", 0, p0], ["i32", 4, p1]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(g2, ((load_i32(g2) + 8) | 0));
   return 0;
 }
 
@@ -49402,7 +55391,10 @@ function _start() {
     }
     if (((g1 ? l2147483647 : 0) === 0)) {
       if (g1 === 2) {
-        [l0, l1] = asyncify_rewind(8, ["i32", 0], ["i32", 4]);
+        store_i32(g2, ((load_i32(g2) - 8) | 0));
+        l1 = load_i32(g2);
+        l0 = load_i32(l1);
+        l1 = load_i32(l1, 4);
       }
       block_4: {
         block_5: {
@@ -49411,10 +55403,13 @@ function _start() {
             l3 = load_i32(load_i32(g2));
           }
           if ((g1 === 0)) {
-            l1 = deferSetup(16, 0);
-            l0 = g0;
+            l0 = ((g0 - 16) | 0);
+            g0 = l0;
             store_i32(l0, 0, 12);
             store_i64(l0, 2n, 4);
+            l1 = load_i32(138276);
+            store_i32(138276, l0);
+            store_i32(l0, l1);
             l4 = (memory.buffer.byteLength / 65536 << 16);
             store_i32(138084, l4);
             runtime_calculateHeapAddresses();
@@ -49438,13 +55433,19 @@ function _start() {
             }
           }
           if ((g1 === 0)) {
-            deferCleanup(l1, 16);
+            store_i32(138276, l1);
+            g0 = ((l0 + 16) | 0);
           }
           break block_4;
           l2147483648 = 0;
         }
         l2 = l2147483648;
-        asyncify_unwind(l2, 8, ["i32", 0, l0], ["i32", 4, l1]);
+        store_i32(load_i32(g2), l2);
+        store_i32(g2, ((load_i32(g2) + 4) | 0));
+        l2 = load_i32(g2);
+        store_i32(l2, l0);
+        store_i32(l2, l1, 4);
+        store_i32(g2, ((load_i32(g2) + 8) | 0));
       }
       if (g1 === 1) {
         l2147483649 = 0;
@@ -49490,7 +55491,14 @@ function asyncify_get_state() {
 function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l2147483643;
   if (g1 === 2) {
-    [p0, l0, l2, l3, l5, p1] = asyncify_rewind(28, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i64", 20], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 28) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    l0 = load_i32(p1, 8);
+    l2 = load_i32(p1, 12);
+    l3 = load_i32(p1, 16);
+    l5 = load_i64(p1, 20);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -49498,10 +55506,13 @@ function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
       l4 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l2 = deferSetup(48, 32);
-      l0 = g0;
+      l0 = ((g0 - 48) | 0);
+      g0 = l0;
       store_i32(l0, 0, 44);
       store_i64(l0, 2n, 36);
+      l2 = load_i32(138276);
+      store_i32(138276, ((l0 + 32) | 0));
+      store_i32(l0, l2, 32);
       l3 = ((l0 + 16) | 0);
     }
     if (((g1 ? l4 : 0) === 0)) {
@@ -49533,14 +55544,24 @@ function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
     if ((g1 === 0)) {
       p0 = load_i32(l0, 8);
       store_i32(l0, p0, 44);
-      deferCleanup(l2, 48);
+      store_i32(138276, l2);
+      g0 = ((l0 + 48) | 0);
       return runtime_stringEqual(p0, load_i32(l0, 12), p3, p2);
     }
     throw new Error('unreachable');
     l2147483643 = 0;
   }
   l1 = l2147483643;
-  asyncify_unwind(l1, 28, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, l0], ["i32", 12, l2], ["i32", 16, l3], ["i64", 20, l5]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, l0, 8);
+  store_i32(l1, l2, 12);
+  store_i32(l1, l3, 16);
+  store_i64(l1, l5, 20);
+  store_i32(g2, ((load_i32(g2) + 28) | 0));
   return 0;
 }
 
@@ -49576,7 +55597,16 @@ function byn$mgfn_shared$runtime_lookupPanic(p0, p1) {
 function byn$mgfn_shared$strconv_syntaxError(p0, p1, p2, p3, p4) {
   let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483642;
   if (g1 === 2) {
-    [p0, p2, p3, l2, l0, l3, l4, p1] = asyncify_rewind(32, ["i32", 0], ["i32", 8], ["i32", 12], ["i32", 16], ["i32", 20], ["i32", 24], ["i32", 28], ["i32", 4]);
+    store_i32(g2, ((load_i32(g2) - 32) | 0));
+    p1 = load_i32(g2);
+    p0 = load_i32(p1);
+    p2 = load_i32(p1, 8);
+    p3 = load_i32(p1, 12);
+    l2 = load_i32(p1, 16);
+    l0 = load_i32(p1, 20);
+    l3 = load_i32(p1, 24);
+    l4 = load_i32(p1, 28);
+    p1 = load_i32(p1, 4);
   }
   block_1: {
     if (g1 === 2) {
@@ -49584,11 +55614,14 @@ function byn$mgfn_shared$strconv_syntaxError(p0, p1, p2, p3, p4) {
       l5 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      l3 = deferSetup(32, 16);
-      l2 = g0;
+      l2 = ((g0 - 32) | 0);
+      g0 = l2;
       store_i32(l2, 0, 28);
       store_i32(l2, 2, 20);
+      l3 = load_i32(138276);
       l0 = ((l2 + 16) | 0);
+      store_i32(138276, l0);
+      store_i32(l2, l3, 16);
     }
     if (((g1 ? l5 : 0) === 0)) {
       if (g1 === 1) {
@@ -49623,7 +55656,18 @@ function byn$mgfn_shared$strconv_syntaxError(p0, p1, p2, p3, p4) {
     l2147483642 = 0;
   }
   l1 = l2147483642;
-  asyncify_unwind(l1, 32, ["i32", 0, p0], ["i32", 4, p1], ["i32", 8, p2], ["i32", 12, p3], ["i32", 16, l2], ["i32", 20, l0], ["i32", 24, l3], ["i32", 28, l4]);
+  store_i32(load_i32(g2), l1);
+  store_i32(g2, ((load_i32(g2) + 4) | 0));
+  l1 = load_i32(g2);
+  store_i32(l1, p0);
+  store_i32(l1, p1, 4);
+  store_i32(l1, p2, 8);
+  store_i32(l1, p3, 12);
+  store_i32(l1, l2, 16);
+  store_i32(l1, l0, 20);
+  store_i32(l1, l3, 24);
+  store_i32(l1, l4, 28);
+  store_i32(g2, ((load_i32(g2) + 32) | 0));
   return 0;
 }
 
@@ -49674,15 +55718,15 @@ module.exports = {
   get mem() { return mem(); },
   globals,
   imports,
-  calloc: calloc,
-  free: free_319,
-  asyncify_stop_rewind: asyncify_stop_rewind,
-  asyncify_get_state: asyncify_get_state,
-  asyncify_start_rewind: asyncify_start_rewind,
-  asyncify_start_unwind: asyncify_start_unwind,
-  go_scheduler: go_scheduler,
-  resume: resume,
   realloc: realloc,
-  _start: _start,
+  asyncify_get_state: asyncify_get_state,
   malloc: malloc_318,
+  go_scheduler: go_scheduler,
+  _start: _start,
+  asyncify_start_unwind: asyncify_start_unwind,
+  asyncify_stop_rewind: asyncify_stop_rewind,
+  calloc: calloc,
+  asyncify_start_rewind: asyncify_start_rewind,
+  free: free_319,
+  resume: resume,
 };
