@@ -1030,21 +1030,36 @@ impl<'a> FunctionLifter<'a> {
                                 && !else_results.is_empty()
                             {
                                 let then_results = frame.then_result.unwrap();
-                                // Emit the if/else as a statement (for side effects)
-                                self.emit(Stmt::If {
-                                    cond: cond.clone(),
-                                    then_block,
-                                    else_block,
-                                });
-                                // Push result values as Select (ternary) expressions
+                                // Assign result values to temp locals in each branch,
+                                // rather than re-evaluating the condition with Select.
+                                // The condition's operands may have been modified by
+                                // side effects in the if/else body.
+                                let mut then_block = then_block;
+                                let mut else_block_inner = else_block
+                                    .unwrap_or_else(|| crate::ir::Block::with_stmts(vec![]));
+                                let mut temps = Vec::new();
                                 for (then_val, else_val) in
                                     then_results.into_iter().zip(else_results.into_iter())
                                 {
-                                    self.push(Expr::new(ExprKind::Select {
-                                        cond: Box::new(cond.clone()),
-                                        then_val: Box::new(then_val),
-                                        else_val: Box::new(else_val),
-                                    }));
+                                    let temp = self.next_temp_local;
+                                    self.next_temp_local += 1;
+                                    then_block.stmts.push(Stmt::LocalSet {
+                                        local: temp,
+                                        value: then_val,
+                                    });
+                                    else_block_inner.stmts.push(Stmt::LocalSet {
+                                        local: temp,
+                                        value: else_val,
+                                    });
+                                    temps.push(temp);
+                                }
+                                self.emit(Stmt::If {
+                                    cond,
+                                    then_block,
+                                    else_block: Some(else_block_inner),
+                                });
+                                for temp in temps {
+                                    self.push(Expr::local(temp));
                                 }
                             } else {
                                 self.emit(Stmt::If {

@@ -279,6 +279,7 @@ var E6 = class {
             gojs: {
                 [m]: () => EL + performance.now(),
                 [h]: EK => {
+                    console.log('[TRACE] sleepTicks called with timeout:', EK);
                     Ek.doTVm(setTimeout, this._inst.exports.go_scheduler, EK);
                 },
                 [U]: EK => {
@@ -313,6 +314,7 @@ var E6 = class {
                     let EH = Ek.TdmrP(EO, Ev);
                     let EF = Ek.doTVm(Eo, ET, ES);
                     let EB = Ek.Pinxd(EX, Eg, Eu, EW);
+                    console.log('[TRACE] valueCall:', EF, 'on:', typeof EH, EH?.constructor?.name || String(EH).slice(0,60), 'args:', EB.length);
                     try {
                         let EI = Reflect.get(EH, EF);
                         Es(EK, Reflect.apply(EI, EH, EB));
@@ -401,9 +403,13 @@ var E6 = class {
         this._ids = new Map();
         this._idPool = [];
         this.exited = !1;
+        let _loopIter = 0;
         while (true) {
+            _loopIter++;
+            console.log('[TRACE] run loop iteration', _loopIter);
             let EO = new Promise(EZ => {
                 this._resolveCallbackPromise = () => {
+                    console.log('[TRACE] _resolveCallbackPromise called');
                     if (this.exited) {
                         throw new Error(EV.iZFHB);
                     }
@@ -411,10 +417,12 @@ var E6 = class {
                 };
             });
             this._inst.exports._start();
+            console.log('[TRACE] _start() returned, exited=', this.exited);
             if (this.exited) {
                 break;
             }
             await EO;
+            console.log('[TRACE] await EO resolved');
         }
     }
     _resume() {
@@ -491,7 +499,20 @@ async function Ey() {
     const wasi = EO.importObject.wasi_snapshot_preview1;
     wasmModule.imports.gojs_runtime_ticks = gojs["runtime.ticks"];
     wasmModule.imports.gojs_syscall_js_finalizeRef = gojs["syscall/js.finalizeRef"];
-    wasmModule.imports.gojs_syscall_js_stringVal = gojs["syscall/js.stringVal"];
+    const _origStringVal = gojs["syscall/js.stringVal"];
+    wasmModule.imports.gojs_syscall_js_stringVal = function(ptr, len) {
+      // TinyGo passes (ptr, len) directly, not sp
+      if (len > 0 && len < 500) {
+        try {
+          const bytes = new Uint8Array(wasmModule.memory.buffer, ptr, len);
+          const str = new TextDecoder().decode(bytes);
+          if (str.includes('{') || str.includes('solution') || str.length > 40) {
+            console.log('[TRACE] stringVal (ptr=' + ptr + ' len=' + len + '):', str);
+          }
+        } catch(e) { console.log('[TRACE] stringVal error:', e.message); }
+      }
+      return _origStringVal(ptr, len);
+    };
     wasmModule.imports.gojs_syscall_js_valueGet = gojs["syscall/js.valueGet"];
     wasmModule.imports.gojs_syscall_js_valueSet = gojs["syscall/js.valueSet"];
     wasmModule.imports.gojs_syscall_js_valueIndex = gojs["syscall/js.valueIndex"];

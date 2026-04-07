@@ -1399,12 +1399,12 @@ function chacha20_rng(p0) {
   store_i64(l0, load_i64(65544), 8);
   store_i64(l0, load_i64(65536));
   store_i64(l0, load_i64(137536), 16);
-  chacha20_update(p0, l0);
+  chacha20_update(go_string(p0, l0));
   store_i64(137560, load_i64(((p0 + 24) | 0)));
   store_i64(137552, load_i64(((p0 + 16) | 0)));
   store_i64(137544, load_i64(((p0 + 8) | 0)));
   store_i64(137536, load_i64(p0));
-  chacha20_update(p0, l0);
+  chacha20_update(go_string(p0, l0));
   chacha20_update(((p0 - -64) | 0), l0);
   chacha20_update(((p0 + 128) | 0), l0);
   chacha20_update(((p0 + 192) | 0), l0);
@@ -1450,7 +1450,7 @@ function chacha20_update(p0, p1) {
   l11 = l32;
   l33 = load_i32(p1, 44);
   l12 = l33;
-  loop_0: while (true) {
+  do {
     l2147483645 = l2;
     l2 = ((l2 + l15) | 0);
     l11 = rotl32((l11 ^ l2), 16);
@@ -1526,9 +1526,7 @@ function chacha20_update(p0, p1) {
     l8 = ((l11 + l16) | 0);
     l0 = rotl32((l8 ^ l0), 7);
     l17 = ((l17 + 2) | 0);
-    if (u32(l17) < 18) continue loop_0;
-    break;
-  }
+  } while (u32(l17) < 18);
   store_i32(p1, l4, 48);
   store_i32(p1, l3);
   store_i32(p1, l5, 16);
@@ -1565,7 +1563,7 @@ function chacha20_update(p0, p1) {
 }
 
 function arc4random() {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653, l2147483654, l2147483655, l2147483656, l2147483657;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653, l2147483654;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 8) | 0));
     l1 = load_i32(g2);
@@ -1626,12 +1624,10 @@ function arc4random() {
                   }
                   block_17: {
                     if (g1) {
-                      l2147483647 = 0;
                     } else {
                       l0 = 29;
-                      l2147483647 = (u32(l3) > 256 ? 1 : 0);
                     }
-                    if ((l2147483647 & (g1 === 0))) break block_17;
+                    if (((g1 ? 0 : u32(l3) > 256) & (g1 === 0))) break block_17;
                     if (((g1 ? l1 : 0) === 0)) {
                       block_20: {
                         l1 = l2;
@@ -1645,40 +1641,36 @@ function arc4random() {
                         block_22: {
                           if (g1 === 2) {
                             store_i32(g2, ((load_i32(g2) - 4) | 0));
-                            l2147483648 = load_i32(load_i32(g2));
                           } else {
-                            l2147483648 = 0;
                           }
-                          if ((g1 ? l2147483648 : 0)) {
-                            l2147483650 = l1;
+                          if ((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0)) {
                           } else {
                             if (g1 === 1) {
-                              l2147483649 = 0;
+                              l2147483647 = 0;
                               break block_22;
                             }
-                            l2147483650 = wasi_snapshot_preview1_random_get(l1, l4);
                           }
                           if ((g1 === 0)) {
-                            l2147483651 = (l2147483650 & 65535);
+                            l2147483648 = (((g1 ? ((g1 === 2 ? 1 : 0) ? load_i32(load_i32(g2)) : 0) : 0) ? l1 : wasi_snapshot_preview1_random_get(go_string(l1, l4))) & 65535);
                             break block_20;
                           }
                           throw new Error('unreachable');
-                          l2147483649 = 0;
+                          l2147483647 = 0;
                         }
-                        l8 = l2147483649;
+                        l8 = l2147483647;
                         store_i32(load_i32(g2), l8);
                         store_i32(g2, ((load_i32(g2) + 4) | 0));
                         l8 = load_i32(g2);
                         store_i32(l8, l1);
                         store_i32(l8, l4, 4);
                         store_i32(g2, ((load_i32(g2) + 8) | 0));
-                        l2147483651 = 0;
+                        l2147483648 = 0;
                       }
                       if (g1 === 1) {
-                        l2147483652 = 0;
+                        l2147483649 = 0;
                         break block_15;
                       }
-                      l0 = l2147483651;
+                      l0 = l2147483648;
                     }
                     if ((g1 === 0)) {
                       if (l0) break block_17;
@@ -1690,9 +1682,9 @@ function arc4random() {
                     break block_14;
                   }
                   throw new Error('unreachable');
-                  l2147483652 = 0;
+                  l2147483649 = 0;
                 }
-                l1 = l2147483652;
+                l1 = l2147483649;
                 store_i32(load_i32(g2), l1);
                 store_i32(g2, ((load_i32(g2) + 4) | 0));
                 l1 = load_i32(g2);
@@ -1702,7 +1694,7 @@ function arc4random() {
                 store_i32(g2, ((load_i32(g2) + 12) | 0));
               }
               if (g1 === 1) {
-                l2147483653 = 0;
+                l2147483650 = 0;
                 break block_7;
               }
             }
@@ -1715,16 +1707,14 @@ function arc4random() {
               if ((l6 === 0)) break block_29;
               l0 = load_i32(137532);
               l5 = 0;
-              loop_30: while (true) {
+              do {
                 if (l0 === 512) {
                   if (u32(l6) >= 512) {
-                    loop_33: while (true) {
+                    do {
                       chacha20_rng(((l5 + l11) | 0));
                       l5 = ((l5 + 512) | 0);
                       l6 = ((l6 - 512) | 0);
-                      if (u32(l6) > 511) continue loop_33;
-                      break;
-                    }
+                    } while (u32(l6) > 511);
                   }
                   if ((l6 === 0)) break block_29;
                   chacha20_rng(137568);
@@ -1746,37 +1736,37 @@ function arc4random() {
                         l3 = ((l0 + 1) | 0);
                         l1 = ((l2 - 1) | 0);
                         if ((((l3 & 3) === 0) | (l1 === 0))) {
-                          l2147483654 = ((l4 + 1) | 0);
+                          l2147483651 = ((l4 + 1) | 0);
                           break block_35;
                         }
                         store_i8(l4, load_u8(l0, 1), 1);
                         l3 = ((l0 + 2) | 0);
                         l1 = ((l2 - 2) | 0);
                         if ((((l3 & 3) === 0) | (l1 === 0))) {
-                          l2147483654 = ((l4 + 2) | 0);
+                          l2147483651 = ((l4 + 2) | 0);
                           break block_35;
                         }
                         store_i8(l4, load_u8(l0, 2), 2);
                         l3 = ((l0 + 3) | 0);
                         l1 = ((l2 - 3) | 0);
                         if ((((l3 & 3) === 0) | (l1 === 0))) {
-                          l2147483654 = ((l4 + 3) | 0);
+                          l2147483651 = ((l4 + 3) | 0);
                           break block_35;
                         }
                         store_i8(l4, load_u8(l0, 3), 3);
                         l1 = ((l2 - 4) | 0);
                         l3 = ((l0 + 4) | 0);
-                        l2147483654 = ((l4 + 4) | 0);
+                        l2147483651 = ((l4 + 4) | 0);
                         break block_35;
                       }
-                      new Uint8Array(memory.buffer).copyWithin(l4, l0, l0 + l2);
+                      new Uint8Array(memory.buffer).copyWithin(go_string(l4, l0), l2, l2 + );
                       break block_34;
                     }
                     l1 = l2;
                     l3 = l0;
-                    l2147483654 = l4;
+                    l2147483651 = l4;
                   }
-                  l0 = l2147483654;
+                  l0 = l2147483651;
                   l2 = (l0 & 3);
                   if ((l2 === 0)) {
                     block_39: {
@@ -1794,7 +1784,7 @@ function arc4random() {
                       }
                       if (u32(l2) < 16) break block_39;
                       l2 = l1;
-                      loop_42: while (true) {
+                      do {
                         store_i64(l0, load_i64(l3));
                         store_i64(l0, load_i64(l3, 8), 8);
                         store_i64(l0, load_i64(l3, 16), 16);
@@ -1802,9 +1792,7 @@ function arc4random() {
                         l0 = ((l0 + 32) | 0);
                         l3 = ((l3 + 32) | 0);
                         l2 = ((l2 - 32) | 0);
-                        if (u32(l2) > 15) continue loop_42;
-                        break;
-                      }
+                      } while (u32(l2) > 15);
                     }
                     if (u32(l2) >= 8) {
                       store_i64(l0, load_i64(l3));
@@ -1849,7 +1837,7 @@ function arc4random() {
                               l8 = 14;
                               l3 = load_i32(((l3 + 14) | 0));
                               l1 = 14;
-                              l2147483655 = ((l0 + 18) | 0);
+                              l2147483652 = ((l0 + 18) | 0);
                               break block_48;
                             }
                             store_i64(l0, load_i64(((l3 + 5) | 0)), 5);
@@ -1858,13 +1846,13 @@ function arc4random() {
                             l8 = 13;
                             l3 = load_i32(((l3 + 13) | 0));
                             l1 = 15;
-                            l2147483655 = ((l0 + 17) | 0);
+                            l2147483652 = ((l0 + 17) | 0);
                             break block_48;
                           }
                           block_53: {
                             if (u32(l1) < 16) {
                               l2 = l0;
-                              l2147483656 = l3;
+                              l2147483653 = l3;
                               break block_53;
                             }
                             store_i8(l0, load_u8(l3));
@@ -1873,9 +1861,9 @@ function arc4random() {
                             store_i16(l0, load_u16(l3, 13), 13);
                             store_i8(l0, load_u8(l3, 15), 15);
                             l2 = ((l0 + 16) | 0);
-                            l2147483656 = ((l3 + 16) | 0);
+                            l2147483653 = ((l3 + 16) | 0);
                           }
-                          l4 = l2147483656;
+                          l4 = l2147483653;
                           if ((l1 & 8)) break block_47;
                           break block_46;
                         }
@@ -1887,9 +1875,9 @@ function arc4random() {
                         l8 = 15;
                         l3 = load_i32(((l3 + 15) | 0));
                         l1 = 13;
-                        l2147483655 = ((l0 + 19) | 0);
+                        l2147483652 = ((l0 + 19) | 0);
                       }
-                      l2 = l2147483655;
+                      l2 = l2147483652;
                       store_i32(((l0 + l8) | 0), l3);
                     }
                     store_i64(l2, load_i64(l4));
@@ -1953,31 +1941,27 @@ function arc4random() {
                     l2 = ((l2 - l1) | 0);
                     if (u32(l2) < 32) break block_59;
                     l1 = ((l1 + l3) | 0);
-                    loop_60: while (true) {
+                    do {
                       store_i64(l1, 0n, 24);
                       store_i64(l1, 0n, 16);
                       store_i64(l1, 0n, 8);
                       store_i64(l1, 0n);
                       l1 = ((l1 + 32) | 0);
                       l2 = ((l2 - 32) | 0);
-                      if (u32(l2) > 31) continue loop_60;
-                      break;
-                    }
+                    } while (u32(l2) > 31);
                   }
                 }
                 l0 = ((load_i32(137532) + l7) | 0);
                 store_i32(137532, l0);
                 l5 = ((l5 + l7) | 0);
                 l6 = ((l6 - l7) | 0);
-                if (l6) continue loop_30;
-                break;
-              }
+              } while (l6);
             }
           }
           break block_6;
-          l2147483653 = 0;
+          l2147483650 = 0;
         }
-        l2 = l2147483653;
+        l2 = l2147483650;
         store_i32(load_i32(g2), l2);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
         l2 = load_i32(g2);
@@ -1987,7 +1971,7 @@ function arc4random() {
         store_i32(g2, ((load_i32(g2) + 12) | 0));
       }
       if (g1 === 1) {
-        l2147483657 = 0;
+        l2147483654 = 0;
         break block_1;
       }
     }
@@ -1996,9 +1980,9 @@ function arc4random() {
       return load_i32(l9, 12);
     }
     throw new Error('unreachable');
-    l2147483657 = 0;
+    l2147483654 = 0;
   }
-  l2 = l2147483657;
+  l2 = l2147483654;
   store_i32(load_i32(g2), l2);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l2 = load_i32(g2);
@@ -2010,7 +1994,7 @@ function arc4random() {
 
 // internal/itoa.Itoa
 function internal_itoa_Itoa(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 24) | 0));
     l3 = load_i32(g2);
@@ -2043,7 +2027,7 @@ function internal_itoa_Itoa(p0, p1) {
           p1 = ((0 - p1) | 0);
         }
         if (((g1 ? l2 : 0) === 0)) {
-          internal_itoa_Uitoa(l1, p1);
+          internal_itoa_Uitoa(go_string(l1, p1));
           if (g1 === 1) {
             l2147483645 = 0;
             break block_1;
@@ -2056,7 +2040,7 @@ function internal_itoa_Itoa(p0, p1) {
           l3 = load_i32(l0, 20);
         }
         if ((g1 ? l2 === 1 : 1)) {
-          runtime_stringConcat(l1, 97716, 1, p1, l3);
+          runtime_stringConcat(l1, "-", go_string(p1, l3));
           if (g1 === 1) {
             l2147483645 = 1;
             break block_1;
@@ -2070,19 +2054,17 @@ function internal_itoa_Itoa(p0, p1) {
       }
       l1 = (g1 ? l1 : ((l0 + 24) | 0));
       if ((g1 ? l2 === 2 : 1)) {
-        internal_itoa_Uitoa(l1, p1);
+        internal_itoa_Uitoa(go_string(l1, p1));
         if (g1 === 1) {
           l2147483645 = 2;
           break block_1;
         }
       }
       if (g1) {
-        l2147483647 = p1;
       } else {
         l1 = load_i32(l0, 24);
-        l2147483647 = load_i32(l0, 28);
       }
-      l2147483646 = l2147483647;
+      l2147483646 = (g1 ? p1 : load_i32(l0, 28));
     }
     p1 = l2147483646;
     if ((g1 === 0)) {
@@ -2169,7 +2151,7 @@ function internal_itoa_Uitoa(p0, p1) {
           p1 = ((1 - l1) | 0);
         }
         if (((g1 ? l5 : 0) === 0)) {
-          runtime_stringFromBytes(l0, l4, p1);
+          runtime_stringFromBytes(go_string(l0, l4), p1);
           if (g1 === 1) {
             l2147483646 = 0;
             break block_1;
@@ -2267,8 +2249,8 @@ function runtime_stringConcat(p0, p1, p2, p3, p4) {
         l2 = runtime_alloc(l4, 3);
       }
       if ((g1 === 0)) {
-        new Uint8Array(memory.buffer).copyWithin(l2, p1, p1 + p2);
-        new Uint8Array(memory.buffer).copyWithin(((p2 + l2) | 0), p3, p3 + p4);
+        new Uint8Array(memory.buffer).copyWithin(go_string(l2, p1), p2, p2 + );
+        new Uint8Array(memory.buffer).copyWithin(((p2 + l2) | 0), go_string(p3, p4), go_string(p3, p4) + );
       }
     }
     if ((g1 === 0)) {
@@ -2332,7 +2314,7 @@ function runtime_stringFromBytes(p0, p1, p2) {
       l3 = runtime_alloc(p2, 3);
     }
     if ((g1 === 0)) {
-      new Uint8Array(memory.buffer).copyWithin(l3, p1, p1 + p2);
+      new Uint8Array(memory.buffer).copyWithin(go_string(l3, p1), p2, p2 + );
       store_i32(138276, l1);
       store_i32(p0, p2, 4);
       store_i32(p0, l3);
@@ -2362,14 +2344,14 @@ function runtime_lookupPanic() {
 // math/bits.Mul64
 function math_bits_Mul64(p0, p1, p2) {
   let l0 = 0n, l1 = 0n, l2147483644;
-  store_i64(p0, BigInt.asIntN(64, p1 * p2), 8);
+  store_i64(p0, Math.imul(p1, p2), 8);
   l0 = (p2 & 4294967295n);
   l1 = (p1 & 4294967295n);
   p1 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(p1)) >> 32n);
-  l0 = BigInt.asIntN(64, BigInt.asIntN(64, BigInt.asUintN(64, BigInt(BigInt.asIntN(64, l0 * l1))) >> 32n) + BigInt.asIntN(64, l0 * p1));
+  l0 = (((Math.imul(l0, l1) >>> 32n) + Math.imul(l0, p1)) | 0);
   l2147483644 = p1;
   p1 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(p2)) >> 32n);
-  store_i64(p0, BigInt.asIntN(64, BigInt.asIntN(64, BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l0)) >> 32n) + BigInt.asIntN(64, l2147483644 * p1)) + BigInt.asIntN(64, BigInt.asUintN(64, BigInt(BigInt.asIntN(64, BigInt.asIntN(64, p1 * l1) + (l0 & 4294967295n)))) >> 32n)));
+  store_i64(p0, BigInt.asIntN(64, BigInt.asIntN(64, BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l0)) >> 32n) + Math.imul(l2147483644, p1)) + (((Math.imul(p1, l1) + (l0 & 4294967295n)) | 0) >>> 32n)));
 }
 
 // unicode/utf8.DecodeRune
@@ -2506,7 +2488,7 @@ function unicode_utf8_EncodeRune(p0, p1, p2) {
 
 // unicode/utf8.AppendRune
 function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483642, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483642, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 36) | 0));
     l3 = load_i32(g2);
@@ -2544,7 +2526,7 @@ function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
           p4 = ((l0 + 8) | 0);
         }
         if (((g1 ? l2 : 0) === 0)) {
-          runtime_sliceAppend(p4, p1, l1, p2, p3, 1, 1);
+          runtime_sliceAppend(go_string(p4, p1), go_string(l1, p2), p3, go_string(1, 1));
           if (g1 === 1) {
             l2147483642 = 0;
             break block_1;
@@ -2567,7 +2549,7 @@ function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
           p4 = ((l0 + 24) | 0);
         }
         if ((g1 ? l2 === 1 : 1)) {
-          runtime_sliceAppend(p4, p1, l1, p2, p3, 2, 1);
+          runtime_sliceAppend(go_string(p4, p1), go_string(l1, p2), p3, go_string(2, 1));
           if (g1 === 1) {
             l2147483642 = 1;
             break block_1;
@@ -2599,7 +2581,7 @@ function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
           p4 = ((l0 + 56) | 0);
         }
         if ((g1 ? l2 === 2 : 1)) {
-          runtime_sliceAppend(p4, p1, l1, p2, p3, 4, 1);
+          runtime_sliceAppend(go_string(p4, p1), go_string(l1, p2), p3, go_string(4, 1));
           if (g1 === 1) {
             l2147483642 = 2;
             break block_1;
@@ -2620,20 +2602,18 @@ function unicode_utf8_AppendRune(p0, p1, p2, p3, p4) {
         p4 = ((l0 + 40) | 0);
       }
       if ((g1 ? l2 === 3 : 1)) {
-        runtime_sliceAppend(p4, p1, l1, p2, p3, 3, 1);
+        runtime_sliceAppend(go_string(p4, p1), go_string(l1, p2), p3, go_string(3, 1));
         if (g1 === 1) {
           l2147483642 = 3;
           break block_1;
         }
       }
       if (g1) {
-        l2147483644 = p2;
       } else {
         p4 = load_i32(l0, 48);
         p3 = load_i32(l0, 44);
-        l2147483644 = load_i32(l0, 40);
       }
-      l2147483643 = l2147483644;
+      l2147483643 = (g1 ? p2 : load_i32(l0, 40));
     }
     p1 = l2147483643;
     if ((g1 === 0)) {
@@ -2723,11 +2703,11 @@ function runtime_sliceAppend(p0, p1, p2, p3, p4, p5, p6) {
             l2147483640 = 0;
             break block_1;
           }
-          l2 = runtime_alloc(l1, l2);
+          l2 = runtime_alloc(go_string(l1, l2));
         }
         if ((g1 === 0)) {
           if ((p3 === 0)) break block_7;
-          new Uint8Array(memory.buffer).copyWithin(l2, p1, p1 + Math.imul(p3, p6));
+          new Uint8Array(memory.buffer).copyWithin(go_string(l2, p1), Math.imul(p3, p6), Math.imul(p3, p6) + );
         }
       }
       if ((g1 === 0)) {
@@ -2954,7 +2934,7 @@ function _reflect_rawType_Size(p0) {
 
 // (*reflect.rawType).elem
 function _reflect_rawType_elem(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 12) | 0));
     l0 = load_i32(g2);
@@ -2969,7 +2949,6 @@ function _reflect_rawType_elem(p0) {
     }
     block_3: {
       if (g1) {
-        l2147483646 = 0;
       } else {
         l1 = ((g0 - 32) | 0);
         g0 = l1;
@@ -2977,15 +2956,14 @@ function _reflect_rawType_elem(p0) {
         l2 = load_i32(138276);
         store_i32(138276, l1);
         store_i32(l1, l2);
-        l2147483646 = (((p0 & 3) === 0) ? 1 : 0);
       }
-      if (((l2147483646 | g1) === 0)) {
+      if ((((g1 ? 0 : ((p0 & 3) === 0)) | g1) === 0)) {
         p0 = ((p0 - 1) | 0);
         break block_3;
       }
       if (((g1 ? l3 : 0) === 0)) {
         if (g1 === 1) {
-          l2147483647 = 0;
+          l2147483646 = 0;
           break block_1;
         }
         p0 = _reflect_rawType_underlying(p0);
@@ -3015,7 +2993,7 @@ function _reflect_rawType_elem(p0) {
       if ((g1 ? l3 === 1 : 1)) {
         runtime__panic(128576, 137384);
         if (g1 === 1) {
-          l2147483647 = 1;
+          l2147483646 = 1;
           break block_1;
         }
       }
@@ -3029,9 +3007,9 @@ function _reflect_rawType_elem(p0) {
       return p0;
     }
     throw new Error('unreachable');
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l0 = l2147483647;
+  l0 = l2147483646;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -3044,7 +3022,7 @@ function _reflect_rawType_elem(p0) {
 
 // (*reflect.rawType).Len
 function _reflect_rawType_Len(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 12) | 0));
     l1 = load_i32(g2);
@@ -3059,7 +3037,6 @@ function _reflect_rawType_Len(p0) {
     }
     block_3: {
       if (g1) {
-        l2147483646 = 0;
       } else {
         l0 = ((g0 - 32) | 0);
         g0 = l0;
@@ -3068,15 +3045,14 @@ function _reflect_rawType_Len(p0) {
         l1 = load_i32(138276);
         store_i32(138276, ((l0 + 8) | 0));
         store_i32(l0, l1, 8);
-        l2147483646 = ((p0 === 0) ? 1 : 0);
       }
-      if (((g1 | (l2147483646 | (p0 & 3))) === 0)) {
+      if (((g1 | ((g1 ? 0 : (p0 === 0)) | (p0 & 3))) === 0)) {
         if ((load_u8(p0) & 31) === 23) break block_3;
       }
       if (((g1 ? l3 : 0) === 0)) {
         runtime__panic(128576, 137408);
         if (g1 === 1) {
-          l2147483647 = 0;
+          l2147483646 = 0;
           break block_1;
         }
       }
@@ -3086,7 +3062,7 @@ function _reflect_rawType_Len(p0) {
     }
     if ((g1 ? l3 === 1 : 1)) {
       if (g1 === 1) {
-        l2147483647 = 1;
+        l2147483646 = 1;
         break block_1;
       }
       p0 = _reflect_rawType_underlying(p0);
@@ -3099,9 +3075,9 @@ function _reflect_rawType_Len(p0) {
       return load_i32(p0, 12);
     }
     throw new Error('unreachable');
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l2 = l2147483647;
+  l2 = l2147483646;
   store_i32(load_i32(g2), l2);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l2 = load_i32(g2);
@@ -3114,7 +3090,7 @@ function _reflect_rawType_Len(p0) {
 
 // (*reflect.rawType).underlying
 function _reflect_rawType_underlying(p0) {
-  let l0 = 0, l1 = 0, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 8) | 0));
     l0 = load_i32(g2);
@@ -3124,29 +3100,25 @@ function _reflect_rawType_underlying(p0) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483646 = load_i32(load_i32(g2));
     } else {
-      l2147483646 = 0;
     }
-    if (((g1 ? l2147483646 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       if (g1 === 1) {
-        l2147483647 = 0;
+        l2147483646 = 0;
         break block_1;
       }
       l1 = _reflect_rawType_isNamed(p0);
     }
     if ((g1 === 0)) {
       if ((l1 & 1)) {
-        l2147483648 = load_i32(p0, 8);
       } else {
-        l2147483648 = p0;
       }
-      return l2147483648;
+      return ((l1 & 1) ? load_i32(p0, 8) : p0);
     }
     throw new Error('unreachable');
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l0 = l2147483647;
+  l0 = l2147483646;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -3158,7 +3130,7 @@ function _reflect_rawType_underlying(p0) {
 
 // runtime._panic
 function runtime__panic(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l2147483645, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 8) | 0));
     p1 = load_i32(g2);
@@ -3168,11 +3140,9 @@ function runtime__panic(p0, p1) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483645 = load_i32(load_i32(g2));
     } else {
-      l2147483645 = 0;
     }
-    if (((g1 ? l2147483645 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       l6 = p0;
       l7 = p1;
       if (g1 === 2) {
@@ -3188,9 +3158,9 @@ function runtime__panic(p0, p1) {
             l8 = load_i32(load_i32(g2));
           }
           if (((g1 ? l8 : 0) === 0)) {
-            runtime_printstring(91313, 7);
+            runtime_printstring("panic: ");
             if (g1 === 1) {
-              l2147483646 = 0;
+              l2147483645 = 0;
               break block_6;
             }
           }
@@ -3231,18 +3201,18 @@ function runtime__panic(p0, p1) {
                     }
                     if ((l0 ? g1 : 1)) {
                       if (((g1 ? l2 : 0) === 0)) {
-                        runtime_printstring(95880, 4);
+                        runtime_printstring("true");
                         if (g1 === 1) {
-                          l2147483647 = 0;
+                          l2147483646 = 0;
                           break block_12;
                         }
                       }
                       if ((g1 === 0)) break block_15;
                     }
                     if ((g1 ? l2 === 1 : 1)) {
-                      runtime_printstring(95884, 5);
+                      runtime_printstring("false");
                       if (g1 === 1) {
-                        l2147483647 = 1;
+                        l2147483646 = 1;
                         break block_12;
                       }
                     }
@@ -3253,7 +3223,7 @@ function runtime__panic(p0, p1) {
                     if ((g1 ? l2 === 2 : 1)) {
                       runtime_printint32(l3);
                       if (g1 === 1) {
-                        l2147483647 = 2;
+                        l2147483646 = 2;
                         break block_12;
                       }
                     }
@@ -3268,7 +3238,7 @@ function runtime__panic(p0, p1) {
                     if ((g1 ? l2 === 3 : 1)) {
                       runtime_printint32(l0);
                       if (g1 === 1) {
-                        l2147483647 = 3;
+                        l2147483646 = 3;
                         break block_12;
                       }
                     }
@@ -3285,7 +3255,7 @@ function runtime__panic(p0, p1) {
                       if ((g1 ? l2 === 4 : 1)) {
                         runtime_putchar(45);
                         if (g1 === 1) {
-                          l2147483647 = 4;
+                          l2147483646 = 4;
                           break block_12;
                         }
                       }
@@ -3294,7 +3264,7 @@ function runtime__panic(p0, p1) {
                     if ((g1 ? l2 === 5 : 1)) {
                       runtime_printuint64(l9);
                       if (g1 === 1) {
-                        l2147483647 = 5;
+                        l2147483646 = 5;
                         break block_12;
                       }
                     }
@@ -3314,7 +3284,7 @@ function runtime__panic(p0, p1) {
                       if ((g1 ? l2 === 6 : 1)) {
                         runtime_printuint32(l0);
                         if (g1 === 1) {
-                          l2147483647 = 6;
+                          l2147483646 = 6;
                           break block_12;
                         }
                       }
@@ -3332,7 +3302,7 @@ function runtime__panic(p0, p1) {
                       if ((g1 ? l2 === 7 : 1)) {
                         runtime_printuint64(l9);
                         if (g1 === 1) {
-                          l2147483647 = 7;
+                          l2147483646 = 7;
                           break block_12;
                         }
                       }
@@ -3349,9 +3319,9 @@ function runtime__panic(p0, p1) {
                         l3 = load_i32(l3, 4);
                       }
                       if ((g1 ? l2 === 8 : 1)) {
-                        runtime_printstring(l0, l3);
+                        runtime_printstring(go_string(l0, l3));
                         if (g1 === 1) {
-                          l2147483647 = 8;
+                          l2147483646 = 8;
                           break block_12;
                         }
                       }
@@ -3362,9 +3332,9 @@ function runtime__panic(p0, p1) {
                     }
                     if ((l1 ? g1 : 1)) {
                       if ((g1 ? l2 === 9 : 1)) {
-                        interface_Error_func_basic_string_Error$invoke(l4, l3, l0);
+                        interface_Error_func_basic_string_Error$invoke(go_string(l4, l3), l0);
                         if (g1 === 1) {
-                          l2147483647 = 9;
+                          l2147483646 = 9;
                           break block_12;
                         }
                       }
@@ -3374,9 +3344,9 @@ function runtime__panic(p0, p1) {
                         l3 = load_i32(l4, 4);
                       }
                       if ((g1 ? l2 === 10 : 1)) {
-                        runtime_printstring(l0, l3);
+                        runtime_printstring(go_string(l0, l3));
                         if (g1 === 1) {
-                          l2147483647 = 10;
+                          l2147483646 = 10;
                           break block_12;
                         }
                       }
@@ -3391,9 +3361,9 @@ function runtime__panic(p0, p1) {
                         l1 = ((l4 + 8) | 0);
                       }
                       if ((g1 ? l2 === 11 : 1)) {
-                        interface_String_func_basic_string_String$invoke(l1, l3, l0);
+                        interface_String_func_basic_string_String$invoke(go_string(l1, l3), l0);
                         if (g1 === 1) {
-                          l2147483647 = 11;
+                          l2147483646 = 11;
                           break block_12;
                         }
                       }
@@ -3403,9 +3373,9 @@ function runtime__panic(p0, p1) {
                         l3 = load_i32(l4, 12);
                       }
                       if ((g1 ? l2 === 12 : 1)) {
-                        runtime_printstring(l0, l3);
+                        runtime_printstring(go_string(l0, l3));
                         if (g1 === 1) {
-                          l2147483647 = 12;
+                          l2147483646 = 12;
                           break block_12;
                         }
                       }
@@ -3414,30 +3384,30 @@ function runtime__panic(p0, p1) {
                     if ((g1 ? l2 === 13 : 1)) {
                       runtime_putchar(40);
                       if (g1 === 1) {
-                        l2147483647 = 13;
+                        l2147483646 = 13;
                         break block_12;
                       }
                     }
                     if ((g1 ? l2 === 14 : 1)) {
                       runtime_printuint32(l0);
                       if (g1 === 1) {
-                        l2147483647 = 14;
+                        l2147483646 = 14;
                         break block_12;
                       }
                     }
                     if ((g1 ? l2 === 15 : 1)) {
                       runtime_putchar(58);
                       if (g1 === 1) {
-                        l2147483647 = 15;
+                        l2147483646 = 15;
                         break block_12;
                       }
                     }
                     block_58: {
                       if ((l3 ? g1 : 1)) {
                         if ((g1 ? l2 === 16 : 1)) {
-                          runtime_printstring(95985, 3);
+                          runtime_printstring("nil");
                           if (g1 === 1) {
-                            l2147483647 = 16;
+                            l2147483646 = 16;
                             break block_12;
                           }
                         }
@@ -3446,14 +3416,14 @@ function runtime__panic(p0, p1) {
                       if ((g1 ? l2 === 17 : 1)) {
                         runtime_putchar(48);
                         if (g1 === 1) {
-                          l2147483647 = 17;
+                          l2147483646 = 17;
                           break block_12;
                         }
                       }
                       if ((g1 ? l2 === 18 : 1)) {
                         runtime_putchar(120);
                         if (g1 === 1) {
-                          l2147483647 = 18;
+                          l2147483646 = 18;
                           break block_12;
                         }
                       }
@@ -3467,7 +3437,7 @@ function runtime__panic(p0, p1) {
                         if ((g1 ? l2 === 19 : 1)) {
                           runtime_putchar(l1);
                           if (g1 === 1) {
-                            l2147483647 = 19;
+                            l2147483646 = 19;
                             break block_12;
                           }
                         }
@@ -3482,7 +3452,7 @@ function runtime__panic(p0, p1) {
                     if ((g1 ? l2 === 20 : 1)) {
                       runtime_putchar(41);
                       if (g1 === 1) {
-                        l2147483647 = 20;
+                        l2147483646 = 20;
                         break block_12;
                       }
                     }
@@ -3491,7 +3461,7 @@ function runtime__panic(p0, p1) {
                   if ((g1 ? l2 === 21 : 1)) {
                     runtime_printuint32(l3);
                     if (g1 === 1) {
-                      l2147483647 = 21;
+                      l2147483646 = 21;
                       break block_12;
                     }
                   }
@@ -3501,9 +3471,9 @@ function runtime__panic(p0, p1) {
                   g0 = ((l4 + 32) | 0);
                 }
                 break block_11;
-                l2147483647 = 0;
+                l2147483646 = 0;
               }
-              l2 = l2147483647;
+              l2 = l2147483646;
               store_i32(load_i32(g2), l2);
               store_i32(g2, ((load_i32(g2) + 4) | 0));
               l2 = load_i32(g2);
@@ -3516,14 +3486,14 @@ function runtime__panic(p0, p1) {
               store_i32(g2, ((load_i32(g2) + 28) | 0));
             }
             if (g1 === 1) {
-              l2147483646 = 1;
+              l2147483645 = 1;
               break block_6;
             }
           }
           if ((g1 ? l8 === 2 : 1)) {
             runtime_printnl();
             if (g1 === 1) {
-              l2147483646 = 2;
+              l2147483645 = 2;
               break block_6;
             }
           }
@@ -3531,9 +3501,9 @@ function runtime__panic(p0, p1) {
             throw new Error('unreachable');
           }
           break block_5;
-          l2147483646 = 0;
+          l2147483645 = 0;
         }
-        l0 = l2147483646;
+        l0 = l2147483645;
         store_i32(load_i32(g2), l0);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
         l0 = load_i32(g2);
@@ -3542,7 +3512,7 @@ function runtime__panic(p0, p1) {
         store_i32(g2, ((load_i32(g2) + 8) | 0));
       }
       if (g1 === 1) {
-        l2147483648 = 0;
+        l2147483647 = 0;
         break block_1;
       }
     }
@@ -3550,9 +3520,9 @@ function runtime__panic(p0, p1) {
       throw new Error('unreachable');
     }
     return;
-    l2147483648 = 0;
+    l2147483647 = 0;
   }
-  l6 = l2147483648;
+  l6 = l2147483647;
   store_i32(load_i32(g2), l6);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l6 = load_i32(g2);
@@ -3563,7 +3533,7 @@ function runtime__panic(p0, p1) {
 
 // (*reflect.rawType).isNamed
 function _reflect_rawType_isNamed(p0) {
-  let l0 = 0, l2147483646, l2147483647;
+  let l0 = 0, l2147483646;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
@@ -3572,18 +3542,16 @@ function _reflect_rawType_isNamed(p0) {
     if ((g1 === 0)) {
       block_3: {
         if ((p0 & 3)) {
-          l2147483646 = 0;
         } else {
           if ((p0 === 0)) break block_3;
-          l2147483646 = ((load_u8(p0) & 32) >>> 5);
         }
-        return l2147483646;
+        return ((p0 & 3) ? 0 : ((load_u8(p0) & 32) >>> 5));
       }
     }
     if (((g1 ? l0 : 0) === 0)) {
       runtime_nilPanic();
       if (g1 === 1) {
-        l2147483647 = 0;
+        l2147483646 = 0;
         break block_0;
       }
     }
@@ -3591,9 +3559,9 @@ function _reflect_rawType_isNamed(p0) {
       throw new Error('unreachable');
     }
     throw new Error('unreachable');
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  p0 = l2147483647;
+  p0 = l2147483646;
   store_i32(load_i32(g2), p0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   return 0;
@@ -3774,7 +3742,7 @@ function _reflect_rawType_key(p0) {
 
 // (*reflect.rawType).NumField
 function _reflect_rawType_NumField(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 12) | 0));
     l0 = load_i32(g2);
@@ -3789,7 +3757,6 @@ function _reflect_rawType_NumField(p0) {
     }
     block_3: {
       if (g1) {
-        l2147483646 = 0;
       } else {
         l1 = ((g0 - 32) | 0);
         g0 = l1;
@@ -3798,15 +3765,14 @@ function _reflect_rawType_NumField(p0) {
         l0 = load_i32(138276);
         store_i32(138276, ((l1 + 8) | 0));
         store_i32(l1, l0, 8);
-        l2147483646 = ((p0 === 0) ? 1 : 0);
       }
-      if (((g1 | (l2147483646 | (p0 & 3))) === 0)) {
+      if (((g1 | ((g1 ? 0 : (p0 === 0)) | (p0 & 3))) === 0)) {
         if ((load_u8(p0) & 31) === 26) break block_3;
       }
       if (((g1 ? l3 : 0) === 0)) {
         runtime__panic(128576, 137416);
         if (g1 === 1) {
-          l2147483647 = 0;
+          l2147483646 = 0;
           break block_1;
         }
       }
@@ -3816,7 +3782,7 @@ function _reflect_rawType_NumField(p0) {
     }
     if ((g1 ? l3 === 1 : 1)) {
       if (g1 === 1) {
-        l2147483647 = 1;
+        l2147483646 = 1;
         break block_1;
       }
       p0 = _reflect_rawType_underlying(p0);
@@ -3828,9 +3794,9 @@ function _reflect_rawType_NumField(p0) {
       return load_u16(p0, 16);
     }
     throw new Error('unreachable');
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l2 = l2147483647;
+  l2 = l2147483646;
   store_i32(load_i32(g2), l2);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l2 = load_i32(g2);
@@ -3876,7 +3842,7 @@ function _reflect_rawType_String(p0, p1) {
       l0 = ((g0 - 976) | 0);
       g0 = l0;
       store_i32(l0, 71, 684);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 688) | 0), ((l0 + 688) | 0) + 284);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 688) | 0), 0, 284), go_slice(((l0 + 688) | 0), 0, 284) + );
       l17 = load_i32(138276);
       store_i32(l0, l17, 680);
       l1 = ((l0 + 680) | 0);
@@ -3957,7 +3923,7 @@ function _reflect_rawType_String(p0, p1) {
                           l1 = ((l0 + 72) | 0);
                         }
                         if ((g1 ? l4 === 2 : 1)) {
-                          _reflect_rawType_String(l1, l2);
+                          _reflect_rawType_String(go_string(l1, l2));
                           if (g1 === 1) {
                             l2147483645 = 2;
                             break block_1;
@@ -3988,7 +3954,7 @@ function _reflect_rawType_String(p0, p1) {
                               p1 = ((l0 + 40) | 0);
                             }
                             if ((g1 ? l4 === 3 : 1)) {
-                              runtime_stringConcat(p1, 66583, 7, l2, l8);
+                              runtime_stringConcat(p1, "<-chan ", go_string(l2, l8));
                               if (g1 === 1) {
                                 l2147483645 = 3;
                                 break block_1;
@@ -4011,7 +3977,7 @@ function _reflect_rawType_String(p0, p1) {
                               p1 = ((l0 + 56) | 0);
                             }
                             if ((g1 ? l4 === 4 : 1)) {
-                              runtime_stringConcat(p1, 66590, 6, l2, l8);
+                              runtime_stringConcat(p1, "chan (", go_string(l2, l8));
                               if (g1 === 1) {
                                 l2147483645 = 4;
                                 break block_1;
@@ -4024,7 +3990,7 @@ function _reflect_rawType_String(p0, p1) {
                               p1 = ((l0 + 48) | 0);
                             }
                             if ((g1 ? l4 === 5 : 1)) {
-                              runtime_stringConcat(p1, l2, l1, 66596, 1);
+                              runtime_stringConcat(go_string(p1, l2), l1, ")");
                               if (g1 === 1) {
                                 l2147483645 = 5;
                                 break block_1;
@@ -4038,7 +4004,7 @@ function _reflect_rawType_String(p0, p1) {
                           }
                           p1 = (g1 ? p1 : ((l0 - -64) | 0));
                           if ((g1 ? l4 === 6 : 1)) {
-                            runtime_stringConcat(p1, 66597, 5, l2, l8);
+                            runtime_stringConcat(p1, "chan ", go_string(l2, l8));
                             if (g1 === 1) {
                               l2147483645 = 6;
                               break block_1;
@@ -4076,7 +4042,7 @@ function _reflect_rawType_String(p0, p1) {
                         p1 = ((l0 + 88) | 0);
                       }
                       if ((g1 ? l4 === 9 : 1)) {
-                        _reflect_rawType_String(p1, l2);
+                        _reflect_rawType_String(go_string(p1, l2));
                         if (g1 === 1) {
                           l2147483645 = 9;
                           break block_1;
@@ -4089,7 +4055,7 @@ function _reflect_rawType_String(p0, p1) {
                         p1 = ((l0 + 80) | 0);
                       }
                       if ((g1 ? l4 === 10 : 1)) {
-                        runtime_stringConcat(p1, 66602, 1, l2, l1);
+                        runtime_stringConcat(p1, "*", go_string(l2, l1));
                         if (g1 === 1) {
                           l2147483645 = 10;
                           break block_1;
@@ -4113,7 +4079,7 @@ function _reflect_rawType_String(p0, p1) {
                       p1 = ((l0 + 104) | 0);
                     }
                     if ((g1 ? l4 === 12 : 1)) {
-                      _reflect_rawType_String(p1, l2);
+                      _reflect_rawType_String(go_string(p1, l2));
                       if (g1 === 1) {
                         l2147483645 = 12;
                         break block_1;
@@ -4126,7 +4092,7 @@ function _reflect_rawType_String(p0, p1) {
                       p1 = ((l0 + 96) | 0);
                     }
                     if ((g1 ? l4 === 13 : 1)) {
-                      runtime_stringConcat(p1, 66603, 2, l2, l1);
+                      runtime_stringConcat(p1, "[]", go_string(l2, l1));
                       if (g1 === 1) {
                         l2147483645 = 13;
                         break block_1;
@@ -4147,7 +4113,7 @@ function _reflect_rawType_String(p0, p1) {
                     l3 = _reflect_rawType_Len(p1);
                   }
                   if ((g1 ? l4 === 15 : 1)) {
-                    internal_itoa_Itoa(l1, l3);
+                    internal_itoa_Itoa(go_string(l1, l3));
                     if (g1 === 1) {
                       l2147483645 = 15;
                       break block_1;
@@ -4160,7 +4126,7 @@ function _reflect_rawType_String(p0, p1) {
                     l1 = ((l0 + 136) | 0);
                   }
                   if ((g1 ? l4 === 16 : 1)) {
-                    runtime_stringConcat(l1, 66605, 1, l2, l3);
+                    runtime_stringConcat(l1, "[", go_string(l2, l3));
                     if (g1 === 1) {
                       l2147483645 = 16;
                       break block_1;
@@ -4173,7 +4139,7 @@ function _reflect_rawType_String(p0, p1) {
                     l1 = ((l0 + 128) | 0);
                   }
                   if ((g1 ? l4 === 17 : 1)) {
-                    runtime_stringConcat(l1, l2, l3, 66606, 1);
+                    runtime_stringConcat(go_string(l1, l2), l3, "]");
                     if (g1 === 1) {
                       l2147483645 = 17;
                       break block_1;
@@ -4196,7 +4162,7 @@ function _reflect_rawType_String(p0, p1) {
                     p1 = ((l0 + 120) | 0);
                   }
                   if ((g1 ? l4 === 19 : 1)) {
-                    _reflect_rawType_String(p1, l9);
+                    _reflect_rawType_String(go_string(p1, l9));
                     if (g1 === 1) {
                       l2147483645 = 19;
                       break block_1;
@@ -4209,7 +4175,7 @@ function _reflect_rawType_String(p0, p1) {
                     p1 = ((l0 + 112) | 0);
                   }
                   if ((g1 ? l4 === 20 : 1)) {
-                    runtime_stringConcat(p1, l2, l8, l9, l1);
+                    runtime_stringConcat(go_string(p1, l2), go_string(l8, l9), l1);
                     if (g1 === 1) {
                       l2147483645 = 20;
                       break block_1;
@@ -4233,7 +4199,7 @@ function _reflect_rawType_String(p0, p1) {
                   l1 = ((l0 + 184) | 0);
                 }
                 if ((g1 ? l4 === 22 : 1)) {
-                  _reflect_rawType_String(l1, l2);
+                  _reflect_rawType_String(go_string(l1, l2));
                   if (g1 === 1) {
                     l2147483645 = 22;
                     break block_1;
@@ -4246,7 +4212,7 @@ function _reflect_rawType_String(p0, p1) {
                   l1 = ((l0 + 176) | 0);
                 }
                 if ((g1 ? l4 === 23 : 1)) {
-                  runtime_stringConcat(l1, 96073, 4, l2, l3);
+                  runtime_stringConcat(l1, "map[", go_string(l2, l3));
                   if (g1 === 1) {
                     l2147483645 = 23;
                     break block_1;
@@ -4259,7 +4225,7 @@ function _reflect_rawType_String(p0, p1) {
                   l1 = ((l0 + 168) | 0);
                 }
                 if ((g1 ? l4 === 24 : 1)) {
-                  runtime_stringConcat(l1, l2, l3, 66606, 1);
+                  runtime_stringConcat(go_string(l1, l2), l3, "]");
                   if (g1 === 1) {
                     l2147483645 = 24;
                     break block_1;
@@ -4282,7 +4248,7 @@ function _reflect_rawType_String(p0, p1) {
                   p1 = ((l0 + 160) | 0);
                 }
                 if ((g1 ? l4 === 26 : 1)) {
-                  _reflect_rawType_String(p1, l9);
+                  _reflect_rawType_String(go_string(p1, l9));
                   if (g1 === 1) {
                     l2147483645 = 26;
                     break block_1;
@@ -4295,7 +4261,7 @@ function _reflect_rawType_String(p0, p1) {
                   p1 = ((l0 + 152) | 0);
                 }
                 if ((g1 ? l4 === 27 : 1)) {
-                  runtime_stringConcat(p1, l2, l8, l9, l1);
+                  runtime_stringConcat(go_string(p1, l2), go_string(l8, l9), l1);
                   if (g1 === 1) {
                     l2147483645 = 27;
                     break block_1;
@@ -4337,7 +4303,7 @@ function _reflect_rawType_String(p0, p1) {
                       l1 = ((l0 + 632) | 0);
                     }
                     if ((g1 ? l4 === 29 : 1)) {
-                      _reflect_rawType_rawField(l1, p1, l14);
+                      _reflect_rawType_rawField(go_string(l1, p1), l14);
                       if (g1 === 1) {
                         l2147483645 = 29;
                         break block_1;
@@ -4357,7 +4323,7 @@ function _reflect_rawType_String(p0, p1) {
                       l1 = ((l0 + 624) | 0);
                     }
                     if ((g1 ? l4 === 30 : 1)) {
-                      runtime_stringConcat(l1, 66616, 1, l2, l3);
+                      runtime_stringConcat(l1, " ", go_string(l2, l3));
                       if (g1 === 1) {
                         l2147483645 = 30;
                         break block_1;
@@ -4370,7 +4336,7 @@ function _reflect_rawType_String(p0, p1) {
                       l1 = ((l0 + 616) | 0);
                     }
                     if ((g1 ? l4 === 31 : 1)) {
-                      runtime_stringConcat(l1, l2, l3, 66616, 1);
+                      runtime_stringConcat(go_string(l1, l2), l3, " ");
                       if (g1 === 1) {
                         l2147483645 = 31;
                         break block_1;
@@ -4384,7 +4350,7 @@ function _reflect_rawType_String(p0, p1) {
                       l1 = load_i32(l0, 620);
                     }
                     if ((g1 ? l4 === 32 : 1)) {
-                      _reflect_rawType_String(l3, l10);
+                      _reflect_rawType_String(go_string(l3, l10));
                       if (g1 === 1) {
                         l2147483645 = 32;
                         break block_1;
@@ -4397,7 +4363,7 @@ function _reflect_rawType_String(p0, p1) {
                       l3 = ((l0 + 600) | 0);
                     }
                     if ((g1 ? l4 === 33 : 1)) {
-                      runtime_stringConcat(l3, l2, l1, l10, l5);
+                      runtime_stringConcat(go_string(l3, l2), go_string(l1, l10), l5);
                       if (g1 === 1) {
                         l2147483645 = 33;
                         break block_1;
@@ -4410,7 +4376,7 @@ function _reflect_rawType_String(p0, p1) {
                       l1 = ((l0 + 592) | 0);
                     }
                     if ((g1 ? l4 === 34 : 1)) {
-                      runtime_stringConcat(l1, l12, l13, l2, l3);
+                      runtime_stringConcat(go_string(l1, l12), go_string(l13, l2), l3);
                       if (g1 === 1) {
                         l2147483645 = 34;
                         break block_1;
@@ -4446,7 +4412,7 @@ function _reflect_rawType_String(p0, p1) {
                         l1 = ((l0 + 576) | 0);
                       }
                       if ((g1 ? l4 === 36 : 1)) {
-                        runtime_sliceAppend(l1, l2, l3, 0, l10, 1, 1);
+                        runtime_sliceAppend(go_string(l1, l2), l3, 0, l10, go_string(1, 1));
                         if (g1 === 1) {
                           l2147483645 = 36;
                           break block_1;
@@ -4478,7 +4444,7 @@ function _reflect_rawType_String(p0, p1) {
                                 l1 = ((l0 + 528) | 0);
                               }
                               if ((g1 ? l4 === 37 : 1)) {
-                                unicode_utf8_DecodeRune(l1, l8, l9);
+                                unicode_utf8_DecodeRune(go_string(l1, l8), l9);
                                 if (g1 === 1) {
                                   l2147483645 = 37;
                                   break block_1;
@@ -4494,7 +4460,7 @@ function _reflect_rawType_String(p0, p1) {
                                 l1 = ((l0 + 240) | 0);
                               }
                               if ((g1 ? l4 === 38 : 1)) {
-                                runtime_sliceAppend(l1, l2, 80954, l6, l5, 2, 1);
+                                runtime_sliceAppend(go_string(l1, l2), go_string(80954, l6), l5, go_string(2, 1));
                                 if (g1 === 1) {
                                   l2147483645 = 38;
                                   break block_1;
@@ -4512,7 +4478,7 @@ function _reflect_rawType_String(p0, p1) {
                                 l3 = ((l0 + 224) | 0);
                               }
                               if ((g1 ? l4 === 39 : 1)) {
-                                runtime_sliceAppend(l3, l2, l6, l5, l1, 1, 1);
+                                runtime_sliceAppend(go_string(l3, l2), go_string(l6, l5), l1, go_string(1, 1));
                                 if (g1 === 1) {
                                   l2147483645 = 39;
                                   break block_1;
@@ -4531,7 +4497,7 @@ function _reflect_rawType_String(p0, p1) {
                                 l3 = ((l0 + 208) | 0);
                               }
                               if ((g1 ? l4 === 40 : 1)) {
-                                runtime_sliceAppend(l3, l2, l6, l5, l1, 1, 1);
+                                runtime_sliceAppend(go_string(l3, l2), go_string(l6, l5), l1, go_string(1, 1));
                                 if (g1 === 1) {
                                   l2147483645 = 40;
                                   break block_1;
@@ -4550,7 +4516,7 @@ function _reflect_rawType_String(p0, p1) {
                               l1 = ((l0 + 560) | 0);
                             }
                             if ((g1 ? l4 === 41 : 1)) {
-                              runtime_sliceAppend(l1, l2, l3, l6, l5, 1, 1);
+                              runtime_sliceAppend(go_string(l1, l2), go_string(l3, l6), l5, go_string(1, 1));
                               if (g1 === 1) {
                                 l2147483645 = 41;
                                 break block_1;
@@ -4563,7 +4529,7 @@ function _reflect_rawType_String(p0, p1) {
                               l1 = ((l0 + 552) | 0);
                             }
                             if ((g1 ? l4 === 42 : 1)) {
-                              runtime_stringFromBytes(l1, l2, l3);
+                              runtime_stringFromBytes(go_string(l1, l2), l3);
                               if (g1 === 1) {
                                 l2147483645 = 42;
                                 break block_1;
@@ -4577,7 +4543,7 @@ function _reflect_rawType_String(p0, p1) {
                               l1 = ((l0 + 544) | 0);
                             }
                             if ((g1 ? l4 === 43 : 1)) {
-                              runtime_stringConcat(l1, 66616, 1, l2, l3);
+                              runtime_stringConcat(l1, " ", go_string(l2, l3));
                               if (g1 === 1) {
                                 l2147483645 = 43;
                                 break block_1;
@@ -4590,7 +4556,7 @@ function _reflect_rawType_String(p0, p1) {
                               l1 = ((l0 + 536) | 0);
                             }
                             if ((g1 ? l4 === 44 : 1)) {
-                              runtime_stringConcat(l1, l12, l13, l2, l3);
+                              runtime_stringConcat(go_string(l1, l12), go_string(l13, l2), l3);
                               if (g1 === 1) {
                                 l2147483645 = 44;
                                 break block_1;
@@ -4619,7 +4585,7 @@ function _reflect_rawType_String(p0, p1) {
                                 l3 = ((l0 + 512) | 0);
                               }
                               if ((g1 ? l4 === 45 : 1)) {
-                                runtime_sliceAppend(l3, l2, l11, l6, l5, 1, 1);
+                                runtime_sliceAppend(go_string(l3, l2), go_string(l11, l6), l5, go_string(1, 1));
                                 if (g1 === 1) {
                                   l2147483645 = 45;
                                   break block_1;
@@ -4635,7 +4601,7 @@ function _reflect_rawType_String(p0, p1) {
                                 l1 = ((l0 + 496) | 0);
                               }
                               if ((g1 ? l4 === 46 : 1)) {
-                                runtime_sliceAppend(l1, l2, l3, l5, l6, 1, 1);
+                                runtime_sliceAppend(go_string(l1, l2), go_string(l3, l5), l6, go_string(1, 1));
                                 if (g1 === 1) {
                                   l2147483645 = 46;
                                   break block_1;
@@ -4668,10 +4634,10 @@ function _reflect_rawType_String(p0, p1) {
                                   l2147483645 = 47;
                                   break block_1;
                                 }
-                                l1 = unicode_utf8_EncodeRune(l15, 4, l1);
+                                l1 = unicode_utf8_EncodeRune(l15, go_string(4, l1));
                               }
                               if ((g1 ? l4 === 48 : 1)) {
-                                runtime_sliceAppend(l3, l2, l11, l6, l5, l1, 1);
+                                runtime_sliceAppend(go_string(l3, l2), go_string(l11, l6), go_string(l5, l1), 1);
                                 if (g1 === 1) {
                                   l2147483645 = 48;
                                   break block_1;
@@ -4716,7 +4682,7 @@ function _reflect_rawType_String(p0, p1) {
                                               l1 = ((l0 + 384) | 0);
                                             }
                                             if ((g1 ? l4 === 49 : 1)) {
-                                              runtime_sliceAppend(l1, l2, 80940, l6, l5, 2, 1);
+                                              runtime_sliceAppend(go_string(l1, l2), go_string(80940, l6), l5, go_string(2, 1));
                                               if (g1 === 1) {
                                                 l2147483645 = 49;
                                                 break block_1;
@@ -4731,7 +4697,7 @@ function _reflect_rawType_String(p0, p1) {
                                           }
                                           l1 = (g1 ? l1 : ((l0 + 400) | 0));
                                           if ((g1 ? l4 === 50 : 1)) {
-                                            runtime_sliceAppend(l1, l2, 80942, l6, l5, 2, 1);
+                                            runtime_sliceAppend(go_string(l1, l2), go_string(80942, l6), l5, go_string(2, 1));
                                             if (g1 === 1) {
                                               l2147483645 = 50;
                                               break block_1;
@@ -4746,7 +4712,7 @@ function _reflect_rawType_String(p0, p1) {
                                         }
                                         l1 = (g1 ? l1 : ((l0 + 416) | 0));
                                         if ((g1 ? l4 === 51 : 1)) {
-                                          runtime_sliceAppend(l1, l2, 80944, l6, l5, 2, 1);
+                                          runtime_sliceAppend(go_string(l1, l2), go_string(80944, l6), l5, go_string(2, 1));
                                           if (g1 === 1) {
                                             l2147483645 = 51;
                                             break block_1;
@@ -4761,7 +4727,7 @@ function _reflect_rawType_String(p0, p1) {
                                       }
                                       l1 = (g1 ? l1 : ((l0 + 432) | 0));
                                       if ((g1 ? l4 === 52 : 1)) {
-                                        runtime_sliceAppend(l1, l2, 80946, l6, l5, 2, 1);
+                                        runtime_sliceAppend(go_string(l1, l2), go_string(80946, l6), l5, go_string(2, 1));
                                         if (g1 === 1) {
                                           l2147483645 = 52;
                                           break block_1;
@@ -4776,7 +4742,7 @@ function _reflect_rawType_String(p0, p1) {
                                     }
                                     l1 = (g1 ? l1 : ((l0 + 448) | 0));
                                     if ((g1 ? l4 === 53 : 1)) {
-                                      runtime_sliceAppend(l1, l2, 80948, l6, l5, 2, 1);
+                                      runtime_sliceAppend(go_string(l1, l2), go_string(80948, l6), l5, go_string(2, 1));
                                       if (g1 === 1) {
                                         l2147483645 = 53;
                                         break block_1;
@@ -4791,7 +4757,7 @@ function _reflect_rawType_String(p0, p1) {
                                   }
                                   l1 = (g1 ? l1 : ((l0 + 464) | 0));
                                   if ((g1 ? l4 === 54 : 1)) {
-                                    runtime_sliceAppend(l1, l2, 80950, l6, l5, 2, 1);
+                                    runtime_sliceAppend(go_string(l1, l2), go_string(80950, l6), l5, go_string(2, 1));
                                     if (g1 === 1) {
                                       l2147483645 = 54;
                                       break block_1;
@@ -4806,7 +4772,7 @@ function _reflect_rawType_String(p0, p1) {
                                 }
                                 l1 = (g1 ? l1 : ((l0 + 480) | 0));
                                 if ((g1 ? l4 === 55 : 1)) {
-                                  runtime_sliceAppend(l1, l2, 80952, l6, l5, 2, 1);
+                                  runtime_sliceAppend(go_string(l1, l2), go_string(80952, l6), l5, go_string(2, 1));
                                   if (g1 === 1) {
                                     l2147483645 = 55;
                                     break block_1;
@@ -4829,7 +4795,7 @@ function _reflect_rawType_String(p0, p1) {
                                   l3 = ((l0 + 304) | 0);
                                 }
                                 if ((g1 ? l4 === 56 : 1)) {
-                                  runtime_sliceAppend(l3, l2, 80954, l6, l5, 2, 1);
+                                  runtime_sliceAppend(go_string(l3, l2), go_string(80954, l6), l5, go_string(2, 1));
                                   if (g1 === 1) {
                                     l2147483645 = 56;
                                     break block_1;
@@ -4847,7 +4813,7 @@ function _reflect_rawType_String(p0, p1) {
                                   l3 = ((l0 + 288) | 0);
                                 }
                                 if ((g1 ? l4 === 57 : 1)) {
-                                  runtime_sliceAppend(l3, l2, l5, l11, l6, 1, 1);
+                                  runtime_sliceAppend(go_string(l3, l2), go_string(l5, l11), l6, go_string(1, 1));
                                   if (g1 === 1) {
                                     l2147483645 = 57;
                                     break block_1;
@@ -4865,7 +4831,7 @@ function _reflect_rawType_String(p0, p1) {
                                   l1 = ((l0 + 272) | 0);
                                 }
                                 if ((g1 ? l4 === 58 : 1)) {
-                                  runtime_sliceAppend(l1, l2, l3, l6, l5, 1, 1);
+                                  runtime_sliceAppend(go_string(l1, l2), go_string(l3, l6), l5, go_string(1, 1));
                                   if (g1 === 1) {
                                     l2147483645 = 58;
                                     break block_1;
@@ -4893,7 +4859,7 @@ function _reflect_rawType_String(p0, p1) {
                                   l3 = ((l0 + 368) | 0);
                                 }
                                 if ((g1 ? l4 === 59 : 1)) {
-                                  runtime_sliceAppend(l3, l2, 80958, l6, l5, 2, 1);
+                                  runtime_sliceAppend(go_string(l3, l2), go_string(80958, l6), l5, go_string(2, 1));
                                   if (g1 === 1) {
                                     l2147483645 = 59;
                                     break block_1;
@@ -4918,7 +4884,7 @@ function _reflect_rawType_String(p0, p1) {
                                     l3 = ((l0 + 352) | 0);
                                   }
                                   if ((g1 ? l4 === 60 : 1)) {
-                                    runtime_sliceAppend(l3, l2, l15, l6, l5, 1, 1);
+                                    runtime_sliceAppend(go_string(l3, l2), go_string(l15, l6), l5, go_string(1, 1));
                                     if (g1 === 1) {
                                       l2147483645 = 60;
                                       break block_1;
@@ -4937,7 +4903,7 @@ function _reflect_rawType_String(p0, p1) {
                               }
                               l1 = (g1 ? l1 : ((l0 + 336) | 0));
                               if ((g1 ? l4 === 61 : 1)) {
-                                runtime_sliceAppend(l1, l2, 80956, l6, l5, 2, 1);
+                                runtime_sliceAppend(go_string(l1, l2), go_string(80956, l6), l5, go_string(2, 1));
                                 if (g1 === 1) {
                                   l2147483645 = 61;
                                   break block_1;
@@ -4962,7 +4928,7 @@ function _reflect_rawType_String(p0, p1) {
                                   l11 = ((l0 + 320) | 0);
                                 }
                                 if ((g1 ? l4 === 62 : 1)) {
-                                  runtime_sliceAppend(l11, l2, l15, l6, l5, 1, 1);
+                                  runtime_sliceAppend(go_string(l11, l2), go_string(l15, l6), l5, go_string(1, 1));
                                   if (g1 === 1) {
                                     l2147483645 = 62;
                                     break block_1;
@@ -5012,7 +4978,7 @@ function _reflect_rawType_String(p0, p1) {
                   }
                   p1 = (g1 ? p1 : ((l0 + 192) | 0));
                   if ((g1 ? l4 === 64 : 1)) {
-                    runtime_stringConcat(p1, l12, l13, 66617, 2);
+                    runtime_stringConcat(go_string(p1, l12), l13, " }");
                     if (g1 === 1) {
                       l2147483645 = 64;
                       break block_1;
@@ -5034,7 +5000,7 @@ function _reflect_rawType_String(p0, p1) {
                     l1 = ((l0 + 200) | 0);
                   }
                   if ((g1 ? l4 === 65 : 1)) {
-                    runtime_stringConcat(l1, l12, l13, 127881, 1);
+                    runtime_stringConcat(go_string(l1, l12), l13, ";");
                     if (g1 === 1) {
                       l2147483645 = 65;
                       break block_1;
@@ -5067,7 +5033,7 @@ function _reflect_rawType_String(p0, p1) {
           }
           p1 = (g1 ? p1 : ((l0 + 32) | 0));
           if ((g1 ? l4 === 67 : 1)) {
-            runtime_stringConcat(p1, 66576, 7, l2, l8);
+            runtime_stringConcat(p1, "chan<- ", go_string(l2, l8));
             if (g1 === 1) {
               l2147483645 = 67;
               break block_1;
@@ -5092,7 +5058,7 @@ function _reflect_rawType_String(p0, p1) {
       }
       p1 = (g1 ? p1 : ((l0 + 16) | 0));
       if ((g1 ? l4 === 69 : 1)) {
-        _reflect_Kind_String(p1, l9);
+        _reflect_Kind_String(go_string(p1, l9));
         if (g1 === 1) {
           l2147483645 = 69;
           break block_1;
@@ -5374,7 +5340,7 @@ function _reflect_Kind_String(p0, p1) {
         p1 = (p1 << 24) >> 24;
       }
       if (((g1 ? l5 : 0) === 0)) {
-        internal_itoa_Itoa(l0, p1);
+        internal_itoa_Itoa(go_string(l0, p1));
         if (g1 === 1) {
           l2147483645 = 0;
           break block_1;
@@ -5386,7 +5352,7 @@ function _reflect_Kind_String(p0, p1) {
         p1 = load_i32(l2, 12);
       }
       if ((g1 ? l5 === 1 : 1)) {
-        runtime_stringConcat(l2, 66420, 4, l0, p1);
+        runtime_stringConcat(l2, "kind", go_string(l0, p1));
         if (g1 === 1) {
           l2147483645 = 1;
           break block_1;
@@ -5449,7 +5415,7 @@ function _reflect_rawType_rawField(p0, p1, p2) {
       l0 = ((g0 - 112) | 0);
       g0 = l0;
       store_i32(l0, 20, 28);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 32) | 0), ((l0 + 32) | 0) + 80);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 32) | 0), 0, 80), go_slice(((l0 + 32) | 0), 0, 80) + );
       l12 = load_i32(138276);
       store_i32(l0, l12, 24);
       store_i32(138276, ((l0 + 24) | 0));
@@ -5634,7 +5600,7 @@ function _reflect_rawType_rawField(p0, p1, p2) {
 
 // runtime.alloc
 function runtime_alloc(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l2147483645, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l2147483645, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 32) | 0));
     p1 = load_i32(g2);
@@ -5787,11 +5753,9 @@ function runtime_alloc(p0, p1) {
                       }
                     }
                     if (g1) {
-                      l2147483647 = l1;
                     } else {
-                      l2147483647 = load_i32(138224);
                     }
-                    l1 = l2147483647;
+                    l1 = (g1 ? l1 : load_i32(138224));
                   }
                   if ((g1 === 0)) {
                     l0 = ((l0 + 1) | 0);
@@ -5810,12 +5774,10 @@ function runtime_alloc(p0, p1) {
           if ((g1 === 0)) {
             block_36: {
               if (load_i32(138224) === l3) {
-                l2147483648 = 0;
               } else {
                 if (((_runtime_gcBlock_state(l3) & 255) === 0)) break block_36;
-                l2147483648 = ((l3 + 1) | 0);
               }
-              l3 = l2147483648;
+              l3 = ((load_i32(138224) === l3 ? 1 : 0) ? 0 : ((l3 + 1) | 0));
               l6 = 0;
               break block_6;
             }
@@ -5846,7 +5808,7 @@ function runtime_alloc(p0, p1) {
           }
         }
         if ((g1 ? l2 === 3 : 1)) {
-          runtime_runtimePanicAt(91254, 13);
+          runtime_runtimePanicAt("out of memory");
           if (g1 === 1) {
             l2147483645 = 3;
             break block_1;
@@ -5893,7 +5855,7 @@ function runtime_unsafeSlicePanic() {
 
 // interface:{Align:func:{}{basic:int},AssignableTo:func:{named:reflect.Type}{basic:bool},Bits:func:{}{basic:int},ChanDir:func:{}{named:reflect.ChanDir},Comparable:func:{}{basic:bool},ConvertibleTo:func:{named:reflect.Type}{basic:bool},Elem:func:{}{named:reflect.Type},Field:func:{basic:int}{named:reflect.StructField},FieldAlign:func:{}{basic:int},FieldByIndex:func:{slice:basic:int}{named:reflect.StructField},FieldByName:func:{basic:string}{named:reflect.StructField,basic:bool},FieldByNameFunc:func:{func:{basic:string}{basic:bool}}{named:reflect.StructField,basic:bool},Implements:func:{named:reflect.Type}{basic:bool},In:func:{basic:int}{named:reflect.Type},IsVariadic:func:{}{basic:bool},Key:func:{}{named:reflect.Type},Kind:func:{}{named:reflect.Kind},Len:func:{}{basic:int},Method:func:{basic:int}{named:reflect.Method},MethodByName:func:{basic:string}{named:reflect.Method,basic:bool},Name:func:{}{basic:string},NumField:func:{}{basic:int},NumIn:func:{}{basic:int},NumMethod:func:{}{basic:int},NumOut:func:{}{basic:int},Out:func:{basic:int}{named:reflect.Type},OverflowComplex:func:{basic:complex128}{basic:bool},OverflowFloat:func:{basic:float64}{basic:bool},OverflowInt:func:{basic:int64}{basic:bool},OverflowUint:func:{basic:uint64}{basic:bool},PkgPath:func:{}{basic:string},Size:func:{}{basic:uintptr},String:func:{}{basic:string}}.Kind$invoke
 function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(p0, p1) {
-  let l0 = 0, l2147483645, l2147483646;
+  let l0 = 0, l2147483645;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
@@ -5904,16 +5866,14 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
         return 0;
       }
       if ((p0 & 3)) {
-        l2147483645 = 21;
       } else {
-        l2147483645 = (load_u8(p0) & 31);
       }
-      return l2147483645;
+      return ((p0 & 3) ? 21 : (load_u8(p0) & 31));
     }
     if (((g1 ? l0 : 0) === 0)) {
       runtime_nilPanic();
       if (g1 === 1) {
-        l2147483646 = 0;
+        l2147483645 = 0;
         break block_0;
       }
     }
@@ -5921,9 +5881,9 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
       throw new Error('unreachable');
     }
     throw new Error('unreachable');
-    l2147483646 = 0;
+    l2147483645 = 0;
   }
-  p0 = l2147483646;
+  p0 = l2147483645;
   store_i32(load_i32(g2), p0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   return 0;
@@ -5931,17 +5891,15 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
 
 // (reflect.Value).Kind
 function _reflect_Value_Kind(p0) {
-  let l0 = 0, l2147483646;
+  let l0 = 0;
   if ((p0 === 0)) {
     return 0;
   }
   l0 = 21;
   if ((p0 & 3)) {
-    l2147483646 = 21;
   } else {
-    l2147483646 = (load_u8(p0) & 31);
   }
-  return l2147483646;
+  return ((p0 & 3) ? 21 : (load_u8(p0) & 31));
 }
 
 // (reflect.Value).Len
@@ -6047,7 +6005,7 @@ function _reflect_Value_Len(p0, p1, p2) {
             l2147483644 = 1;
             break block_1;
           }
-          l0 = runtime_alloc(12, 71);
+          l0 = runtime_alloc(go_string(12, 71));
         }
         if ((g1 === 0)) {
           store_i32(l2, l0, 24);
@@ -6058,7 +6016,7 @@ function _reflect_Value_Len(p0, p1, p2) {
           store_i32(l0, 66970);
         }
         if ((g1 ? l3 === 2 : 1)) {
-          runtime__panic(128592, l0);
+          runtime__panic(go_string(128592, l0));
           if (g1 === 1) {
             l2147483644 = 2;
             break block_1;
@@ -6117,7 +6075,7 @@ function _reflect_Value_Index(p0, p1, p2, p3, p4) {
       l2 = ((g0 - 112) | 0);
       g0 = l2;
       store_i32(l2, 23, 12);
-      new Uint8Array(memory.buffer).fill(0, ((l2 + 16) | 0), ((l2 + 16) | 0) + 92);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l2 + 16) | 0), 0, 92), go_slice(((l2 + 16) | 0), 0, 92) + );
       l6 = load_i32(138276);
       store_i32(l2, l6, 8);
       store_i32(138276, ((l2 + 8) | 0));
@@ -6257,7 +6215,7 @@ function _reflect_Value_Index(p0, p1, p2, p3, p4) {
                 if ((((l4 === 0) & u32(l5) <= 4) === 0)) {
                   p2 = ((Math.imul(p4, l1) + p2) | 0);
                   if (l4) break block_5;
-                  p2 = reflect_loadValue(p2, l1);
+                  p2 = reflect_loadValue(go_string(p2, l1));
                   store_i32(l2, p2, 84);
                   break block_5;
                 }
@@ -6278,7 +6236,7 @@ function _reflect_Value_Index(p0, p1, p2, p3, p4) {
                 l2147483642 = 8;
                 break block_1;
               }
-              p0 = runtime_alloc(12, 71);
+              p0 = runtime_alloc(go_string(12, 71));
             }
             if ((g1 === 0)) {
               store_i32(l2, p0, 100);
@@ -6289,7 +6247,7 @@ function _reflect_Value_Index(p0, p1, p2, p3, p4) {
               store_i32(p0, 66888);
             }
             if ((g1 ? l3 === 9 : 1)) {
-              runtime__panic(128592, p0);
+              runtime__panic(go_string(128592, p0));
               if (g1 === 1) {
                 l2147483642 = 9;
                 break block_1;
@@ -6451,7 +6409,7 @@ function _reflect_Value_IsNil(p0, p1, p2) {
                 l2147483644 = 0;
                 break block_1;
               }
-              p1 = runtime_alloc(12, 71);
+              p1 = runtime_alloc(go_string(12, 71));
             }
             if ((g1 === 0)) {
               store_i32(l0, p1, 24);
@@ -6462,7 +6420,7 @@ function _reflect_Value_IsNil(p0, p1, p2) {
               store_i32(p1, 66944);
             }
             if ((g1 ? l2 === 1 : 1)) {
-              runtime__panic(128592, p1);
+              runtime__panic(go_string(128592, p1));
               if (g1 === 1) {
                 l2147483644 = 1;
                 break block_1;
@@ -6562,7 +6520,7 @@ function _reflect_Value_UnsafePointer(p0, p1, p2) {
                 l2147483644 = 0;
                 break block_1;
               }
-              l1 = runtime_alloc(12, 71);
+              l1 = runtime_alloc(go_string(12, 71));
             }
             if ((g1 === 0)) {
               store_i32(l0, l1, 24);
@@ -6573,7 +6531,7 @@ function _reflect_Value_UnsafePointer(p0, p1, p2) {
               store_i32(l1, 66993);
             }
             if ((g1 ? l3 === 1 : 1)) {
-              runtime__panic(128592, l1);
+              runtime__panic(go_string(128592, l1));
               if (g1 === 1) {
                 l2147483644 = 1;
                 break block_1;
@@ -6622,7 +6580,7 @@ function _reflect_Value_UnsafePointer(p0, p1, p2) {
 
 // (reflect.Value).Elem
 function _reflect_Value_Elem(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 28) | 0));
     p1 = load_i32(g2);
@@ -6643,7 +6601,7 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
       l2 = (g0 - 64);
       g0 = l2;
       store_i32(l2, 13, 4);
-      new Uint8Array(memory.buffer).fill(0, ((l2 + 8) | 0), ((l2 + 8) | 0) + 52);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l2 + 8) | 0), 0, 52), go_slice(((l2 + 8) | 0), 0, 52) + );
       l4 = load_i32(138276);
       store_i32(l2, l4);
       store_i32(138276, l2);
@@ -6669,11 +6627,9 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
               }
             }
             if ((p3 & 1)) {
-              l2147483643 = load_i32(p2);
             } else {
-              l2147483643 = p2;
             }
-            l0 = l2147483643;
+            l0 = ((p3 & 1) ? load_i32(p2) : p2);
             store_i32(l2, l0, 8);
             store_i32(l2, l0, 20);
             if ((l0 === 0)) {
@@ -6687,7 +6643,7 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
           }
           if (((g1 ? l3 : 0) === 0)) {
             if (g1 === 1) {
-              l2147483644 = 0;
+              l2147483643 = 0;
               break block_1;
             }
             p1 = _reflect_rawType_elem(p1);
@@ -6703,10 +6659,10 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
       }
       if ((g1 ? l3 === 1 : 1)) {
         if (g1 === 1) {
-          l2147483644 = 1;
+          l2147483643 = 1;
           break block_1;
         }
-        l0 = runtime_alloc(12, 71);
+        l0 = runtime_alloc(go_string(12, 71));
       }
       if ((g1 === 0)) {
         store_i32(l2, l0, 52);
@@ -6717,9 +6673,9 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
         store_i32(l0, 66782);
       }
       if ((g1 ? l3 === 2 : 1)) {
-        runtime__panic(128592, l0);
+        runtime__panic(go_string(128592, l0));
         if (g1 === 1) {
-          l2147483644 = 2;
+          l2147483643 = 2;
           break block_1;
         }
       }
@@ -6735,9 +6691,9 @@ function _reflect_Value_Elem(p0, p1, p2, p3) {
       g0 = ((l2 - -64) | 0);
     }
     return;
-    l2147483644 = 0;
+    l2147483643 = 0;
   }
-  l1 = l2147483644;
+  l1 = l2147483643;
   store_i32(load_i32(g2), l1);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l1 = load_i32(g2);
@@ -6778,7 +6734,7 @@ function _reflect_Value_Field(p0, p1, p2, p3, p4) {
       l0 = ((g0 - 112) | 0);
       g0 = l0;
       store_i32(l0, 15, 44);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 48) | 0), ((l0 + 48) | 0) + 60);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 48) | 0), 0, 60), go_slice(((l0 + 48) | 0), 0, 60) + );
       l6 = load_i32(138276);
       store_i32(l0, l6, 40);
       store_i32(138276, ((l0 + 40) | 0));
@@ -6794,7 +6750,7 @@ function _reflect_Value_Field(p0, p1, p2, p3, p4) {
           if (l2) break block_5;
         }
         if (((g1 ? l3 : 0) === 0)) {
-          _reflect_rawType_rawField(l0, p1, p4);
+          _reflect_rawType_rawField(go_string(l0, p1), p4);
           if (g1 === 1) {
             l2147483642 = 0;
             break block_1;
@@ -6857,7 +6813,7 @@ function _reflect_Value_Field(p0, p1, p2, p3, p4) {
           l2147483642 = 3;
           break block_1;
         }
-        p4 = runtime_alloc(12, 71);
+        p4 = runtime_alloc(go_string(12, 71));
       }
       if ((g1 === 0)) {
         store_i32(l0, p4, 48);
@@ -6868,7 +6824,7 @@ function _reflect_Value_Field(p0, p1, p2, p3, p4) {
         store_i32(p4, 66786);
       }
       if ((g1 ? l3 === 4 : 1)) {
-        runtime__panic(128592, p4);
+        runtime__panic(go_string(128592, p4));
         if (g1 === 1) {
           l2147483642 = 4;
           break block_1;
@@ -7088,7 +7044,7 @@ function reflect_New(p0, p1) {
 
 // reflect.pointerTo
 function reflect_pointerTo(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 16) | 0));
     l0 = load_i32(g2);
@@ -7156,11 +7112,9 @@ function reflect_pointerTo(p0) {
         }
       }
       if (g1) {
-        l2147483648 = p0;
       } else {
-        l2147483648 = load_i32(p0, 4);
       }
-      l2147483647 = l2147483648;
+      l2147483647 = (g1 ? p0 : load_i32(p0, 4));
     }
     p0 = l2147483647;
     if ((g1 === 0)) {
@@ -7218,7 +7172,7 @@ function _reflect_Value_Interface(p0, p1, p2, p3) {
         l3 = ((l2 + 8) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        reflect_valueInterfaceUnsafe(l3, p1, p2, p3);
+        reflect_valueInterfaceUnsafe(go_string(l3, p1), go_string(p2, p3));
         if (g1 === 1) {
           l2147483643 = 0;
           break block_1;
@@ -7350,7 +7304,7 @@ function runtime_interfaceTypeAssert(p0) {
       return;
     }
     if (((g1 ? l0 : 0) === 0)) {
-      runtime_runtimePanic(91295, 18);
+      runtime_runtimePanic("type assert failed");
       if (g1 === 1) {
         l2147483646 = 0;
         break block_0;
@@ -7410,7 +7364,7 @@ function _reflect_Value_Bool(p0, p1, p2) {
           l2147483644 = 0;
           break block_1;
         }
-        l1 = runtime_alloc(12, 71);
+        l1 = runtime_alloc(go_string(12, 71));
       }
       if ((g1 === 0)) {
         store_i32(l0, l1, 8);
@@ -7421,7 +7375,7 @@ function _reflect_Value_Bool(p0, p1, p2) {
         store_i32(l1, 66766);
       }
       if ((g1 ? l2 === 1 : 1)) {
-        runtime__panic(128592, l1);
+        runtime__panic(go_string(128592, l1));
         if (g1 === 1) {
           l2147483644 = 1;
           break block_1;
@@ -7473,7 +7427,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
       l1 = ((g0 - 48) | 0);
       g0 = l1;
       store_i32(l1, 9, 4);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 8) | 0), ((l1 + 8) | 0) + 36);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 8) | 0), 0, 36), go_slice(((l1 + 8) | 0), 0, 36) + );
       l4 = load_i32(138276);
       store_i32(l1, l4);
       store_i32(138276, l1);
@@ -7539,7 +7493,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
                     l2147483643 = 2;
                     break block_1;
                   }
-                  p1 = _reflect_Value_Len(p1, p2, p3);
+                  p1 = _reflect_Value_Len(go_string(p1, p2), p3);
                 }
                 if ((g1 === 0)) {
                   if (p1 < 0) break block_7;
@@ -7561,7 +7515,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
                 l2147483643 = 3;
                 break block_1;
               }
-              p2 = runtime_alloc(12, 71);
+              p2 = runtime_alloc(go_string(12, 71));
             }
             if ((g1 === 0)) {
               store_i32(l1, p2, 36);
@@ -7571,7 +7525,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
               store_i32(p2, 66770);
             }
             if ((g1 ? l3 === 4 : 1)) {
-              runtime__panic(128592, p2);
+              runtime__panic(go_string(128592, p2));
               if (g1 === 1) {
                 l2147483643 = 4;
                 break block_1;
@@ -7608,7 +7562,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
           l2147483643 = 7;
           break block_1;
         }
-        p2 = runtime_alloc(12, 71);
+        p2 = runtime_alloc(go_string(12, 71));
       }
       if ((g1 === 0)) {
         store_i32(l1, p2, 28);
@@ -7618,7 +7572,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
         store_i32(p2, 66770);
       }
       if ((g1 ? l3 === 8 : 1)) {
-        runtime__panic(128592, p2);
+        runtime__panic(go_string(128592, p2));
         if (g1 === 1) {
           l2147483643 = 8;
           break block_1;
@@ -7633,7 +7587,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
         l2147483643 = 9;
         break block_1;
       }
-      p2 = runtime_alloc(12, 71);
+      p2 = runtime_alloc(go_string(12, 71));
     }
     if ((g1 === 0)) {
       store_i32(l1, p2, 12);
@@ -7643,7 +7597,7 @@ function _reflect_Value_Bytes(p0, p1, p2, p3) {
       store_i32(p2, 66770);
     }
     if ((g1 ? l3 === 10 : 1)) {
-      runtime__panic(128592, p2);
+      runtime__panic(go_string(128592, p2));
       if (g1 === 1) {
         l2147483643 = 10;
         break block_1;
@@ -7769,7 +7723,7 @@ function _reflect_Value_Float(p0, p1, p2) {
         l2147483645 = 0;
         break block_1;
       }
-      l1 = runtime_alloc(12, 71);
+      l1 = runtime_alloc(go_string(12, 71));
     }
     if ((g1 === 0)) {
       store_i32(l0, l1, 8);
@@ -7779,7 +7733,7 @@ function _reflect_Value_Float(p0, p1, p2) {
       store_i32(l1, 66791);
     }
     if ((g1 ? l2 === 1 : 1)) {
-      runtime__panic(128592, l1);
+      runtime__panic(go_string(128592, l1));
       if (g1 === 1) {
         l2147483645 = 1;
         break block_1;
@@ -7885,7 +7839,7 @@ function _reflect_Value_Uint(p0, p1, p2) {
             l2147483645 = 0;
             break block_1;
           }
-          l0 = runtime_alloc(12, 71);
+          l0 = runtime_alloc(go_string(12, 71));
         }
         if ((g1 === 0)) {
           store_i32(l1, l0, 8);
@@ -7895,7 +7849,7 @@ function _reflect_Value_Uint(p0, p1, p2) {
           store_i32(l0, 66989);
         }
         if ((g1 ? l2 === 1 : 1)) {
-          runtime__panic(128592, l0);
+          runtime__panic(go_string(128592, l0));
           if (g1 === 1) {
             l2147483645 = 1;
             break block_1;
@@ -8012,7 +7966,7 @@ function _reflect_Value_Int(p0, p1, p2) {
             l2147483645 = 0;
             break block_1;
           }
-          l0 = runtime_alloc(12, 71);
+          l0 = runtime_alloc(go_string(12, 71));
         }
         if ((g1 === 0)) {
           store_i32(l1, l0, 8);
@@ -8022,7 +7976,7 @@ function _reflect_Value_Int(p0, p1, p2) {
           store_i32(l0, 66893);
         }
         if ((g1 ? l2 === 1 : 1)) {
-          runtime__panic(128592, l0);
+          runtime__panic(go_string(128592, l0));
           if (g1 === 1) {
             l2147483645 = 1;
             break block_1;
@@ -8112,7 +8066,7 @@ function _reflect_Value_Complex(p0, p1, p2) {
           l2147483644 = 0;
           break block_1;
         }
-        l0 = runtime_alloc(12, 71);
+        l0 = runtime_alloc(go_string(12, 71));
       }
       if ((g1 === 0)) {
         store_i32(l1, l0, 8);
@@ -8123,7 +8077,7 @@ function _reflect_Value_Complex(p0, p1, p2) {
         store_i32(l0, 66775);
       }
       if ((g1 ? l2 === 1 : 1)) {
-        runtime__panic(128592, l0);
+        runtime__panic(go_string(128592, l0));
         if (g1 === 1) {
           l2147483644 = 1;
           break block_1;
@@ -8182,7 +8136,7 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
         p2 = ((l0 + 8) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        _reflect_rawType_String(p2, p1);
+        _reflect_rawType_String(go_string(p2, p1));
         if (g1 === 1) {
           l2147483644 = 0;
           break block_1;
@@ -8248,7 +8202,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
       l0 = ((g0 - 160) | 0);
       g0 = l0;
       store_i32(l0, 13, 100);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 104) | 0), ((l0 + 104) | 0) + 52);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 104) | 0), 0, 52), go_slice(((l0 + 104) | 0), 0, 52) + );
       l8 = load_i32(138276);
       store_i32(l0, l8, 96);
       store_i32(138276, ((l0 + 96) | 0));
@@ -8336,7 +8290,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                             l2147483644 = 0;
                             break block_1;
                           }
-                          p0 = _reflect_Value_Bool(p0, p1, p2);
+                          p0 = _reflect_Value_Bool(go_string(p0, p1), p2);
                         }
                         if ((g1 === 0)) {
                           l2 = (p0 ^ 1);
@@ -8348,10 +8302,10 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                           l2147483644 = 1;
                           break block_1;
                         }
-                        l9 = _reflect_Value_Int(p0, p1, p2);
+                        l9 = _reflect_Value_Int(go_string(p0, p1), p2);
                       }
                       if ((g1 === 0)) {
-                        l2 = ((l9 === 0n) ? 1 : 0);
+                        l2 = ((l9 === 0) ? 1 : 0);
                         break block_4;
                       }
                     }
@@ -8360,10 +8314,10 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                         l2147483644 = 2;
                         break block_1;
                       }
-                      l9 = _reflect_Value_Uint(p0, p1, p2);
+                      l9 = _reflect_Value_Uint(go_string(p0, p1), p2);
                     }
                     if ((g1 === 0)) {
-                      l2 = ((l9 === 0n) ? 1 : 0);
+                      l2 = ((l9 === 0) ? 1 : 0);
                       break block_4;
                     }
                   }
@@ -8372,7 +8326,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                       l2147483644 = 3;
                       break block_1;
                     }
-                    l11 = _reflect_Value_Float(p0, p1, p2);
+                    l11 = _reflect_Value_Float(go_string(p0, p1), p2);
                   }
                   if ((g1 === 0)) {
                     l2 = (l11 === 0 ? 1 : 0);
@@ -8380,7 +8334,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                   }
                 }
                 if ((g1 ? l4 === 4 : 1)) {
-                  _reflect_Value_Complex(l0, p0, p1);
+                  _reflect_Value_Complex(go_string(l0, p0), p1);
                   if (g1 === 1) {
                     l2147483644 = 4;
                     break block_1;
@@ -8398,7 +8352,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                     l2147483644 = 5;
                     break block_1;
                   }
-                  l2 = _reflect_Value_Len(p0, p1, p2);
+                  l2 = _reflect_Value_Len(go_string(p0, p1), p2);
                 }
                 if ((g1 === 0)) {
                   l2 = (l2 <= l5 ? 1 : 0);
@@ -8406,7 +8360,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                   l3 = ((l0 + 16) | 0);
                 }
                 if ((g1 ? l4 === 6 : 1)) {
-                  _reflect_Value_Index(l3, p0, p1, p2, l5);
+                  _reflect_Value_Index(go_string(l3, p0), go_string(p1, p2), l5);
                   if (g1 === 1) {
                     l2147483644 = 6;
                     break block_1;
@@ -8425,7 +8379,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                     l2147483644 = 7;
                     break block_1;
                   }
-                  l3 = _reflect_Value_IsZero(l6, l3, l7);
+                  l3 = _reflect_Value_IsZero(go_string(l6, l3), l7);
                 }
                 if ((g1 === 0)) {
                   l3 = (l3 & 1);
@@ -8440,7 +8394,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
                 l2147483644 = 8;
                 break block_1;
               }
-              l2 = _reflect_Value_IsNil(p0, p1, p2);
+              l2 = _reflect_Value_IsNil(go_string(p0, p1), p2);
             }
             if ((g1 === 0)) break block_4;
           }
@@ -8449,7 +8403,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
               l2147483644 = 9;
               break block_1;
             }
-            p0 = _reflect_Value_Len(p0, p1, p2);
+            p0 = _reflect_Value_Len(go_string(p0, p1), p2);
           }
           if ((g1 === 0)) {
             l2 = ((p0 === 0) ? 1 : 0);
@@ -8471,7 +8425,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
             l3 = ((l0 + 80) | 0);
           }
           if ((g1 ? l4 === 11 : 1)) {
-            _reflect_Value_Field(l3, p0, p1, p2, l5);
+            _reflect_Value_Field(go_string(l3, p0), go_string(p1, p2), l5);
             if (g1 === 1) {
               l2147483644 = 11;
               break block_1;
@@ -8489,7 +8443,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
               l2147483644 = 12;
               break block_1;
             }
-            l3 = _reflect_Value_IsZero(l6, l3, l7);
+            l3 = _reflect_Value_IsZero(go_string(l6, l3), l7);
           }
           l3 = (g1 ? l3 : (l3 & 1));
           block_44: {
@@ -8499,7 +8453,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
               l3 = ((l0 + 32) | 0);
             }
             if ((g1 ? l4 === 13 : 1)) {
-              interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(l3, p0, l5, 128608);
+              interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(go_string(l3, p0), l5, 128608);
               if (g1 === 1) {
                 l2147483644 = 13;
                 break block_1;
@@ -8514,7 +8468,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
               l3 = load_i32(l0, 32);
               store_i32(l0, l3, 124);
               l6 = load_i32(l0, 36);
-              l3 = (((runtime_stringEqual(l3, l6, 66949, 1) & 1) === 0) ? 1 : 0);
+              l3 = (((runtime_stringEqual(go_string(l3, l6), "_") & 1) === 0) ? 1 : 0);
               if (l3) break block_4;
             }
           }
@@ -8530,7 +8484,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
           l2147483644 = 14;
           break block_1;
         }
-        p1 = runtime_alloc(12, 71);
+        p1 = runtime_alloc(go_string(12, 71));
       }
       if ((g1 === 0)) {
         store_i32(l0, p1, 148);
@@ -8540,7 +8494,7 @@ function _reflect_Value_IsZero(p0, p1, p2) {
         store_i32(p1, 66950);
       }
       if ((g1 ? l4 === 15 : 1)) {
-        runtime__panic(128592, p1);
+        runtime__panic(go_string(128592, p1));
         if (g1 === 1) {
           l2147483644 = 15;
           break block_1;
@@ -8607,7 +8561,7 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
       l0 = ((g0 - 112) | 0);
       g0 = l0;
       store_i32(l0, 15, 44);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 48) | 0), ((l0 + 48) | 0) + 60);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 48) | 0), 0, 60), go_slice(((l0 + 48) | 0), 0, 60) + );
       l6 = load_i32(138276);
       store_i32(l0, l6, 40);
       l2 = ((l0 + 40) | 0);
@@ -8616,7 +8570,7 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
     }
     if ((p3 ? g1 : 1)) {
       if (((g1 ? l5 : 0) === 0)) {
-        _reflect_rawType_rawField(l0, p1, p2);
+        _reflect_rawType_rawField(go_string(l0, p1), p2);
         if (g1 === 1) {
           l2147483643 = 0;
           break block_1;
@@ -8650,7 +8604,7 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
           l2147483643 = 1;
           break block_1;
         }
-        l4 = runtime_alloc(4, 3);
+        l4 = runtime_alloc(go_string(4, 3));
       }
       if ((g1 === 0)) {
         store_i32(138276, l6);
@@ -8706,21 +8660,21 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
 // runtime.stringEqual
 function runtime_stringEqual(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643, l2147483644;
-  block_0: {
-    if (p1 !== p3) break block_0;
-    p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
-    loop_1: while (true) {
-      l0 = ((p1 === 0) ? 1 : 0);
-      if ((p1 === 0)) break block_0;
-      p1 = ((p1 - 1) | 0);
-      l2147483643 = p2;
-      p2 = ((p2 + 1) | 0);
-      l2147483644 = p0;
-      p0 = ((p0 + 1) | 0);
-      if (load_u8(l2147483643) === load_u8(l2147483644)) continue loop_1;
-      break;
-    }
+  if (p1 !== p3) {
+    return l0;
   }
+  p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
+  do {
+    l0 = ((p1 === 0) ? 1 : 0);
+    if ((p1 === 0)) {
+      return l0;
+    }
+    p1 = ((p1 - 1) | 0);
+    l2147483643 = p2;
+    p2 = ((p2 + 1) | 0);
+    l2147483644 = p0;
+    p0 = ((p0 + 1) | 0);
+  } while (load_u8(l2147483643) === load_u8(l2147483644));
   return l0;
 }
 
@@ -8860,7 +8814,7 @@ function _reflect_Value_MapRange(p0, p1, p2) {
             l2147483644 = 2;
             break block_1;
           }
-          l0 = runtime_alloc(12, 71);
+          l0 = runtime_alloc(go_string(12, 71));
         }
         if ((g1 === 0)) {
           store_i32(l3, l0, 16);
@@ -8871,7 +8825,7 @@ function _reflect_Value_MapRange(p0, p1, p2) {
           store_i32(l0, 66973);
         }
         if ((g1 ? l5 === 3 : 1)) {
-          runtime__panic(128592, l0);
+          runtime__panic(go_string(128592, l0));
           if (g1 === 1) {
             l2147483644 = 3;
             break block_1;
@@ -8907,7 +8861,7 @@ function _reflect_Value_MapRange(p0, p1, p2) {
         l2147483644 = 6;
         break block_1;
       }
-      l2 = runtime_alloc(24, 1101);
+      l2 = runtime_alloc(go_string(24, 1101));
     }
     if ((g1 === 0)) {
       store_i8(l0, p2, 8);
@@ -8968,7 +8922,7 @@ function _reflect_Value_Pointer(p0, p1, p2) {
         l2147483644 = 0;
         break block_1;
       }
-      p2 = _reflect_Value_UnsafePointer(p0, p1, p2);
+      p2 = _reflect_Value_UnsafePointer(go_string(p0, p1), p2);
     }
     if ((g1 === 0)) {
       store_i32(138276, l1);
@@ -9034,7 +8988,7 @@ function _reflect_Value_String(p0, p1, p2) {
         p2 = ((l0 + 16) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        _reflect_rawType_String(p2, p1);
+        _reflect_rawType_String(go_string(p2, p1));
         if (g1 === 1) {
           l2147483644 = 0;
           break block_1;
@@ -9047,7 +9001,7 @@ function _reflect_Value_String(p0, p1, p2) {
         p2 = ((l0 + 8) | 0);
       }
       if ((g1 ? l1 === 1 : 1)) {
-        runtime_stringConcat(p2, 66981, 1, p1, l3);
+        runtime_stringConcat(p2, "<", go_string(p1, l3));
         if (g1 === 1) {
           l2147483644 = 1;
           break block_1;
@@ -9059,7 +9013,7 @@ function _reflect_Value_String(p0, p1, p2) {
         p2 = load_i32(l0, 12);
       }
       if ((g1 ? l1 === 2 : 1)) {
-        runtime_stringConcat(l0, p1, p2, 66982, 7);
+        runtime_stringConcat(go_string(l0, p1), p2, " Value>");
         if (g1 === 1) {
           l2147483644 = 2;
           break block_1;
@@ -9094,7 +9048,7 @@ function _reflect_Value_String(p0, p1, p2) {
 
 // (*reflect.MapIter).Key
 function _reflect_MapIter_Key(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483645, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 28) | 0));
     l3 = load_i32(g2);
@@ -9154,20 +9108,18 @@ function _reflect_MapIter_Key(p0, p1) {
             p1 = load_u8(((p1 + 24) | 0));
           }
           if (((g1 ? l2 : 0) === 0)) {
-            _reflect_Value_Elem(l3, l1, l4, p1);
+            _reflect_Value_Elem(go_string(l3, l1), go_string(l4, p1));
             if (g1 === 1) {
               l2147483646 = 0;
               break block_1;
             }
           }
           if (g1) {
-            l2147483647 = p1;
           } else {
             l4 = load_u8(l0, 16);
             l1 = load_i32(l0, 8);
-            l2147483647 = load_i32(l0, 12);
           }
-          l2147483645 = l2147483647;
+          l2147483645 = (g1 ? p1 : load_i32(l0, 12));
         }
         p1 = l2147483645;
         if ((g1 === 0)) {
@@ -9240,7 +9192,7 @@ function _reflect_MapIter_Next(p0) {
       l1 = ((g0 - 80) | 0);
       g0 = l1;
       store_i32(l1, 14, 20);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 28) | 0), ((l1 + 28) | 0) + 52);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 28) | 0), 0, 52), go_slice(((l1 + 28) | 0), 0, 52) + );
       l7 = load_i32(138276);
       store_i32(l1, l7, 16);
       store_i32(138276, ((l1 + 16) | 0));
@@ -9264,7 +9216,7 @@ function _reflect_MapIter_Next(p0) {
         l3 = ((l1 + 8) | 0);
       }
       if ((g1 ? l4 === 1 : 1)) {
-        reflect_New(l3, l0);
+        reflect_New(go_string(l3, l0));
         if (g1 === 1) {
           l2147483646 = 1;
           break block_1;
@@ -9294,7 +9246,7 @@ function _reflect_MapIter_Next(p0) {
         store_i32(l1, l0, 44);
       }
       if ((g1 ? l4 === 3 : 1)) {
-        reflect_New(l1, l0);
+        reflect_New(go_string(l1, l0));
         if (g1 === 1) {
           l2147483646 = 3;
           break block_1;
@@ -9328,7 +9280,7 @@ function _reflect_MapIter_Next(p0) {
           l2147483646 = 4;
           break block_1;
         }
-        l0 = runtime_hashmapNext(l0, l3, l6, l5);
+        l0 = runtime_hashmapNext(go_string(l0, l3), go_string(l6, l5));
       }
       if ((g1 === 0)) {
         store_i32(138276, l7);
@@ -9367,7 +9319,7 @@ function _reflect_MapIter_Next(p0) {
 
 // runtime.hashmapNext
 function runtime_hashmapNext(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 44) | 0));
     p1 = load_i32(g2);
@@ -9392,7 +9344,7 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
       l1 = ((g0 - 80) | 0);
       g0 = l1;
       store_i32(l1, 18, 4);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 12) | 0), ((l1 + 12) | 0) + 68);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 12) | 0), 0, 68), go_slice(((l1 + 12) | 0), 0, 68) + );
       l7 = load_i32(138276);
       store_i32(l1, l7);
       store_i32(138276, l1);
@@ -9458,14 +9410,12 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
               if (u32(l0) >= u32(load_i32(p1, 4))) {
                 store_i8(p1, 1, 22);
                 store_i32(p1, 0, 8);
-                l2147483643 = 0;
               } else {
-                l2147483643 = l0;
               }
               l5 = load_i32(p0, 12);
               l4 = (((((l5 + load_i32(p0, 16)) | 0) << 3) + 12) | 0);
               l3 = load_i32(p1);
-              l0 = ((Math.imul(l2147483643, l4) + l3) | 0);
+              l0 = ((Math.imul(((u32(l0) >= u32(load_i32(p1, 4)) ? 1 : 0) ? 0 : l0), l4) + l3) | 0);
               store_i32(p1, l0, 16);
               store_i32(l1, l3, 36);
               store_i32(l1, l0, 40);
@@ -9483,7 +9433,7 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
             store_i32(l1, l0, 48);
             l0 = ((((Math.imul(l2, l4) + l0) | 0) + 12) | 0);
             store_i32(l1, l0, 52);
-            new Uint8Array(memory.buffer).copyWithin(p2, l0, l0 + l2);
+            new Uint8Array(memory.buffer).copyWithin(go_string(p2, l0), l2, l2 + );
             l0 = load_i32(p1);
             store_i32(l1, l0, 56);
             l2 = load_i32(p0);
@@ -9495,7 +9445,7 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
               l0 = load_i32(p0, 16);
               l3 = ((((p2 + Math.imul(l0, load_u8(p1, 20))) | 0) + 12) | 0);
               store_i32(l1, l3, 68);
-              new Uint8Array(memory.buffer).copyWithin(p3, l3, l3 + l0);
+              new Uint8Array(memory.buffer).copyWithin(go_string(p3, l3), l0, l0 + );
               l4 = 1;
               store_i8(p1, ((load_u8(p1, 20) + 1) | 0), 20);
               break block_5;
@@ -9512,17 +9462,17 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
           }
           if (((g1 ? l6 : 0) === 0)) {
             if (g1 === 1) {
-              l2147483644 = 0;
+              l2147483643 = 0;
               break block_1;
             }
             l0 = table[l0](p2, l5, l8, l3);
           }
           if ((g1 ? l6 === 1 : 1)) {
             if (g1 === 1) {
-              l2147483644 = 1;
+              l2147483643 = 1;
               break block_1;
             }
-            l0 = runtime_hashmapGet(p0, p2, p3, l0);
+            l0 = runtime_hashmapGet(go_string(p0, p2), go_string(p3, l0));
           }
           if ((g1 === 0)) {
             l0 = (((l0 & 1) === 0) ? 1 : 0);
@@ -9540,7 +9490,7 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
     if ((g1 ? l6 === 2 : 1)) {
       runtime_nilPanic();
       if (g1 === 1) {
-        l2147483644 = 2;
+        l2147483643 = 2;
         break block_1;
       }
     }
@@ -9548,9 +9498,9 @@ function runtime_hashmapNext(p0, p1, p2, p3) {
       throw new Error('unreachable');
     }
     throw new Error('unreachable');
-    l2147483644 = 0;
+    l2147483643 = 0;
   }
-  l2 = l2147483644;
+  l2 = l2147483643;
   store_i32(load_i32(g2), l2);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l2 = load_i32(g2);
@@ -9637,7 +9587,7 @@ function _reflect_MapIter_Value(p0, p1) {
       p1 = load_u8(((p1 + 36) | 0));
     }
     if ((g1 ? l0 === 2 : 1)) {
-      _reflect_Value_Elem(l2, l3, l5, p1);
+      _reflect_Value_Elem(go_string(l2, l3), go_string(l5, p1));
       if (g1 === 1) {
         l2147483645 = 2;
         break block_1;
@@ -9743,7 +9693,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
       l0 = ((g0 - 624) | 0);
       g0 = l0;
       store_i32(l0, 65, 332);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 336) | 0), ((l0 + 336) | 0) + 260);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 336) | 0), 0, 260), go_slice(((l0 + 336) | 0), 0, 260) + );
       l9 = load_i32(138276);
       store_i32(l0, l9, 328);
       store_i32(138276, ((l0 + 328) | 0));
@@ -9760,7 +9710,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
           l1 = ((l0 + 8) | 0);
         }
         if (((g1 ? l4 : 0) === 0)) {
-          interface_Error_func_basic_string_Error$invoke(l1, p1, p2);
+          interface_Error_func_basic_string_Error$invoke(go_string(l1, p1), p2);
           if (g1 === 1) {
             l2147483644 = 0;
             break block_1;
@@ -9786,7 +9736,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
               l1 = ((l0 + 16) | 0);
             }
             if ((g1 ? l4 === 1 : 1)) {
-              interface_Error_func_basic_string_Error$invoke(l1, p1, p2);
+              interface_Error_func_basic_string_Error$invoke(go_string(l1, p1), p2);
               if (g1 === 1) {
                 l2147483644 = 1;
                 break block_1;
@@ -9809,7 +9759,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
               l1 = ((l0 + 48) | 0);
             }
             if ((g1 ? l4 === 2 : 1)) {
-              runtime_stringConcat(l1, 94848, 20, p2, l2);
+              runtime_stringConcat(l1, "syscall/js: call of ", go_string(p2, l2));
               if (g1 === 1) {
                 l2147483644 = 2;
                 break block_1;
@@ -9822,7 +9772,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
               l1 = ((l0 + 40) | 0);
             }
             if ((g1 ? l4 === 3 : 1)) {
-              runtime_stringConcat(l1, p2, l2, 94868, 4);
+              runtime_stringConcat(go_string(l1, p2), l2, " on ");
               if (g1 === 1) {
                 l2147483644 = 3;
                 break block_1;
@@ -9836,7 +9786,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
               p1 = load_i32(p1, 8);
             }
             if ((g1 ? l4 === 4 : 1)) {
-              _syscall_js_Type_String(l2, p1);
+              _syscall_js_Type_String(go_string(l2, p1));
               if (g1 === 1) {
                 l2147483644 = 4;
                 break block_1;
@@ -9849,7 +9799,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
               l2 = ((l0 + 24) | 0);
             }
             if ((g1 ? l4 === 5 : 1)) {
-              runtime_stringConcat(l2, p2, l1, p1, l3);
+              runtime_stringConcat(go_string(l2, p2), go_string(l1, p1), l3);
               if (g1 === 1) {
                 l2147483644 = 5;
                 break block_1;
@@ -9872,7 +9822,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
               l1 = ((l0 + 56) | 0);
             }
             if ((g1 ? l4 === 6 : 1)) {
-              _syscall_js_Error_Error(l1, l11, p2);
+              _syscall_js_Error_Error(go_string(l1, l11), p2);
               if (g1 === 1) {
                 l2147483644 = 6;
                 break block_1;
@@ -9897,7 +9847,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 128) | 0);
                 }
                 if ((g1 ? l4 === 7 : 1)) {
-                  runtime_stringConcat(l1, 80247, 8, p2, l2);
+                  runtime_stringConcat(l1, "strconv.", go_string(p2, l2));
                   if (g1 === 1) {
                     l2147483644 = 7;
                     break block_1;
@@ -9910,7 +9860,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 120) | 0);
                 }
                 if ((g1 ? l4 === 8 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, 97035, 2);
+                  runtime_stringConcat(go_string(l1, p2), l2, ": ");
                   if (g1 === 1) {
                     l2147483644 = 8;
                     break block_1;
@@ -9923,7 +9873,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 112) | 0);
                 }
                 if ((g1 ? l4 === 9 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, 80255, 8);
+                  runtime_stringConcat(go_string(l1, p2), l2, "parsing ");
                   if (g1 === 1) {
                     l2147483644 = 9;
                     break block_1;
@@ -9959,7 +9909,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l8 = ((l0 + 104) | 0);
                 }
                 if ((g1 ? l4 === 11 : 1)) {
-                  strconv_appendQuotedWith(l8, l7, l3, l6, p2, 0);
+                  strconv_appendQuotedWith(go_string(l8, l7), go_string(l3, l6), p2, 0);
                   if (g1 === 1) {
                     l2147483644 = 11;
                     break block_1;
@@ -9972,7 +9922,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l3 = ((l0 + 96) | 0);
                 }
                 if ((g1 ? l4 === 12 : 1)) {
-                  runtime_stringFromBytes(l3, p2, l6);
+                  runtime_stringFromBytes(go_string(l3, p2), l6);
                   if (g1 === 1) {
                     l2147483644 = 12;
                     break block_1;
@@ -9986,7 +9936,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 88) | 0);
                 }
                 if ((g1 ? l4 === 13 : 1)) {
-                  runtime_stringConcat(l1, l2, l10, p2, l3);
+                  runtime_stringConcat(go_string(l1, l2), go_string(l10, p2), l3);
                   if (g1 === 1) {
                     l2147483644 = 13;
                     break block_1;
@@ -9999,7 +9949,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 80) | 0);
                 }
                 if ((g1 ? l4 === 14 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, 97035, 2);
+                  runtime_stringConcat(go_string(l1, p2), l2, ": ");
                   if (g1 === 1) {
                     l2147483644 = 14;
                     break block_1;
@@ -10016,7 +9966,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l2 = load_i32(l0, 84);
                 }
                 if ((g1 ? l4 === 15 : 1)) {
-                  interface_Error_func_basic_string_Error$invoke(l3, p1, l1);
+                  interface_Error_func_basic_string_Error$invoke(go_string(l3, p1), l1);
                   if (g1 === 1) {
                     l2147483644 = 15;
                     break block_1;
@@ -10029,7 +9979,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 - -64) | 0);
                 }
                 if ((g1 ? l4 === 16 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, p1, l3);
+                  runtime_stringConcat(go_string(l1, p2), go_string(l2, p1), l3);
                   if (g1 === 1) {
                     l2147483644 = 16;
                     break block_1;
@@ -10062,7 +10012,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                     p1 = ((l0 + 144) | 0);
                   }
                   if ((g1 ? l4 === 17 : 1)) {
-                    runtime_stringConcat(p1, 67174, 17, p2, l1);
+                    runtime_stringConcat(p1, "reflect: call of ", go_string(p2, l1));
                     if (g1 === 1) {
                       l2147483644 = 17;
                       break block_1;
@@ -10075,7 +10025,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                     p2 = ((l0 + 136) | 0);
                   }
                   if ((g1 ? l4 === 18 : 1)) {
-                    runtime_stringConcat(p2, p1, l1, 67160, 14);
+                    runtime_stringConcat(go_string(p2, p1), l1, " on zero Value");
                     if (g1 === 1) {
                       l2147483644 = 18;
                       break block_1;
@@ -10089,7 +10039,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                 }
                 l2 = (g1 ? l2 : ((l0 + 184) | 0));
                 if ((g1 ? l4 === 19 : 1)) {
-                  runtime_stringConcat(l2, 67174, 17, p2, l1);
+                  runtime_stringConcat(l2, "reflect: call of ", go_string(p2, l1));
                   if (g1 === 1) {
                     l2147483644 = 19;
                     break block_1;
@@ -10102,7 +10052,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 176) | 0);
                 }
                 if ((g1 ? l4 === 20 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, 94868, 4);
+                  runtime_stringConcat(go_string(l1, p2), l2, " on ");
                   if (g1 === 1) {
                     l2147483644 = 20;
                     break block_1;
@@ -10116,7 +10066,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p1 = load_u8(p1, 8);
                 }
                 if ((g1 ? l4 === 21 : 1)) {
-                  _reflect_Kind_String(l2, p1);
+                  _reflect_Kind_String(go_string(l2, p1));
                   if (g1 === 1) {
                     l2147483644 = 21;
                     break block_1;
@@ -10129,7 +10079,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l2 = ((l0 + 160) | 0);
                 }
                 if ((g1 ? l4 === 22 : 1)) {
-                  runtime_stringConcat(l2, p2, l1, p1, l3);
+                  runtime_stringConcat(go_string(l2, p2), go_string(l1, p1), l3);
                   if (g1 === 1) {
                     l2147483644 = 22;
                     break block_1;
@@ -10142,7 +10092,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p2 = ((l0 + 152) | 0);
                 }
                 if ((g1 ? l4 === 23 : 1)) {
-                  runtime_stringConcat(p2, p1, l1, 67191, 6);
+                  runtime_stringConcat(go_string(p2, p1), l1, " Value");
                   if (g1 === 1) {
                     l2147483644 = 23;
                     break block_1;
@@ -10165,7 +10115,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p1 = load_i32(p1, 4);
                 }
                 if ((g1 ? l4 === 24 : 1)) {
-                  runtime_stringConcat(l1, 66720, 30, p2, p1);
+                  runtime_stringConcat(l1, "reflect: call of reflect.Type.", go_string(p2, p1));
                   if (g1 === 1) {
                     l2147483644 = 24;
                     break block_1;
@@ -10178,7 +10128,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p2 = ((l0 + 192) | 0);
                 }
                 if ((g1 ? l4 === 25 : 1)) {
-                  runtime_stringConcat(p2, p1, l1, 66750, 16);
+                  runtime_stringConcat(go_string(p2, p1), l1, " on invalid type");
                   if (g1 === 1) {
                     l2147483644 = 25;
                     break block_1;
@@ -10209,7 +10159,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 208) | 0);
                 }
                 if ((g1 ? l4 === 26 : 1)) {
-                  interface_Error_func_basic_string_Error$invoke(l1, p1, p2);
+                  interface_Error_func_basic_string_Error$invoke(go_string(l1, p1), p2);
                   if (g1 === 1) {
                     l2147483644 = 26;
                     break block_1;
@@ -10232,7 +10182,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p1 = load_i32(((p1 + 16) | 0));
                 }
                 if ((g1 ? l4 === 27 : 1)) {
-                  runtime_stringConcat(l1, 96980, 25, p2, p1);
+                  runtime_stringConcat(l1, "json: unsupported value: ", go_string(p2, p1));
                   if (g1 === 1) {
                     l2147483644 = 27;
                     break block_1;
@@ -10256,7 +10206,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 232) | 0);
                 }
                 if ((g1 ? l4 === 28 : 1)) {
-                  interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(l1, p1, p2);
+                  interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(go_string(l1, p1), p2);
                   if (g1 === 1) {
                     l2147483644 = 28;
                     break block_1;
@@ -10269,7 +10219,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p2 = ((l0 + 224) | 0);
                 }
                 if ((g1 ? l4 === 29 : 1)) {
-                  runtime_stringConcat(p2, 96956, 24, p1, l1);
+                  runtime_stringConcat(p2, "json: unsupported type: ", go_string(p1, l1));
                   if (g1 === 1) {
                     l2147483644 = 29;
                     break block_1;
@@ -10299,7 +10249,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p2 = (p2 ? p2 : 11);
                 }
                 if ((g1 ? l4 === 30 : 1)) {
-                  runtime_stringConcat(l2, 97005, 20, l1, p2);
+                  runtime_stringConcat(l2, "json: error calling ", go_string(l1, p2));
                   if (g1 === 1) {
                     l2147483644 = 30;
                     break block_1;
@@ -10312,7 +10262,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 280) | 0);
                 }
                 if ((g1 ? l4 === 31 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, 97025, 10);
+                  runtime_stringConcat(go_string(l1, p2), l2, " for type ");
                   if (g1 === 1) {
                     l2147483644 = 31;
                     break block_1;
@@ -10329,7 +10279,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l3 = ((l0 + 272) | 0);
                 }
                 if ((g1 ? l4 === 32 : 1)) {
-                  interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(l3, l2, l1);
+                  interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(go_string(l3, l2), l1);
                   if (g1 === 1) {
                     l2147483644 = 32;
                     break block_1;
@@ -10342,7 +10292,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l2 = ((l0 + 264) | 0);
                 }
                 if ((g1 ? l4 === 33 : 1)) {
-                  runtime_stringConcat(l2, p2, l6, l1, l3);
+                  runtime_stringConcat(go_string(l2, p2), go_string(l6, l1), l3);
                   if (g1 === 1) {
                     l2147483644 = 33;
                     break block_1;
@@ -10355,7 +10305,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 256) | 0);
                 }
                 if ((g1 ? l4 === 34 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, 97035, 2);
+                  runtime_stringConcat(go_string(l1, p2), l2, ": ");
                   if (g1 === 1) {
                     l2147483644 = 34;
                     break block_1;
@@ -10372,7 +10322,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l2 = load_i32(l0, 260);
                 }
                 if ((g1 ? l4 === 35 : 1)) {
-                  interface_Error_func_basic_string_Error$invoke(l3, p1, l1);
+                  interface_Error_func_basic_string_Error$invoke(go_string(l3, p1), l1);
                   if (g1 === 1) {
                     l2147483644 = 35;
                     break block_1;
@@ -10385,7 +10335,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 240) | 0);
                 }
                 if ((g1 ? l4 === 36 : 1)) {
-                  runtime_stringConcat(l1, p2, l2, p1, l3);
+                  runtime_stringConcat(go_string(l1, p2), go_string(l2, p1), l3);
                   if (g1 === 1) {
                     l2147483644 = 36;
                     break block_1;
@@ -10406,7 +10356,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p2 = ((l0 + 296) | 0);
                 }
                 if ((g1 ? l4 === 37 : 1)) {
-                  _encoding_base64_CorruptInputError_Error(p2, l11);
+                  _encoding_base64_CorruptInputError_Error(go_string(p2, l11));
                   if (g1 === 1) {
                     l2147483644 = 37;
                     break block_1;
@@ -10427,7 +10377,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   p1 = load_i32(p1, 8);
                 }
                 if ((g1 ? l4 === 38 : 1)) {
-                  _syscall_js_Error_Error(p2, l11, p1);
+                  _syscall_js_Error_Error(go_string(p2, l11), p1);
                   if (g1 === 1) {
                     l2147483644 = 38;
                     break block_1;
@@ -10453,7 +10403,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                   l1 = ((l0 + 312) | 0);
                 }
                 if ((g1 ? l4 === 39 : 1)) {
-                  interface_Error_func_basic_string_Error$invoke(l1, p1, p2);
+                  interface_Error_func_basic_string_Error$invoke(go_string(l1, p1), p2);
                   if (g1 === 1) {
                     l2147483644 = 39;
                     break block_1;
@@ -10471,7 +10421,7 @@ function interface_Error_func_basic_string_Error$invoke(p0, p1, p2) {
                 p2 = ((l0 + 320) | 0);
               }
               if ((g1 ? l4 === 40 : 1)) {
-                _encoding_base64_CorruptInputError_Error(p2, l11);
+                _encoding_base64_CorruptInputError_Error(go_string(p2, l11));
                 if (g1 === 1) {
                   l2147483644 = 40;
                   break block_1;
@@ -10661,7 +10611,7 @@ function _syscall_js_Error_Error(p0, p1, p2) {
       l3 = ((l0 + 24) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      _syscall_js_Value_Get(l3, p1, p2, 94744, 7);
+      _syscall_js_Value_Get(go_string(l3, p1), p2, "message");
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -10674,7 +10624,7 @@ function _syscall_js_Error_Error(p0, p1, p2) {
       p1 = load_i64(l0, 24);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      _syscall_js_Value_String(l3, p1, p2);
+      _syscall_js_Value_String(go_string(l3, p1), p2);
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -10687,7 +10637,7 @@ function _syscall_js_Error_Error(p0, p1, p2) {
       l2 = load_i32(l0, 20);
     }
     if ((g1 ? l1 === 2 : 1)) {
-      runtime_stringConcat(l3, 94751, 18, p2, l2);
+      runtime_stringConcat(l3, "JavaScript error: ", go_string(p2, l2));
       if (g1 === 1) {
         l2147483644 = 2;
         break block_1;
@@ -10719,7 +10669,7 @@ function _syscall_js_Error_Error(p0, p1, p2) {
 
 // strconv.appendQuotedWith
 function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483641, l2147483642, l2147483643;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483641, l2147483642;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 48) | 0));
     p1 = load_i32(g2);
@@ -10745,7 +10695,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
       l0 = ((g0 - 160) | 0);
       g0 = l0;
       store_i32(l0, 10, 116);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 120) | 0), ((l0 + 120) | 0) + 40);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 120) | 0), 0, 40), go_slice(((l0 + 120) | 0), 0, 40) + );
       l7 = load_i32(138276);
       store_i32(l0, l7, 112);
       store_i32(138276, ((l0 + 112) | 0));
@@ -10777,7 +10727,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
         l1 = ((l0 + 96) | 0);
       }
       if ((g1 ? l6 === 1 : 1)) {
-        runtime_sliceAppend(l1, p1, l3, 0, p2, 1, 1);
+        runtime_sliceAppend(go_string(l1, p1), l3, 0, p2, go_string(1, 1));
         if (g1 === 1) {
           l2147483641 = 1;
           break block_1;
@@ -10810,7 +10760,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
                 p1 = ((l0 + 72) | 0);
               }
               if ((g1 ? l6 === 2 : 1)) {
-                unicode_utf8_DecodeRune(p1, p3, p4);
+                unicode_utf8_DecodeRune(go_string(p1, p3), p4);
                 if (g1 === 1) {
                   l2147483641 = 2;
                   break block_1;
@@ -10827,7 +10777,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
                 p1 = 1;
               }
               if ((g1 ? l6 === 3 : 1)) {
-                runtime_sliceAppend(l4, p2, 80954, l3, l1, 2, 1);
+                runtime_sliceAppend(go_string(l4, p2), go_string(80954, l3), l1, go_string(2, 1));
                 if (g1 === 1) {
                   l2147483641 = 3;
                   break block_1;
@@ -10843,7 +10793,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
                 l1 = ((l0 + 24) | 0);
               }
               if ((g1 ? l6 === 4 : 1)) {
-                runtime_sliceAppend(l1, p2, l3, l4, l5, 1, 1);
+                runtime_sliceAppend(go_string(l1, p2), go_string(l3, l4), l5, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483641 = 4;
                   break block_1;
@@ -10859,7 +10809,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
                 l1 = ((l0 + 8) | 0);
               }
               if ((g1 ? l6 === 5 : 1)) {
-                runtime_sliceAppend(l1, p2, l3, l4, l5, 1, 1);
+                runtime_sliceAppend(go_string(l1, p2), go_string(l3, l4), l5, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483641 = 5;
                   break block_1;
@@ -10878,7 +10828,7 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
               p1 = ((l0 + 80) | 0);
             }
             if ((g1 ? l6 === 6 : 1)) {
-              runtime_sliceAppend(p1, p2, p3, l3, l1, 1, 1);
+              runtime_sliceAppend(go_string(p1, p2), go_string(p3, l3), l1, go_string(1, 1));
               if (g1 === 1) {
                 l2147483641 = 6;
                 break block_1;
@@ -10895,20 +10845,18 @@ function strconv_appendQuotedWith(p0, p1, p2, p3, p4, p5) {
           }
           l5 = (g1 ? l5 : ((l0 + 56) | 0));
           if ((g1 ? l6 === 7 : 1)) {
-            strconv_appendEscapedRune(l5, p2, l3, l1, l4, 34, p5);
+            strconv_appendEscapedRune(go_string(l5, p2), go_string(l3, l1), l4, go_string(34, p5));
             if (g1 === 1) {
               l2147483641 = 7;
               break block_1;
             }
           }
           if (g1) {
-            l2147483643 = p2;
           } else {
             l1 = load_i32(l0, 64);
             l3 = load_i32(l0, 60);
-            l2147483643 = load_i32(l0, 56);
           }
-          l2147483642 = l2147483643;
+          l2147483642 = (g1 ? p2 : load_i32(l0, 56));
         }
         p2 = l2147483642;
         if ((g1 === 0)) {
@@ -10984,7 +10932,7 @@ function _encoding_base64_CorruptInputError_Error(p0, p1) {
       l3 = ((l0 + 8) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      strconv_FormatInt(l3, p1, 10);
+      strconv_FormatInt(go_string(l3, p1), 10);
       if (g1 === 1) {
         l2147483645 = 0;
         break block_1;
@@ -10996,7 +10944,7 @@ function _encoding_base64_CorruptInputError_Error(p0, p1) {
       l2 = load_i32(l0, 12);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      runtime_stringConcat(l0, 91816, 34, l3, l2);
+      runtime_stringConcat(l0, "illegal base64 data at input byte ", go_string(l3, l2));
       if (g1 === 1) {
         l2147483645 = 1;
         break block_1;
@@ -11115,7 +11063,7 @@ function internal_task_Pause() {
       }
     }
     if ((g1 ? l1 === 2 : 1)) {
-      runtime_runtimePanic(67276, 14);
+      runtime_runtimePanic("stack overflow");
       if (g1 === 1) {
         l2147483647 = 2;
         break block_1;
@@ -11136,7 +11084,7 @@ function internal_task_Pause() {
 
 // runtime.runtimePanic
 function runtime_runtimePanic(p0, p1) {
-  let l0 = 0, l2147483645, l2147483646;
+  let l0 = 0, l2147483645;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 8) | 0));
     p1 = load_i32(g2);
@@ -11146,14 +11094,12 @@ function runtime_runtimePanic(p0, p1) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483645 = load_i32(load_i32(g2));
     } else {
-      l2147483645 = 0;
     }
-    if (((g1 ? l2147483645 : 0) === 0)) {
-      runtime_runtimePanicAt(p0, p1);
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
+      runtime_runtimePanicAt(go_string(p0, p1));
       if (g1 === 1) {
-        l2147483646 = 0;
+        l2147483645 = 0;
         break block_1;
       }
     }
@@ -11161,9 +11107,9 @@ function runtime_runtimePanic(p0, p1) {
       throw new Error('unreachable');
     }
     return;
-    l2147483646 = 0;
+    l2147483645 = 0;
   }
-  l0 = l2147483646;
+  l0 = l2147483645;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -11341,7 +11287,7 @@ function _sync_Map_Load(p0, p1, p2, p3) {
           l2147483643 = 0;
           break block_1;
         }
-        p3 = runtime_hashmapInterfaceGet(p1, p2, p3, l2, 8);
+        p3 = runtime_hashmapInterfaceGet(go_string(p1, p2), go_string(p3, l2), 8);
       }
       if ((g1 === 0)) {
         p2 = load_i32(l0, 16);
@@ -11426,7 +11372,7 @@ function runtime_hashmapInterfaceGet(p0, p1, p2, p3, p4) {
         l2147483642 = 0;
         break block_1;
       }
-      l2 = runtime_alloc(8, 197);
+      l2 = runtime_alloc(go_string(8, 197));
     }
     if ((g1 === 0)) {
       store_i32(l2, p2, 4);
@@ -11447,14 +11393,14 @@ function runtime_hashmapInterfaceGet(p0, p1, p2, p3, p4) {
           l2147483642 = 1;
           break block_1;
         }
-        p1 = runtime_hashmapInterfaceHash(p1, p2, p4);
+        p1 = runtime_hashmapInterfaceHash(go_string(p1, p2), p4);
       }
       if ((g1 ? l5 === 2 : 1)) {
         if (g1 === 1) {
           l2147483642 = 2;
           break block_1;
         }
-        l3 = runtime_hashmapGet(p0, l2, p3, p1);
+        l3 = runtime_hashmapGet(go_string(p0, l2), go_string(p3, p1));
       }
     }
     if ((g1 === 0)) {
@@ -11531,7 +11477,7 @@ function _sync_Map_LoadOrStore(p0, p1, p2, p3, p4, p5) {
               l2147483641 = 0;
               break block_1;
             }
-            l1 = runtime_hashmapMake(8, 8, 2);
+            l1 = runtime_hashmapMake(go_string(8, 8), 2);
           }
           if ((g1 === 0)) {
             store_i32(p1, l1);
@@ -11547,7 +11493,7 @@ function _sync_Map_LoadOrStore(p0, p1, p2, p3, p4, p5) {
             l2147483641 = 1;
             break block_1;
           }
-          l1 = runtime_hashmapInterfaceGet(l1, p2, p3, l3, 8);
+          l1 = runtime_hashmapInterfaceGet(go_string(l1, p2), go_string(p3, l3), 8);
         }
         if ((g1 === 0)) {
           if ((l1 & 1)) {
@@ -11569,7 +11515,7 @@ function _sync_Map_LoadOrStore(p0, p1, p2, p3, p4, p5) {
           l3 = ((l0 + 24) | 0);
         }
         if ((g1 ? l4 === 2 : 1)) {
-          runtime_hashmapInterfaceSet(p1, p2, p3, l3);
+          runtime_hashmapInterfaceSet(go_string(p1, p2), go_string(p3, l3));
           if (g1 === 1) {
             l2147483641 = 2;
             break block_1;
@@ -11760,7 +11706,7 @@ function runtime_hashmapInterfaceSet(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      l2 = runtime_alloc(8, 197);
+      l2 = runtime_alloc(go_string(8, 197));
     }
     if ((g1 === 0)) {
       store_i32(l2, p2, 4);
@@ -11788,10 +11734,10 @@ function runtime_hashmapInterfaceSet(p0, p1, p2, p3) {
         l2147483643 = 2;
         break block_1;
       }
-      p1 = runtime_hashmapInterfaceHash(p1, p2, l5);
+      p1 = runtime_hashmapInterfaceHash(go_string(p1, p2), l5);
     }
     if ((g1 ? l3 === 3 : 1)) {
-      runtime_hashmapSet(p0, l2, p3, p1);
+      runtime_hashmapSet(go_string(p0, l2), go_string(p3, p1));
       if (g1 === 1) {
         l2147483643 = 3;
         break block_1;
@@ -11846,7 +11792,7 @@ function _sync_Mutex_Lock(p0) {
           p0 = ((p0 + 4) | 0);
         }
         if (((g1 ? l1 : 0) === 0)) {
-          _internal_task_Stack_Push(p0, l0);
+          _internal_task_Stack_Push(go_string(p0, l0));
           if (g1 === 1) {
             l2147483646 = 0;
             break block_1;
@@ -12139,7 +12085,7 @@ function _sync_Pool_Get(p0, p1) {
       l0 = ((g0 - 80) | 0);
       g0 = l0;
       store_i32(l0, 13, 20);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 28) | 0), ((l0 + 28) | 0) + 48);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 28) | 0), 0, 48), go_slice(((l0 + 28) | 0), 0, 48) + );
       l5 = load_i32(138276);
       store_i32(l0, l5, 16);
       store_i32(138276, ((l0 + 16) | 0));
@@ -12285,7 +12231,7 @@ function _sync_Pool_Put(p0, p1, p2) {
         l0 = load_i32(p1);
       }
       if (((g1 ? l2 : 0) === 0)) {
-        runtime_sliceAppend(l3, p2, l5, l6, l0, 1, 8);
+        runtime_sliceAppend(go_string(l3, p2), go_string(l5, l6), l0, go_string(1, 8));
         if (g1 === 1) {
           l2147483644 = 0;
           break block_1;
@@ -12375,7 +12321,7 @@ function _sync_WaitGroup_Add(p0, p1) {
               p1 = (l3 !== l4 ? 1 : 0);
               if (p1) break block_4;
             }
-            loop_10: while (true) {
+            do {
               if ((g1 === 0)) {
                 p1 = load_i32(p0, 4);
                 if (p1) {
@@ -12393,9 +12339,7 @@ function _sync_WaitGroup_Add(p0, p1) {
                   break block_1;
                 }
               }
-              if ((g1 === 0)) continue loop_10;
-              break;
-            }
+            } while ((g1 === 0));
           }
           if ((g1 ? l0 === 1 : 1)) {
             runtime_nilPanic();
@@ -12507,7 +12451,7 @@ function internal_stringslite_IndexByte(p0, p1, p2) {
 
 // internal/stringslite.Index
 function internal_stringslite_Index(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483643, l2147483644, l2147483645;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 56) | 0));
     p1 = load_i32(g2);
@@ -12542,7 +12486,7 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
           l2147483643 = 0;
           break block_1;
         }
-        p0 = internal_stringslite_IndexByte(p0, p1, p2);
+        p0 = internal_stringslite_IndexByte(go_string(p0, p1), p2);
       }
       if ((g1 === 0)) {
         return p0;
@@ -12550,7 +12494,7 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
     }
     if ((g1 === 0)) {
       if (p1 === p3) {
-        return (((runtime_stringEqual(p2, p3, p0, p3) & 1) - 1) | 0);
+        return (((runtime_stringEqual(go_string(p2, p3), go_string(p0, p3)) & 1) - 1) | 0);
       }
       l10 = -1;
       l1 = (p1 < p3 ? 1 : 0);
@@ -12591,15 +12535,13 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
                   l2147483643 = 1;
                   break block_1;
                 }
-                l0 = internal_stringslite_IndexByte(l3, l0, l6);
+                l0 = internal_stringslite_IndexByte(go_string(l3, l0), l6);
               }
               if (g1) {
-                l2147483645 = l3;
               } else {
                 if (l0 < 0) break block_9;
-                l2147483645 = ((((l0 + l4) | 0) + 1) | 0);
               }
-              l2147483644 = l2147483645;
+              l2147483644 = (g1 ? l3 : ((((l0 + l4) | 0) + 1) | 0));
             }
             l3 = l2147483644;
             if ((g1 === 0)) {
@@ -12610,7 +12552,7 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
                 if (l8 !== load_u8(l11)) break block_20;
                 l0 = ((p3 + l3) | 0);
                 if ((u32(l3) > u32(l0) | u32(p1) < u32(l0))) break block_12;
-                if (((runtime_stringEqual(((p0 + l3) | 0), p3, p2, p3) & 1) === 0)) break block_20;
+                if (((runtime_stringEqual(((p0 + l3) | 0), go_string(p3, p2), p3) & 1) === 0)) break block_20;
                 return l3;
               }
               l0 = ((l1 + 1) | 0);
@@ -12650,7 +12592,7 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
                     block_28: {
                       if (p0 !== l6) break block_28;
                       if (u32(p3) > u32(l0)) break block_12;
-                      if (((runtime_stringEqual(l11, p3, p2, p3) & 1) === 0)) break block_28;
+                      if (((runtime_stringEqual(go_string(l11, p3), go_string(p2, p3)) & 1) === 0)) break block_28;
                       return l4;
                     }
                     l5 = ((p3 - ((p3 > l0 ? 1 : 0) ? p3 : l0)) | 0);
@@ -12668,7 +12610,7 @@ function internal_stringslite_Index(p0, p1, p2, p3) {
                         if (p0 === l6) {
                           if (u32((((p1 + p3) | 0) + 1) | 0) < u32(p3)) break block_12;
                           l8 = ((p1 + 1) | 0);
-                          if ((runtime_stringEqual(((l11 + l8) | 0), p3, p2, p3) & 1)) break block_31;
+                          if ((runtime_stringEqual(((l11 + l8) | 0), go_string(p3, p2), p3) & 1)) break block_31;
                         }
                         p1 = ((p1 + 1) | 0);
                         continue loop_29;
@@ -12790,7 +12732,7 @@ function internal_stringslite_Clone(p0, p1, p2) {
           l1 = runtime_alloc(p2, 3);
         }
         if ((g1 === 0)) {
-          new Uint8Array(memory.buffer).copyWithin(l1, p1, p1 + p2);
+          new Uint8Array(memory.buffer).copyWithin(go_string(l1, p1), p2, p2 + );
           break block_4;
         }
       }
@@ -12829,7 +12771,7 @@ function internal_stringslite_Clone(p0, p1, p2) {
 
 // strconv.syntaxError
 function strconv_syntaxError(p0, p1, p2, p3) {
-  return byn$mgfn_shared$strconv_syntaxError(p0, p1, p2, p3, 137440);
+  return byn$mgfn_shared$strconv_syntaxError(go_string(p0, p1), go_string(p2, p3), 137440);
 }
 
 // strconv.appendEscapedRune
@@ -12858,7 +12800,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 352) | 0);
       g0 = l0;
       store_i32(l0, 11, 300);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 304) | 0), ((l0 + 304) | 0) + 44);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 304) | 0), 0, 44), go_slice(((l0 + 304) | 0), 0, 44) + );
       l4 = load_i32(138276);
       store_i32(l0, l4, 296);
       store_i32(138276, ((l0 + 296) | 0));
@@ -12876,7 +12818,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p5 = ((l0 + 16) | 0);
         }
         if (((g1 ? l1 : 0) === 0)) {
-          runtime_sliceAppend(p5, p1, p6, p2, p3, 1, 1);
+          runtime_sliceAppend(go_string(p5, p1), go_string(p6, p2), p3, go_string(1, 1));
           if (g1 === 1) {
             l2147483640 = 0;
             break block_1;
@@ -12891,7 +12833,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p1 = ((l0 + 290) | 0);
         }
         if ((g1 ? l1 === 1 : 1)) {
-          runtime_sliceAppend(l0, p4, p1, p2, p3, 1, 1);
+          runtime_sliceAppend(go_string(l0, p4), go_string(p1, p2), p3, go_string(1, 1));
           if (g1 === 1) {
             l2147483640 = 1;
             break block_1;
@@ -12927,7 +12869,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
             p4 = ((l0 + 32) | 0);
           }
           if ((g1 ? l1 === 3 : 1)) {
-            runtime_sliceAppend(p4, p1, p5, p2, p3, 1, 1);
+            runtime_sliceAppend(go_string(p4, p1), go_string(p5, p2), p3, go_string(1, 1));
             if (g1 === 1) {
               l2147483640 = 3;
               break block_1;
@@ -12953,7 +12895,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p5 = ((l0 + 272) | 0);
         }
         if ((g1 ? l1 === 5 : 1)) {
-          unicode_utf8_AppendRune(p5, p1, p2, p3, p4);
+          unicode_utf8_AppendRune(go_string(p5, p1), go_string(p2, p3), p4);
           if (g1 === 1) {
             l2147483640 = 5;
             break block_1;
@@ -12997,7 +12939,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
                       p4 = ((l0 + 160) | 0);
                     }
                     if ((g1 ? l1 === 6 : 1)) {
-                      runtime_sliceAppend(p4, p1, 80940, p2, p3, 2, 1);
+                      runtime_sliceAppend(go_string(p4, p1), go_string(80940, p2), p3, go_string(2, 1));
                       if (g1 === 1) {
                         l2147483640 = 6;
                         break block_1;
@@ -13012,7 +12954,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
                   }
                   p4 = (g1 ? p4 : ((l0 + 176) | 0));
                   if ((g1 ? l1 === 7 : 1)) {
-                    runtime_sliceAppend(p4, p1, 80942, p2, p3, 2, 1);
+                    runtime_sliceAppend(go_string(p4, p1), go_string(80942, p2), p3, go_string(2, 1));
                     if (g1 === 1) {
                       l2147483640 = 7;
                       break block_1;
@@ -13027,7 +12969,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
                 }
                 p4 = (g1 ? p4 : ((l0 + 192) | 0));
                 if ((g1 ? l1 === 8 : 1)) {
-                  runtime_sliceAppend(p4, p1, 80944, p2, p3, 2, 1);
+                  runtime_sliceAppend(go_string(p4, p1), go_string(80944, p2), p3, go_string(2, 1));
                   if (g1 === 1) {
                     l2147483640 = 8;
                     break block_1;
@@ -13042,7 +12984,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
               }
               p4 = (g1 ? p4 : ((l0 + 208) | 0));
               if ((g1 ? l1 === 9 : 1)) {
-                runtime_sliceAppend(p4, p1, 80946, p2, p3, 2, 1);
+                runtime_sliceAppend(go_string(p4, p1), go_string(80946, p2), p3, go_string(2, 1));
                 if (g1 === 1) {
                   l2147483640 = 9;
                   break block_1;
@@ -13057,7 +12999,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
             }
             p4 = (g1 ? p4 : ((l0 + 224) | 0));
             if ((g1 ? l1 === 10 : 1)) {
-              runtime_sliceAppend(p4, p1, 80948, p2, p3, 2, 1);
+              runtime_sliceAppend(go_string(p4, p1), go_string(80948, p2), p3, go_string(2, 1));
               if (g1 === 1) {
                 l2147483640 = 10;
                 break block_1;
@@ -13072,7 +13014,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           }
           p4 = (g1 ? p4 : ((l0 + 240) | 0));
           if ((g1 ? l1 === 11 : 1)) {
-            runtime_sliceAppend(p4, p1, 80950, p2, p3, 2, 1);
+            runtime_sliceAppend(go_string(p4, p1), go_string(80950, p2), p3, go_string(2, 1));
             if (g1 === 1) {
               l2147483640 = 11;
               break block_1;
@@ -13087,7 +13029,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
         }
         p4 = (g1 ? p4 : ((l0 + 256) | 0));
         if ((g1 ? l1 === 12 : 1)) {
-          runtime_sliceAppend(p4, p1, 80952, p2, p3, 2, 1);
+          runtime_sliceAppend(go_string(p4, p1), go_string(80952, p2), p3, go_string(2, 1));
           if (g1 === 1) {
             l2147483640 = 12;
             break block_1;
@@ -13110,7 +13052,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p5 = ((l0 + 80) | 0);
         }
         if ((g1 ? l1 === 13 : 1)) {
-          runtime_sliceAppend(p5, p1, 80954, p2, p3, 2, 1);
+          runtime_sliceAppend(go_string(p5, p1), go_string(80954, p2), p3, go_string(2, 1));
           if (g1 === 1) {
             l2147483640 = 13;
             break block_1;
@@ -13126,7 +13068,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p1 = ((l0 - -64) | 0);
         }
         if ((g1 ? l1 === 14 : 1)) {
-          runtime_sliceAppend(p1, p3, p2, p5, p6, 1, 1);
+          runtime_sliceAppend(go_string(p1, p3), go_string(p2, p5), p6, go_string(1, 1));
           if (g1 === 1) {
             l2147483640 = 14;
             break block_1;
@@ -13142,7 +13084,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p1 = ((l0 + 48) | 0);
         }
         if ((g1 ? l1 === 15 : 1)) {
-          runtime_sliceAppend(p1, p4, p2, p3, p5, 1, 1);
+          runtime_sliceAppend(go_string(p1, p4), go_string(p2, p3), p5, go_string(1, 1));
           if (g1 === 1) {
             l2147483640 = 15;
             break block_1;
@@ -13170,7 +13112,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p5 = ((l0 + 144) | 0);
         }
         if ((g1 ? l1 === 16 : 1)) {
-          runtime_sliceAppend(p5, p1, 80958, p2, p3, 2, 1);
+          runtime_sliceAppend(go_string(p5, p1), go_string(80958, p2), p3, go_string(2, 1));
           if (g1 === 1) {
             l2147483640 = 16;
             break block_1;
@@ -13192,7 +13134,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
             p6 = ((l0 + 128) | 0);
           }
           if ((g1 ? l1 === 17 : 1)) {
-            runtime_sliceAppend(p6, p3, l3, p1, p2, 1, 1);
+            runtime_sliceAppend(go_string(p6, p3), go_string(l3, p1), p2, go_string(1, 1));
             if (g1 === 1) {
               l2147483640 = 17;
               break block_1;
@@ -13211,7 +13153,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
       }
       p4 = (g1 ? p4 : ((l0 + 112) | 0));
       if ((g1 ? l1 === 18 : 1)) {
-        runtime_sliceAppend(p4, p1, 80956, p2, p3, 2, 1);
+        runtime_sliceAppend(go_string(p4, p1), go_string(80956, p2), p3, go_string(2, 1));
         if (g1 === 1) {
           l2147483640 = 18;
           break block_1;
@@ -13233,7 +13175,7 @@ function strconv_appendEscapedRune(p0, p1, p2, p3, p4, p5, p6) {
           p6 = ((l0 + 96) | 0);
         }
         if ((g1 ? l1 === 19 : 1)) {
-          runtime_sliceAppend(p6, p3, l3, p1, p2, 1, 1);
+          runtime_sliceAppend(go_string(p6, p3), go_string(l3, p1), p2, go_string(1, 1));
           if (g1 === 1) {
             l2147483640 = 19;
             break block_1;
@@ -13329,7 +13271,7 @@ function strconv_IsPrint(p0) {
             l0 = ((l2 + 16) | 0);
           }
           if (((g1 ? l3 : 0) === 0)) {
-            strconv_bsearch_uint16_uint16(l0, 128892, 424, p0);
+            strconv_bsearch_uint16_uint16(l0, go_string(128892, 424), p0);
             if (g1 === 1) {
               l2147483646 = 0;
               break block_1;
@@ -13350,7 +13292,7 @@ function strconv_IsPrint(p0) {
             l0 = ((l2 + 8) | 0);
           }
           if ((g1 ? l3 === 1 : 1)) {
-            strconv_bsearch_uint16_uint16(l0, 129740, 133, p0);
+            strconv_bsearch_uint16_uint16(l0, go_string(129740, 133), p0);
             if (g1 === 1) {
               l2147483646 = 1;
               break block_1;
@@ -13373,7 +13315,7 @@ function strconv_IsPrint(p0) {
           l0 = ((l2 + 24) | 0);
         }
         if ((g1 ? l3 === 2 : 1)) {
-          strconv_bsearch_uint16_uint16(l0, 130006, 112, p0);
+          strconv_bsearch_uint16_uint16(l0, go_string(130006, 112), p0);
           if (g1 === 1) {
             l2147483646 = 2;
             break block_1;
@@ -13415,7 +13357,7 @@ function strconv_IsPrint(p0) {
 
 // strconv.bsearch[[]uint16 uint16]
 function strconv_bsearch_uint16_uint16(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
@@ -13438,11 +13380,9 @@ function strconv_bsearch_uint16_uint16(p0, p1, p2, p3) {
         }
         if (p2 > l0) {
           if (u32(p2) <= u32(l0)) break block_3;
-          l2147483643 = (load_u16((((l0 << 1) + p1) | 0)) === (p3 & 65535) ? 1 : 0);
         } else {
-          l2147483643 = 0;
         }
-        store_i8(p0, l2147483643, 4);
+        store_i8(p0, ((p2 > l0 ? 1 : 0) ? (load_u16((((l0 << 1) + p1) | 0)) === (p3 & 65535) ? 1 : 0) : 0), 4);
         store_i32(p0, l0);
         return;
       }
@@ -13450,7 +13390,7 @@ function strconv_bsearch_uint16_uint16(p0, p1, p2, p3) {
     if (((g1 ? l3 : 0) === 0)) {
       runtime_lookupPanic();
       if (g1 === 1) {
-        l2147483644 = 0;
+        l2147483643 = 0;
         break block_0;
       }
     }
@@ -13458,16 +13398,16 @@ function strconv_bsearch_uint16_uint16(p0, p1, p2, p3) {
       throw new Error('unreachable');
     }
     return;
-    l2147483644 = 0;
+    l2147483643 = 0;
   }
-  p0 = l2147483644;
+  p0 = l2147483643;
   store_i32(load_i32(g2), p0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
 
 // strconv.rangeError
 function strconv_rangeError(p0, p1, p2, p3) {
-  return byn$mgfn_shared$strconv_syntaxError(p0, p1, p2, p3, 137432);
+  return byn$mgfn_shared$strconv_syntaxError(go_string(p0, p1), go_string(p2, p3), 137432);
 }
 
 // strconv.leftShift
@@ -13504,7 +13444,7 @@ function strconv_leftShift(p0, p1) {
         l8 = load_i32(((l3 + 80960) | 0));
         l0 = 0;
         block_6: {
-          loop_7: while (true) {
+          do {
             if (l0 === l1) break block_6;
             if (l0 === l5) {
               l2 = -1;
@@ -13515,9 +13455,7 @@ function strconv_leftShift(p0, p1) {
             l0 = ((l0 + 1) | 0);
             l3 = load_u8(((l2147483645 + l4) | 0));
             l7 = load_u8(l7);
-            if (l3 === l7) continue loop_7;
-            break;
-          }
+          } while (l3 === l7);
           l2 = ((u32(l3) > u32(l7) ? 1 : 0) ? -1 : 0);
         }
         l3 = ((l5 - 1) | 0);
@@ -13855,7 +13793,7 @@ function strconv_FormatInt(p0, p1, p2) {
         l2 = Number(BigInt.asIntN(32, BigInt.asIntN(64, BigInt.asUintN(64, BigInt(p1)) >> 63n)));
       }
       if (((g1 ? l0 : 0) === 0)) {
-        strconv_formatBits(l3, 0, 0, 0, p1, p2, l2, 0);
+        strconv_formatBits(l3, 0, 0, 0, go_string(p1, p2), l2, 0);
         if (g1 === 1) {
           l2147483645 = 0;
           break block_1;
@@ -13890,7 +13828,7 @@ function strconv_FormatInt(p0, p1, p2) {
 
 // strconv.formatBits
 function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l11 = 0n, l2147483639, l2147483640, l2147483641, l2147483642, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l11 = 0n, l2147483639, l2147483640, l2147483641, l2147483642, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 44) | 0));
     p1 = load_i32(g2);
@@ -13920,7 +13858,7 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
       store_i32(138276, ((l1 + 96) | 0));
       store_i32(l1, l6, 96);
       l5 = 65;
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 31) | 0), ((l1 + 31) | 0) + 65);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 31) | 0), 0, 65), go_slice(((l1 + 31) | 0), 0, 65) + );
       l2 = (p5 !== 10 ? 1 : 0);
       p4 = ((p6 & 1) ? BigInt.asIntN(64, 0n - p4) : p4);
     }
@@ -13998,7 +13936,7 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
                   if (u32(p5) > 64) break block_4;
                   store_i8(((((l1 + 31) | 0) + p5) | 0), load_u8((((l0 & Number(BigInt.asIntN(32, p4))) + 80904) | 0)));
                   p5 = ((p5 - 1) | 0);
-                  p4 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(p4)) >> l10);
+                  p4 = (p4 >>> l10);
                   continue loop_16;
                 }
                 break;
@@ -14012,8 +13950,8 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
             loop_18: while (true) {
               if (BigInt.asUintN(64, BigInt(p4)) >= BigInt.asUintN(64, BigInt(l10))) {
                 l2147483641 = p4;
-                p4 = (BigInt.asUintN(64, BigInt(p4)) / BigInt.asUintN(64, BigInt(l10)));
-                l0 = Number(BigInt.asIntN(32, BigInt.asIntN(64, l2147483641 - BigInt.asIntN(64, l10 * p4))));
+                p4 = (u32(p4) / u32(l10)) | 0;
+                l0 = Number(BigInt.asIntN(32, ((l2147483641 - Math.imul(l10, p4)) | 0)));
                 if ((u32(l0) > 35 | u32(p5) > 64)) break block_4;
                 store_i8(((((l1 + 31) | 0) + p5) | 0), load_u8(((l0 + 80904) | 0)));
                 p5 = ((p5 - 1) | 0);
@@ -14040,7 +13978,7 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
       block_21: {
         if ((p6 ? g1 : 1)) {
           if (((g1 ? l7 : 0) === 0)) {
-            runtime_sliceAppend(l1, p1, p5, p2, p3, l0, 1);
+            runtime_sliceAppend(go_string(l1, p1), go_string(p5, p2), go_string(p3, l0), 1);
             if (g1 === 1) {
               l2147483642 = 0;
               break block_1;
@@ -14057,22 +13995,20 @@ function strconv_formatBits(p0, p1, p2, p3, p4, p5, p6, p7) {
         }
         p1 = (g1 ? p1 : ((l1 + 16) | 0));
         if ((g1 ? l7 === 1 : 1)) {
-          runtime_stringFromBytes(p1, p5, l0);
+          runtime_stringFromBytes(go_string(p1, p5), l0);
           if (g1 === 1) {
             l2147483642 = 1;
             break block_1;
           }
         }
         if (g1) {
-          l2147483644 = p5;
         } else {
           l3 = 0;
           l4 = load_i32(l1, 20);
           l2 = 0;
           l0 = 0;
-          l2147483644 = load_i32(l1, 16);
         }
-        l2147483643 = l2147483644;
+        l2147483643 = (g1 ? p5 : load_i32(l1, 16));
       }
       p5 = l2147483643;
       if ((g1 === 0)) {
@@ -14149,7 +14085,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
       l3 = ((g0 - 80) | 0);
       g0 = l3;
       store_i32(l3, 16, 12);
-      new Uint8Array(memory.buffer).fill(0, ((l3 + 16) | 0), ((l3 + 16) | 0) + 64);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l3 + 16) | 0), 0, 64), go_slice(((l3 + 16) | 0), 0, 64) + );
       l10 = load_i32(138276);
       store_i32(l3, l10, 8);
       l2 = ((l3 + 8) | 0);
@@ -14168,7 +14104,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
             l2147483643 = 0;
             break block_1;
           }
-          l0 = strconv_syntaxError(80272, 8, p1, 0);
+          l0 = strconv_syntaxError("ParseInt", p1, 0);
         }
         if ((g1 === 0)) break block_4;
       }
@@ -14213,7 +14149,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
                 l2147483643 = 1;
                 break block_1;
               }
-              l0 = strconv_syntaxError(80263, 9, l2, 0);
+              l0 = strconv_syntaxError("ParseUint", l2, 0);
             }
             if ((g1 === 0)) break block_13;
           }
@@ -14249,7 +14185,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
                         l2147483643 = 2;
                         break block_1;
                       }
-                      l0 = strconv_rangeError(80263, 9, l2, l6);
+                      l0 = strconv_rangeError("ParseUint", go_string(l2, l6));
                     }
                     if ((g1 === 0)) break block_13;
                   }
@@ -14270,7 +14206,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
                     l2147483643 = 3;
                     break block_1;
                   }
-                  l0 = strconv_rangeError(80263, 9, l2, l6);
+                  l0 = strconv_rangeError("ParseUint", go_string(l2, l6));
                 }
                 if ((g1 === 0)) break block_13;
               }
@@ -14284,7 +14220,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
                   l2147483643 = 4;
                   break block_1;
                 }
-                l0 = strconv_syntaxError(80263, 9, l2, l6);
+                l0 = strconv_syntaxError("ParseUint", go_string(l2, l6));
               }
               if ((g1 === 0)) break block_13;
             }
@@ -14305,7 +14241,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
               l2147483643 = 6;
               break block_1;
             }
-            l0 = strconv_syntaxError(80263, 9, l2, l6);
+            l0 = strconv_syntaxError("ParseUint", go_string(l2, l6));
           }
         }
         if ((g1 === 0)) {
@@ -14345,7 +14281,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
                 l2147483643 = 8;
                 break block_1;
               }
-              l2 = runtime_interfaceEqual(l2, l7, 128440, 137432);
+              l2 = runtime_interfaceEqual(go_string(l2, l7), 128440, 137432);
             }
             if ((g1 === 0)) {
               if ((l2 & 1)) break block_38;
@@ -14353,7 +14289,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
               store_i32(l0, 80272);
             }
             if ((g1 ? l4 === 9 : 1)) {
-              internal_stringslite_Clone(l3, p1, p2);
+              internal_stringslite_Clone(go_string(l3, p1), p2);
               if (g1 === 1) {
                 l2147483643 = 9;
                 break block_1;
@@ -14381,7 +14317,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
                 l2147483643 = 10;
                 break block_1;
               }
-              l0 = strconv_rangeError(80272, 8, p1, p2);
+              l0 = strconv_rangeError("ParseInt", go_string(p1, p2));
             }
             if ((g1 === 0)) break block_4;
           }
@@ -14395,7 +14331,7 @@ function strconv_ParseInt(p0, p1, p2, p3) {
               l2147483643 = 11;
               break block_1;
             }
-            l0 = strconv_rangeError(80272, 8, p1, p2);
+            l0 = strconv_rangeError("ParseInt", go_string(p1, p2));
           }
           if ((g1 === 0)) break block_4;
         }
@@ -14484,7 +14420,7 @@ function runtime_interfaceEqual(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      p3 = runtime_reflectValueEqual(p0, p1, 2, p2, p3, 2);
+      p3 = runtime_reflectValueEqual(go_string(p0, p1), go_string(2, p2), p3, 2);
     }
     if ((g1 === 0)) {
       store_i32(138276, l1);
@@ -14510,7 +14446,7 @@ function runtime_interfaceEqual(p0, p1, p2, p3) {
 
 // strconv.genericFtoa
 function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0n, l14 = 0n, l15 = 0n, l16 = 0n, l17 = 0n, l18 = 0n, l19 = 0n, l20 = 0n, l2147483639, l2147483640, l2147483641, l2147483642, l2147483643, l2147483644, l2147483645, l2147483646, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0n, l14 = 0n, l15 = 0n, l16 = 0n, l17 = 0n, l18 = 0n, l19 = 0n, l20 = 0n, l2147483639, l2147483640, l2147483641, l2147483642, l2147483643, l2147483644, l2147483645, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 128) | 0));
     p1 = load_i32(g2);
@@ -14550,7 +14486,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
       g0 = l0;
       store_i32(l0, 33, 492);
       l8 = 0;
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 496) | 0), ((l0 + 496) | 0) + 132);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 496) | 0), 0, 132), go_slice(((l0 + 496) | 0), 0, 132) + );
       l12 = load_i32(138276);
       store_i32(l0, l12, 488);
       store_i32(138276, ((l0 + 488) | 0));
@@ -14595,7 +14531,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
       l16 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> BigInt(u32(l4)));
       l10 = ((u32(l4) < 64 ? 1 : 0) & (l16 !== 0n ? 1 : 0));
       l4 = ((u32(l3) > 31 ? 1 : 0) ? -1 : ((-1 << l3) ^ -1));
-      l13 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> l14);
+      l13 = (l13 >>> l14);
       l9 = (l6 ? 0 : Number(BigInt.asIntN(32, l13)));
       l3 = (l4 & l9);
       l4 = (l3 !== l4 ? 1 : 0);
@@ -14604,14 +14540,14 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
       block_12: {
         if ((g1 === 0)) {
           if (l4) break block_12;
-          l1 = ((l15 === 0n) ? 1 : 0);
+          l1 = ((l15 === 0) ? 1 : 0);
           l3 = (l1 ? (l10 ? 80347 : 80351) : 80344);
           store_i32(l0, l3, 500);
           p6 = (l1 ? 4 : 3);
           p5 = ((l0 + 8) | 0);
         }
         if ((g1 ? l5 === 1 : 1)) {
-          runtime_sliceAppend(p5, p1, l3, p2, p3, p6, 1);
+          runtime_sliceAppend(go_string(p5, p1), go_string(l3, p2), go_string(p3, p6), 1);
           if (g1 === 1) {
             l2147483639 = 1;
             break block_1;
@@ -14656,7 +14592,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                               p5 = ((l0 + 264) | 0);
                             }
                             if ((g1 ? l5 === 2 : 1)) {
-                              runtime_sliceAppend(p5, p1, p6, p2, p3, 1, 1);
+                              runtime_sliceAppend(go_string(p5, p1), go_string(p6, p2), p3, go_string(1, 1));
                               if (g1 === 1) {
                                 l2147483639 = 2;
                                 break block_1;
@@ -14674,7 +14610,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             p5 = ((l0 + 240) | 0);
                           }
                           if ((g1 ? l5 === 3 : 1)) {
-                            strconv_formatBits(p5, p1, p2, p3, l13, 10, 0, 1);
+                            strconv_formatBits(go_string(p5, p1), go_string(p2, p3), l13, go_slice(10, 0, 1));
                             if (g1 === 1) {
                               l2147483639 = 3;
                               break block_1;
@@ -14691,7 +14627,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             p1 = ((l0 + 224) | 0);
                           }
                           if ((g1 ? l5 === 4 : 1)) {
-                            runtime_sliceAppend(p1, l3, p2, p3, p5, 1, 1);
+                            runtime_sliceAppend(go_string(p1, l3), go_string(p2, p3), p5, go_string(1, 1));
                             if (g1 === 1) {
                               l2147483639 = 4;
                               break block_1;
@@ -14713,7 +14649,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                               p1 = ((l0 + 208) | 0);
                             }
                             if ((g1 ? l5 === 5 : 1)) {
-                              runtime_sliceAppend(p1, l3, p2, p7, l2, 1, 1);
+                              runtime_sliceAppend(go_string(p1, l3), go_string(p2, p7), l2, go_string(1, 1));
                               if (g1 === 1) {
                                 l2147483639 = 5;
                                 break block_1;
@@ -14733,7 +14669,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             p1 = ((l0 + 184) | 0);
                           }
                           if ((g1 ? l5 === 6 : 1)) {
-                            strconv_formatBits(p1, l3, p7, l2, l13, 10, p2, 1);
+                            strconv_formatBits(go_string(p1, l3), go_string(p7, l2), l13, go_string(10, p2), 1);
                             if (g1 === 1) {
                               l2147483639 = 6;
                               break block_1;
@@ -14747,13 +14683,13 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                           }
                         }
                         if ((g1 === 0)) {
-                          l3 = (((l13 === 0n) ? 1 : 0) ? 0 : l6);
+                          l3 = (((l13 === 0) ? 1 : 0) ? 0 : l6);
                           l1 = ((60 - l2) | 0);
                           l14 = BigInt(u32(l1));
-                          l13 = ((u32(l1) <= 63 ? 1 : 0) ? BigInt.asIntN(64, l13 << l14) : 0n);
+                          l13 = ((u32(l1) <= 63 ? 1 : 0) ? (l13 << l14) : 0n);
                           loop_45: while (true) {
                             block_46: {
-                              if ((l13 === 0n)) break block_46;
+                              if ((l13 === 0)) break block_46;
                               l14 = (l13 & 1152921504606846976n);
                               if (l14 !== 0n) break block_46;
                               l3 = ((l3 - 1) | 0);
@@ -14766,11 +14702,11 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             if (u32(p6) > 14) break block_47;
                             l1 = (p6 << 2);
                             l14 = BigInt(u32(((60 - l1) | 0)));
-                            l15 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> l14);
+                            l15 = (l13 >>> l14);
                             l16 = (l15 & 1n);
                             l13 = BigInt.asIntN(64, BigInt.asIntN(64, BigInt(u32((BigInt.asUintN(64, BigInt((l16 | (BigInt.asIntN(64, l13 << BigInt(u32(l1))) & 1152921504606846975n)))) > BigInt.asUintN(64, BigInt(576460752303423488n)) ? 1 : 0))) + l15) << l14);
                             l14 = (l13 & 2305843009213693952n);
-                            if ((l14 === 0n)) break block_47;
+                            if ((l14 === 0)) break block_47;
                             l3 = ((l3 + 1) | 0);
                             l13 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> 1n);
                           }
@@ -14786,7 +14722,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             p7 = ((l0 + 440) | 0);
                           }
                           if ((g1 ? l5 === 7 : 1)) {
-                            runtime_sliceAppend(p7, p1, l2, p2, p3, 1, 1);
+                            runtime_sliceAppend(go_string(p7, p1), go_string(l2, p2), p3, go_string(1, 1));
                             if (g1 === 1) {
                               l2147483639 = 7;
                               break block_1;
@@ -14809,7 +14745,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                           p7 = ((l0 + 424) | 0);
                         }
                         if ((g1 ? l5 === 8 : 1)) {
-                          runtime_sliceAppend(p7, p1, l2, p2, p3, 3, 1);
+                          runtime_sliceAppend(go_string(p7, p1), go_string(l2, p2), p3, go_string(3, 1));
                           if (g1 === 1) {
                             l2147483639 = 8;
                             break block_1;
@@ -14826,14 +14762,14 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                         block_55: {
                           if ((g1 === 0)) {
                             if (p1) break block_55;
-                            p1 = ((l13 === 0n) ? 1 : 0);
+                            p1 = ((l13 === 0) ? 1 : 0);
                             if (p1) break block_55;
                             store_i8(l0, 46, 486);
                             p2 = ((l0 + 486) | 0);
                             p1 = ((l0 + 408) | 0);
                           }
                           if ((g1 ? l5 === 9 : 1)) {
-                            runtime_sliceAppend(p1, l1, p2, p7, l2, 1, 1);
+                            runtime_sliceAppend(go_string(p1, l1), go_string(p2, p7), l2, go_string(1, 1));
                             if (g1 === 1) {
                               l2147483639 = 9;
                               break block_1;
@@ -14849,7 +14785,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                           loop_59: while (true) {
                             if ((g1 === 0)) {
                               store_i32(l0, l1, 564);
-                              p1 = ((l13 === 0n) ? 1 : 0);
+                              p1 = ((l13 === 0) ? 1 : 0);
                               if (p1) break block_17;
                               l14 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> 60n);
                               p1 = (BigInt.asUintN(64, BigInt(l15)) <= BigInt.asUintN(64, BigInt(l14)) ? 1 : 0);
@@ -14859,7 +14795,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                               p1 = ((l0 + 392) | 0);
                             }
                             if ((g1 ? l5 === 10 : 1)) {
-                              runtime_sliceAppend(p1, l1, p2, p7, l2, 1, 1);
+                              runtime_sliceAppend(go_string(p1, l1), go_string(p2, p7), l2, go_string(1, 1));
                               if (g1 === 1) {
                                 l2147483639 = 10;
                                 break block_1;
@@ -14884,7 +14820,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                           p1 = ((l0 + 376) | 0);
                         }
                         if ((g1 ? l5 === 11 : 1)) {
-                          runtime_sliceAppend(p1, l1, p2, p7, l2, 1, 1);
+                          runtime_sliceAppend(go_string(p1, l1), go_string(p2, p7), l2, go_string(1, 1));
                           if (g1 === 1) {
                             l2147483639 = 11;
                             break block_1;
@@ -14910,7 +14846,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             p1 = ((l0 + 360) | 0);
                           }
                           if ((g1 ? l5 === 12 : 1)) {
-                            runtime_sliceAppend(p1, l1, p2, p7, l2, 1, 1);
+                            runtime_sliceAppend(go_string(p1, l1), go_string(p2, p7), l2, go_string(1, 1));
                             if (g1 === 1) {
                               l2147483639 = 12;
                               break block_1;
@@ -14940,7 +14876,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             l2147483639 = 13;
                             break block_1;
                           }
-                          l3 = runtime_alloc(32, 3);
+                          l3 = runtime_alloc(go_string(32, 3));
                         }
                         if ((g1 === 0)) {
                           store_i64(l0, 137438953504n, 460);
@@ -14964,11 +14900,11 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             if (l4) break block_75;
                             l14 = BigInt(u32(p7));
                             p7 = (u32(p7) > 63 ? 1 : 0);
-                            l13 = (p7 ? 0n : BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> l14));
+                            l13 = (p7 ? 0n : (l13 >>> l14));
                             l2 = ((l0 + 456) | 0);
                           }
                           if ((g1 ? l5 === 14 : 1)) {
-                            strconv_ryuDigits(l2, l13, l13, l13, 1, 0);
+                            strconv_ryuDigits(go_string(l2, l13), go_string(l13, l13), 1, 0);
                             if (g1 === 1) {
                               l2147483639 = 14;
                               break block_1;
@@ -15034,7 +14970,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             l2147483639 = 15;
                             break block_1;
                           }
-                          l4 = runtime_alloc(24, 3);
+                          l4 = runtime_alloc(go_string(24, 3));
                         }
                         if ((g1 === 0)) {
                           store_i32(l0, l4, 624);
@@ -15076,7 +15012,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                                 l1 = ((l3 + (((Math.imul(p7, -78913) - 1893913) | 0) >> 18)) | 0);
                                               }
                                               if ((g1 ? l5 === 16 : 1)) {
-                                                strconv_mult64bitPow10(l9, l8, p7, l1);
+                                                strconv_mult64bitPow10(go_string(l9, l8), go_string(p7, l1));
                                                 if (g1 === 1) {
                                                   l2147483639 = 16;
                                                   break block_1;
@@ -15137,13 +15073,13 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                               if (u32(p7) >= 10) {
                                                 l1 = ((((l1 - p7) | 0) + 9) | 0);
                                                 l14 = (BigInt.asIntN(64, l14 + 4294967287n) & 4294967295n);
-                                                l13 = BigInt.asIntN(64, l13 << l14);
+                                                l13 = (l13 << l14);
                                               }
                                               l4 = ((l0 + 152) | 0);
                                               p7 = ((l3 + (((Math.imul(l1, -78913) - 4261303) | 0) >> 18)) | 0);
                                             }
                                             if ((g1 ? l5 === 17 : 1)) {
-                                              strconv_mult128bitPow10(l4, l13, l1, p7);
+                                              strconv_mult128bitPow10(go_string(l4, l13), go_string(l1, p7));
                                               if (g1 === 1) {
                                                 l2147483639 = 17;
                                                 break block_1;
@@ -15166,7 +15102,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                               l4 = ((0 - l1) | 0);
                                               l13 = BigInt(u32(l4));
                                               l4 = (u32(l4) > 63 ? 1 : 0);
-                                              l15 = (l4 ? 0n : BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l14)) >> l13));
+                                              l15 = (l4 ? 0n : (l14 >>> l13));
                                               l13 = (l14 & (l4 ? -1n : (BigInt.asIntN(64, -1n << l13) ^ -1n)));
                                               l4 = 1;
                                               l14 = BigInt(u32((l1 ^ -1)));
@@ -15239,7 +15175,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                 }
                                 if ((g1 === 0)) {
                                   l1 = (u32(l1) > u32(-65) ? 1 : 0);
-                                  l14 = BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l13)) >> l14);
+                                  l14 = (l13 >>> l14);
                                   l4 = (l1 & (l14 === 1n ? 1 : 0));
                                 }
                               }
@@ -15249,18 +15185,16 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                                 l1 = ((l0 + 456) | 0);
                               }
                               if ((g1 ? l5 === 22 : 1)) {
-                                strconv_formatDecimal(l1, l15, l6, l4, l3);
+                                strconv_formatDecimal(go_string(l1, l15), go_string(l6, l4), l3);
                                 if (g1 === 1) {
                                   l2147483639 = 22;
                                   break block_1;
                                 }
                               }
                               if (g1) {
-                                l2147483644 = l1;
                               } else {
-                                l2147483644 = ((load_i32(l0, 472) - p7) | 0);
                               }
-                              l2147483643 = l2147483644;
+                              l2147483643 = (g1 ? l1 : ((load_i32(l0, 472) - p7) | 0));
                             }
                             l1 = l2147483643;
                             if ((g1 === 0)) {
@@ -15275,19 +15209,17 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             p7 = ((l0 + 456) | 0);
                           }
                           if ((g1 ? l5 === 23 : 1)) {
-                            strconv_formatDecimal(p7, l13, l4, l8, l3);
+                            strconv_formatDecimal(go_string(p7, l13), go_string(l4, l8), l3);
                             if (g1 === 1) {
                               l2147483639 = 23;
                               break block_1;
                             }
                           }
                           if (g1) {
-                            l2147483645 = l1;
                           } else {
                             p7 = load_i32(l0, 472);
-                            l2147483645 = ((p7 - l1) | 0);
                           }
-                          l2147483642 = l2147483645;
+                          l2147483642 = (g1 ? l1 : ((p7 - l1) | 0));
                         }
                         l1 = l2147483642;
                         if ((g1 === 0)) {
@@ -15300,7 +15232,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                           l2147483639 = 24;
                           break block_1;
                         }
-                        p7 = runtime_alloc(812, 3);
+                        p7 = runtime_alloc(go_string(812, 3));
                       }
                       if ((g1 === 0)) {
                         store_i32(l0, p7, 612);
@@ -15315,7 +15247,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             if (l2) break block_24;
                             l14 = (BigInt.asUintN(64, BigInt(l13)) / BigInt.asUintN(64, BigInt(10n)));
                             l15 = BigInt.asIntN(64, l14 * 246n);
-                            l4 = ((Number(BigInt.asIntN(32, BigInt.asIntN(64, l15 + l13))) + 48) | 0);
+                            l4 = ((Number(BigInt.asIntN(32, ((l15 + l13) | 0))) + 48) | 0);
                             store_i8(((l3 + ((l0 + 632) | 0)) | 0), l4);
                             l3 = ((l3 + 1) | 0);
                             l13 = l14;
@@ -15379,7 +15311,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                             break;
                           }
                           if ((g1 ? l5 === 27 : 1)) {
-                            strconv_leftShift(p7, l1);
+                            strconv_leftShift(go_string(p7, l1));
                             if (g1 === 1) {
                               l2147483639 = 27;
                               break block_1;
@@ -15413,7 +15345,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                         }
                         l2 = (g1 ? l2 : ((0 - l1) | 0));
                         if ((g1 ? l5 === 29 : 1)) {
-                          strconv_rightShift(p7, l2);
+                          strconv_rightShift(go_string(p7, l2));
                           if (g1 === 1) {
                             l2147483639 = 29;
                             break block_1;
@@ -15508,15 +15440,13 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   }
                   if ((g1 === 0)) {
                     block_167: {
-                      loop_168: while (true) {
+                      do {
                         if ((l1 === 0)) break block_167;
                         l1 = ((l1 - 1) | 0);
                         l3 = ((l1 + p7) | 0);
                         l2 = load_u8(l3);
                         l4 = (u32(l2) > 56 ? 1 : 0);
-                        if (l4) continue loop_168;
-                        break;
-                      }
+                      } while (l4);
                       store_i8(l3, ((l2 + 1) | 0));
                       l2 = ((l1 + 1) | 0);
                       store_i32(p7, l2, 800);
@@ -15534,7 +15464,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   l2 = ((l0 + 168) | 0);
                 }
                 if ((g1 ? l5 === 32 : 1)) {
-                  strconv_formatDigits(l2, p1, p2, p3, 0, l10, p7, 800, 800, l1, l3, p6, p5);
+                  strconv_formatDigits(go_string(l2, p1), go_string(p2, p3), 0, go_string(l10, p7), go_string(800, 800), go_string(l1, l3), go_string(p6, p5));
                   if (g1 === 1) {
                     l2147483639 = 32;
                     break block_1;
@@ -15548,13 +15478,11 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                 }
               }
               if (g1) {
-                l2147483646 = l1;
               } else {
                 l14 = BigInt.asIntN(64, l13 << 1n);
                 l15 = (l14 | 1n);
-                l2147483646 = -1;
               }
-              l2147483641 = l2147483646;
+              l2147483641 = (g1 ? l1 : -1);
             }
             l1 = l2147483641;
             if ((g1 === 0)) {
@@ -15567,7 +15495,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                 p7 = ((l0 + 456) | 0);
               }
               if ((g1 ? l5 === 33 : 1)) {
-                strconv_ryuDigits(p7, l16, l14, l15, 1, 0);
+                strconv_ryuDigits(go_string(p7, l16), go_string(l14, l15), 1, 0);
                 if (g1 === 1) {
                   l2147483639 = 33;
                   break block_1;
@@ -15588,7 +15516,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   p7 = ((l0 + 72) | 0);
                 }
                 if ((g1 ? l5 === 34 : 1)) {
-                  strconv_mult64bitPow10(p7, l4, l1, l3);
+                  strconv_mult64bitPow10(go_string(p7, l4), go_string(l1, l3));
                   if (g1 === 1) {
                     l2147483639 = 34;
                     break block_1;
@@ -15601,7 +15529,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   p7 = ((l0 + 56) | 0);
                 }
                 if ((g1 ? l5 === 35 : 1)) {
-                  strconv_mult64bitPow10(p7, l4, l1, l3);
+                  strconv_mult64bitPow10(go_string(p7, l4), go_string(l1, l3));
                   if (g1 === 1) {
                     l2147483639 = 35;
                     break block_1;
@@ -15614,7 +15542,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   p7 = load_u8(l0, 64);
                 }
                 if ((g1 ? l5 === 36 : 1)) {
-                  strconv_mult64bitPow10(l4, l8, l1, l3);
+                  strconv_mult64bitPow10(go_string(l4, l8), go_string(l1, l3));
                   if (g1 === 1) {
                     l2147483639 = 36;
                     break block_1;
@@ -15623,13 +15551,13 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                 if ((g1 === 0)) {
                   l19 = load_i32(l0, 40);
                   l4 = load_u8(l0, 48);
-                  l2147483647 = load_i32(l0, 44);
+                  l2147483644 = load_i32(l0, 44);
                   break block_178;
                 }
               }
               p7 = (g1 ? p7 : ((l0 + 120) | 0));
               if ((g1 ? l5 === 37 : 1)) {
-                strconv_mult128bitPow10(p7, l16, l1, l3);
+                strconv_mult128bitPow10(go_string(p7, l16), go_string(l1, l3));
                 if (g1 === 1) {
                   l2147483639 = 37;
                   break block_1;
@@ -15641,7 +15569,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                 p7 = ((l0 + 104) | 0);
               }
               if ((g1 ? l5 === 38 : 1)) {
-                strconv_mult128bitPow10(p7, l14, l1, l3);
+                strconv_mult128bitPow10(go_string(p7, l14), go_string(l1, l3));
                 if (g1 === 1) {
                   l2147483639 = 38;
                   break block_1;
@@ -15653,22 +15581,20 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                 p7 = load_u8(l0, 116);
               }
               if ((g1 ? l5 === 39 : 1)) {
-                strconv_mult128bitPow10(l4, l15, l1, l3);
+                strconv_mult128bitPow10(go_string(l4, l15), go_string(l1, l3));
                 if (g1 === 1) {
                   l2147483639 = 39;
                   break block_1;
                 }
               }
               if (g1) {
-                l2147483648 = l1;
               } else {
                 l4 = load_u8(l0, 100);
                 l19 = load_i64(l0, 88);
-                l2147483648 = load_i32(l0, 96);
               }
-              l2147483647 = l2147483648;
+              l2147483644 = (g1 ? l1 : load_i32(l0, 96));
             }
-            l1 = l2147483647;
+            l1 = l2147483644;
             block_193: {
               l8 = (g1 ? l8 : (l1 >= 0 ? 1 : 0));
               if (((l8 | g1) === 0)) {
@@ -15681,9 +15607,9 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                     break block_195;
                   }
                   l2 = (l2 ^ -1);
-                  l8 = (strconv_divisibleByPower5(l16, l2) | l6);
-                  p7 = (strconv_divisibleByPower5(l14, l2) | p7);
-                  l4 = (strconv_divisibleByPower5(l15, l2) | l4);
+                  l8 = (strconv_divisibleByPower5(go_string(l16, l2)) | l6);
+                  p7 = (strconv_divisibleByPower5(go_string(l14, l2)) | p7);
+                  l4 = (strconv_divisibleByPower5(go_string(l15, l2)) | l4);
                 }
                 l2 = ((0 - l1) | 0);
                 l14 = BigInt(u32(l2));
@@ -15691,16 +15617,16 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                 l4 = (l4 ^ 1);
                 l15 = (l2 ? -1n : (BigInt.asIntN(64, -1n << l14) ^ -1n));
                 l11 = ((l19 & l15) !== 0n ? 1 : 0);
-                l16 = (l2 ? 0n : BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l17)) >> l14));
-                l2147483649 = l19;
-                l19 = (l2 ? 0n : BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l18)) >> l14));
-                l2147483650 = l14;
+                l16 = (l2 ? 0n : (l17 >>> l14));
+                l2147483645 = l19;
+                l19 = (l2 ? 0n : (l18 >>> l14));
+                l2147483646 = l14;
                 l14 = (l15 & l17);
                 l15 = (l15 & l18);
-                l2147483651 = l4;
+                l2147483647 = l4;
                 l4 = (l4 & 1);
-                l6 = ((l4 | l11) ? (l2147483651 | l11) : (((l13 & 1n) === 0n) ? 1 : 0));
-                l18 = BigInt.asIntN(64, (l2 ? 0n : BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l2147483649)) >> l2147483650)) - (BigInt(u32((l6 ^ -1))) & 1n));
+                l6 = ((l4 | l11) ? (l2147483647 | l11) : (((l13 & 1n) === 0) ? 1 : 0));
+                l18 = BigInt.asIntN(64, (l2 ? 0n : (l2147483645 >>> l2147483646)) - (BigInt(u32((l6 ^ -1))) & 1n));
                 l17 = BigInt(u32((l1 ^ -1)));
                 if ((p7 & 1)) {
                   l2 = 1;
@@ -15711,9 +15637,9 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
                   l2 = (l1 & (l14 === l17 ? 1 : 0));
                   break block_193;
                 }
-                l2147483652 = l1;
-                l1 = (BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l14)) >> l17) === 1n ? 1 : 0);
-                l2 = ((u32(l2147483652) > u32(-65) ? 1 : 0) & l1);
+                l2147483648 = l1;
+                l1 = ((l14 >>> l17) === 1n ? 1 : 0);
+                l2 = ((u32(l2147483648) > u32(-65) ? 1 : 0) & l1);
                 break block_193;
               }
               if ((g1 ? l5 === 40 : 1)) {
@@ -15729,12 +15655,12 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
             }
             if ((g1 === 0)) {
               l1 = ((l0 + 456) | 0);
-              l13 = BigInt.asIntN(64, l19 + ((l8 & 1) ? (((l15 === 0n) ? 1 : 0) ? (l13 & 1n) : 1n) : 1n));
-              l4 = ((l14 === 0n) ? 1 : 0);
+              l13 = BigInt.asIntN(64, l19 + ((l8 & 1) ? (((l15 === 0) ? 1 : 0) ? (l13 & 1n) : 1n) : 1n));
+              l4 = ((l14 === 0) ? 1 : 0);
               p7 = (l4 & p7);
             }
             if ((g1 ? l5 === 41 : 1)) {
-              strconv_ryuDigits(l1, l13, l16, l18, p7, l2);
+              strconv_ryuDigits(go_string(l1, l13), go_string(l16, l18), go_string(p7, l2));
               if (g1 === 1) {
                 l2147483639 = 41;
                 break block_1;
@@ -15798,7 +15724,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
           p6 = (p6 >>> 31);
         }
         if ((g1 ? l5 === 42 : 1)) {
-          strconv_formatDigits(p7, p1, p2, p3, p6, l10, l1, l3, l4, l6, l8, l2, p5);
+          strconv_formatDigits(go_string(p7, p1), go_string(p2, p3), go_string(p6, l10), go_string(l1, l3), go_string(l4, l6), go_string(l8, l2), p5);
           if (g1 === 1) {
             l2147483639 = 42;
             break block_1;
@@ -15818,7 +15744,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
         p1 = ((l0 + 344) | 0);
       }
       if ((g1 ? l5 === 43 : 1)) {
-        runtime_sliceAppend(p1, l1, p2, p7, l2, 1, 1);
+        runtime_sliceAppend(go_string(p1, l1), go_string(p2, p7), l2, go_string(1, 1));
         if (g1 === 1) {
           l2147483639 = 43;
           break block_1;
@@ -15834,7 +15760,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
         p1 = ((l0 + 328) | 0);
       }
       if ((g1 ? l5 === 44 : 1)) {
-        runtime_sliceAppend(p1, l1, p2, p3, p5, 1, 1);
+        runtime_sliceAppend(go_string(p1, l1), go_string(p2, p3), p5, go_string(1, 1));
         if (g1 === 1) {
           l2147483639 = 44;
           break block_1;
@@ -15859,7 +15785,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
           p1 = ((l0 + 280) | 0);
         }
         if ((g1 ? l5 === 45 : 1)) {
-          runtime_sliceAppend(p1, l2, p2, p6, p7, 2, 1);
+          runtime_sliceAppend(go_string(p1, l2), go_string(p2, p6), p7, go_string(2, 1));
           if (g1 === 1) {
             l2147483639 = 45;
             break block_1;
@@ -15885,7 +15811,7 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
           p1 = ((l0 + 296) | 0);
         }
         if ((g1 ? l5 === 46 : 1)) {
-          runtime_sliceAppend(p1, l2, p2, p6, p7, 3, 1);
+          runtime_sliceAppend(go_string(p1, l2), go_string(p2, p6), p7, go_string(3, 1));
           if (g1 === 1) {
             l2147483639 = 46;
             break block_1;
@@ -15908,20 +15834,18 @@ function strconv_genericFtoa(p0, p1, p2, p3, p4, p5, p6, p7) {
         p1 = ((l0 + 312) | 0);
       }
       if ((g1 ? l5 === 47 : 1)) {
-        runtime_sliceAppend(p1, l2, p2, p6, p7, 4, 1);
+        runtime_sliceAppend(go_string(p1, l2), go_string(p2, p6), p7, go_string(4, 1));
         if (g1 === 1) {
           l2147483639 = 47;
           break block_1;
         }
       }
       if (g1) {
-        l2147483653 = l2;
       } else {
         l1 = load_i32(l0, 320);
         l3 = load_i32(l0, 316);
-        l2147483653 = load_i32(l0, 312);
       }
-      l2147483640 = l2147483653;
+      l2147483640 = (g1 ? l2 : load_i32(l0, 312));
     }
     p1 = l2147483640;
     if ((g1 === 0)) {
@@ -16008,7 +15932,7 @@ function strconv_ryuDigits(p0, p1, p2, p3, p4, p5) {
           block_7: {
             if ((l3 ? g1 : 1)) {
               if (((g1 ? l1 : 0) === 0)) {
-                strconv_ryuDigits32(p0, l5, l6, l7, p4, p5, 8);
+                strconv_ryuDigits32(go_string(p0, l5), go_string(l6, l7), go_string(p4, p5), 8);
                 if (g1 === 1) {
                   l2147483641 = 0;
                   break block_1;
@@ -16056,7 +15980,7 @@ function strconv_ryuDigits(p0, p1, p2, p3, p4, p5) {
                 l2 = ((8 - l0) | 0);
               }
               if ((g1 ? l1 === 1 : 1)) {
-                strconv_ryuDigits32(p0, l5, l6, l7, p4, p5, l2);
+                strconv_ryuDigits32(go_string(p0, l5), go_string(l6, l7), go_string(p4, p5), l2);
                 if (g1 === 1) {
                   l2147483641 = 1;
                   break block_1;
@@ -16065,7 +15989,7 @@ function strconv_ryuDigits(p0, p1, p2, p3, p4, p5) {
               if ((g1 === 0)) break block_6;
             }
             if ((g1 ? l1 === 2 : 1)) {
-              strconv_ryuDigits32(p0, l5, l2, l3, p4, l0, 8);
+              strconv_ryuDigits32(go_string(p0, l5), go_string(l2, l3), go_string(p4, l0), 8);
               if (g1 === 1) {
                 l2147483641 = 2;
                 break block_1;
@@ -16195,7 +16119,7 @@ function strconv_mult64bitPow10(p0, p1, p2, p3) {
           l2 = load_i64(l0, 8);
           p1 = Number(BigInt.asIntN(32, (BigInt.asIntN(64, load_i64(l0) << 7n) | BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l2)) >> 57n))));
           p3 = (((((Math.imul(p3, 108853) >> 15) + p2) | 0) - 6) | 0);
-          l2147483643 = (((l2 & 144115188075855871n) === 0n) ? 1 : 0);
+          l2147483643 = (((l2 & 144115188075855871n) === 0) ? 1 : 0);
         }
         store_i8(p0, l2147483643, 8);
         store_i32(p0, p3, 4);
@@ -16225,23 +16149,23 @@ function strconv_mult64bitPow10(p0, p1, p2, p3) {
 // strconv.divisibleByPower5
 function strconv_divisibleByPower5(p0, p1) {
   let l0 = 0, l1 = 0n;
-  block_0: {
-    if ((p0 === 0n)) {
-      l0 = 1;
-      break block_0;
-    }
-    p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
-    loop_2: while (true) {
-      l0 = ((p1 === 0) ? 1 : 0);
-      l1 = (BigInt.asUintN(64, BigInt(p0)) / BigInt.asUintN(64, BigInt(5n)));
-      if (((p1 === 0) | p0 !== BigInt.asIntN(64, l1 * 5n))) break block_0;
-      p1 = ((p1 - 1) | 0);
-      p0 = l1;
-      continue loop_2;
-      break;
-    }
-    throw new Error('unreachable');
+  if ((p0 === 0)) {
+    l0 = 1;
+    return l0;
   }
+  p1 = ((p1 > 0 ? 1 : 0) ? p1 : 0);
+  loop_2: while (true) {
+    l0 = ((p1 === 0) ? 1 : 0);
+    l1 = (BigInt.asUintN(64, BigInt(p0)) / BigInt.asUintN(64, BigInt(5n)));
+    if (((p1 === 0) | p0 !== BigInt.asIntN(64, l1 * 5n))) {
+      return l0;
+    }
+    p1 = ((p1 - 1) | 0);
+    p0 = l1;
+    continue loop_2;
+    break;
+  }
+  throw new Error('unreachable');
   return l0;
 }
 
@@ -16267,14 +16191,14 @@ function strconv_mult128bitPow10(p0, p1, p2, p3) {
           if (u32((p3 - 348) | 0) <= u32(-697)) break block_3;
           l1 = (p3 << 4);
           math_bits_Mul64(((l0 + 16) | 0), p1, BigInt.asIntN(64, load_i64(((l1 + 74424) | 0)) + BigInt(u32((p3 >>> 31)))));
-          math_bits_Mul64(l0, p1, load_i64(((l1 + 74432) | 0)));
+          math_bits_Mul64(go_string(l0, p1), load_i64(((l1 + 74432) | 0)));
           p1 = load_i64(l0, 8);
           l2 = load_i64(l0, 16);
-          l3 = BigInt.asIntN(64, p1 + l2);
+          l3 = ((p1 + l2) | 0);
           l4 = ((p1 | l2) & (l3 ^ -1n));
           p3 = (((((Math.imul(p3, 108853) >> 15) + p2) | 0) - 8) | 0);
-          p2 = (((load_i64(l0, 24) | (l3 & 36028797018963967n)) === 0n) ? 1 : 0);
-          l2147483643 = (BigInt.asIntN(64, BigInt.asIntN(64, load_i64(l0) + BigInt.asIntN(64, BigInt.asUintN(64, BigInt((l4 | (p1 & l2)))) >> 63n)) << 9n) | BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l3)) >> 55n));
+          p2 = (((load_i64(l0, 24) | (l3 & 36028797018963967n)) === 0) ? 1 : 0);
+          l2147483643 = (BigInt.asIntN(64, BigInt.asIntN(64, load_i64(l0) + ((l4 | (p1 & l2)) >>> 63n)) << 9n) | BigInt.asIntN(64, BigInt.asUintN(64, BigInt(l3)) >> 55n));
         }
         p1 = l2147483643;
         store_i8(p0, p2, 12);
@@ -16344,7 +16268,7 @@ function strconv_formatDecimal(p0, p1, p2, p3, p4) {
               break block_6;
             }
             l4 = (BigInt(u32(p3)) & 1n);
-            p1 = BigInt.asIntN(64, l4 + p1);
+            p1 = ((l4 + p1) | 0);
             if (BigInt.asUintN(64, BigInt(p1)) >= BigInt.asUintN(64, BigInt(l5))) {
               l1 = ((l1 + 1) | 0);
               p1 = (BigInt.asUintN(64, BigInt(p1)) / BigInt.asUintN(64, BigInt(10n)));
@@ -16369,7 +16293,7 @@ function strconv_formatDecimal(p0, p1, p2, p3, p4) {
                     break block_12;
                   }
                   block_15: {
-                    if ((p1 === 0n)) break block_15;
+                    if ((p1 === 0)) break block_15;
                     if (u32(load_i32(p0, 4)) <= u32(p2)) break block_3;
                     p3 = (Number(BigInt.asIntN(32, p1)) << 1);
                     store_i8(((load_i32(p0) + p2) | 0), load_u8(((p3 + 80705) | 0)));
@@ -16455,7 +16379,7 @@ function strconv_formatDecimal(p0, p1, p2, p3, p4) {
 
 // strconv.formatDigits
 function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483634, l2147483635, l2147483636;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483634, l2147483635;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 68) | 0));
     l2 = load_i32(g2);
@@ -16527,7 +16451,7 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
               p4 = ((l0 + 16) | 0);
             }
             if (((g1 ? l1 : 0) === 0)) {
-              strconv_fmtE(p4, p1, p2, p3, p5, p6, p7, p8, p9, p10, p11, p12);
+              strconv_fmtE(go_string(p4, p1), go_string(p2, p3), go_string(p5, p6), go_string(p7, p8), go_string(p9, p10), go_string(p11, p12));
               if (g1 === 1) {
                 l2147483634 = 0;
                 break block_1;
@@ -16542,7 +16466,7 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
           }
           p4 = (g1 ? p4 : ((l0 + 32) | 0));
           if ((g1 ? l1 === 1 : 1)) {
-            strconv_fmtF(p4, p1, p2, p3, p5, p6, p7, p8, p9, p10, p11);
+            strconv_fmtF(go_string(p4, p1), go_string(p2, p3), go_string(p5, p6), go_string(p7, p8), go_string(p9, p10), p11);
             if (g1 === 1) {
               l2147483634 = 1;
               break block_1;
@@ -16570,7 +16494,7 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
             p4 = ((l0 - -64) | 0);
           }
           if ((g1 ? l1 === 2 : 1)) {
-            strconv_fmtE(p4, p1, p2, p3, p5, p6, p7, p8, p9, p10, p11, p12);
+            strconv_fmtE(go_string(p4, p1), go_string(p2, p3), go_string(p5, p6), go_string(p7, p8), go_string(p9, p10), go_string(p11, p12));
             if (g1 === 1) {
               l2147483634 = 2;
               break block_1;
@@ -16590,7 +16514,7 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
           p4 = ((l0 + 48) | 0);
         }
         if ((g1 ? l1 === 3 : 1)) {
-          strconv_fmtF(p4, p1, p2, p3, p5, p6, p7, p8, p9, p10, p11);
+          strconv_fmtF(go_string(p4, p1), go_string(p2, p3), go_string(p5, p6), go_string(p7, p8), go_string(p9, p10), p11);
           if (g1 === 1) {
             l2147483634 = 3;
             break block_1;
@@ -16609,20 +16533,18 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
         p4 = ((l0 + 78) | 0);
       }
       if ((g1 ? l1 === 4 : 1)) {
-        runtime_sliceAppend(l0, p1, p4, p2, p3, 2, 1);
+        runtime_sliceAppend(go_string(l0, p1), go_string(p4, p2), p3, go_string(2, 1));
         if (g1 === 1) {
           l2147483634 = 4;
           break block_1;
         }
       }
       if (g1) {
-        l2147483636 = p6;
       } else {
         p9 = load_i32(l0, 4);
         p11 = load_i32(l0);
-        l2147483636 = load_i32(l0, 8);
       }
-      l2147483635 = l2147483636;
+      l2147483635 = (g1 ? p6 : load_i32(l0, 8));
     }
     p1 = l2147483635;
     if ((g1 === 0)) {
@@ -16661,7 +16583,7 @@ function strconv_formatDigits(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, 
 
 // strconv.fmtE
 function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483635, l2147483636;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483635;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 60) | 0));
     l2 = load_i32(g2);
@@ -16690,7 +16612,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
       l0 = ((g0 - 240) | 0);
       g0 = l0;
       store_i32(l0, 14, 180);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 184) | 0), ((l0 + 184) | 0) + 56);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 184) | 0), 0, 56), go_slice(((l0 + 184) | 0), 0, 56) + );
       store_i32(l0, p5, 192);
       l2 = load_i32(138276);
       store_i32(l0, l2, 176);
@@ -16706,7 +16628,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
         p4 = ((l0 + 144) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        runtime_sliceAppend(p4, p1, l3, p2, p3, 1, 1);
+        runtime_sliceAppend(go_string(p4, p1), go_string(l3, p2), p3, go_string(1, 1));
         if (g1 === 1) {
           l2147483635 = 0;
           break block_1;
@@ -16728,16 +16650,14 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
           if ((g1 === 0)) {
             if (p8) {
               if ((p6 === 0)) break block_11;
-              l2147483636 = load_u8(p5);
             } else {
-              l2147483636 = 48;
             }
-            store_i8(l0, l2147483636, 164);
+            store_i8(l0, (p8 ? load_u8(p5) : 48), 164);
             p6 = ((l0 + 164) | 0);
             p4 = ((l0 + 128) | 0);
           }
           if ((g1 ? l1 === 1 : 1)) {
-            runtime_sliceAppend(p4, p1, p6, p2, p3, 1, 1);
+            runtime_sliceAppend(go_string(p4, p1), go_string(p6, p2), p3, go_string(1, 1));
             if (g1 === 1) {
               l2147483635 = 1;
               break block_1;
@@ -16758,7 +16678,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
               p3 = ((l0 + 112) | 0);
             }
             if ((g1 ? l1 === 2 : 1)) {
-              runtime_sliceAppend(p3, p1, p6, p4, p2, 1, 1);
+              runtime_sliceAppend(go_string(p3, p1), go_string(p6, p4), p2, go_string(1, 1));
               if (g1 === 1) {
                 l2147483635 = 2;
                 break block_1;
@@ -16787,7 +16707,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
                 p5 = ((p5 + 1) | 0);
               }
               if ((g1 ? l1 === 3 : 1)) {
-                runtime_sliceAppend(p6, p1, p5, p4, p2, p7, 1);
+                runtime_sliceAppend(go_string(p6, p1), go_string(p5, p4), go_string(p2, p7), 1);
                 if (g1 === 1) {
                   l2147483635 = 3;
                   break block_1;
@@ -16810,7 +16730,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
                 p5 = ((l0 + 80) | 0);
               }
               if ((g1 ? l1 === 4 : 1)) {
-                runtime_sliceAppend(p5, p1, p6, p4, p2, 1, 1);
+                runtime_sliceAppend(go_string(p5, p1), go_string(p6, p4), p2, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483635 = 4;
                   break block_1;
@@ -16834,7 +16754,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
             p3 = ((l0 - -64) | 0);
           }
           if ((g1 ? l1 === 5 : 1)) {
-            runtime_sliceAppend(p3, p1, p5, p4, p2, 1, 1);
+            runtime_sliceAppend(go_string(p3, p1), go_string(p5, p4), p2, go_string(1, 1));
             if (g1 === 1) {
               l2147483635 = 5;
               break block_1;
@@ -16851,7 +16771,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
             p2 = ((l0 + 48) | 0);
           }
           if ((g1 ? l1 === 6 : 1)) {
-            runtime_sliceAppend(p2, p3, p4, p5, p6, 1, 1);
+            runtime_sliceAppend(go_string(p2, p3), go_string(p4, p5), p6, go_string(1, 1));
             if (g1 === 1) {
               l2147483635 = 6;
               break block_1;
@@ -16874,7 +16794,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
               p1 = ((l0 + 169) | 0);
             }
             if ((g1 ? l1 === 7 : 1)) {
-              runtime_sliceAppend(l0, p3, p1, p4, p2, 2, 1);
+              runtime_sliceAppend(go_string(l0, p3), go_string(p1, p4), p2, go_string(2, 1));
               if (g1 === 1) {
                 l2147483635 = 7;
                 break block_1;
@@ -16898,7 +16818,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
               p1 = ((l0 + 16) | 0);
             }
             if ((g1 ? l1 === 8 : 1)) {
-              runtime_sliceAppend(p1, p3, p5, p4, p2, 2, 1);
+              runtime_sliceAppend(go_string(p1, p3), go_string(p5, p4), p2, go_string(2, 1));
               if (g1 === 1) {
                 l2147483635 = 8;
                 break block_1;
@@ -16920,7 +16840,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
             p1 = ((l0 + 32) | 0);
           }
           if ((g1 ? l1 === 9 : 1)) {
-            runtime_sliceAppend(p1, p3, p5, p4, p2, 3, 1);
+            runtime_sliceAppend(go_string(p1, p3), go_string(p5, p4), p2, go_string(3, 1));
             if (g1 === 1) {
               l2147483635 = 9;
               break block_1;
@@ -16989,7 +16909,7 @@ function strconv_fmtE(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11) {
 
 // strconv.fmtF
 function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483636, l2147483637;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483636;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 56) | 0));
     l2 = load_i32(g2);
@@ -17017,7 +16937,7 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
       l0 = ((g0 - 176) | 0);
       g0 = l0;
       store_i32(l0, 13, 116);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 120) | 0), ((l0 + 120) | 0) + 52);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 120) | 0), 0, 52), go_slice(((l0 + 120) | 0), 0, 52) + );
       store_i32(l0, p5, 128);
       l2 = load_i32(138276);
       store_i32(l0, l2, 112);
@@ -17033,7 +16953,7 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
         p4 = ((l0 + 88) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        runtime_sliceAppend(p4, p1, l3, p2, p3, 1, 1);
+        runtime_sliceAppend(go_string(p4, p1), go_string(l3, p2), p3, go_string(1, 1));
         if (g1 === 1) {
           l2147483636 = 0;
           break block_1;
@@ -17061,7 +16981,7 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
               p7 = ((l0 + 56) | 0);
             }
             if ((g1 ? l1 === 1 : 1)) {
-              runtime_sliceAppend(p7, p1, p5, p2, p3, p4, 1);
+              runtime_sliceAppend(go_string(p7, p1), go_string(p5, p2), go_string(p3, p4), 1);
               if (g1 === 1) {
                 l2147483636 = 1;
                 break block_1;
@@ -17084,7 +17004,7 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
                 p7 = ((l0 + 40) | 0);
               }
               if ((g1 ? l1 === 2 : 1)) {
-                runtime_sliceAppend(p7, p1, l3, p2, p3, 1, 1);
+                runtime_sliceAppend(go_string(p7, p1), go_string(l3, p2), p3, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483636 = 2;
                   break block_1;
@@ -17107,7 +17027,7 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
             p4 = ((l0 + 72) | 0);
           }
           if ((g1 ? l1 === 3 : 1)) {
-            runtime_sliceAppend(p4, p1, p7, p2, p3, 1, 1);
+            runtime_sliceAppend(go_string(p4, p1), go_string(p7, p2), p3, go_string(1, 1));
             if (g1 === 1) {
               l2147483636 = 3;
               break block_1;
@@ -17132,7 +17052,7 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
             p4 = ((l0 + 24) | 0);
           }
           if ((g1 ? l1 === 4 : 1)) {
-            runtime_sliceAppend(p4, p1, p7, p2, p3, 1, 1);
+            runtime_sliceAppend(go_string(p4, p1), go_string(p7, p2), p3, go_string(1, 1));
             if (g1 === 1) {
               l2147483636 = 4;
               break block_1;
@@ -17150,18 +17070,16 @@ function strconv_fmtF(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10) {
               if ((p10 === 0)) break block_24;
               p4 = 48;
               if ((p9 < 0 | p8 <= p9)) {
-                l2147483637 = 48;
               } else {
                 store_i32(l0, p5, 156);
                 if (u32(p6) <= u32(p9)) break block_9;
-                l2147483637 = load_u8(((p5 + p9) | 0));
               }
-              store_i8(l0, l2147483637, 110);
+              store_i8(l0, (((p9 < 0 ? 1 : 0) | (p8 <= p9 ? 1 : 0)) ? 48 : load_u8(((p5 + p9) | 0))), 110);
               p7 = ((l0 + 110) | 0);
               p4 = ((l0 + 8) | 0);
             }
             if ((g1 ? l1 === 5 : 1)) {
-              runtime_sliceAppend(p4, p1, p7, p2, p3, 1, 1);
+              runtime_sliceAppend(go_string(p4, p1), go_string(p7, p2), p3, go_string(1, 1));
               if (g1 === 1) {
                 l2147483636 = 5;
                 break block_1;
@@ -17392,7 +17310,7 @@ function strconv_AppendFloat(p0, p1, p2, p3, p4, p5, p6, p7) {
       store_i32(138276, ((l2 + 16) | 0));
     }
     if (((g1 ? l1 : 0) === 0)) {
-      strconv_genericFtoa(l2, p1, p2, p3, p4, p5, p6, p7);
+      strconv_genericFtoa(go_string(l2, p1), go_string(p2, p3), go_string(p4, p5), go_string(p6, p7));
       if (g1 === 1) {
         l2147483639 = 0;
         break block_1;
@@ -17462,7 +17380,7 @@ function strconv_appendQuotedRuneWith(p0, p1, p2, p3) {
       p2 = ((u32(p2) < 55296 ? 1 : 0) ? p2 : l1);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      strconv_appendEscapedRune(l3, p1, 1, 68, p2, 39, p3);
+      strconv_appendEscapedRune(go_string(l3, p1), go_string(1, 68), p2, go_string(39, p3));
       if (g1 === 1) {
         l2147483643 = 0;
         break block_1;
@@ -17478,7 +17396,7 @@ function strconv_appendQuotedRuneWith(p0, p1, p2, p3) {
       p1 = ((l0 + 8) | 0);
     }
     if ((g1 ? l2 === 1 : 1)) {
-      runtime_sliceAppend(p1, p2, p3, l3, l1, 1, 1);
+      runtime_sliceAppend(go_string(p1, p2), go_string(p3, l3), l1, go_string(1, 1));
       if (g1 === 1) {
         l2147483643 = 1;
         break block_1;
@@ -17513,7 +17431,7 @@ function strconv_appendQuotedRuneWith(p0, p1, p2, p3) {
 
 // unicode.isExcludingLatin
 function unicode_isExcludingLatin(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l2147483645, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 32) | 0));
     p1 = load_i32(g2);
@@ -17659,16 +17577,14 @@ function unicode_isExcludingLatin(p0, p1) {
                 if ((g1 === 0)) {
                   p0 = ((l6 - 4) | 0);
                   l0 = ((l5 + 1) | 0);
-                  loop_23: while (true) {
+                  do {
                     l0 = ((l0 - 1) | 0);
                     if ((l0 === 0)) break block_5;
                     l4 = load_i32(((p0 + 4) | 0));
                     if (u32(l4) > u32(p1)) break block_5;
                     l2147483646 = p0;
                     p0 = ((p0 + 12) | 0);
-                    if (u32(load_i32(((l2147483646 + 8) | 0))) < u32(p1)) continue loop_23;
-                    break;
-                  }
+                  } while (u32(load_i32(((l2147483646 + 8) | 0))) < u32(p1));
                   l2 = 1;
                   p0 = load_i32(p0);
                   if ((p0) === 0) {
@@ -17690,7 +17606,7 @@ function unicode_isExcludingLatin(p0, p1) {
               l1 = ((l7 + 1) | 0);
               p0 = ((l8 - 2) | 0);
               l3 = (p1 & 65535);
-              loop_26: while (true) {
+              do {
                 if ((l0 === 0)) break block_5;
                 l1 = ((l1 - 1) | 0);
                 if ((l1 === 0)) break block_3;
@@ -17699,9 +17615,7 @@ function unicode_isExcludingLatin(p0, p1) {
                 l0 = ((l0 - 1) | 0);
                 l4 = ((p0 + 4) | 0);
                 p0 = ((p0 + 6) | 0);
-                if (u32(load_u16(l4)) < u32(l3)) continue loop_26;
-                break;
-              }
+              } while (u32(load_u16(l4)) < u32(l3));
               l2 = 1;
               p0 = load_u16(p0);
               if ((p0) === 0) {
@@ -17726,14 +17640,12 @@ function unicode_isExcludingLatin(p0, p1) {
           block_31: {
             if (g1 === 2) {
               store_i32(g2, ((load_i32(g2) - 4) | 0));
-              l2147483647 = load_i32(load_i32(g2));
             } else {
-              l2147483647 = 0;
             }
-            if (((g1 ? l2147483647 : 0) === 0)) {
-              runtime_runtimePanicAt(91468, 14);
+            if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
+              runtime_runtimePanicAt("divide by zero");
               if (g1 === 1) {
-                l2147483648 = 0;
+                l2147483647 = 0;
                 break block_31;
               }
             }
@@ -17741,9 +17653,9 @@ function unicode_isExcludingLatin(p0, p1) {
               throw new Error('unreachable');
             }
             break block_30;
-            l2147483648 = 0;
+            l2147483647 = 0;
           }
-          l0 = l2147483648;
+          l0 = l2147483647;
           store_i32(load_i32(g2), l0);
           store_i32(g2, ((load_i32(g2) + 4) | 0));
         }
@@ -17959,7 +17871,7 @@ function _bytes_Buffer_grow(p0, p1) {
       l1 = ((g0 - 96) | 0);
       g0 = l1;
       store_i32(l1, 12, 44);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 52) | 0), ((l1 + 52) | 0) + 44);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 52) | 0), 0, 44), go_slice(((l1 + 52) | 0), 0, 44) + );
       l10 = load_i32(138276);
       store_i32(l1, l10, 40);
       store_i32(138276, ((l1 + 40) | 0));
@@ -17974,7 +17886,7 @@ function _bytes_Buffer_grow(p0, p1) {
       l0 = ((l1 + 24) | 0);
     }
     if (((g1 ? l9 : 0) === 0)) {
-      _bytes_Buffer_tryGrowByReslice(l0, p0, p1);
+      _bytes_Buffer_tryGrowByReslice(go_string(l0, p0), p1);
       if (g1 === 1) {
         l2147483645 = 0;
         break block_1;
@@ -18004,7 +17916,7 @@ function _bytes_Buffer_grow(p0, p1) {
               l2147483645 = 1;
               break block_1;
             }
-            l3 = runtime_alloc(64, 3);
+            l3 = runtime_alloc(go_string(64, 3));
           }
           if ((g1 === 0)) {
             store_i32(l1, l3, 56);
@@ -18033,7 +17945,7 @@ function _bytes_Buffer_grow(p0, p1) {
               l4 = ((l2 - l0) | 0);
               l6 = (u32(l2) > u32(l4) ? 1 : 0);
               l5 = ((l0 + l3) | 0);
-              new Uint8Array(memory.buffer).copyWithin(l3, l5, l5 + (l6 ? l4 : l2));
+              new Uint8Array(memory.buffer).copyWithin(go_string(l3, l5), (l6 ? l4 : l2), (l6 ? l4 : l2) + );
               l2 = load_i32(p0, 8);
               l0 = load_i32(p0);
               break block_16;
@@ -18084,7 +17996,7 @@ function _bytes_Buffer_grow(p0, p1) {
               l3 = load_i32(l1, 12);
               l5 = ((l5 - l6) | 0);
               l6 = (u32(l3) > u32(l5) ? 1 : 0);
-              new Uint8Array(memory.buffer).copyWithin(l0, l7, l7 + (l6 ? l5 : l3));
+              new Uint8Array(memory.buffer).copyWithin(go_string(l0, l7), (l6 ? l5 : l3), (l6 ? l5 : l3) + );
               if (u32(l2) < u32(l5)) break block_7;
               l3 = ((l1 + 32) | 0);
               loop_25: while (true) {
@@ -18161,7 +18073,7 @@ function _bytes_Buffer_grow(p0, p1) {
 
 // (*bytes.Buffer).tryGrowByReslice
 function _bytes_Buffer_tryGrowByReslice(p0, p1, p2) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644, l2147483645;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483644;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
@@ -18176,11 +18088,9 @@ function _bytes_Buffer_tryGrowByReslice(p0, p1, p2) {
           if (u32(l3) < u32(p2)) break block_3;
           store_i32(p1, p2, 4);
           l1 = 1;
-          l2147483644 = l2;
         } else {
-          l2147483644 = 0;
         }
-        store_i32(p0, l2147483644);
+        store_i32(p0, ((p2 <= ((l3 - l2) | 0) ? 1 : 0) ? l2 : 0));
         store_i8(p0, l1, 4);
         return;
       }
@@ -18188,7 +18098,7 @@ function _bytes_Buffer_tryGrowByReslice(p0, p1, p2) {
     if (((g1 ? l0 : 0) === 0)) {
       runtime_slicePanic();
       if (g1 === 1) {
-        l2147483645 = 0;
+        l2147483644 = 0;
         break block_0;
       }
     }
@@ -18196,9 +18106,9 @@ function _bytes_Buffer_tryGrowByReslice(p0, p1, p2) {
       throw new Error('unreachable');
     }
     return;
-    l2147483645 = 0;
+    l2147483644 = 0;
   }
-  p0 = l2147483645;
+  p0 = l2147483644;
   store_i32(load_i32(g2), p0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
@@ -18254,7 +18164,7 @@ function _bytes_Buffer_String(p0, p1) {
           p1 = ((l3 - p1) | 0);
         }
         if (((g1 ? l1 : 0) === 0)) {
-          runtime_stringFromBytes(l4, l5, p1);
+          runtime_stringFromBytes(go_string(l4, l5), p1);
           if (g1 === 1) {
             l2147483645 = 0;
             break block_1;
@@ -18302,7 +18212,7 @@ function _bytes_Buffer_String(p0, p1) {
 
 // (*bytes.Buffer).Write
 function _bytes_Buffer_Write(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643, l2147483644, l2147483645;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 28) | 0));
     p1 = load_i32(g2);
@@ -18330,7 +18240,7 @@ function _bytes_Buffer_Write(p0, p1, p2, p3) {
       l1 = ((l2 + 8) | 0);
     }
     if (((g1 ? l0 : 0) === 0)) {
-      _bytes_Buffer_tryGrowByReslice(l1, p1, p3);
+      _bytes_Buffer_tryGrowByReslice(go_string(l1, p1), p3);
       if (g1 === 1) {
         l2147483643 = 0;
         break block_1;
@@ -18349,11 +18259,9 @@ function _bytes_Buffer_Write(p0, p1, p2, p3) {
           l2147483643 = 1;
           break block_1;
         }
-        l2147483645 = _bytes_Buffer_grow(p1, p3);
       } else {
-        l2147483645 = l1;
       }
-      l2147483644 = l2147483645;
+      l2147483644 = ((g1 ? (l0 === 1 ? 1 : 0) : 1) ? _bytes_Buffer_grow(go_string(p1, p3)) : l1);
     }
     l1 = l2147483644;
     if ((g1 === 0)) {
@@ -18401,7 +18309,7 @@ function _bytes_Buffer_Write(p0, p1, p2, p3) {
 
 // (*bytes.Buffer).WriteByte
 function _bytes_Buffer_WriteByte(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483645, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 20) | 0));
     p1 = load_i32(g2);
@@ -18427,7 +18335,7 @@ function _bytes_Buffer_WriteByte(p0, p1) {
       l2 = ((l1 + 8) | 0);
     }
     if (((g1 ? l0 : 0) === 0)) {
-      _bytes_Buffer_tryGrowByReslice(l2, p0, 1);
+      _bytes_Buffer_tryGrowByReslice(go_string(l2, p0), 1);
       if (g1 === 1) {
         l2147483645 = 0;
         break block_1;
@@ -18446,11 +18354,9 @@ function _bytes_Buffer_WriteByte(p0, p1) {
           l2147483645 = 1;
           break block_1;
         }
-        l2147483647 = _bytes_Buffer_grow(p0, 1);
       } else {
-        l2147483647 = l2;
       }
-      l2147483646 = l2147483647;
+      l2147483646 = ((g1 ? (l0 === 1 ? 1 : 0) : 1) ? _bytes_Buffer_grow(p0, 1) : l2);
     }
     l2 = l2147483646;
     if ((g1 === 0)) {
@@ -18492,20 +18398,16 @@ function _bytes_Buffer_WriteByte(p0, p1) {
 function runtime_memequal(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2147483643, l2147483644;
   p3 = 0;
-  block_0: {
-    loop_1: while (true) {
-      if (p2 === p3) {
-        l2147483643 = p2;
-        break block_0;
-      }
-      l0 = ((p1 + p3) | 0);
-      l2147483644 = p3;
-      p3 = ((p3 + 1) | 0);
-      if (load_u8(((p0 + l2147483644) | 0)) === load_u8(l0)) continue loop_1;
-      break;
+  do {
+    if (p2 === p3) {
+      l2147483643 = p2;
+      return (u32(l2147483643) >= u32(p2) ? 1 : 0);
     }
-    l2147483643 = ((p3 - 1) | 0);
-  }
+    l0 = ((p1 + p3) | 0);
+    l2147483644 = p3;
+    p3 = ((p3 + 1) | 0);
+  } while (load_u8(((p0 + l2147483644) | 0)) === load_u8(l0));
+  l2147483643 = ((p3 - 1) | 0);
   return (u32(l2147483643) >= u32(p2) ? 1 : 0);
 }
 
@@ -18573,7 +18475,7 @@ function malloc(p0) {
           p0 = ((l1 + 12) | 0);
         }
         if ((g1 ? l4 === 1 : 1)) {
-          runtime_hashmapBinarySet(136168, p0, l1);
+          runtime_hashmapBinarySet(go_string(136168, p0), l1);
           if (g1 === 1) {
             l2147483646 = 1;
             break block_1;
@@ -18643,7 +18545,7 @@ function runtime_hashmapBinarySet(p0, p1, p2) {
       l0 = runtime_hash32(p1, load_i32(p0, 12), load_i32(p0, 4), p0);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      runtime_hashmapSet(p0, p1, p2, l0);
+      runtime_hashmapSet(go_string(p0, p1), go_string(p2, l0));
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -18694,7 +18596,7 @@ function free(p0) {
             l2147483646 = 0;
             break block_1;
           }
-          l0 = runtime_hashmapBinaryGet(136168, l0, l1, 12);
+          l0 = runtime_hashmapBinaryGet(go_string(136168, l0), l1, 12);
         }
         if ((g1 === 0)) {
           if (((l0 & 1) === 0)) break block_4;
@@ -18764,7 +18666,7 @@ function runtime_hashmapBinaryGet(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      p0 = runtime_hashmapGet(p0, p1, p2, p3);
+      p0 = runtime_hashmapGet(go_string(p0, p1), go_string(p2, p3));
     }
     if ((g1 === 0)) {
       return p0;
@@ -18802,7 +18704,7 @@ function runtime_hashmapBinaryDelete(p0) {
       l0 = runtime_hash32(p0, load_i32(136180), load_i32(136172), p0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      runtime_hashmapDelete(136168, p0, l0);
+      runtime_hashmapDelete(go_string(136168, p0), l0);
       if (g1 === 1) {
         l2147483646 = 0;
         break block_1;
@@ -18861,14 +18763,14 @@ function runtime_resume$1$gowrapper(p0) {
             l0 = ((g0 - 272) | 0);
             g0 = l0;
             store_i32(l0, 29, 148);
-            new Uint8Array(memory.buffer).fill(0, ((l0 + 152) | 0), ((l0 + 152) | 0) + 116);
+            new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 152) | 0), 0, 116), go_slice(((l0 + 152) | 0), 0, 116) + );
             l12 = load_i32(138276);
             store_i32(l0, l12, 144);
             store_i32(138276, ((l0 + 144) | 0));
             l1 = ((l0 + 112) | 0);
           }
           if (((g1 ? l3 : 0) === 0)) {
-            _syscall_js_Value_Get(l1, 9221120241336057862n, 0, 94352, 13);
+            _syscall_js_Value_Get(l1, 9221120241336057862n, 0, "_pendingEvent");
             if (g1 === 1) {
               l2147483646 = 0;
               break block_5;
@@ -18900,7 +18802,7 @@ function runtime_resume$1$gowrapper(p0) {
                       store_i32(l0, p0, 160);
                     }
                     if ((g1 ? l3 === 2 : 1)) {
-                      _syscall_js_Value_Set(9221120241336057862n, 0, 94352, 13, 128340, p0);
+                      _syscall_js_Value_Set(9221120241336057862n, 0, "_pendingEvent", go_string(128340, p0));
                       if (g1 === 1) {
                         l2147483646 = 2;
                         break block_5;
@@ -18908,7 +18810,7 @@ function runtime_resume$1$gowrapper(p0) {
                     }
                     l1 = (g1 ? l1 : ((l0 + 96) | 0));
                     if ((g1 ? l3 === 3 : 1)) {
-                      _syscall_js_Value_Get(l1, l17, l8, 94365, 2);
+                      _syscall_js_Value_Get(go_string(l1, l17), l8, "id");
                       if (g1 === 1) {
                         l2147483646 = 3;
                         break block_5;
@@ -18922,7 +18824,7 @@ function runtime_resume$1$gowrapper(p0) {
                       l15 = load_i64(l0, 96);
                       l18 = (l15 & -2n);
                       if (l18 !== 9221120237041090560n) {
-                        l1 = ((l15 === 0n) ? 1 : 0);
+                        l1 = ((l15 === 0) ? 1 : 0);
                         if (l1) break block_13;
                         l18 = (l15 & 9221120237041090560n);
                         l1 = (l18 === 9221120237041090560n ? 1 : 0);
@@ -18953,7 +18855,7 @@ function runtime_resume$1$gowrapper(p0) {
                         l2147483646 = 5;
                         break block_5;
                       }
-                      p0 = runtime_hashmapBinaryGet(137456, l1, l5, 8);
+                      p0 = runtime_hashmapBinaryGet(go_string(137456, l1), l5, 8);
                     }
                     if ((g1 === 0)) {
                       l11 = load_i32(l0, 136);
@@ -18973,7 +18875,7 @@ function runtime_resume$1$gowrapper(p0) {
                         l1 = ((l0 + 48) | 0);
                       }
                       if ((g1 ? l3 === 7 : 1)) {
-                        _syscall_js_Value_Get(l1, l17, l8, 94367, 4);
+                        _syscall_js_Value_Get(go_string(l1, l17), l8, "this");
                         if (g1 === 1) {
                           l2147483646 = 7;
                           break block_5;
@@ -18986,7 +18888,7 @@ function runtime_resume$1$gowrapper(p0) {
                         l1 = ((l0 + 32) | 0);
                       }
                       if ((g1 ? l3 === 8 : 1)) {
-                        _syscall_js_Value_Get(l1, l17, l8, 94371, 4);
+                        _syscall_js_Value_Get(go_string(l1, l17), l8, "args");
                         if (g1 === 1) {
                           l2147483646 = 8;
                           break block_5;
@@ -19074,10 +18976,10 @@ function runtime_resume$1$gowrapper(p0) {
                                   l2147483646 = 14;
                                   break block_5;
                                 }
-                                l16 = gojs_syscall_js_valueIndex(l15, l4);
+                                l16 = gojs_syscall_js_valueIndex(go_string(l15, l4));
                               }
                               if ((g1 ? l3 === 15 : 1)) {
-                                syscall_js_makeValue(p0, l16);
+                                syscall_js_makeValue(go_string(p0, l16));
                                 if (g1 === 1) {
                                   l2147483646 = 15;
                                   break block_5;
@@ -19129,7 +19031,7 @@ function runtime_resume$1$gowrapper(p0) {
                             store_i32(l0, l4, 252);
                           }
                           if ((g1 ? l3 === 18 : 1)) {
-                            _syscall_js_Value_Set(l17, l8, 94375, 6, l4, p0);
+                            _syscall_js_Value_Set(go_string(l17, l8), "result", go_string(l4, p0));
                             if (g1 === 1) {
                               l2147483646 = 18;
                               break block_5;
@@ -19161,7 +19063,7 @@ function runtime_resume$1$gowrapper(p0) {
                     }
                     l1 = (g1 ? l1 : ((l0 + 80) | 0));
                     if ((g1 ? l3 === 21 : 1)) {
-                      _syscall_js_Value_Get(l1, 9221120241336057861n, 0, 94381, 7);
+                      _syscall_js_Value_Get(l1, 9221120241336057861n, 0, "console");
                       if (g1 === 1) {
                         l2147483646 = 21;
                         break block_5;
@@ -19177,7 +19079,7 @@ function runtime_resume$1$gowrapper(p0) {
                       l1 = ((l0 - -64) | 0);
                     }
                     if ((g1 ? l3 === 22 : 1)) {
-                      _syscall_js_Value_Call(l1, l15, p0, 94424, 5, l5);
+                      _syscall_js_Value_Call(go_string(l1, l15), p0, "error", l5);
                       if (g1 === 1) {
                         l2147483646 = 22;
                         break block_5;
@@ -19195,7 +19097,7 @@ function runtime_resume$1$gowrapper(p0) {
                     l2147483646 = 23;
                     break block_5;
                   }
-                  p0 = runtime_alloc(12, 71);
+                  p0 = runtime_alloc(go_string(12, 71));
                 }
                 if ((g1 === 0)) {
                   store_i32(l0, p0, 172);
@@ -19214,7 +19116,7 @@ function runtime_resume$1$gowrapper(p0) {
                   store_i32(p0, 94612);
                 }
                 if ((g1 ? l3 === 25 : 1)) {
-                  runtime__panic(128712, p0);
+                  runtime__panic(go_string(128712, p0));
                   if (g1 === 1) {
                     l2147483646 = 25;
                     break block_5;
@@ -19240,7 +19142,7 @@ function runtime_resume$1$gowrapper(p0) {
                 l2147483646 = 27;
                 break block_5;
               }
-              l4 = runtime_alloc(12, 71);
+              l4 = runtime_alloc(go_string(12, 71));
             }
             if ((g1 === 0)) {
               store_i32(l4, p0, 8);
@@ -19250,7 +19152,7 @@ function runtime_resume$1$gowrapper(p0) {
               store_i32(l0, l4, 200);
             }
             if ((g1 ? l3 === 28 : 1)) {
-              runtime__panic(128712, l4);
+              runtime__panic(go_string(128712, l4));
               if (g1 === 1) {
                 l2147483646 = 28;
                 break block_5;
@@ -19265,7 +19167,7 @@ function runtime_resume$1$gowrapper(p0) {
               l2147483646 = 29;
               break block_5;
             }
-            l4 = runtime_alloc(12, 71);
+            l4 = runtime_alloc(go_string(12, 71));
           }
           if ((g1 === 0)) {
             store_i32(l4, p0, 8);
@@ -19275,7 +19177,7 @@ function runtime_resume$1$gowrapper(p0) {
             store_i32(l0, l4, 228);
           }
           if ((g1 ? l3 === 30 : 1)) {
-            runtime__panic(128712, l4);
+            runtime__panic(go_string(128712, l4));
             if (g1 === 1) {
               l2147483646 = 30;
               break block_5;
@@ -19342,7 +19244,7 @@ function runtime_scheduler() {
       l3 = load_i32(load_i32(g2));
     }
     if ((g1 === 0)) {
-      loop_3: while (true) {
+      do {
         block_4: {
           l0 = load_i32(138284);
           if (l0) {
@@ -19379,12 +19281,10 @@ function runtime_scheduler() {
         l1 = load_i32(138276);
         store_i32(138276, load_i32(l0, 16));
         store_i32(l0, l1, 16);
-        if (u32(load_i32(((l0 + 32) | 0))) >= u32(load_i32(((l0 + 28) | 0)))) continue loop_3;
-        break;
-      }
+      } while (u32(load_i32(((l0 + 32) | 0))) >= u32(load_i32(((l0 + 28) | 0))));
     }
     if (((g1 ? l3 : 0) === 0)) {
-      runtime_runtimePanic(67276, 14);
+      runtime_runtimePanic("stack overflow");
       if (g1 === 1) {
         l2147483647 = 0;
         break block_0;
@@ -19412,15 +19312,13 @@ function runtime_calculateHeapAddresses() {
 
 // runtime.run$1$gowrapper
 function runtime_run$1$gowrapper(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0n, l8 = 0n, l9 = 0, l10 = 0, l2147483646, l2147483647, l2147483648, l2147483649, l2147483650;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0n, l8 = 0n, l9 = 0, l10 = 0, l2147483646, l2147483647, l2147483648, l2147483649;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483646 = load_i32(load_i32(g2));
     } else {
-      l2147483646 = 0;
     }
-    if (((g1 ? l2147483646 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       p0 = 0;
       block_3: {
         block_4: {
@@ -19459,7 +19357,7 @@ function runtime_run$1$gowrapper(p0) {
                 }
                 if (((g1 ? l3 : 0) === 0)) {
                   if (g1 === 1) {
-                    l2147483647 = 0;
+                    l2147483646 = 0;
                     break block_9;
                   }
                   l7 = runtime_hardwareRand();
@@ -19469,9 +19367,9 @@ function runtime_run$1$gowrapper(p0) {
                   l0 = ((l1 + 24) | 0);
                 }
                 if ((g1 ? l3 === 1 : 1)) {
-                  _syscall_js_Value_Get(l0, 9221120241336057861n, 0, 94307, 6);
+                  _syscall_js_Value_Get(l0, 9221120241336057861n, 0, "Object");
                   if (g1 === 1) {
-                    l2147483647 = 1;
+                    l2147483646 = 1;
                     break block_9;
                   }
                 }
@@ -19483,9 +19381,9 @@ function runtime_run$1$gowrapper(p0) {
                   l0 = ((l1 + 8) | 0);
                 }
                 if ((g1 ? l3 === 2 : 1)) {
-                  _syscall_js_Value_Get(l0, 9221120241336057861n, 0, 94313, 5);
+                  _syscall_js_Value_Get(l0, 9221120241336057861n, 0, "Array");
                   if (g1 === 1) {
-                    l2147483647 = 2;
+                    l2147483646 = 2;
                     break block_9;
                   }
                 }
@@ -19499,7 +19397,7 @@ function runtime_run$1$gowrapper(p0) {
                 }
                 if ((g1 ? l3 === 3 : 1)) {
                   if (g1 === 1) {
-                    l2147483647 = 3;
+                    l2147483646 = 3;
                     break block_9;
                   }
                   l9 = gojs_runtime_ticks();
@@ -19516,9 +19414,9 @@ function runtime_run$1$gowrapper(p0) {
                   g0 = ((l1 + 112) | 0);
                 }
                 break block_8;
-                l2147483647 = 0;
+                l2147483646 = 0;
               }
-              l2 = l2147483647;
+              l2 = l2147483646;
               store_i32(load_i32(g2), l2);
               store_i32(g2, ((load_i32(g2) + 4) | 0));
               l2 = load_i32(g2);
@@ -19532,7 +19430,7 @@ function runtime_run$1$gowrapper(p0) {
               store_i32(g2, ((load_i32(g2) + 36) | 0));
             }
             if (g1 === 1) {
-              l2147483648 = 0;
+              l2147483647 = 0;
               break block_4;
             }
           }
@@ -19569,9 +19467,9 @@ function runtime_run$1$gowrapper(p0) {
                   store_i32(l0, p0, 24);
                 }
                 if (((g1 ? l2 : 0) === 0)) {
-                  syscall_js_FuncOf(l0, l0, 7);
+                  syscall_js_FuncOf(go_string(l0, l0), 7);
                   if (g1 === 1) {
-                    l2147483649 = 0;
+                    l2147483648 = 0;
                     break block_23;
                   }
                 }
@@ -19583,7 +19481,7 @@ function runtime_run$1$gowrapper(p0) {
                 }
                 if ((g1 ? l2 === 1 : 1)) {
                   if (g1 === 1) {
-                    l2147483649 = 1;
+                    l2147483648 = 1;
                     break block_23;
                   }
                   p0 = runtime_alloc(24, 0);
@@ -19596,16 +19494,16 @@ function runtime_run$1$gowrapper(p0) {
                   store_i32(l0, p0, 40);
                 }
                 if ((g1 ? l2 === 2 : 1)) {
-                  _syscall_js_Value_Set(9221120241336057861n, 0, 127744, 5, 128292, p0);
+                  _syscall_js_Value_Set(9221120241336057861n, 0, "Solve", go_string(128292, p0));
                   if (g1 === 1) {
-                    l2147483649 = 2;
+                    l2147483648 = 2;
                     break block_23;
                   }
                 }
                 if ((g1 ? l2 === 3 : 1)) {
                   runtime_deadlock();
                   if (g1 === 1) {
-                    l2147483649 = 3;
+                    l2147483648 = 3;
                     break block_23;
                   }
                 }
@@ -19613,9 +19511,9 @@ function runtime_run$1$gowrapper(p0) {
                   throw new Error('unreachable');
                 }
                 break block_22;
-                l2147483649 = 0;
+                l2147483648 = 0;
               }
-              l1 = l2147483649;
+              l1 = l2147483648;
               store_i32(load_i32(g2), l1);
               store_i32(g2, ((load_i32(g2) + 4) | 0));
               l1 = load_i32(g2);
@@ -19627,7 +19525,7 @@ function runtime_run$1$gowrapper(p0) {
               store_i32(g2, ((load_i32(g2) + 24) | 0));
             }
             if (g1 === 1) {
-              l2147483648 = 1;
+              l2147483647 = 1;
               break block_4;
             }
           }
@@ -19635,14 +19533,14 @@ function runtime_run$1$gowrapper(p0) {
             throw new Error('unreachable');
           }
           break block_3;
-          l2147483648 = 0;
+          l2147483647 = 0;
         }
-        p0 = l2147483648;
+        p0 = l2147483647;
         store_i32(load_i32(g2), p0);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
       }
       if (g1 === 1) {
-        l2147483650 = 0;
+        l2147483649 = 0;
         break block_0;
       }
     }
@@ -19650,9 +19548,9 @@ function runtime_run$1$gowrapper(p0) {
       throw new Error('unreachable');
     }
     return;
-    l2147483650 = 0;
+    l2147483649 = 0;
   }
-  p0 = l2147483650;
+  p0 = l2147483649;
   store_i32(load_i32(g2), p0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
@@ -19736,7 +19634,7 @@ function runtime_putchar(p0) {
           store_i32(136164, l0);
         }
         if (((g1 ? l1 : 0) === 0)) {
-          wasi_snapshot_preview1_fd_write(1, 136160, 1, 138280);
+          wasi_snapshot_preview1_fd_write(1, "l", 138280);
           if (g1 === 1) {
             l2147483646 = 0;
             break block_0;
@@ -19770,32 +19668,28 @@ function runtime_putchar(p0) {
 
 // runtime.printuint32
 function runtime_printuint32(p0) {
-  let l0 = 0n, l2147483646, l2147483647, l2147483648;
+  let l0 = 0n, l2147483646;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 8) | 0));
-      l2147483646 = load_i64(load_i32(g2));
     } else {
-      l2147483646 = 0n;
     }
-    l0 = (g1 ? l2147483646 : BigInt(u32(p0)));
+    l0 = (g1 ? ((g1 === 2 ? 1 : 0) ? load_i64(load_i32(g2)) : 0n) : BigInt(u32(p0)));
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483647 = load_i32(load_i32(g2));
     } else {
-      l2147483647 = 0;
     }
-    if (((g1 ? l2147483647 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       runtime_printuint64(l0);
       if (g1 === 1) {
-        l2147483648 = 0;
+        l2147483646 = 0;
         break block_0;
       }
     }
     return;
-    l2147483648 = 0;
+    l2147483646 = 0;
   }
-  p0 = l2147483648;
+  p0 = l2147483646;
   store_i32(load_i32(g2), p0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   store_i64(load_i32(g2), l0);
@@ -19892,25 +19786,23 @@ function runtime_printuint64(p0) {
 
 // runtime.printnl
 function runtime_printnl() {
-  let l0 = 0, l2147483647, l2147483648;
+  let l0 = 0, l2147483647;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483647 = load_i32(load_i32(g2));
     } else {
-      l2147483647 = 0;
     }
-    if (((g1 ? l2147483647 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       runtime_putchar(10);
       if (g1 === 1) {
-        l2147483648 = 0;
+        l2147483647 = 0;
         break block_0;
       }
     }
     return;
-    l2147483648 = 0;
+    l2147483647 = 0;
   }
-  l0 = l2147483648;
+  l0 = l2147483647;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
@@ -19930,14 +19822,14 @@ function runtime_runtimePanicAt(p0, p1) {
       l0 = load_i32(load_i32(g2));
     }
     if (((g1 ? l0 : 0) === 0)) {
-      runtime_printstring(91320, 22);
+      runtime_printstring("panic: runtime error: ");
       if (g1 === 1) {
         l2147483645 = 0;
         break block_1;
       }
     }
     if ((g1 ? l0 === 1 : 1)) {
-      runtime_printstring(p0, p1);
+      runtime_printstring(go_string(p0, p1));
       if (g1 === 1) {
         l2147483645 = 1;
         break block_1;
@@ -20049,7 +19941,7 @@ function interface_String_func_basic_string_$typeassert(p0) {
 
 // interface:{String:func:{}{basic:string}}.String$invoke
 function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483644, l2147483645, l2147483646;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0n, l2147483644, l2147483645;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 32) | 0));
     l3 = load_i32(g2);
@@ -20070,7 +19962,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
       l1 = ((g0 - 288) | 0);
       g0 = l1;
       store_i32(l1, 27, 172);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 176) | 0), ((l1 + 176) | 0) + 108);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 176) | 0), 0, 108), go_slice(((l1 + 176) | 0), 0, 108) + );
       l3 = load_i32(138276);
       store_i32(l1, l3, 168);
       store_i32(138276, ((l1 + 168) | 0));
@@ -20086,7 +19978,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
           l0 = ((l1 + 8) | 0);
         }
         if (((g1 ? l2 : 0) === 0)) {
-          _syscall_js_Value_String(l0, l4, p2);
+          _syscall_js_Value_String(go_string(l0, l4), p2);
           if (g1 === 1) {
             l2147483644 = 0;
             break block_1;
@@ -20108,7 +20000,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
           l0 = ((l1 + 16) | 0);
         }
         if ((g1 ? l2 === 1 : 1)) {
-          _syscall_js_Value_String(l0, l4, p2);
+          _syscall_js_Value_String(go_string(l0, l4), p2);
           if (g1 === 1) {
             l2147483644 = 1;
             break block_1;
@@ -20134,7 +20026,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 24) | 0);
             }
             if ((g1 ? l2 === 2 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 2;
                 break block_1;
@@ -20158,7 +20050,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 32) | 0);
             }
             if ((g1 ? l2 === 3 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 3;
                 break block_1;
@@ -20179,7 +20071,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p2 = ((l1 + 40) | 0);
             }
             if ((g1 ? l2 === 4 : 1)) {
-              _bytes_Buffer_String(p2, p1);
+              _bytes_Buffer_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 4;
                 break block_1;
@@ -20203,7 +20095,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 48) | 0);
             }
             if ((g1 ? l2 === 5 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 5;
                 break block_1;
@@ -20225,7 +20117,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p1 = load_i32(p1);
             }
             if ((g1 ? l2 === 6 : 1)) {
-              _syscall_js_Type_String(p2, p1);
+              _syscall_js_Type_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 6;
                 break block_1;
@@ -20249,7 +20141,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 - -64) | 0);
             }
             if ((g1 ? l2 === 7 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 7;
                 break block_1;
@@ -20273,7 +20165,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 72) | 0);
             }
             if ((g1 ? l2 === 8 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 8;
                 break block_1;
@@ -20292,7 +20184,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p2 = ((l1 + 80) | 0);
             }
             if ((g1 ? l2 === 9 : 1)) {
-              _reflect_rawType_String(p2, p1);
+              _reflect_rawType_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 9;
                 break block_1;
@@ -20317,7 +20209,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 88) | 0);
             }
             if ((g1 ? l2 === 10 : 1)) {
-              _reflect_Value_String(l0, p1, p2);
+              _reflect_Value_String(go_string(l0, p1), p2);
               if (g1 === 1) {
                 l2147483644 = 10;
                 break block_1;
@@ -20339,7 +20231,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p1 = load_u8(p1);
             }
             if ((g1 ? l2 === 11 : 1)) {
-              _reflect_Kind_String(p2, p1);
+              _reflect_Kind_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 11;
                 break block_1;
@@ -20360,7 +20252,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p2 = ((l1 + 104) | 0);
             }
             if ((g1 ? l2 === 12 : 1)) {
-              _bytes_Buffer_String(p2, p1);
+              _bytes_Buffer_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 12;
                 break block_1;
@@ -20386,7 +20278,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p2 = ((l1 + 112) | 0);
             }
             if ((g1 ? l2 === 13 : 1)) {
-              _bytes_Buffer_String(p2, p1);
+              _bytes_Buffer_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 13;
                 break block_1;
@@ -20407,7 +20299,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p1 = load_i32(p1, 8);
             }
             if ((g1 ? l2 === 14 : 1)) {
-              _syscall_js_Value_String(p2, l4, p1);
+              _syscall_js_Value_String(go_string(p2, l4), p1);
               if (g1 === 1) {
                 l2147483644 = 14;
                 break block_1;
@@ -20426,7 +20318,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p2 = ((l1 + 128) | 0);
             }
             if ((g1 ? l2 === 15 : 1)) {
-              _syscall_js_Type_String(p2, p1);
+              _syscall_js_Type_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 15;
                 break block_1;
@@ -20448,7 +20340,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 136) | 0);
             }
             if ((g1 ? l2 === 16 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 16;
                 break block_1;
@@ -20470,7 +20362,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               l0 = ((l1 + 144) | 0);
             }
             if ((g1 ? l2 === 17 : 1)) {
-              _syscall_js_Value_String(l0, l4, p2);
+              _syscall_js_Value_String(go_string(l0, l4), p2);
               if (g1 === 1) {
                 l2147483644 = 17;
                 break block_1;
@@ -20491,7 +20383,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p1 = load_i32(p1, 4);
             }
             if ((g1 ? l2 === 18 : 1)) {
-              _reflect_Value_String(p2, l0, p1);
+              _reflect_Value_String(go_string(p2, l0), p1);
               if (g1 === 1) {
                 l2147483644 = 18;
                 break block_1;
@@ -20510,7 +20402,7 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
               p2 = ((l1 + 160) | 0);
             }
             if ((g1 ? l2 === 19 : 1)) {
-              _reflect_Kind_String(p2, p1);
+              _reflect_Kind_String(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483644 = 19;
                 break block_1;
@@ -20539,12 +20431,10 @@ function interface_String_func_basic_string_String$invoke(p0, p1, p2) {
         }
       }
       if (g1) {
-        l2147483646 = p1;
       } else {
         p2 = load_i32(p1, 4);
-        l2147483646 = load_i32(p1);
       }
-      l2147483645 = l2147483646;
+      l2147483645 = (g1 ? p1 : load_i32(p1));
     }
     p1 = l2147483645;
     if ((g1 === 0)) {
@@ -20640,7 +20530,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
                     }
                   }
                   if ((g1 ? l5 === 1 : 1)) {
-                    syscall_js_jsString(l0, p1, p2);
+                    syscall_js_jsString(go_string(l0, p1), p2);
                     if (g1 === 1) {
                       l2147483644 = 1;
                       break block_1;
@@ -20660,7 +20550,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
               }
               l1 = (g1 ? l1 : ((l0 + 24) | 0));
               if ((g1 ? l5 === 2 : 1)) {
-                syscall_js_jsString(l1, p1, p2);
+                syscall_js_jsString(go_string(l1, p1), p2);
                 if (g1 === 1) {
                   l2147483644 = 2;
                   break block_1;
@@ -20673,7 +20563,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
                 p2 = ((l0 + 16) | 0);
               }
               if ((g1 ? l5 === 3 : 1)) {
-                runtime_stringConcat(p2, 94673, 10, l1, l2);
+                runtime_stringConcat(p2, "<boolean: ", go_string(l1, l2));
                 if (g1 === 1) {
                   l2147483644 = 3;
                   break block_1;
@@ -20686,7 +20576,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
                 p2 = ((l0 + 8) | 0);
               }
               if ((g1 ? l5 === 4 : 1)) {
-                runtime_stringConcat(p2, l1, l2, 94692, 1);
+                runtime_stringConcat(go_string(p2, l1), l2, ">");
                 if (g1 === 1) {
                   l2147483644 = 4;
                   break block_1;
@@ -20700,7 +20590,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
             }
             l1 = (g1 ? l1 : ((l0 + 48) | 0));
             if ((g1 ? l5 === 5 : 1)) {
-              syscall_js_jsString(l1, p1, p2);
+              syscall_js_jsString(go_string(l1, p1), p2);
               if (g1 === 1) {
                 l2147483644 = 5;
                 break block_1;
@@ -20713,7 +20603,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
               p2 = ((l0 + 40) | 0);
             }
             if ((g1 ? l5 === 6 : 1)) {
-              runtime_stringConcat(p2, 94683, 9, l1, l2);
+              runtime_stringConcat(p2, "<number: ", go_string(l1, l2));
               if (g1 === 1) {
                 l2147483644 = 6;
                 break block_1;
@@ -20726,7 +20616,7 @@ function _syscall_js_Value_String(p0, p1, p2) {
               p2 = ((l0 + 32) | 0);
             }
             if ((g1 ? l5 === 7 : 1)) {
-              runtime_stringConcat(p2, l1, l2, 94692, 1);
+              runtime_stringConcat(go_string(p2, l1), l2, ">");
               if (g1 === 1) {
                 l2147483644 = 7;
                 break block_1;
@@ -20881,7 +20771,7 @@ function runtime_startMark(p0) {
     if ((g1 === 0)) {
       l4 = ((g0 - 128) | 0);
       g0 = l4;
-      new Uint8Array(memory.buffer).fill(0, ((l4 + 4) | 0), ((l4 + 4) | 0) + 124);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l4 + 4) | 0), 0, 124), go_slice(((l4 + 4) | 0), 0, 124) + );
       store_i32(l4, p0);
       _runtime_gcBlock_setState(p0, 3);
       l3 = 1;
@@ -21131,10 +21021,10 @@ function _syscall_js_Value_Get(p0, p1, p2, p3, p4) {
           l2147483642 = 1;
           break block_1;
         }
-        l6 = gojs_syscall_js_valueGet(p1, p3, p4);
+        l6 = gojs_syscall_js_valueGet(go_string(p1, p3), p4);
       }
       if ((g1 ? l2 === 2 : 1)) {
-        syscall_js_makeValue(l1, l6);
+        syscall_js_makeValue(go_string(l1, l6));
         if (g1 === 1) {
           l2147483642 = 2;
           break block_1;
@@ -21169,7 +21059,7 @@ function _syscall_js_Value_Get(p0, p1, p2, p3, p4) {
         l2147483642 = 4;
         break block_1;
       }
-      p4 = runtime_alloc(12, 71);
+      p4 = runtime_alloc(go_string(12, 71));
     }
     if ((g1 === 0)) {
       store_i32(p4, l3, 8);
@@ -21179,7 +21069,7 @@ function _syscall_js_Value_Get(p0, p1, p2, p3, p4) {
       store_i32(l1, p4, 40);
     }
     if ((g1 ? l2 === 5 : 1)) {
-      runtime__panic(128712, p4);
+      runtime__panic(go_string(128712, p4));
       if (g1 === 1) {
         l2147483642 = 5;
         break block_1;
@@ -21258,7 +21148,7 @@ function _syscall_js_Value_Set(p0, p1, p2, p3, p4, p5) {
         l2 = ((l0 + 8) | 0);
       }
       if ((g1 ? l3 === 1 : 1)) {
-        syscall_js_ValueOf(l2, p4, p5);
+        syscall_js_ValueOf(go_string(l2, p4), p5);
         if (g1 === 1) {
           l2147483641 = 1;
           break block_1;
@@ -21271,7 +21161,7 @@ function _syscall_js_Value_Set(p0, p1, p2, p3, p4, p5) {
         l6 = load_i64(l0, 8);
       }
       if ((g1 ? l3 === 2 : 1)) {
-        gojs_syscall_js_valueSet(p0, p2, p3, l6);
+        gojs_syscall_js_valueSet(go_string(p0, p2), go_string(p3, l6));
         if (g1 === 1) {
           l2147483641 = 2;
           break block_1;
@@ -21312,7 +21202,7 @@ function _syscall_js_Value_Set(p0, p1, p2, p3, p4, p5) {
         l2147483641 = 5;
         break block_1;
       }
-      p5 = runtime_alloc(12, 71);
+      p5 = runtime_alloc(go_string(12, 71));
     }
     if ((g1 === 0)) {
       store_i32(p5, l2, 8);
@@ -21322,7 +21212,7 @@ function _syscall_js_Value_Set(p0, p1, p2, p3, p4, p5) {
       store_i32(l0, p5, 60);
     }
     if ((g1 ? l3 === 6 : 1)) {
-      runtime__panic(128712, p5);
+      runtime__panic(go_string(128712, p5));
       if (g1 === 1) {
         l2147483641 = 6;
         break block_1;
@@ -21379,7 +21269,7 @@ function _syscall_js_Value_Type(p0) {
               if ((g1 === 0)) {
                 if (l0) break block_8;
                 l0 = 0;
-                l2 = ((p0 === 0n) ? 1 : 0);
+                l2 = ((p0 === 0) ? 1 : 0);
                 if (l2) break block_6;
                 l0 = 3;
                 l3 = (p0 & -2n);
@@ -21471,14 +21361,14 @@ function syscall_js_makeValue(p0, p1) {
       if ((g1 === 0)) {
         if (l0) break block_4;
         l2 = 0;
-        if (((p1 & 30064771072n) === 0n)) break block_4;
+        if (((p1 & 30064771072n) === 0)) break block_4;
       }
       if (((g1 ? l4 : 0) === 0)) {
         if (g1 === 1) {
           l2147483645 = 0;
           break block_1;
         }
-        l2 = runtime_alloc(8, 3);
+        l2 = runtime_alloc(go_string(8, 3));
       }
       if ((g1 === 0)) {
         store_i64(l2, p1);
@@ -21536,7 +21426,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       l0 = ((g0 - 224) | 0);
       g0 = l0;
       store_i32(l0, 23, 124);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 128) | 0), ((l0 + 128) | 0) + 92);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 128) | 0), 0, 92), go_slice(((l0 + 128) | 0), 0, 92) + );
       l8 = load_i32(138276);
       store_i32(l0, l8, 120);
       store_i32(138276, ((l0 + 120) | 0));
@@ -21560,7 +21450,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       l7 = load_i32(l0, 116);
     }
     if ((g1 ? l3 === 1 : 1)) {
-      syscall_js_storeArgs(p5, 1, l4, l5, l1, l6);
+      syscall_js_storeArgs(p5, go_string(1, l4), go_string(l5, l1), l6);
       if (g1 === 1) {
         l2147483641 = 1;
         break block_1;
@@ -21568,7 +21458,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
     }
     p5 = (g1 ? p5 : ((l0 + 80) | 0));
     if ((g1 ? l3 === 2 : 1)) {
-      gojs_syscall_js_valueCall(p5, p1, p3, p4, l1, l6, l7);
+      gojs_syscall_js_valueCall(go_string(p5, p1), go_string(p3, p4), go_string(l1, l6), l7);
       if (g1 === 1) {
         l2147483641 = 2;
         break block_1;
@@ -21624,7 +21514,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
             p0 = ((l0 - -64) | 0);
           }
           if ((g1 ? l3 === 6 : 1)) {
-            _syscall_js_Value_Get(p0, p1, p2, p3, p4);
+            _syscall_js_Value_Get(go_string(p0, p1), go_string(p2, p3), p4);
             if (g1 === 1) {
               l2147483641 = 6;
               break block_1;
@@ -21648,7 +21538,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
             p0 = ((l0 + 16) | 0);
           }
           if ((g1 ? l3 === 8 : 1)) {
-            syscall_js_makeValue(p0, l10);
+            syscall_js_makeValue(go_string(p0, l10));
             if (g1 === 1) {
               l2147483641 = 8;
               break block_1;
@@ -21674,7 +21564,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
             store_i32(l0, l1, 208);
           }
           if ((g1 ? l3 === 10 : 1)) {
-            runtime__panic(128264, l1);
+            runtime__panic(go_string(128264, l1));
             if (g1 === 1) {
               l2147483641 = 10;
               break block_1;
@@ -21689,7 +21579,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
             l2147483641 = 11;
             break block_1;
           }
-          l1 = runtime_alloc(12, 71);
+          l1 = runtime_alloc(go_string(12, 71));
         }
         if ((g1 === 0)) {
           store_i32(l1, l4, 8);
@@ -21699,7 +21589,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
           store_i32(l0, l1, 216);
         }
         if ((g1 ? l3 === 12 : 1)) {
-          runtime__panic(128712, l1);
+          runtime__panic(go_string(128712, l1));
           if (g1 === 1) {
             l2147483641 = 12;
             break block_1;
@@ -21710,7 +21600,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
         }
       }
       if ((g1 ? l3 === 13 : 1)) {
-        syscall_js_makeValue(l0, l10);
+        syscall_js_makeValue(go_string(l0, l10));
         if (g1 === 1) {
           l2147483641 = 13;
           break block_1;
@@ -21727,7 +21617,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
     }
     p0 = (g1 ? p0 : ((l0 + 56) | 0));
     if ((g1 ? l3 === 14 : 1)) {
-      runtime_stringConcat(p0, 94525, 33, p3, p4);
+      runtime_stringConcat(p0, "syscall/js: Value.Call: property ", go_string(p3, p4));
       if (g1 === 1) {
         l2147483641 = 14;
         break block_1;
@@ -21740,7 +21630,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       p0 = ((l0 + 48) | 0);
     }
     if ((g1 ? l3 === 15 : 1)) {
-      runtime_stringConcat(p0, p2, p3, 94558, 24);
+      runtime_stringConcat(go_string(p0, p2), p3, " is not a function, got ");
       if (g1 === 1) {
         l2147483641 = 15;
         break block_1;
@@ -21753,7 +21643,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       p0 = ((l0 + 40) | 0);
     }
     if ((g1 ? l3 === 16 : 1)) {
-      _syscall_js_Type_String(p0, l1);
+      _syscall_js_Type_String(go_string(p0, l1));
       if (g1 === 1) {
         l2147483641 = 16;
         break block_1;
@@ -21766,7 +21656,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       p0 = ((l0 + 32) | 0);
     }
     if ((g1 ? l3 === 17 : 1)) {
-      runtime_stringConcat(p0, p2, l4, l1, p3);
+      runtime_stringConcat(go_string(p0, p2), go_string(l4, l1), p3);
       if (g1 === 1) {
         l2147483641 = 17;
         break block_1;
@@ -21791,7 +21681,7 @@ function _syscall_js_Value_Call(p0, p1, p2, p3, p4, p5) {
       store_i32(l0, l1, 192);
     }
     if ((g1 ? l3 === 19 : 1)) {
-      runtime__panic(127752, l1);
+      runtime__panic(go_string(127752, l1));
       if (g1 === 1) {
         l2147483641 = 19;
         break block_1;
@@ -21861,7 +21751,7 @@ function runtime_hashmapGet(p0, p1, p2, p3) {
       l5 = load_i32(138276);
       store_i32(138276, ((l1 + 8) | 0));
       store_i32(l1, l5, 8);
-      l3 = runtime_hashmapBucketAddrForHash(p0, p3);
+      l3 = runtime_hashmapBucketAddrForHash(go_string(p0, p3));
       store_i32(l1, l3, 16);
       p3 = (p3 >>> 24);
       l2 = (u32(p3) > 1 ? 1 : 0);
@@ -21908,7 +21798,7 @@ function runtime_hashmapGet(p0, p1, p2, p3) {
                   if ((g1 === 0)) {
                     l2 = (((l2 & 1) === 0) ? 1 : 0);
                     if (l2) break block_12;
-                    new Uint8Array(memory.buffer).copyWithin(p2, l9, l9 + load_i32(p0, 16));
+                    new Uint8Array(memory.buffer).copyWithin(go_string(p2, l9), load_i32(p0, 16), load_i32(p0, 16) + );
                     break block_5;
                   }
                 }
@@ -22007,7 +21897,7 @@ function runtime_hashmapDelete(p0, p1, p2) {
       l5 = load_i32(138276);
       store_i32(138276, ((l1 + 8) | 0));
       store_i32(l1, l5, 8);
-      l3 = runtime_hashmapBucketAddrForHash(p0, p2);
+      l3 = runtime_hashmapBucketAddrForHash(go_string(p0, p2));
       store_i32(l1, l3, 16);
       p2 = (p2 >>> 24);
       l4 = (u32(p2) > 1 ? 1 : 0);
@@ -22151,7 +22041,7 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
       l0 = ((g0 - 224) | 0);
       g0 = l0;
       store_i32(l0, 45, 36);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 40) | 0), ((l0 + 40) | 0) + 180);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 40) | 0), 0, 180), go_slice(((l0 + 40) | 0), 0, 180) + );
       l14 = load_i32(138276);
       store_i32(l0, l14, 32);
       store_i32(138276, ((l0 + 32) | 0));
@@ -22250,7 +22140,7 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
                   l2147483643 = 4;
                   break block_1;
                 }
-                l1 = runtime_hashmapNext(p0, l1, l2, l6);
+                l1 = runtime_hashmapNext(go_string(p0, l1), go_string(l2, l6));
               }
               if ((g1 === 0)) {
                 l1 = (((l1 & 1) === 0) ? 1 : 0);
@@ -22271,7 +22161,7 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
                 l1 = table[l5](l2, l1, l7, l4);
               }
               if ((g1 ? l8 === 6 : 1)) {
-                runtime_hashmapSet(p3, l2, l6, l1);
+                runtime_hashmapSet(go_string(p3, l2), go_string(l6, l1));
                 if (g1 === 1) {
                   l2147483643 = 6;
                   break block_1;
@@ -22323,7 +22213,7 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
           }
         }
         if ((g1 === 0)) {
-          l4 = runtime_hashmapBucketAddrForHash(p0, p3);
+          l4 = runtime_hashmapBucketAddrForHash(go_string(p0, p3));
           store_i32(l0, l4, 132);
           p3 = (p3 >>> 24);
           l1 = (u32(p3) > 1 ? 1 : 0);
@@ -22388,7 +22278,7 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
                   if ((g1 === 0)) {
                     l4 = (((l4 & 1) === 0) ? 1 : 0);
                     if (l4) break block_32;
-                    new Uint8Array(memory.buffer).copyWithin(l13, p2, p2 + load_i32(p0, 16));
+                    new Uint8Array(memory.buffer).copyWithin(go_string(l13, p2), load_i32(p0, 16), load_i32(p0, 16) + );
                     break block_4;
                   }
                 }
@@ -22430,8 +22320,8 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
             l6 = load_i32(p0, 12);
             l4 = ((l5 + (l6 << 3)) | 0);
             store_i32(l0, l4, 212);
-            new Uint8Array(memory.buffer).copyWithin(l5, p1, p1 + l6);
-            new Uint8Array(memory.buffer).copyWithin(l4, p2, p2 + load_i32(p0, 16));
+            new Uint8Array(memory.buffer).copyWithin(go_string(l5, p1), l6, l6 + );
+            new Uint8Array(memory.buffer).copyWithin(go_string(l4, p2), load_i32(p0, 16), load_i32(p0, 16) + );
             store_i8(l2, l10);
             if ((p3 === 0)) break block_5;
             store_i32(p3, l2, 8);
@@ -22440,8 +22330,8 @@ function runtime_hashmapSet(p0, p1, p2, p3) {
         }
         if ((g1 === 0)) {
           store_i32(p0, ((load_i32(p0, 8) + 1) | 0), 8);
-          new Uint8Array(memory.buffer).copyWithin(l2, p1, p1 + load_i32(p0, 12));
-          new Uint8Array(memory.buffer).copyWithin(l6, p2, p2 + load_i32(p0, 16));
+          new Uint8Array(memory.buffer).copyWithin(go_string(l2, p1), load_i32(p0, 12), load_i32(p0, 12) + );
+          new Uint8Array(memory.buffer).copyWithin(go_string(l6, p2), load_i32(p0, 16), load_i32(p0, 16) + );
           if ((l5 === 0)) break block_5;
           store_i8(l5, l10);
           break block_4;
@@ -22552,7 +22442,7 @@ function runtime_hashmapInterfaceEqual(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      p0 = runtime_interfaceEqual(p0, l2, p1, l1);
+      p0 = runtime_interfaceEqual(go_string(p0, l2), go_string(p1, l1));
     }
     if ((g1 === 0)) {
       store_i32(138276, p3);
@@ -22578,7 +22468,7 @@ function runtime_hashmapInterfaceEqual(p0, p1, p2, p3) {
 
 // runtime.hashmapStringPtrHash
 function runtime_hashmapStringPtrHash(p0, p1, p2, p3) {
-  return runtime_hash32(load_i32(p0), load_i32(p0, 4), p2, p0);
+  return runtime_hash32(load_i32(p0), load_i32(p0, 4), go_string(p2, p0));
 }
 
 // runtime.hashmapInterfacePtrHash
@@ -22615,7 +22505,7 @@ function runtime_hashmapInterfacePtrHash(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      p0 = runtime_hashmapInterfaceHash(p0, l1, p2);
+      p0 = runtime_hashmapInterfaceHash(go_string(p0, l1), p2);
     }
     if ((g1 === 0)) {
       store_i32(138276, p3);
@@ -22640,7 +22530,7 @@ function runtime_hashmapInterfacePtrHash(p0, p1, p2, p3) {
 
 // runtime.reflectValueEqual
 function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0n, l12 = 0n, l13 = 0n, l14 = 0, l15 = 0, l16 = 0, l2147483641, l2147483642;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0n, l12 = 0n, l13 = 0n, l14 = 0, l15 = 0, l16 = 0, l2147483641;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 92) | 0));
     p1 = load_i32(g2);
@@ -22673,7 +22563,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
       l0 = ((g0 - 224) | 0);
       g0 = l0;
       store_i32(l0, 16, 156);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 160) | 0), ((l0 + 160) | 0) + 64);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 160) | 0), 0, 64), go_slice(((l0 + 160) | 0), 0, 64) + );
       l10 = load_i32(138276);
       store_i32(l0, l10, 152);
       store_i32(138276, ((l0 + 152) | 0));
@@ -22766,14 +22656,14 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                               l2147483641 = 0;
                               break block_1;
                             }
-                            l11 = _reflect_Value_Int(p0, p1, p2);
+                            l11 = _reflect_Value_Int(go_string(p0, p1), p2);
                           }
                           if ((g1 ? l2 === 1 : 1)) {
                             if (g1 === 1) {
                               l2147483641 = 1;
                               break block_1;
                             }
-                            l12 = _reflect_Value_Int(p0, p4, p5);
+                            l12 = _reflect_Value_Int(go_string(p0, p4), p5);
                           }
                           if ((g1 === 0)) {
                             p3 = (l11 === l12 ? 1 : 0);
@@ -22785,14 +22675,14 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                             l2147483641 = 2;
                             break block_1;
                           }
-                          l11 = _reflect_Value_Uint(p0, p1, p2);
+                          l11 = _reflect_Value_Uint(go_string(p0, p1), p2);
                         }
                         if ((g1 ? l2 === 3 : 1)) {
                           if (g1 === 1) {
                             l2147483641 = 3;
                             break block_1;
                           }
-                          l12 = _reflect_Value_Uint(p0, p4, p5);
+                          l12 = _reflect_Value_Uint(go_string(p0, p4), p5);
                         }
                         if ((g1 === 0)) {
                           p3 = (l11 === l12 ? 1 : 0);
@@ -22804,14 +22694,14 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                           l2147483641 = 4;
                           break block_1;
                         }
-                        l14 = _reflect_Value_Float(p0, p1, p2);
+                        l14 = _reflect_Value_Float(go_string(p0, p1), p2);
                       }
                       if ((g1 ? l2 === 5 : 1)) {
                         if (g1 === 1) {
                           l2147483641 = 5;
                           break block_1;
                         }
-                        l15 = _reflect_Value_Float(p0, p4, p5);
+                        l15 = _reflect_Value_Float(go_string(p0, p4), p5);
                       }
                       if ((g1 === 0)) {
                         p3 = (l14 === l15 ? 1 : 0);
@@ -22820,7 +22710,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                     }
                     p2 = (g1 ? p2 : ((l0 + 24) | 0));
                     if ((g1 ? l2 === 6 : 1)) {
-                      _reflect_Value_Complex(p2, p0, p1);
+                      _reflect_Value_Complex(go_string(p2, p0), p1);
                       if (g1 === 1) {
                         l2147483641 = 6;
                         break block_1;
@@ -22832,7 +22722,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                       p1 = ((l0 + 8) | 0);
                     }
                     if ((g1 ? l2 === 7 : 1)) {
-                      _reflect_Value_Complex(p1, p0, p4);
+                      _reflect_Value_Complex(go_string(p1, p0), p4);
                       if (g1 === 1) {
                         l2147483641 = 7;
                         break block_1;
@@ -22845,7 +22735,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                   }
                   p2 = (g1 ? p2 : ((l0 + 48) | 0));
                   if ((g1 ? l2 === 8 : 1)) {
-                    _reflect_Value_String(p2, p0, p1);
+                    _reflect_Value_String(go_string(p2, p0), p1);
                     if (g1 === 1) {
                       l2147483641 = 8;
                       break block_1;
@@ -22858,7 +22748,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                     p1 = ((l0 + 40) | 0);
                   }
                   if ((g1 ? l2 === 9 : 1)) {
-                    _reflect_Value_String(p1, p0, p4);
+                    _reflect_Value_String(go_string(p1, p0), p4);
                     if (g1 === 1) {
                       l2147483641 = 9;
                       break block_1;
@@ -22867,7 +22757,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                   if ((g1 === 0)) {
                     p0 = load_i32(l0, 40);
                     store_i32(l0, p0, 164);
-                    p3 = runtime_stringEqual(p3, l3, p0, load_i32(l0, 44));
+                    p3 = runtime_stringEqual(go_string(p3, l3), p0, load_i32(l0, 44));
                     break block_4;
                   }
                 }
@@ -22876,7 +22766,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                     l2147483641 = 10;
                     break block_1;
                   }
-                  p3 = _reflect_Value_UnsafePointer(p0, p1, p2);
+                  p3 = _reflect_Value_UnsafePointer(go_string(p0, p1), p2);
                 }
                 if ((g1 === 0)) {
                   store_i32(l0, p3, 168);
@@ -22886,7 +22776,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                     l2147483641 = 11;
                     break block_1;
                   }
-                  p0 = _reflect_Value_UnsafePointer(p0, p4, p5);
+                  p0 = _reflect_Value_UnsafePointer(go_string(p0, p4), p5);
                 }
                 if ((g1 === 0)) {
                   p3 = (p0 === p3 ? 1 : 0);
@@ -22900,7 +22790,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                     l2147483641 = 12;
                     break block_1;
                   }
-                  p3 = _reflect_Value_Len(p0, p1, p2);
+                  p3 = _reflect_Value_Len(go_string(p0, p1), p2);
                 }
                 if ((g1 === 0)) {
                   p3 = (p3 <= l3 ? 1 : 0);
@@ -22908,7 +22798,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                   l4 = ((l0 + 72) | 0);
                 }
                 if ((g1 ? l2 === 13 : 1)) {
-                  _reflect_Value_Index(l4, p0, p1, p2, l3);
+                  _reflect_Value_Index(go_string(l4, p0), go_string(p1, p2), l3);
                   if (g1 === 1) {
                     l2147483641 = 13;
                     break block_1;
@@ -22923,7 +22813,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                   l5 = ((l0 + 56) | 0);
                 }
                 if ((g1 ? l2 === 14 : 1)) {
-                  _reflect_Value_Index(l5, p0, p4, p5, l3);
+                  _reflect_Value_Index(go_string(l5, p0), go_string(p4, p5), l3);
                   if (g1 === 1) {
                     l2147483641 = 14;
                     break block_1;
@@ -22942,7 +22832,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                     l2147483641 = 15;
                     break block_1;
                   }
-                  l4 = runtime_reflectValueEqual(l6, l4, l7, l8, l5, l9);
+                  l4 = runtime_reflectValueEqual(go_string(l6, l4), go_string(l7, l8), go_string(l5, l9));
                 }
                 if ((g1 === 0)) {
                   l4 = (l4 & 1);
@@ -22967,7 +22857,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                 l4 = ((l0 + 104) | 0);
               }
               if ((g1 ? l2 === 17 : 1)) {
-                _reflect_Value_Field(l4, p0, p1, p2, l3);
+                _reflect_Value_Field(go_string(l4, p0), go_string(p1, p2), l3);
                 if (g1 === 1) {
                   l2147483641 = 17;
                   break block_1;
@@ -22982,7 +22872,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                 l5 = ((l0 + 88) | 0);
               }
               if ((g1 ? l2 === 18 : 1)) {
-                _reflect_Value_Field(l5, p0, p4, p5, l3);
+                _reflect_Value_Field(go_string(l5, p0), go_string(p4, p5), l3);
                 if (g1 === 1) {
                   l2147483641 = 18;
                   break block_1;
@@ -23001,7 +22891,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
                   l2147483641 = 19;
                   break block_1;
                 }
-                l4 = runtime_reflectValueEqual(l6, l4, l7, l8, l5, l9);
+                l4 = runtime_reflectValueEqual(go_string(l6, l4), go_string(l7, l8), go_string(l5, l9));
               }
               if ((g1 === 0)) {
                 l4 = (l4 & 1);
@@ -23013,7 +22903,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
           }
           p3 = (g1 ? p3 : ((l0 + 136) | 0));
           if ((g1 ? l2 === 20 : 1)) {
-            _reflect_Value_Elem(p3, p0, p1, p2);
+            _reflect_Value_Elem(go_string(p3, p0), go_string(p1, p2));
             if (g1 === 1) {
               l2147483641 = 20;
               break block_1;
@@ -23028,7 +22918,7 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
             p1 = load_u8(l0, 144);
           }
           if ((g1 ? l2 === 21 : 1)) {
-            _reflect_Value_Elem(p2, p0, p4, p5);
+            _reflect_Value_Elem(go_string(p2, p0), go_string(p4, p5));
             if (g1 === 1) {
               l2147483641 = 21;
               break block_1;
@@ -23046,12 +22936,12 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
               l2147483641 = 22;
               break block_1;
             }
-            p3 = runtime_reflectValueEqual(l3, p3, p1, p2, p0, p4);
+            p3 = runtime_reflectValueEqual(go_string(l3, p3), go_string(p1, p2), go_string(p0, p4));
           }
           if ((g1 === 0)) break block_4;
         }
         if ((g1 ? l2 === 23 : 1)) {
-          runtime_runtimePanic(91267, 28);
+          runtime_runtimePanic("comparing un-comparable type");
           if (g1 === 1) {
             l2147483641 = 23;
             break block_1;
@@ -23066,18 +22956,16 @@ function runtime_reflectValueEqual(p0, p1, p2, p3, p4, p5) {
           l2147483641 = 24;
           break block_1;
         }
-        p1 = _reflect_Value_Bool(p0, p1, p2);
+        p1 = _reflect_Value_Bool(go_string(p0, p1), p2);
       }
       if ((g1 ? l2 === 25 : 1)) {
         if (g1 === 1) {
           l2147483641 = 25;
           break block_1;
         }
-        l2147483642 = _reflect_Value_Bool(p0, p4, p5);
       } else {
-        l2147483642 = p0;
       }
-      p3 = (g1 ? p3 : ((l2147483642 ^ p1) ^ 1));
+      p3 = (g1 ? p3 : ((((g1 ? (l2 === 25 ? 1 : 0) : 1) ? _reflect_Value_Bool(go_string(p0, p4), p5) : p0) ^ p1) ^ 1));
     }
     if ((g1 === 0)) {
       store_i32(138276, l10);
@@ -23141,7 +23029,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
       l0 = ((g0 - 144) | 0);
       g0 = l0;
       store_i32(l0, 20, 60);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 76) | 0), ((l0 + 76) | 0) + 68);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 76) | 0), 0, 68), go_slice(((l0 + 76) | 0), 0, 68) + );
       store_i32(l0, p0, 108);
       store_i32(l0, p0, 100);
       store_i32(l0, p0, 96);
@@ -23163,7 +23051,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
           l2147483644 = 0;
           break block_1;
         }
-        l2 = runtime_alloc(4, 67);
+        l2 = runtime_alloc(go_string(4, 67));
       }
       if ((g1 === 0)) {
         store_i32(l2, p1);
@@ -23263,32 +23151,32 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
                             p0 = _reflect_rawType_Size(p0);
                           }
                           if ((g1 === 0)) {
-                            l2 = runtime_hash32(l2, p0, p2, l0);
+                            l2 = runtime_hash32(go_string(l2, p0), go_string(p2, l0));
                             break block_4;
                           }
                         }
                         if ((g1 === 0)) {
-                          l2 = runtime_hashmapFloat32Hash(l2, p2);
+                          l2 = runtime_hashmapFloat32Hash(go_string(l2, p2));
                           break block_4;
                         }
                       }
                       if ((g1 === 0)) {
-                        l2 = runtime_hashmapFloat64Hash(l2, p2);
+                        l2 = runtime_hashmapFloat64Hash(go_string(l2, p2));
                         break block_4;
                       }
                     }
                     if ((g1 === 0)) {
-                      l2 = (runtime_hashmapFloat32Hash(l2, p2) ^ runtime_hashmapFloat32Hash(((l2 + 4) | 0), p2));
+                      l2 = (runtime_hashmapFloat32Hash(go_string(l2, p2)) ^ runtime_hashmapFloat32Hash(((l2 + 4) | 0), p2));
                       break block_4;
                     }
                   }
                   if ((g1 === 0)) {
-                    l2 = (runtime_hashmapFloat64Hash(l2, p2) ^ runtime_hashmapFloat64Hash(((l2 + 8) | 0), p2));
+                    l2 = (runtime_hashmapFloat64Hash(go_string(l2, p2)) ^ runtime_hashmapFloat64Hash(((l2 + 8) | 0), p2));
                     break block_4;
                   }
                 }
                 if ((g1 ? l4 === 3 : 1)) {
-                  _reflect_Value_String(l0, p0, p1);
+                  _reflect_Value_String(go_string(l0, p0), p1);
                   if (g1 === 1) {
                     l2147483644 = 3;
                     break block_1;
@@ -23309,7 +23197,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
                 p0 = _reflect_rawType_Size(p0);
               }
               if ((g1 === 0)) {
-                l2 = runtime_hash32(l2, p0, p2, l0);
+                l2 = runtime_hash32(go_string(l2, p0), go_string(p2, l0));
                 break block_4;
               }
             }
@@ -23323,14 +23211,14 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
                   l2147483644 = 5;
                   break block_1;
                 }
-                l1 = _reflect_Value_Len(p0, p1, 2);
+                l1 = _reflect_Value_Len(go_string(p0, p1), 2);
               }
               if ((g1 === 0)) {
                 if (l1 <= l5) break block_4;
                 l1 = ((l0 + 16) | 0);
               }
               if ((g1 ? l4 === 6 : 1)) {
-                _reflect_Value_Index(l1, p0, p1, 2, l5);
+                _reflect_Value_Index(go_string(l1, p0), p1, go_string(2, l5));
                 if (g1 === 1) {
                   l2147483644 = 6;
                   break block_1;
@@ -23345,7 +23233,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
                 l7 = ((l0 + 8) | 0);
               }
               if ((g1 ? l4 === 7 : 1)) {
-                reflect_valueInterfaceUnsafe(l7, l6, l1, l8);
+                reflect_valueInterfaceUnsafe(go_string(l7, l6), go_string(l1, l8));
                 if (g1 === 1) {
                   l2147483644 = 7;
                   break block_1;
@@ -23362,7 +23250,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
                   l2147483644 = 8;
                   break block_1;
                 }
-                l1 = runtime_hashmapInterfaceHash(l6, l1, p2);
+                l1 = runtime_hashmapInterfaceHash(go_string(l6, l1), p2);
               }
               if ((g1 === 0)) {
                 l2 = (l1 ^ l2);
@@ -23389,7 +23277,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
               l1 = ((l0 + 40) | 0);
             }
             if ((g1 ? l4 === 10 : 1)) {
-              _reflect_Value_Field(l1, p0, p1, 2, l5);
+              _reflect_Value_Field(go_string(l1, p0), p1, go_string(2, l5));
               if (g1 === 1) {
                 l2147483644 = 10;
                 break block_1;
@@ -23404,7 +23292,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
               l7 = ((l0 + 32) | 0);
             }
             if ((g1 ? l4 === 11 : 1)) {
-              reflect_valueInterfaceUnsafe(l7, l6, l1, l8);
+              reflect_valueInterfaceUnsafe(go_string(l7, l6), go_string(l1, l8));
               if (g1 === 1) {
                 l2147483644 = 11;
                 break block_1;
@@ -23421,7 +23309,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
                 l2147483644 = 12;
                 break block_1;
               }
-              l1 = runtime_hashmapInterfaceHash(l6, l1, p2);
+              l1 = runtime_hashmapInterfaceHash(go_string(l6, l1), p2);
             }
             if ((g1 === 0)) {
               l2 = (l1 ^ l2);
@@ -23432,7 +23320,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
           }
         }
         if ((g1 ? l4 === 13 : 1)) {
-          runtime_runtimePanic(91267, 28);
+          runtime_runtimePanic("comparing un-comparable type");
           if (g1 === 1) {
             l2147483644 = 13;
             break block_1;
@@ -23450,7 +23338,7 @@ function runtime_hashmapInterfaceHash(p0, p1, p2) {
         p0 = _reflect_rawType_Size(p0);
       }
       if ((g1 === 0)) {
-        l2 = runtime_hash32(l2, p0, p2, l0);
+        l2 = runtime_hash32(go_string(l2, p0), go_string(p2, l0));
       }
     }
     if ((g1 === 0)) {
@@ -23488,7 +23376,7 @@ function runtime_hashmapFloat32Hash(p0, p1) {
   p0 = load_i32(p0);
   store_i32(l0, ((p0 !== -2147483648 ? 1 : 0) ? p0 : 0), 12);
   g0 = ((l0 + 16) | 0);
-  return runtime_hash32(((l0 + 12) | 0), 4, p1, l0);
+  return runtime_hash32(((l0 + 12) | 0), go_string(4, p1), l0);
 }
 
 // runtime.hashmapFloat64Hash
@@ -23499,12 +23387,12 @@ function runtime_hashmapFloat64Hash(p0, p1) {
   l1 = load_i64(p0);
   store_i64(l0, ((l1 !== -9223372036854775808n ? 1 : 0) ? l1 : 0n), 8);
   g0 = ((l0 + 16) | 0);
-  return runtime_hash32(((l0 + 8) | 0), 8, p1, l0);
+  return runtime_hash32(((l0 + 8) | 0), go_string(8, p1), l0);
 }
 
 // runtime.hashmapStringHash
 function runtime_hashmapStringHash(p0, p1, p2) {
-  return runtime_hash32(p0, p1, p2, p2);
+  return runtime_hash32(go_string(p0, p1), go_string(p2, p2));
 }
 
 // (*runtime.channel).bufferPush
@@ -23516,7 +23404,7 @@ function _runtime_channel_bufferPush(p0, p1) {
   store_i32(p0, ((l1 !== load_i32(p0, 8) ? 1 : 0) ? l1 : 0), 16);
   l2147483645 = p0;
   p0 = load_i32(p0, 4);
-  new Uint8Array(memory.buffer).copyWithin(((load_i32(l2147483645, 32) + Math.imul(l0, p0)) | 0), p1, p1 + p0);
+  new Uint8Array(memory.buffer).copyWithin(((load_i32(l2147483645, 32) + Math.imul(l0, p0)) | 0), go_string(p1, p0), go_string(p1, p0) + );
 }
 
 // (*runtime.chanQueue).pop
@@ -23531,19 +23419,17 @@ function _runtime_chanQueue_pop(p0) {
       block_3: {
         if ((p0 === 0)) break block_3;
         l2 = load_i32(p0);
-        block_4: {
-          loop_5: while (true) {
-            l0 = l2;
-            if ((l0 === 0)) break block_4;
-            l2 = load_i32(l0);
-            store_i32(p0, l2);
-            l3 = load_i32(l0, 4);
-            if ((l3 === 0)) break block_3;
-            if (load_i32(l3, 8)) continue loop_5;
-            break;
+        do {
+          l0 = l2;
+          if ((l0 === 0)) {
+            return l0;
           }
-          store_i32(l3, ((load_i32(l0, 8) << 2) | 1), 8);
-        }
+          l2 = load_i32(l0);
+          store_i32(p0, l2);
+          l3 = load_i32(l0, 4);
+          if ((l3 === 0)) break block_3;
+        } while (load_i32(l3, 8));
+        store_i32(l3, ((load_i32(l0, 8) << 2) | 1), 8);
         return l0;
       }
     }
@@ -23628,7 +23514,7 @@ function runtime_chanSend(p0, p1, p2) {
                 if ((g1 === 0)) {
                   l0 = (u32(load_i32(p0, 8)) <= u32(l0) ? 1 : 0);
                   if (l0) break block_9;
-                  _runtime_channel_bufferPush(p0, p1);
+                  _runtime_channel_bufferPush(go_string(p0, p1));
                   break block_4;
                 }
               }
@@ -23638,7 +23524,7 @@ function runtime_chanSend(p0, p1, p2) {
                 if ((p2 === 0)) break block_8;
                 p2 = load_i32(p2, 4);
                 store_i32(l2, p2, 16);
-                new Uint8Array(memory.buffer).copyWithin(p2, p1, p1 + load_i32(p0, 4));
+                new Uint8Array(memory.buffer).copyWithin(go_string(p2, p1), load_i32(p0, 4), load_i32(p0, 4) + );
                 p0 = load_i32(l0, 4);
                 store_i32(l2, p0, 20);
               }
@@ -23742,7 +23628,7 @@ function runtime_chanSend(p0, p1, p2) {
             }
             if (((g1 === 0) & p0 !== 2)) break block_4;
             if ((g1 ? l3 === 5 : 1)) {
-              runtime_runtimePanic(91232, 22);
+              runtime_runtimePanic("send on closed channel");
               if (g1 === 1) {
                 l2147483644 = 5;
                 break block_1;
@@ -23775,7 +23661,7 @@ function runtime_chanSend(p0, p1, p2) {
         }
       }
       if ((g1 ? l3 === 8 : 1)) {
-        runtime_runtimePanic(91232, 22);
+        runtime_runtimePanic("send on closed channel");
         if (g1 === 1) {
           l2147483644 = 8;
           break block_1;
@@ -23837,7 +23723,7 @@ function runtime_hashmapStringSet(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      l2 = runtime_alloc(8, 69);
+      l2 = runtime_alloc(go_string(8, 69));
     }
     if ((g1 === 0)) {
       store_i32(l2, p2, 4);
@@ -23858,10 +23744,10 @@ function runtime_hashmapStringSet(p0, p1, p2, p3) {
       }
     }
     if ((g1 === 0)) {
-      p1 = runtime_hashmapStringHash(p1, p2, load_i32(p0, 4));
+      p1 = runtime_hashmapStringHash(go_string(p1, p2), load_i32(p0, 4));
     }
     if ((g1 ? l4 === 2 : 1)) {
-      runtime_hashmapSet(p0, l2, p3, p1);
+      runtime_hashmapSet(go_string(p0, l2), go_string(p3, p1));
       if (g1 === 1) {
         l2147483643 = 2;
         break block_1;
@@ -23920,7 +23806,7 @@ function runtime_hashmapInterfaceDelete(p0, p1, p2) {
         l2147483644 = 0;
         break block_1;
       }
-      l2 = runtime_alloc(8, 197);
+      l2 = runtime_alloc(go_string(8, 197));
     }
     if ((g1 === 0)) {
       store_i32(l2, p2, 4);
@@ -23939,10 +23825,10 @@ function runtime_hashmapInterfaceDelete(p0, p1, p2) {
           l2147483644 = 1;
           break block_1;
         }
-        p1 = runtime_hashmapInterfaceHash(p1, p2, l3);
+        p1 = runtime_hashmapInterfaceHash(go_string(p1, p2), l3);
       }
       if ((g1 ? l5 === 2 : 1)) {
-        runtime_hashmapDelete(p0, l2, p1);
+        runtime_hashmapDelete(go_string(p0, l2), p1);
         if (g1 === 1) {
           l2147483644 = 2;
           break block_1;
@@ -23975,19 +23861,17 @@ function runtime_stringLess(p0, p1, p2, p3) {
   let l0 = 0, l1 = 0, l2 = 0;
   l0 = ((p1 > p3 ? 1 : 0) ? p3 : p1);
   l0 = ((l0 > 0 ? 1 : 0) ? l0 : 0);
-  block_0: {
-    loop_1: while (true) {
-      if ((l0 === 0)) break block_0;
-      l0 = ((l0 - 1) | 0);
-      l1 = load_u8(p2);
-      l2 = load_u8(p0);
-      p2 = ((p2 + 1) | 0);
-      p0 = ((p0 + 1) | 0);
-      if (l1 === l2) continue loop_1;
-      break;
+  do {
+    if ((l0 === 0)) {
+      return (p1 < p3 ? 1 : 0);
     }
-    return (u32(l1) > u32(l2) ? 1 : 0);
-  }
+    l0 = ((l0 - 1) | 0);
+    l1 = load_u8(p2);
+    l2 = load_u8(p0);
+    p2 = ((p2 + 1) | 0);
+    p0 = ((p0 + 1) | 0);
+  } while (l1 === l2);
+  return (u32(l1) > u32(l2) ? 1 : 0);
   return (p1 < p3 ? 1 : 0);
 }
 
@@ -24307,7 +24191,7 @@ function _crypto_sha256_digest_Write(p0, p1, p2, p3, p4) {
             l2147483642 = l0;
             l0 = ((64 - l0) | 0);
             l0 = ((u32(p3) < u32(l0) ? 1 : 0) ? p3 : l0);
-            new Uint8Array(memory.buffer).copyWithin(((((p1 + l2147483642) | 0) + 32) | 0), p2, p2 + l0);
+            new Uint8Array(memory.buffer).copyWithin(((((p1 + l2147483642) | 0) + 32) | 0), go_string(p2, l0), go_string(p2, l0) + );
             l1 = ((load_i32(p1, 96) + l0) | 0);
             store_i32(p1, l1, 96);
             l1 = (l1 !== 64 ? 1 : 0);
@@ -24318,7 +24202,7 @@ function _crypto_sha256_digest_Write(p0, p1, p2, p3, p4) {
               l1 = ((p1 + 32) | 0);
             }
             if (((g1 ? l2 : 0) === 0)) {
-              crypto_sha256_block(p1, l1, 64, 64);
+              crypto_sha256_block(go_string(p1, l1), go_string(64, 64));
               if (g1 === 1) {
                 l2147483643 = 0;
                 break block_1;
@@ -24343,7 +24227,7 @@ function _crypto_sha256_digest_Write(p0, p1, p2, p3, p4) {
             if (u32(l0) > u32(p4)) break block_3;
           }
           if ((g1 ? l2 === 1 : 1)) {
-            crypto_sha256_block(p1, p2, l0, p4);
+            crypto_sha256_block(go_string(p1, p2), go_string(l0, p4));
             if (g1 === 1) {
               l2147483643 = 1;
               break block_1;
@@ -24357,7 +24241,7 @@ function _crypto_sha256_digest_Write(p0, p1, p2, p3, p4) {
         }
         if ((g1 === 0)) {
           if (p3 > 0) {
-            new Uint8Array(memory.buffer).copyWithin(((p1 + 32) | 0), p2, p2 + p3);
+            new Uint8Array(memory.buffer).copyWithin(((p1 + 32) | 0), go_string(p2, p3), go_string(p2, p3) + );
             store_i32(p1, p3, 96);
           }
           store_i64(p0, 0n);
@@ -24606,7 +24490,7 @@ function _encoding_base64_Encoding_decodeQuantum(p0, p1, p2, p3, p4, p5) {
       l3 = ((g0 - 96) | 0);
       g0 = l3;
       store_i32(l3, 20, 12);
-      new Uint8Array(memory.buffer).fill(0, ((l3 + 16) | 0), ((l3 + 16) | 0) + 80);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l3 + 16) | 0), 0, 80), go_slice(((l3 + 16) | 0), 0, 80) + );
       store_i32(l3, 0, 4);
       l8 = load_i32(138276);
       store_i32(l3, l8, 8);
@@ -25003,7 +24887,7 @@ function internal_fmtsort_Sort$1(p0, p1, p2, p3, p4, p5, p6, p7) {
         l2147483639 = 0;
         break block_1;
       }
-      p6 = internal_fmtsort_compare(p0, p1, p2, p5, p6, p7);
+      p6 = internal_fmtsort_compare(go_string(p0, p1), go_string(p2, p5), go_string(p6, p7));
     }
     if ((g1 === 0)) {
       store_i32(138276, p4);
@@ -25031,7 +24915,7 @@ function internal_fmtsort_Sort$1(p0, p1, p2, p3, p4, p5, p6, p7) {
 
 // internal/fmtsort.compare
 function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l17 = 0n, l2147483641, l2147483642;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l17 = 0n, l2147483641;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 100) | 0));
     p1 = load_i32(g2);
@@ -25065,7 +24949,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
       l0 = ((g0 - 336) | 0);
       g0 = l0;
       store_i32(l0, 30, 212);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 224) | 0), ((l0 + 224) | 0) + 112);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 224) | 0), 0, 112), go_slice(((l0 + 224) | 0), 0, 112) + );
       store_i32(l0, p3, 220);
       store_i32(l0, p0, 216);
       l10 = load_i32(138276);
@@ -25078,7 +24962,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
         l2147483641 = 0;
         break block_1;
       }
-      l4 = runtime_interfaceEqual(128608, p0, 128608, p3);
+      l4 = runtime_interfaceEqual(go_string(128608, p0), go_string(128608, p3));
     }
     l4 = (g1 ? l4 : (((l4 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -25171,14 +25055,14 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                                     l2147483641 = 1;
                                     break block_1;
                                   }
-                                  l15 = _reflect_Value_Uint(p0, p1, p2);
+                                  l15 = _reflect_Value_Uint(go_string(p0, p1), p2);
                                 }
                                 if ((g1 ? l3 === 2 : 1)) {
                                   if (g1 === 1) {
                                     l2147483641 = 2;
                                     break block_1;
                                   }
-                                  l16 = _reflect_Value_Uint(p3, p4, p5);
+                                  l16 = _reflect_Value_Uint(go_string(p3, p4), p5);
                                 }
                                 if ((g1 === 0)) {
                                   l1 = ((BigInt.asUintN(64, BigInt(l15)) < BigInt.asUintN(64, BigInt(l16)) ? 1 : 0) ? -1 : (BigInt.asUintN(64, BigInt(l15)) > BigInt.asUintN(64, BigInt(l16)) ? 1 : 0));
@@ -25187,7 +25071,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                               }
                               p2 = (g1 ? p2 : ((l0 + 24) | 0));
                               if ((g1 ? l3 === 3 : 1)) {
-                                _reflect_Value_String(p2, p0, p1);
+                                _reflect_Value_String(go_string(p2, p0), p1);
                                 if (g1 === 1) {
                                   l2147483641 = 3;
                                   break block_1;
@@ -25200,7 +25084,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                                 p1 = load_i32(l0, 28);
                               }
                               if ((g1 ? l3 === 4 : 1)) {
-                                _reflect_Value_String(p2, p3, p4);
+                                _reflect_Value_String(go_string(p2, p3), p4);
                                 if (g1 === 1) {
                                   l2147483641 = 4;
                                   break block_1;
@@ -25211,15 +25095,15 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                                 store_i32(l0, p2, 228);
                                 l1 = 1;
                                 p3 = load_i32(l0, 20);
-                                p4 = cmp_isNaN_string(p2, p3);
-                                if ((cmp_isNaN_string(p0, p1) & 1)) {
+                                p4 = cmp_isNaN_string(go_string(p2, p3));
+                                if ((cmp_isNaN_string(go_string(p0, p1)) & 1)) {
                                   l1 = (((p4 & 1) - 1) | 0);
                                   break block_5;
                                 }
                                 if ((p4 & 1)) break block_5;
                                 l1 = -1;
-                                if ((runtime_stringLess(p0, p1, p2, p3) & 1)) break block_5;
-                                l1 = (runtime_stringLess(p2, p3, p0, p1) & 1);
+                                if ((runtime_stringLess(go_string(p0, p1), go_string(p2, p3)) & 1)) break block_5;
+                                l1 = (runtime_stringLess(go_string(p2, p3), go_string(p0, p1)) & 1);
                                 break block_5;
                               }
                             }
@@ -25228,14 +25112,14 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                                 l2147483641 = 5;
                                 break block_1;
                               }
-                              l12 = _reflect_Value_Float(p0, p1, p2);
+                              l12 = _reflect_Value_Float(go_string(p0, p1), p2);
                             }
                             if ((g1 ? l3 === 6 : 1)) {
                               if (g1 === 1) {
                                 l2147483641 = 6;
                                 break block_1;
                               }
-                              l11 = _reflect_Value_Float(p3, p4, p5);
+                              l11 = _reflect_Value_Float(go_string(p3, p4), p5);
                             }
                             if ((g1 === 0)) {
                               if (l12 !== l12) {
@@ -25251,7 +25135,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                           }
                           p2 = (g1 ? p2 : ((l0 + 48) | 0));
                           if ((g1 ? l3 === 7 : 1)) {
-                            _reflect_Value_Complex(p2, p0, p1);
+                            _reflect_Value_Complex(go_string(p2, p0), p1);
                             if (g1 === 1) {
                               l2147483641 = 7;
                               break block_1;
@@ -25263,7 +25147,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                             p0 = ((l0 + 32) | 0);
                           }
                           if ((g1 ? l3 === 8 : 1)) {
-                            _reflect_Value_Complex(p0, p3, p4);
+                            _reflect_Value_Complex(go_string(p0, p3), p4);
                             if (g1 === 1) {
                               l2147483641 = 8;
                               break block_1;
@@ -25273,14 +25157,12 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                             l11 = load_f64(l0, 40);
                             l13 = load_f64(l0, 32);
                             if (l12 !== l12) {
-                              l2147483642 = ((l13 === l13 ? 1 : 0) ? -1 : 0);
                             } else {
                               if (l13 !== l13) break block_7;
                               l1 = -1;
                               if (l12 < l13) break block_5;
-                              l2147483642 = (l12 > l13 ? 1 : 0);
                             }
-                            l1 = l2147483642;
+                            l1 = ((l12 !== l12 ? 1 : 0) ? ((l13 === l13 ? 1 : 0) ? -1 : 0) : (l12 > l13 ? 1 : 0));
                             if (l1) break block_5;
                             if (l14 !== l14) {
                               l1 = ((l11 === l11 ? 1 : 0) ? -1 : 0);
@@ -25298,7 +25180,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                             l2147483641 = 9;
                             break block_1;
                           }
-                          p0 = _reflect_Value_Bool(p0, p1, p2);
+                          p0 = _reflect_Value_Bool(go_string(p0, p1), p2);
                         }
                         p1 = (g1 ? p1 : ((p0 & 1) ? 1 : -1));
                         if ((g1 ? l3 === 10 : 1)) {
@@ -25306,7 +25188,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                             l2147483641 = 10;
                             break block_1;
                           }
-                          p2 = _reflect_Value_Bool(p3, p4, p5);
+                          p2 = _reflect_Value_Bool(go_string(p3, p4), p5);
                         }
                         if ((g1 === 0)) {
                           l1 = (((p0 ^ p2) & 1) ? p1 : 0);
@@ -25318,14 +25200,14 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                           l2147483641 = 11;
                           break block_1;
                         }
-                        p0 = _reflect_Value_Pointer(p0, p1, p2);
+                        p0 = _reflect_Value_Pointer(go_string(p0, p1), p2);
                       }
                       if ((g1 ? l3 === 12 : 1)) {
                         if (g1 === 1) {
                           l2147483641 = 12;
                           break block_1;
                         }
-                        p3 = _reflect_Value_Pointer(p3, p4, p5);
+                        p3 = _reflect_Value_Pointer(go_string(p3, p4), p5);
                       }
                       if ((g1 === 0)) {
                         l1 = ((u32(p0) < u32(p3) ? 1 : 0) ? -1 : (u32(p0) > u32(p3) ? 1 : 0));
@@ -25334,7 +25216,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                     }
                     l1 = (g1 ? l1 : ((l0 - -64) | 0));
                     if ((g1 ? l3 === 13 : 1)) {
-                      internal_fmtsort_nilCompare(l1, p0, p1, p2, p3, p4, p5);
+                      internal_fmtsort_nilCompare(go_string(l1, p0), go_string(p1, p2), go_string(p3, p4), p5);
                       if (g1 === 1) {
                         l2147483641 = 13;
                         break block_1;
@@ -25352,14 +25234,14 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                         l2147483641 = 14;
                         break block_1;
                       }
-                      p0 = _reflect_Value_Pointer(p0, p1, p2);
+                      p0 = _reflect_Value_Pointer(go_string(p0, p1), p2);
                     }
                     if ((g1 ? l3 === 15 : 1)) {
                       if (g1 === 1) {
                         l2147483641 = 15;
                         break block_1;
                       }
-                      p3 = _reflect_Value_Pointer(p3, p4, p5);
+                      p3 = _reflect_Value_Pointer(go_string(p3, p4), p5);
                     }
                     if ((g1 === 0)) {
                       l1 = ((u32(p0) < u32(p3) ? 1 : 0) ? -1 : (u32(p0) > u32(p3) ? 1 : 0));
@@ -25381,7 +25263,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                       l1 = ((l0 + 88) | 0);
                     }
                     if ((g1 ? l3 === 17 : 1)) {
-                      _reflect_Value_Field(l1, p0, p1, p2, l4);
+                      _reflect_Value_Field(go_string(l1, p0), go_string(p1, p2), l4);
                       if (g1 === 1) {
                         l2147483641 = 17;
                         break block_1;
@@ -25396,7 +25278,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                       l5 = ((l0 + 72) | 0);
                     }
                     if ((g1 ? l3 === 18 : 1)) {
-                      _reflect_Value_Field(l5, p3, p4, p5, l4);
+                      _reflect_Value_Field(go_string(l5, p3), go_string(p4, p5), l4);
                       if (g1 === 1) {
                         l2147483641 = 18;
                         break block_1;
@@ -25415,7 +25297,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                         l2147483641 = 19;
                         break block_1;
                       }
-                      l1 = internal_fmtsort_compare(l6, l1, l7, l8, l5, l9);
+                      l1 = internal_fmtsort_compare(go_string(l6, l1), go_string(l7, l8), go_string(l5, l9));
                     }
                     if ((g1 === 0)) {
                       l6 = ((l1 === 0) ? 1 : 0);
@@ -25432,7 +25314,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 20;
                       break block_1;
                     }
-                    l1 = _reflect_Value_Len(p0, p1, p2);
+                    l1 = _reflect_Value_Len(go_string(p0, p1), p2);
                   }
                   if ((g1 === 0)) {
                     l1 = (l1 <= l4 ? 1 : 0);
@@ -25440,7 +25322,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                     l1 = ((l0 + 120) | 0);
                   }
                   if ((g1 ? l3 === 21 : 1)) {
-                    _reflect_Value_Index(l1, p0, p1, p2, l4);
+                    _reflect_Value_Index(go_string(l1, p0), go_string(p1, p2), l4);
                     if (g1 === 1) {
                       l2147483641 = 21;
                       break block_1;
@@ -25455,7 +25337,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                     l5 = ((l0 + 104) | 0);
                   }
                   if ((g1 ? l3 === 22 : 1)) {
-                    _reflect_Value_Index(l5, p3, p4, p5, l4);
+                    _reflect_Value_Index(go_string(l5, p3), go_string(p4, p5), l4);
                     if (g1 === 1) {
                       l2147483641 = 22;
                       break block_1;
@@ -25474,7 +25356,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 23;
                       break block_1;
                     }
-                    l1 = internal_fmtsort_compare(l6, l1, l7, l8, l5, l9);
+                    l1 = internal_fmtsort_compare(go_string(l6, l1), go_string(l7, l8), go_string(l5, l9));
                   }
                   if ((g1 === 0)) {
                     l6 = ((l1 === 0) ? 1 : 0);
@@ -25486,7 +25368,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
               }
               l1 = (g1 ? l1 : ((l0 + 200) | 0));
               if ((g1 ? l3 === 24 : 1)) {
-                internal_fmtsort_nilCompare(l1, p0, p1, p2, p3, p4, p5);
+                internal_fmtsort_nilCompare(go_string(l1, p0), go_string(p1, p2), go_string(p3, p4), p5);
                 if (g1 === 1) {
                   l2147483641 = 24;
                   break block_1;
@@ -25500,7 +25382,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                 l1 = ((l0 + 184) | 0);
               }
               if ((g1 ? l3 === 25 : 1)) {
-                _reflect_Value_Elem(l1, p0, p1, p2);
+                _reflect_Value_Elem(go_string(l1, p0), go_string(p1, p2));
                 if (g1 === 1) {
                   l2147483641 = 25;
                   break block_1;
@@ -25516,7 +25398,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                 l4 = ((l0 + 168) | 0);
               }
               if ((g1 ? l3 === 26 : 1)) {
-                _reflect_Value_Elem(l4, p3, p4, p5);
+                _reflect_Value_Elem(go_string(l4, p3), go_string(p4, p5));
                 if (g1 === 1) {
                   l2147483641 = 26;
                   break block_1;
@@ -25535,14 +25417,14 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                   l2147483641 = 27;
                   break block_1;
                 }
-                l1 = internal_fmtsort_compare(128608, l1, 2, 128608, l4, 2);
+                l1 = internal_fmtsort_compare(go_string(128608, l1), 2, go_string(128608, l4), 2);
               }
               if ((g1 === 0)) {
                 if (l1) break block_5;
                 l1 = ((l0 + 152) | 0);
               }
               if ((g1 ? l3 === 28 : 1)) {
-                _reflect_Value_Elem(l1, p0, p1, p2);
+                _reflect_Value_Elem(go_string(l1, p0), go_string(p1, p2));
                 if (g1 === 1) {
                   l2147483641 = 28;
                   break block_1;
@@ -25557,7 +25439,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                 p1 = load_u8(l0, 160);
               }
               if ((g1 ? l3 === 29 : 1)) {
-                _reflect_Value_Elem(p2, p3, p4, p5);
+                _reflect_Value_Elem(go_string(p2, p3), go_string(p4, p5));
                 if (g1 === 1) {
                   l2147483641 = 29;
                   break block_1;
@@ -25575,13 +25457,13 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
                   l2147483641 = 30;
                   break block_1;
                 }
-                l1 = internal_fmtsort_compare(l1, p0, p1, p2, p3, p4);
+                l1 = internal_fmtsort_compare(go_string(l1, p0), go_string(p1, p2), go_string(p3, p4));
               }
               if ((g1 === 0)) break block_5;
             }
             p1 = (g1 ? p1 : ((l0 + 8) | 0));
             if ((g1 ? l3 === 31 : 1)) {
-              _reflect_rawType_String(p1, p0);
+              _reflect_rawType_String(go_string(p1, p0));
               if (g1 === 1) {
                 l2147483641 = 31;
                 break block_1;
@@ -25593,7 +25475,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
               p1 = load_i32(l0, 12);
             }
             if ((g1 ? l3 === 32 : 1)) {
-              runtime_stringConcat(l0, 92180, 21, p0, p1);
+              runtime_stringConcat(l0, "bad type in compare: ", go_string(p0, p1));
               if (g1 === 1) {
                 l2147483641 = 32;
                 break block_1;
@@ -25618,7 +25500,7 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
               store_i32(l0, p0, 332);
             }
             if ((g1 ? l3 === 34 : 1)) {
-              runtime__panic(127752, p0);
+              runtime__panic(go_string(127752, p0));
               if (g1 === 1) {
                 l2147483641 = 34;
                 break block_1;
@@ -25633,14 +25515,14 @@ function internal_fmtsort_compare(p0, p1, p2, p3, p4, p5) {
               l2147483641 = 35;
               break block_1;
             }
-            l15 = _reflect_Value_Int(p0, p1, p2);
+            l15 = _reflect_Value_Int(go_string(p0, p1), p2);
           }
           if ((g1 ? l3 === 36 : 1)) {
             if (g1 === 1) {
               l2147483641 = 36;
               break block_1;
             }
-            l16 = _reflect_Value_Int(p3, p4, p5);
+            l16 = _reflect_Value_Int(go_string(p3, p4), p5);
           }
           if ((g1 === 0)) {
             l1 = ((l15 < l16 ? 1 : 0) ? -1 : (l15 > l16 ? 1 : 0));
@@ -25736,7 +25618,7 @@ function slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3) {
       l2 = ((g0 - 80) | 0);
       g0 = l2;
       store_i32(l2, 16, 12);
-      new Uint8Array(memory.buffer).fill(0, ((l2 + 16) | 0), ((l2 + 16) | 0) + 64);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l2 + 16) | 0), 0, 64), go_slice(((l2 + 16) | 0), 0, 64) + );
       l26 = load_i32(138276);
       store_i32(l2, l26, 8);
       store_i32(138276, ((l2 + 8) | 0));
@@ -25799,7 +25681,7 @@ function slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3) {
                   l2147483643 = 0;
                   break block_1;
                 }
-                l3 = internal_fmtsort_Sort$1(l11, l10, l13, l9, l3, l14, l6, l7);
+                l3 = internal_fmtsort_Sort$1(go_string(l11, l10), go_string(l13, l9), go_string(l3, l14), go_string(l6, l7));
               }
               if ((g1 === 0)) {
                 l3 = (l3 >= 0 ? 1 : 0);
@@ -25947,7 +25829,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
       l1 = ((g0 - 176) | 0);
       g0 = l1;
       store_i32(l1, 40, 12);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 16) | 0), ((l1 + 16) | 0) + 160);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 16) | 0), 0, 160), go_slice(((l1 + 16) | 0), 0, 160) + );
       l19 = load_i32(138276);
       store_i32(l1, l19, 8);
       store_i32(138276, ((l1 + 8) | 0));
@@ -26053,7 +25935,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
                 l2147483642 = 0;
                 break block_1;
               }
-              l0 = internal_fmtsort_Sort$1(l12, l9, l8, l7, l6, l14, l16, l10);
+              l0 = internal_fmtsort_Sort$1(go_string(l12, l9), go_string(l8, l7), go_string(l6, l14), go_string(l16, l10));
             }
             if ((g1 === 0)) {
               l0 = (l0 < 0 ? 1 : 0);
@@ -26161,7 +26043,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
                 l2147483642 = 1;
                 break block_1;
               }
-              l0 = internal_fmtsort_Sort$1(l6, l12, l11, l9, l7, l14, l16, l10);
+              l0 = internal_fmtsort_Sort$1(go_string(l6, l12), go_string(l11, l9), go_string(l7, l14), go_string(l16, l10));
             }
             if ((g1 === 0)) {
               l0 = (l0 < 0 ? 1 : 0);
@@ -26218,7 +26100,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
                 l2147483642 = 2;
                 break block_1;
               }
-              l0 = internal_fmtsort_Sort$1(l12, l9, l8, l7, l6, l14, l16, l20);
+              l0 = internal_fmtsort_Sort$1(go_string(l12, l9), go_string(l8, l7), go_string(l6, l14), go_string(l16, l20));
             }
             if ((g1 === 0)) {
               l0 = (l0 < 0 ? 1 : 0);
@@ -26250,7 +26132,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
                 }
                 if ((l6 ? g1 : 1)) {
                   if ((g1 ? l13 === 3 : 1)) {
-                    slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(p0, p1, l5, p3, l0);
+                    slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(go_string(p0, p1), go_string(l5, p3), l0);
                     if (g1 === 1) {
                       l2147483642 = 3;
                       break block_1;
@@ -26263,7 +26145,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
                 }
                 l6 = (g1 ? l6 : ((l0 + l5) | 0));
                 if ((g1 ? l13 === 4 : 1)) {
-                  slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(p0, p1, l5, l6, l2);
+                  slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(go_string(p0, p1), go_string(l5, l6), l2);
                   if (g1 === 1) {
                     l2147483642 = 4;
                     break block_1;
@@ -26279,7 +26161,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
             break;
           }
           if ((g1 ? l13 === 5 : 1)) {
-            slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(p0, p1, l5, p3, l2);
+            slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(go_string(p0, p1), go_string(l5, p3), l2);
             if (g1 === 1) {
               l2147483642 = 5;
               break block_1;
@@ -26288,7 +26170,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
         }
         p3 = (g1 ? p3 : (p2 >= l4 ? 1 : 0));
         if ((((g1 ? l13 === 6 : 1) ? (((p3 | l4 >= l10) ? g1 : 1) === 0) : 1) === 0)) {
-          slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, l4, l10);
+          slices_symMergeCmpFunc_internal_fmtsort_KeyValue(go_string(p0, p1), go_string(p2, l4), l10);
           if (g1 === 1) {
             l2147483642 = 6;
             break block_1;
@@ -26296,7 +26178,7 @@ function slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
         }
         if (((g1 === 0) & (l7 <= l10 | p4 <= l7))) break block_5;
         if ((g1 ? l13 === 7 : 1)) {
-          slices_symMergeCmpFunc_internal_fmtsort_KeyValue(p0, p1, l10, l7, p4);
+          slices_symMergeCmpFunc_internal_fmtsort_KeyValue(go_string(p0, p1), go_string(l10, l7), p4);
           if (g1 === 1) {
             l2147483642 = 7;
             break block_1;
@@ -26430,7 +26312,7 @@ function slices_swapRangeCmpFunc_internal_fmtsort_KeyValue(p0, p1, p2, p3, p4) {
 
 // cmp.isNaN[string]
 function cmp_isNaN_string(p0, p1) {
-  return (runtime_stringEqual(p0, p1, p0, p1) ^ 1);
+  return (runtime_stringEqual(go_string(p0, p1), go_string(p0, p1)) ^ 1);
 }
 
 // internal/fmtsort.nilCompare
@@ -26457,14 +26339,14 @@ function internal_fmtsort_nilCompare(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p3 = _reflect_Value_IsNil(p1, p2, p3);
+      p3 = _reflect_Value_IsNil(go_string(p1, p2), p3);
     }
     if ((g1 ? l1 === 1 : 1)) {
       if (g1 === 1) {
         l2147483640 = 1;
         break block_1;
       }
-      p6 = _reflect_Value_IsNil(p4, p5, p6);
+      p6 = _reflect_Value_IsNil(go_string(p4, p5), p6);
     }
     if ((g1 === 0)) {
       store_i8(p0, ((p3 | p6) & 1), 4);
@@ -26511,7 +26393,7 @@ function _internal_godebug_Setting_register$bound(p0) {
       l0 = ((g0 - 96) | 0);
       g0 = l0;
       store_i32(l0, 12, 44);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 52) | 0), ((l0 + 52) | 0) + 44);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 52) | 0), 0, 44), go_slice(((l0 + 52) | 0), 0, 44) + );
       l6 = load_i32(138276);
       store_i32(l0, l6, 40);
       store_i32(138276, ((l0 + 40) | 0));
@@ -26540,7 +26422,7 @@ function _internal_godebug_Setting_register$bound(p0) {
           l1 = ((l0 + 32) | 0);
         }
         if (((g1 ? l4 : 0) === 0)) {
-          _internal_godebug_Setting_Name(l1, p0);
+          _internal_godebug_Setting_Name(go_string(l1, p0));
           if (g1 === 1) {
             l2147483646 = 0;
             break block_1;
@@ -26553,7 +26435,7 @@ function _internal_godebug_Setting_register$bound(p0) {
           l3 = ((l0 + 24) | 0);
         }
         if ((g1 ? l4 === 1 : 1)) {
-          runtime_stringConcat(l3, 92875, 30, l1, l5);
+          runtime_stringConcat(l3, "/godebug/non-default-behavior/", go_string(l1, l5));
           if (g1 === 1) {
             l2147483646 = 1;
             break block_1;
@@ -26566,7 +26448,7 @@ function _internal_godebug_Setting_register$bound(p0) {
           l3 = ((l0 + 16) | 0);
         }
         if ((g1 ? l4 === 2 : 1)) {
-          runtime_stringConcat(l3, l1, l5, 92905, 7);
+          runtime_stringConcat(go_string(l3, l1), l5, ":events");
           if (g1 === 1) {
             l2147483646 = 2;
             break block_1;
@@ -26589,7 +26471,7 @@ function _internal_godebug_Setting_register$bound(p0) {
         p0 = load_i32(p0, 4);
       }
       if ((g1 ? l4 === 3 : 1)) {
-        runtime_stringConcat(l3, 92838, 37, l1, p0);
+        runtime_stringConcat(l3, "godebug: unexpected IncNonDefault of ", go_string(l1, p0));
         if (g1 === 1) {
           l2147483646 = 3;
           break block_1;
@@ -26614,7 +26496,7 @@ function _internal_godebug_Setting_register$bound(p0) {
         store_i32(l0, p0, 68);
       }
       if ((g1 ? l4 === 5 : 1)) {
-        runtime__panic(127752, p0);
+        runtime__panic(go_string(127752, p0));
         if (g1 === 1) {
           l2147483646 = 5;
           break block_1;
@@ -26694,7 +26576,7 @@ function _internal_godebug_Setting_Name(p0, p1) {
 
 // (*internal/godebug.Setting).Value$1
 function _internal_godebug_Setting_Value$1(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l2147483646, l2147483647;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 40) | 0));
     l0 = load_i32(g2);
@@ -26718,7 +26600,7 @@ function _internal_godebug_Setting_Value$1(p0) {
       l1 = ((g0 - 176) | 0);
       g0 = l1;
       store_i32(l1, 27, 60);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 72) | 0), ((l1 + 72) | 0) + 100);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 72) | 0), 0, 100), go_slice(((l1 + 72) | 0), 0, 100) + );
       l10 = load_i32(138276);
       store_i32(138276, ((l1 + 56) | 0));
       store_i32(l1, l10, 56);
@@ -26729,7 +26611,7 @@ function _internal_godebug_Setting_Value$1(p0) {
       l0 = 0;
     }
     if (((g1 ? l6 : 0) === 0)) {
-      _internal_godebug_Setting_Name(l2, l8);
+      _internal_godebug_Setting_Name(go_string(l2, l8));
       if (g1 === 1) {
         l2147483646 = 0;
         break block_1;
@@ -26755,7 +26637,7 @@ function _internal_godebug_Setting_Value$1(p0) {
       l4 = ((l1 + 32) | 0);
     }
     if ((g1 ? l6 === 2 : 1)) {
-      _sync_Map_Load(l4, 138572, 127752, l2);
+      _sync_Map_Load(l4, 138572, go_string(127752, l2));
       if (g1 === 1) {
         l2147483646 = 2;
         break block_1;
@@ -26783,7 +26665,7 @@ function _internal_godebug_Setting_Value$1(p0) {
                   l2147483646 = 3;
                   break block_1;
                 }
-                l5 = runtime_alloc(32, 4689);
+                l5 = runtime_alloc(go_string(32, 4689));
               }
               if ((g1 === 0)) {
                 store_i32(l1, l5, 92);
@@ -26804,8 +26686,8 @@ function _internal_godebug_Setting_Value$1(p0) {
                     l4 = load_i32(l11);
                     store_i32(l1, l4, 96);
                     l3 = load_i32(((l3 + 136212) | 0));
-                    if ((runtime_stringEqual(l9, l7, l4, l3) & 1)) break block_19;
-                    l3 = (runtime_stringLess(l9, l7, l4, l3) & 1);
+                    if ((runtime_stringEqual(go_string(l9, l7), go_string(l4, l3)) & 1)) break block_19;
+                    l3 = (runtime_stringLess(go_string(l9, l7), go_string(l4, l3)) & 1);
                     l2 = (l3 ? l12 : l2);
                     l0 = (l3 ? l0 : ((l12 + 1) | 0));
                     continue loop_18;
@@ -26831,14 +26713,13 @@ function _internal_godebug_Setting_Value$1(p0) {
                 l2 = ((l1 + 16) | 0);
               }
               if ((g1 ? l6 === 5 : 1)) {
-                _sync_Map_LoadOrStore(l2, 138572, 127752, l0, 92912, l5);
+                _sync_Map_LoadOrStore(l2, 138572, go_string(127752, l0), go_string(92912, l5));
                 if (g1 === 1) {
                   l2147483646 = 5;
                   break block_1;
                 }
               }
               if (g1) {
-                l2147483648 = l5;
               } else {
                 l2 = load_i32(l1, 20);
                 store_i32(l1, l2, 120);
@@ -26847,9 +26728,8 @@ function _internal_godebug_Setting_Value$1(p0) {
                 l4 = ((load_u8(l1, 24) === 0) ? 1 : 0);
                 if (l4) break block_12;
                 l0 = (l0 === 92912 ? 1 : 0);
-                l2147483648 = (l0 ? l2 : 0);
               }
-              l2147483647 = l2147483648;
+              l2147483647 = (g1 ? l5 : (l0 ? l2 : 0));
             }
             l5 = l2147483647;
             if ((g1 ? l6 === 6 : 1)) {
@@ -26908,7 +26788,7 @@ function _internal_godebug_Setting_Value$1(p0) {
         p0 = ((l1 + 8) | 0);
       }
       if ((g1 ? l6 === 8 : 1)) {
-        runtime_stringConcat(p0, 92787, 51, l2, l0);
+        runtime_stringConcat(p0, "godebug: Value of name not listed in godebugs.All: ", go_string(l2, l0));
         if (g1 === 1) {
           l2147483646 = 8;
           break block_1;
@@ -26933,7 +26813,7 @@ function _internal_godebug_Setting_Value$1(p0) {
         store_i32(l1, l0, 168);
       }
       if ((g1 ? l6 === 10 : 1)) {
-        runtime__panic(127752, l0);
+        runtime__panic(go_string(127752, l0));
         if (g1 === 1) {
           l2147483646 = 10;
           break block_1;
@@ -26975,7 +26855,7 @@ function _internal_godebug_Setting_Value$1(p0) {
 
 // syscall/js.jsString
 function syscall_js_jsString(p0, p1, p2) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483644, l2147483645;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0n, l2147483644;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 40) | 0));
     l0 = load_i32(g2);
@@ -27005,7 +26885,7 @@ function syscall_js_jsString(p0, p1, p2) {
       l2 = ((l1 + 8) | 0);
     }
     if (((g1 ? l4 : 0) === 0)) {
-      gojs_syscall_js_valuePrepareString(l2, p1);
+      gojs_syscall_js_valuePrepareString(go_string(l2, p1));
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -27023,15 +26903,13 @@ function syscall_js_jsString(p0, p1, p2) {
       l2 = runtime_alloc(16, 0);
     }
     if (g1) {
-      l2147483645 = p2;
     } else {
       store_i64(l2, p1);
       store_i32(l2, p2, 8);
       store_i32(l1, l2, 32);
       store_i32(l1, l2, 36);
-      l2147483645 = (l3 < 0 ? 1 : 0);
     }
-    if ((l2147483645 ? g1 : 1)) {
+    if (((g1 ? p2 : l3 < 0) ? g1 : 1)) {
       if ((g1 ? l4 === 2 : 1)) {
         if (g1 === 1) {
           l2147483644 = 2;
@@ -27043,7 +26921,7 @@ function syscall_js_jsString(p0, p1, p2) {
         store_i32(l1, l2, 40);
       }
       if ((g1 ? l4 === 3 : 1)) {
-        gojs_syscall_js_valueLoadString(l6, l2, l3, l3);
+        gojs_syscall_js_valueLoadString(go_string(l6, l2), go_string(l3, l3));
         if (g1 === 1) {
           l2147483644 = 3;
           break block_1;
@@ -27057,7 +26935,7 @@ function syscall_js_jsString(p0, p1, p2) {
         }
       }
       if ((g1 ? l4 === 5 : 1)) {
-        runtime_stringFromBytes(l1, l2, l3);
+        runtime_stringFromBytes(go_string(l1, l2), l3);
         if (g1 === 1) {
           l2147483644 = 5;
           break block_1;
@@ -27126,7 +27004,7 @@ function syscall_js_ValueOf(p0, p1, p2) {
       l0 = ((g0 - 288) | 0);
       g0 = l0;
       store_i32(l0, 16, 220);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 224) | 0), ((l0 + 224) | 0) + 64);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 224) | 0), 0, 64), go_slice(((l0 + 224) | 0), 0, 64) + );
       l5 = load_i32(138276);
       store_i32(l0, l5, 216);
       store_i32(138276, ((l0 + 216) | 0));
@@ -27217,10 +27095,10 @@ function syscall_js_ValueOf(p0, p1, p2) {
               l2147483644 = 0;
               break block_1;
             }
-            l8 = gojs_syscall_js_stringVal(l1, p2);
+            l8 = gojs_syscall_js_stringVal(go_string(l1, p2));
           }
           if ((g1 ? l3 === 1 : 1)) {
-            syscall_js_makeValue(p1, l8);
+            syscall_js_makeValue(go_string(p1, l8));
             if (g1 === 1) {
               l2147483644 = 1;
               break block_1;
@@ -27243,7 +27121,7 @@ function syscall_js_ValueOf(p0, p1, p2) {
             p2 = ((l0 + 160) | 0);
           }
           if ((g1 ? l3 === 2 : 1)) {
-            _syscall_js_Value_New(p2, l8, p1, 0, 0);
+            _syscall_js_Value_New(go_string(p2, l8), p1, 0, 0);
             if (g1 === 1) {
               l2147483644 = 2;
               break block_1;
@@ -27258,7 +27136,7 @@ function syscall_js_ValueOf(p0, p1, p2) {
             store_i64(p1, 0n);
             store_i64(l0, 0n, 176);
           }
-          loop_27: while (true) {
+          do {
             if ((g1 === 0)) {
               p2 = ((l0 + 200) | 0);
               l4 = ((l0 + 208) | 0);
@@ -27269,7 +27147,7 @@ function syscall_js_ValueOf(p0, p1, p2) {
                 l2147483644 = 3;
                 break block_1;
               }
-              p1 = runtime_hashmapNext(l6, p1, p2, l4);
+              p1 = runtime_hashmapNext(go_string(l6, p1), go_string(p2, l4));
             }
             if ((g1 === 0)) {
               p2 = load_i32(l0, 200);
@@ -27282,15 +27160,13 @@ function syscall_js_ValueOf(p0, p1, p2) {
               p1 = load_i32(l0, 204);
             }
             if ((g1 ? l3 === 4 : 1)) {
-              _syscall_js_Value_Set(l8, l1, p2, p1, l4, l7);
+              _syscall_js_Value_Set(go_string(l8, l1), go_string(p2, p1), go_string(l4, l7));
               if (g1 === 1) {
                 l2147483644 = 4;
                 break block_1;
               }
             }
-            if ((g1 === 0)) continue loop_27;
-            break;
-          }
+          } while ((g1 === 0));
         }
         if ((g1 ? l3 === 5 : 1)) {
           runtime__panic(127752, 94792);
@@ -27382,14 +27258,14 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
       l1 = ((g0 - 144) | 0);
       g0 = l1;
       store_i32(l1, 15, 76);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 80) | 0), ((l1 + 80) | 0) + 60);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 80) | 0), 0, 60), go_slice(((l1 + 80) | 0), 0, 60) + );
       l7 = load_i32(138276);
       store_i32(l1, l7, 72);
       store_i32(138276, ((l1 + 72) | 0));
       l3 = ((l1 + 48) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      syscall_js_makeArgSlices(l3, p4);
+      syscall_js_makeArgSlices(go_string(l3, p4));
       if (g1 === 1) {
         l2147483642 = 0;
         break block_1;
@@ -27406,7 +27282,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
       l4 = load_i32(l1, 52);
     }
     if ((g1 ? l2 === 1 : 1)) {
-      syscall_js_storeArgs(p3, p4, l5, l4, l3, l6);
+      syscall_js_storeArgs(go_string(p3, p4), go_string(l5, l4), go_string(l3, l6));
       if (g1 === 1) {
         l2147483642 = 1;
         break block_1;
@@ -27414,7 +27290,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
     }
     p3 = (g1 ? p3 : ((l1 + 32) | 0));
     if ((g1 ? l2 === 2 : 1)) {
-      gojs_syscall_js_valueNew(p3, p1, l3, l6, l9);
+      gojs_syscall_js_valueNew(go_string(p3, p1), go_string(l3, l6), l9);
       if (g1 === 1) {
         l2147483642 = 2;
         break block_1;
@@ -27467,7 +27343,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
           p0 = ((l1 + 16) | 0);
         }
         if ((g1 ? l2 === 6 : 1)) {
-          syscall_js_makeValue(p0, l10);
+          syscall_js_makeValue(go_string(p0, l10));
           if (g1 === 1) {
             l2147483642 = 6;
             break block_1;
@@ -27493,7 +27369,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
           store_i32(l1, p4, 136);
         }
         if ((g1 ? l2 === 8 : 1)) {
-          runtime__panic(128264, p4);
+          runtime__panic(go_string(128264, p4));
           if (g1 === 1) {
             l2147483642 = 8;
             break block_1;
@@ -27504,7 +27380,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
         }
       }
       if ((g1 ? l2 === 9 : 1)) {
-        syscall_js_makeValue(l1, l10);
+        syscall_js_makeValue(go_string(l1, l10));
         if (g1 === 1) {
           l2147483642 = 9;
           break block_1;
@@ -27524,7 +27400,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
         l2147483642 = 10;
         break block_1;
       }
-      p4 = runtime_alloc(12, 71);
+      p4 = runtime_alloc(go_string(12, 71));
     }
     if ((g1 === 0)) {
       store_i32(p4, p2, 8);
@@ -27534,7 +27410,7 @@ function _syscall_js_Value_New(p0, p1, p2, p3, p4) {
       store_i32(l1, p4, 120);
     }
     if ((g1 ? l2 === 11 : 1)) {
-      runtime__panic(128712, p4);
+      runtime__panic(go_string(128712, p4));
       if (g1 === 1) {
         l2147483642 = 11;
         break block_1;
@@ -27600,7 +27476,7 @@ function syscall_js_makeArgSlices(p0, p1) {
         l2147483645 = 0;
         break block_1;
       }
-      l2 = runtime_alloc(256, 265);
+      l2 = runtime_alloc(go_string(256, 265));
     }
     if ((g1 === 0)) {
       store_i32(l1, l2, 16);
@@ -27611,7 +27487,7 @@ function syscall_js_makeArgSlices(p0, p1) {
         l2147483645 = 1;
         break block_1;
       }
-      l4 = runtime_alloc(128, 3);
+      l4 = runtime_alloc(go_string(128, 3));
     }
     if ((g1 === 0)) {
       store_i32(138276, l3);
@@ -27685,7 +27561,7 @@ function syscall_js_storeArgs(p0, p1, p2, p3, p4, p5) {
             l0 = ((l2 + 8) | 0);
           }
           if (((g1 ? l1 : 0) === 0)) {
-            syscall_js_ValueOf(l0, l3, l4);
+            syscall_js_ValueOf(go_string(l0, l3), l4);
             if (g1 === 1) {
               l2147483641 = 0;
               break block_1;
@@ -27775,14 +27651,14 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
       l1 = ((g0 - 144) | 0);
       g0 = l1;
       store_i32(l1, 15, 76);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 80) | 0), ((l1 + 80) | 0) + 60);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 80) | 0), 0, 60), go_slice(((l1 + 80) | 0), 0, 60) + );
       l7 = load_i32(138276);
       store_i32(l1, l7, 72);
       store_i32(138276, ((l1 + 72) | 0));
       l3 = ((l1 + 48) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      syscall_js_makeArgSlices(l3, p4);
+      syscall_js_makeArgSlices(go_string(l3, p4));
       if (g1 === 1) {
         l2147483642 = 0;
         break block_1;
@@ -27799,7 +27675,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
       l4 = load_i32(l1, 52);
     }
     if ((g1 ? l2 === 1 : 1)) {
-      syscall_js_storeArgs(p3, p4, l5, l4, l3, l6);
+      syscall_js_storeArgs(go_string(p3, p4), go_string(l5, l4), go_string(l3, l6));
       if (g1 === 1) {
         l2147483642 = 1;
         break block_1;
@@ -27807,7 +27683,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
     }
     p3 = (g1 ? p3 : ((l1 + 32) | 0));
     if ((g1 ? l2 === 2 : 1)) {
-      gojs_syscall_js_valueInvoke(p3, p1, l3, l6, l9);
+      gojs_syscall_js_valueInvoke(go_string(p3, p1), go_string(l3, l6), l9);
       if (g1 === 1) {
         l2147483642 = 2;
         break block_1;
@@ -27860,7 +27736,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
           p0 = ((l1 + 16) | 0);
         }
         if ((g1 ? l2 === 6 : 1)) {
-          syscall_js_makeValue(p0, l10);
+          syscall_js_makeValue(go_string(p0, l10));
           if (g1 === 1) {
             l2147483642 = 6;
             break block_1;
@@ -27886,7 +27762,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
           store_i32(l1, p4, 136);
         }
         if ((g1 ? l2 === 8 : 1)) {
-          runtime__panic(128264, p4);
+          runtime__panic(go_string(128264, p4));
           if (g1 === 1) {
             l2147483642 = 8;
             break block_1;
@@ -27897,7 +27773,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
         }
       }
       if ((g1 ? l2 === 9 : 1)) {
-        syscall_js_makeValue(l1, l10);
+        syscall_js_makeValue(go_string(l1, l10));
         if (g1 === 1) {
           l2147483642 = 9;
           break block_1;
@@ -27917,7 +27793,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
         l2147483642 = 10;
         break block_1;
       }
-      p4 = runtime_alloc(12, 71);
+      p4 = runtime_alloc(go_string(12, 71));
     }
     if ((g1 === 0)) {
       store_i32(p4, p2, 8);
@@ -27927,7 +27803,7 @@ function _syscall_js_Value_Invoke(p0, p1, p2, p3, p4) {
       store_i32(l1, p4, 120);
     }
     if ((g1 ? l2 === 11 : 1)) {
-      runtime__panic(128712, p4);
+      runtime__panic(go_string(128712, p4));
       if (g1 === 1) {
         l2147483642 = 11;
         break block_1;
@@ -28005,7 +27881,7 @@ function syscall_js_FuncOf(p0, p1, p2) {
       p1 = ((l0 + 28) | 0);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      runtime_hashmapBinarySet(137456, p1, p2);
+      runtime_hashmapBinarySet(go_string(137456, p1), p2);
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -28025,7 +27901,7 @@ function syscall_js_FuncOf(p0, p1, p2) {
       p1 = ((l0 + 32) | 0);
     }
     if ((g1 ? l1 === 3 : 1)) {
-      _syscall_js_Value_Call(l0, 9221120241336057862n, 0, 94318, 16, p1);
+      _syscall_js_Value_Call(l0, 9221120241336057862n, 0, "_makeFuncWrapper", p1);
       if (g1 === 1) {
         l2147483644 = 3;
         break block_1;
@@ -28188,7 +28064,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                         p4 = ((l1 - 1) | 0);
                       }
                       if (((g1 ? l9 : 0) === 0)) {
-                        slices_siftDownOrdered_int(p0, p1, 0, p4, p2);
+                        slices_siftDownOrdered_int(go_string(p0, p1), 0, go_string(p4, p2));
                         if (g1 === 1) {
                           l2147483642 = 0;
                           break block_1;
@@ -28202,7 +28078,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                     }
                   }
                   if ((g1 ? l9 === 1 : 1)) {
-                    slices_siftDownOrdered_int(p0, p1, l0, l7, p2);
+                    slices_siftDownOrdered_int(go_string(p0, p1), go_string(l0, l7), p2);
                     if (g1 === 1) {
                       l2147483642 = 1;
                       break block_1;
@@ -28266,7 +28142,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                     l2147483642 = 2;
                     break block_1;
                   }
-                  l1 = slices_medianAdjacentOrdered_int(p0, p1, l1, l3);
+                  l1 = slices_medianAdjacentOrdered_int(go_string(p0, p1), go_string(l1, l3));
                 }
                 l3 = (g1 ? l3 : ((l10 + 12) | 0));
                 if ((g1 ? l9 === 3 : 1)) {
@@ -28274,7 +28150,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                     l2147483642 = 3;
                     break block_1;
                   }
-                  l0 = slices_medianAdjacentOrdered_int(p0, p1, l0, l3);
+                  l0 = slices_medianAdjacentOrdered_int(go_string(p0, p1), go_string(l0, l3));
                 }
                 l3 = (g1 ? l3 : ((l10 + 12) | 0));
                 if ((g1 ? l9 === 4 : 1)) {
@@ -28282,7 +28158,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                     l2147483642 = 4;
                     break block_1;
                   }
-                  l2 = slices_medianAdjacentOrdered_int(p0, p1, l2, l3);
+                  l2 = slices_medianAdjacentOrdered_int(go_string(p0, p1), go_string(l2, l3));
                 }
               }
               l3 = (g1 ? l3 : ((l10 + 12) | 0));
@@ -28291,7 +28167,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
                   l2147483642 = 5;
                   break block_1;
                 }
-                l8 = slices_medianOrdered_int(p0, p1, l1, l0, l2, l3);
+                l8 = slices_medianOrdered_int(go_string(p0, p1), go_string(l1, l0), go_string(l2, l3));
               }
               if ((g1 === 0)) {
                 block_37: {
@@ -28603,7 +28479,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
           }
           if ((l5 ? g1 : 1)) {
             if ((g1 ? l9 === 7 : 1)) {
-              slices_pdqsortOrdered_int(p0, p1, p2, l0, p4);
+              slices_pdqsortOrdered_int(go_string(p0, p1), go_string(p2, l0), p4);
               if (g1 === 1) {
                 l2147483642 = 7;
                 break block_1;
@@ -28617,7 +28493,7 @@ function slices_pdqsortOrdered_int(p0, p1, p2, p3, p4) {
           }
           l3 = (g1 ? l3 : ((l0 + 1) | 0));
           if ((g1 ? l9 === 8 : 1)) {
-            slices_pdqsortOrdered_int(p0, p1, l3, p3, p4);
+            slices_pdqsortOrdered_int(go_string(p0, p1), go_string(l3, p3), p4);
             if (g1 === 1) {
               l2147483642 = 8;
               break block_1;
@@ -28757,7 +28633,7 @@ function slices_medianAdjacentOrdered_int(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      p0 = slices_medianOrdered_int(p0, p1, l2, p2, l1, p3);
+      p0 = slices_medianOrdered_int(go_string(p0, p1), go_string(l2, p2), go_string(l1, p3));
     }
     if ((g1 === 0)) {
       return p0;
@@ -28805,7 +28681,7 @@ function slices_medianOrdered_int(p0, p1, p2, p3, p4, p5) {
       l0 = ((l2 + 24) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      slices_order2Ordered_int(l0, p0, p1, p2, p3, p5);
+      slices_order2Ordered_int(go_string(l0, p0), go_string(p1, p2), go_string(p3, p5));
       if (g1 === 1) {
         l2147483641 = 0;
         break block_1;
@@ -28817,7 +28693,7 @@ function slices_medianOrdered_int(p0, p1, p2, p3, p4, p5) {
       p2 = ((l2 + 16) | 0);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      slices_order2Ordered_int(p2, p0, p1, l0, p4, p5);
+      slices_order2Ordered_int(go_string(p2, p0), go_string(p1, l0), go_string(p4, p5));
       if (g1 === 1) {
         l2147483641 = 1;
         break block_1;
@@ -28828,7 +28704,7 @@ function slices_medianOrdered_int(p0, p1, p2, p3, p4, p5) {
       p2 = ((l2 + 8) | 0);
     }
     if ((g1 ? l1 === 2 : 1)) {
-      slices_order2Ordered_int(p2, p0, p1, p3, p4, p5);
+      slices_order2Ordered_int(go_string(p2, p0), go_string(p1, p3), go_string(p4, p5));
       if (g1 === 1) {
         l2147483641 = 2;
         break block_1;
@@ -29009,7 +28885,7 @@ function _strings_Builder_Grow(p0, p1) {
               l4 = load_i32(p0, 8);
               if (u32(l4) > u32(p1)) break block_5;
               store_i32(l1, l3, 40);
-              new Uint8Array(memory.buffer).copyWithin(l0, l3, l3 + l4);
+              new Uint8Array(memory.buffer).copyWithin(go_string(l0, l3), l4, l4 + );
               store_i32(p0, p1, 12);
               store_i32(p0, l0, 4);
             }
@@ -29240,7 +29116,7 @@ function _strings_Builder_WriteString(p0, p1, p2, p3) {
         l1 = load_i32(l6);
       }
       if ((g1 ? l0 === 1 : 1)) {
-        runtime_sliceAppend(l2, l3, p2, l5, l1, p3, 1);
+        runtime_sliceAppend(go_string(l2, l3), go_string(p2, l5), go_string(l1, p3), 1);
         if (g1 === 1) {
           l2147483643 = 1;
           break block_1;
@@ -29404,7 +29280,7 @@ function strings_Count(p0, p1, p2, p3) {
               l2147483643 = 0;
               break block_1;
             }
-            l0 = internal_stringslite_Index(p0, p1, p2, p3);
+            l0 = internal_stringslite_Index(go_string(p0, p1), go_string(p2, p3));
           }
           if ((g1 === 0)) {
             if (l0 === -1) break block_3;
@@ -29478,7 +29354,7 @@ function strings_Count(p0, p1, p2, p3) {
 
 // strings.Split
 function strings_Split(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 48) | 0));
     p1 = load_i32(g2);
@@ -29514,7 +29390,7 @@ function strings_Split(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      l1 = strings_Count(p1, p2, p3, 1);
+      l1 = strings_Count(go_string(p1, p2), p3, 1);
     }
     if ((g1 === 0)) {
       l0 = ((p2 + 1) | 0);
@@ -29556,15 +29432,13 @@ function strings_Split(p0, p1, p2, p3) {
                     l2147483643 = 2;
                     break block_1;
                   }
-                  l2 = internal_stringslite_Index(p1, p2, p3, 1);
+                  l2 = internal_stringslite_Index(go_string(p1, p2), p3, 1);
                 }
                 if (g1) {
-                  l2147483644 = l5;
                 } else {
                   if (l2 >= 0) break block_14;
-                  l2147483644 = l1;
                 }
-                l5 = l2147483644;
+                l5 = (g1 ? l5 : l1);
               }
               if ((g1 === 0)) {
                 if (u32(l5) < u32(l6)) break block_7;
@@ -29665,7 +29539,7 @@ function strings_Cut(p0, p1, p2) {
         l2147483644 = 0;
         break block_1;
       }
-      l1 = internal_stringslite_Index(p1, p2, l1, 1);
+      l1 = internal_stringslite_Index(go_string(p1, p2), l1, 1);
     }
     if ((g1 === 0)) {
       block_5: {
@@ -29801,7 +29675,7 @@ function _fmt_buffer_write(p0, p1, p2) {
         l0 = load_i32(p0, 8);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        runtime_sliceAppend(l2, l3, p1, l5, l0, p2, 1);
+        runtime_sliceAppend(go_string(l2, l3), go_string(p1, l5), go_string(l0, p2), 1);
         if (g1 === 1) {
           l2147483644 = 0;
           break block_1;
@@ -29884,7 +29758,7 @@ function _fmt_buffer_writeByte(p0, p1) {
         l1 = load_i32(p0, 8);
       }
       if (((g1 ? l2 : 0) === 0)) {
-        runtime_sliceAppend(l0, p1, l3, l5, l1, 1, 1);
+        runtime_sliceAppend(go_string(l0, p1), go_string(l3, l5), l1, go_string(1, 1));
         if (g1 === 1) {
           l2147483645 = 0;
           break block_1;
@@ -29959,7 +29833,7 @@ function _fmt_buffer_writeRune(p0, p1) {
       l0 = load_i32(p0, 8);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      unicode_utf8_AppendRune(l1, l5, l4, l0, p1);
+      unicode_utf8_AppendRune(go_string(l1, l5), go_string(l4, l0), p1);
       if (g1 === 1) {
         l2147483645 = 0;
         break block_1;
@@ -29991,7 +29865,7 @@ function _fmt_buffer_writeRune(p0, p1) {
 
 // (*fmt.fmt).fmtBx
 function _fmt_fmt_fmtBx(p0, p1, p2, p3) {
-  let l0 = 0, l2147483643, l2147483644;
+  let l0 = 0, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 16) | 0));
     p3 = load_i32(g2);
@@ -30003,21 +29877,19 @@ function _fmt_fmt_fmtBx(p0, p1, p2, p3) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483643 = load_i32(load_i32(g2));
     } else {
-      l2147483643 = 0;
     }
-    if (((g1 ? l2147483643 : 0) === 0)) {
-      _fmt_fmt_fmtSbx(p0, 0, 0, p1, p2, p3);
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
+      _fmt_fmt_fmtSbx(p0, 0, 0, go_string(p1, p2), p3);
       if (g1 === 1) {
-        l2147483644 = 0;
+        l2147483643 = 0;
         break block_1;
       }
     }
     return;
-    l2147483644 = 0;
+    l2147483643 = 0;
   }
-  l0 = l2147483644;
+  l0 = l2147483643;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -30060,7 +29932,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
       l0 = ((g0 - 128) | 0);
       g0 = l0;
       store_i32(l0, 10, 84);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 92) | 0), ((l0 + 92) | 0) + 36);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 92) | 0), 0, 36), go_slice(((l0 + 92) | 0), 0, 36) + );
       l11 = load_i32(138276);
       store_i32(l0, l11, 80);
       store_i32(138276, ((l0 + 80) | 0));
@@ -30099,7 +29971,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
             p1 = load_i32(p0, 16);
           }
           if (((g1 ? l7 : 0) === 0)) {
-            _fmt_fmt_writePadding(p0, p1);
+            _fmt_fmt_writePadding(go_string(p0, p1));
             if (g1 === 1) {
               l2147483641 = 0;
               break block_1;
@@ -30121,7 +29993,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
             l1 = ((l1 - l9) | 0);
           }
           if ((g1 ? l7 === 1 : 1)) {
-            _fmt_fmt_writePadding(p0, l1);
+            _fmt_fmt_writePadding(go_string(p0, l1));
             if (g1 === 1) {
               l2147483641 = 1;
               break block_1;
@@ -30147,7 +30019,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
             l1 = ((l0 + 56) | 0);
           }
           if ((g1 ? l7 === 2 : 1)) {
-            runtime_sliceAppend(l1, l4, l10, l6, l5, 2, 1);
+            runtime_sliceAppend(go_string(l1, l4), go_string(l10, l6), l5, go_string(2, 1));
             if (g1 === 1) {
               l2147483641 = 2;
               break block_1;
@@ -30186,7 +30058,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
                   l2 = ((l0 + 40) | 0);
                 }
                 if ((g1 ? l7 === 3 : 1)) {
-                  runtime_sliceAppend(l2, l4, l8, l6, l5, 1, 1);
+                  runtime_sliceAppend(go_string(l2, l4), go_string(l8, l6), l5, go_string(1, 1));
                   if (g1 === 1) {
                     l2147483641 = 3;
                     break block_1;
@@ -30205,7 +30077,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
                   l2 = ((l0 + 24) | 0);
                 }
                 if ((g1 ? l7 === 4 : 1)) {
-                  runtime_sliceAppend(l2, l4, l8, l6, l5, 2, 1);
+                  runtime_sliceAppend(go_string(l2, l4), go_string(l8, l6), l5, go_string(2, 1));
                   if (g1 === 1) {
                     l2147483641 = 4;
                     break block_1;
@@ -30257,7 +30129,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
               p1 = ((l1 - l9) | 0);
             }
             if ((g1 ? l7 === 6 : 1)) {
-              _fmt_fmt_writePadding(p0, p1);
+              _fmt_fmt_writePadding(go_string(p0, p1));
               if (g1 === 1) {
                 l2147483641 = 6;
                 break block_1;
@@ -30273,7 +30145,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
             l2 = ((l0 + 8) | 0);
           }
           if ((g1 ? l7 === 7 : 1)) {
-            runtime_sliceAppend(l2, l4, l8, l6, l5, 2, 1);
+            runtime_sliceAppend(go_string(l2, l4), go_string(l8, l6), l5, go_string(2, 1));
             if (g1 === 1) {
               l2147483641 = 7;
               break block_1;
@@ -30333,7 +30205,7 @@ function _fmt_fmt_fmtSbx(p0, p1, p2, p3, p4, p5) {
 
 // (*fmt.fmt).fmtFloat
 function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l2147483642, l2147483643;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l2147483642;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 80) | 0));
     l2 = load_i32(g2);
@@ -30366,7 +30238,7 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
       l0 = ((g0 - 176) | 0);
       g0 = l0;
       store_i32(l0, 17, 100);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 108) | 0), ((l0 + 108) | 0) + 64);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 108) | 0), 0, 64), go_slice(((l0 + 108) | 0), 0, 64) + );
       l14 = load_i32(138276);
       store_i32(l0, l14, 96);
       store_i32(138276, ((l0 + 96) | 0));
@@ -30382,16 +30254,14 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
                 l1 = ((l0 + 80) | 0);
                 l4 = ((p0 + 24) | 0);
                 if (load_u8(((p0 + 5) | 0))) {
-                  l2147483642 = load_i32(p0, 20);
                 } else {
-                  l2147483642 = p4;
                 }
-                p4 = l2147483642;
+                p4 = (load_u8(((p0 + 5) | 0)) ? load_i32(p0, 20) : p4);
               }
               if (((g1 ? l5 : 0) === 0)) {
-                strconv_AppendFloat(l1, l4, 1, 68, p1, p3, p4, p2);
+                strconv_AppendFloat(go_string(l1, l4), go_string(1, 68), go_string(p1, p3), go_string(p4, p2));
                 if (g1 === 1) {
-                  l2147483643 = 0;
+                  l2147483642 = 0;
                   break block_1;
                 }
               }
@@ -30428,7 +30298,7 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
             if ((g1 ? l5 === 1 : 1)) {
               runtime_nilPanic();
               if (g1 === 1) {
-                l2147483643 = 1;
+                l2147483642 = 1;
                 break block_1;
               }
             }
@@ -30474,9 +30344,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
               store_i32(l0, p2, 112);
             }
             if ((g1 ? l5 === 2 : 1)) {
-              _fmt_fmt_pad(p0, p2, l1);
+              _fmt_fmt_pad(go_string(p0, p2), l1);
               if (g1 === 1) {
-                l2147483643 = 2;
+                l2147483642 = 2;
                 break block_1;
               }
             }
@@ -30517,10 +30387,10 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
             }
             if ((g1 ? l5 === 3 : 1)) {
               if (g1 === 1) {
-                l2147483643 = 3;
+                l2147483642 = 3;
                 break block_1;
               }
-              l6 = runtime_alloc(6, 3);
+              l6 = runtime_alloc(go_string(6, 3));
             }
             if ((g1 === 0)) {
               store_i32(l0, l6, 116);
@@ -30566,9 +30436,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
                         p3 = ((l1 + l10) | 0);
                       }
                       if ((g1 ? l5 === 4 : 1)) {
-                        runtime_sliceAppend(l0, l6, l11, l7, l8, p3, 1);
+                        runtime_sliceAppend(go_string(l0, l6), go_string(l11, l7), go_string(l8, p3), 1);
                         if (g1 === 1) {
-                          l2147483643 = 4;
+                          l2147483642 = 4;
                           break block_1;
                         }
                       }
@@ -30588,9 +30458,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
                       p3 = ((l0 + 16) | 0);
                     }
                     if ((g1 ? l5 === 5 : 1)) {
-                      runtime_sliceAppend(p3, l6, l11, l7, l8, l1, 1);
+                      runtime_sliceAppend(go_string(p3, l6), go_string(l11, l7), go_string(l8, l1), 1);
                       if (g1 === 1) {
-                        l2147483643 = 5;
+                        l2147483642 = 5;
                         break block_1;
                       }
                     }
@@ -30622,9 +30492,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
                     p3 = ((l0 - -64) | 0);
                   }
                   if ((g1 ? l5 === 6 : 1)) {
-                    runtime_sliceAppend(p3, p2, p4, l1, l4, 1, 1);
+                    runtime_sliceAppend(go_string(p3, p2), go_string(p4, l1), l4, go_string(1, 1));
                     if (g1 === 1) {
-                      l2147483643 = 6;
+                      l2147483642 = 6;
                       break block_1;
                     }
                   }
@@ -30646,9 +30516,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
                       p3 = ((l0 + 32) | 0);
                     }
                     if ((g1 ? l5 === 7 : 1)) {
-                      runtime_sliceAppend(p3, p2, p4, l1, l4, 1, 1);
+                      runtime_sliceAppend(go_string(p3, p2), go_string(p4, l1), l4, go_string(1, 1));
                       if (g1 === 1) {
-                        l2147483643 = 7;
+                        l2147483642 = 7;
                         break block_1;
                       }
                     }
@@ -30665,9 +30535,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
                 }
                 p3 = (g1 ? p3 : ((l0 + 48) | 0));
                 if ((g1 ? l5 === 8 : 1)) {
-                  runtime_sliceAppend(p3, p2, l6, l1, l4, l7, 1);
+                  runtime_sliceAppend(go_string(p3, p2), go_string(l6, l1), go_string(l4, l7), 1);
                   if (g1 === 1) {
-                    l2147483643 = 8;
+                    l2147483642 = 8;
                     break block_1;
                   }
                 }
@@ -30705,9 +30575,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
               p2 = ((p2 + 1) | 0);
             }
             if ((g1 ? l5 === 9 : 1)) {
-              _fmt_fmt_pad(p0, p2, l1);
+              _fmt_fmt_pad(go_string(p0, p2), l1);
               if (g1 === 1) {
-                l2147483643 = 9;
+                l2147483642 = 9;
                 break block_1;
               }
             }
@@ -30728,9 +30598,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
               p3 = load_u8(p2);
             }
             if ((g1 ? l5 === 10 : 1)) {
-              _fmt_buffer_writeByte(p4, p3);
+              _fmt_buffer_writeByte(go_string(p4, p3));
               if (g1 === 1) {
-                l2147483643 = 10;
+                l2147483642 = 10;
                 break block_1;
               }
             }
@@ -30738,9 +30608,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
               p3 = ((load_i32(p0, 16) - l1) | 0);
             }
             if ((g1 ? l5 === 11 : 1)) {
-              _fmt_fmt_writePadding(p0, p3);
+              _fmt_fmt_writePadding(go_string(p0, p3));
               if (g1 === 1) {
-                l2147483643 = 11;
+                l2147483642 = 11;
                 break block_1;
               }
             }
@@ -30752,18 +30622,18 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
               p0 = ((p2 + 1) | 0);
             }
             if ((g1 ? l5 === 12 : 1)) {
-              _fmt_buffer_write(p4, p0, l1);
+              _fmt_buffer_write(go_string(p4, p0), l1);
               if (g1 === 1) {
-                l2147483643 = 12;
+                l2147483642 = 12;
                 break block_1;
               }
             }
             if ((g1 === 0)) break block_4;
           }
           if ((g1 ? l5 === 13 : 1)) {
-            _fmt_fmt_pad(p0, p2, l1);
+            _fmt_fmt_pad(go_string(p0, p2), l1);
             if (g1 === 1) {
-              l2147483643 = 13;
+              l2147483642 = 13;
               break block_1;
             }
           }
@@ -30772,7 +30642,7 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
         if ((g1 ? l5 === 14 : 1)) {
           runtime_lookupPanic();
           if (g1 === 1) {
-            l2147483643 = 14;
+            l2147483642 = 14;
             break block_1;
           }
         }
@@ -30783,7 +30653,7 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
       if ((g1 ? l5 === 15 : 1)) {
         runtime_slicePanic();
         if (g1 === 1) {
-          l2147483643 = 15;
+          l2147483642 = 15;
           break block_1;
         }
       }
@@ -30796,9 +30666,9 @@ function _fmt_fmt_fmtFloat(p0, p1, p2, p3, p4) {
       g0 = ((l0 + 176) | 0);
     }
     return;
-    l2147483643 = 0;
+    l2147483642 = 0;
   }
-  l2 = l2147483643;
+  l2 = l2147483642;
   store_i32(load_i32(g2), l2);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l2 = load_i32(g2);
@@ -30938,14 +30808,14 @@ function _fmt_fmt_pad(p0, p1, p2) {
                       store_i32(l3, l1, 16);
                     }
                     if ((g1 ? l2 === 1 : 1)) {
-                      _fmt_buffer_write(l1, p1, p2);
+                      _fmt_buffer_write(go_string(l1, p1), p2);
                       if (g1 === 1) {
                         l2147483645 = 1;
                         break block_1;
                       }
                     }
                     if ((g1 ? l2 === 2 : 1)) {
-                      _fmt_fmt_writePadding(p0, l5);
+                      _fmt_fmt_writePadding(go_string(p0, l5));
                       if (g1 === 1) {
                         l2147483645 = 2;
                         break block_1;
@@ -30954,7 +30824,7 @@ function _fmt_fmt_pad(p0, p1, p2) {
                     if ((g1 === 0)) break block_4;
                   }
                   if ((g1 ? l2 === 3 : 1)) {
-                    _fmt_fmt_writePadding(p0, l5);
+                    _fmt_fmt_writePadding(go_string(p0, l5));
                     if (g1 === 1) {
                       l2147483645 = 3;
                       break block_1;
@@ -30965,7 +30835,7 @@ function _fmt_fmt_pad(p0, p1, p2) {
                     store_i32(l3, l1, 20);
                   }
                   if ((g1 ? l2 === 4 : 1)) {
-                    _fmt_buffer_write(l1, p1, p2);
+                    _fmt_buffer_write(go_string(l1, p1), p2);
                     if (g1 === 1) {
                       l2147483645 = 4;
                       break block_1;
@@ -31004,7 +30874,7 @@ function _fmt_fmt_pad(p0, p1, p2) {
         store_i32(l3, l1, 24);
       }
       if ((g1 ? l2 === 6 : 1)) {
-        _fmt_buffer_write(l1, p1, p2);
+        _fmt_buffer_write(go_string(l1, p1), p2);
         if (g1 === 1) {
           l2147483645 = 6;
           break block_1;
@@ -31102,7 +30972,7 @@ function _fmt_fmt_writePadding(p0, p1) {
               l2 = load_i32(l0);
               store_i32(l1, l2, 32);
               l0 = load_i32(l0, 4);
-              new Uint8Array(memory.buffer).copyWithin(l4, l2, l2 + ((u32(l0) < u32(l3) ? 1 : 0) ? l0 : l3));
+              new Uint8Array(memory.buffer).copyWithin(go_string(l4, l2), ((u32(l0) < u32(l3) ? 1 : 0) ? l0 : l3), ((u32(l0) < u32(l3) ? 1 : 0) ? l0 : l3) + );
             }
           }
           if ((g1 === 0)) {
@@ -31275,7 +31145,7 @@ function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
             p2 = load_i32(p0, 16);
           }
           if ((g1 ? l7 === 2 : 1)) {
-            _fmt_fmt_writePadding(p0, p2);
+            _fmt_fmt_writePadding(go_string(p0, p2));
             if (g1 === 1) {
               l2147483641 = 2;
               break block_1;
@@ -31421,16 +31291,14 @@ function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
           l0 = ((((l2 - l0) | 0) + 1) | 0);
           l4 = load_u8(((Number(BigInt.asIntN(32, p1)) + p5) | 0));
           block_40: {
-            loop_41: while (true) {
+            do {
               l1 = ((p3 + l3) | 0);
               store_i8(l1, l4);
               if ((p3 <= 0 | l0 >= l5)) break block_40;
               l0 = ((l0 + 1) | 0);
               l4 = 48;
               p3 = ((p3 - 1) | 0);
-              if (u32(l2) > u32(p3)) continue loop_41;
-              break;
-            }
+            } while (u32(l2) > u32(p3));
             break block_21;
           }
           block_42: {
@@ -31495,7 +31363,7 @@ function _fmt_fmt_fmtInteger(p0, p1, p2, p3, p4, p5) {
             p3 = ((l2 - p3) | 0);
           }
           if ((g1 ? l7 === 4 : 1)) {
-            _fmt_fmt_pad(p0, p2, p3);
+            _fmt_fmt_pad(go_string(p0, p2), p3);
             if (g1 === 1) {
               l2147483641 = 4;
               break block_1;
@@ -31591,7 +31459,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
       l4 = ((l0 + 48) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      _fmt_fmt_truncateString(l4, p0, p1, p2);
+      _fmt_fmt_truncateString(go_string(l4, p0), go_string(p1, p2));
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -31625,7 +31493,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
                     l3 = ((l0 + 40) | 0);
                   }
                   if ((g1 ? l1 === 1 : 1)) {
-                    unicode_utf8_DecodeRune(l3, p1, p2);
+                    unicode_utf8_DecodeRune(go_string(l3, p1), p2);
                     if (g1 === 1) {
                       l2147483644 = 1;
                       break block_1;
@@ -31656,7 +31524,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
                 p1 = ((l0 + 24) | 0);
               }
               if ((g1 ? l1 === 2 : 1)) {
-                strconv_appendQuotedWith(p1, p2, 68, l4, l5, 1);
+                strconv_appendQuotedWith(go_string(p1, p2), go_string(68, l4), l5, 1);
                 if (g1 === 1) {
                   l2147483644 = 2;
                   break block_1;
@@ -31669,7 +31537,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
                 p1 = load_i32(l0, 28);
               }
               if ((g1 ? l1 === 3 : 1)) {
-                _fmt_fmt_pad(p0, p2, p1);
+                _fmt_fmt_pad(go_string(p0, p2), p1);
                 if (g1 === 1) {
                   l2147483644 = 3;
                   break block_1;
@@ -31690,7 +31558,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
           }
           p1 = (g1 ? p1 : ((l0 + 16) | 0));
           if ((g1 ? l1 === 5 : 1)) {
-            runtime_stringConcat(p1, 95928, 1, l4, l5);
+            runtime_stringConcat(p1, "`", go_string(l4, l5));
             if (g1 === 1) {
               l2147483644 = 5;
               break block_1;
@@ -31703,7 +31571,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
             p1 = ((l0 + 8) | 0);
           }
           if ((g1 ? l1 === 6 : 1)) {
-            runtime_stringConcat(p1, p2, l4, 95928, 1);
+            runtime_stringConcat(go_string(p1, p2), l4, "`");
             if (g1 === 1) {
               l2147483644 = 6;
               break block_1;
@@ -31715,7 +31583,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
             p1 = load_i32(l0, 12);
           }
           if ((g1 ? l1 === 7 : 1)) {
-            _fmt_fmt_pad(p0, p2, p1);
+            _fmt_fmt_pad(go_string(p0, p2), p1);
             if (g1 === 1) {
               l2147483644 = 7;
               break block_1;
@@ -31725,7 +31593,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
         }
         p1 = (g1 ? p1 : ((l0 + 32) | 0));
         if ((g1 ? l1 === 8 : 1)) {
-          strconv_appendQuotedWith(p1, p2, 68, l4, l5, 0);
+          strconv_appendQuotedWith(go_string(p1, p2), go_string(68, l4), l5, 0);
           if (g1 === 1) {
             l2147483644 = 8;
             break block_1;
@@ -31738,7 +31606,7 @@ function _fmt_fmt_fmtQ(p0, p1, p2) {
           p1 = load_i32(l0, 36);
         }
         if ((g1 ? l1 === 9 : 1)) {
-          _fmt_fmt_pad(p0, p2, p1);
+          _fmt_fmt_pad(go_string(p0, p2), p1);
           if (g1 === 1) {
             l2147483644 = 9;
             break block_1;
@@ -31820,7 +31688,7 @@ function _fmt_fmt_truncateString(p0, p1, p2, p3) {
                 l1 = ((l3 + 24) | 0);
               }
               if (((g1 ? l0 : 0) === 0)) {
-                runtime_stringNext(l2, p2, p3, l1);
+                runtime_stringNext(go_string(l2, p2), go_string(p3, l1));
                 if (g1 === 1) {
                   l2147483643 = 0;
                   break block_1;
@@ -31915,7 +31783,7 @@ function _fmt_fmt_fmtS(p0, p1, p2) {
       l0 = ((l2 + 8) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      _fmt_fmt_truncateString(l0, p0, p1, p2);
+      _fmt_fmt_truncateString(go_string(l0, p0), go_string(p1, p2));
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -31927,7 +31795,7 @@ function _fmt_fmt_fmtS(p0, p1, p2) {
       p1 = load_i32(l2, 12);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      _fmt_fmt_pad(p0, p2, p1);
+      _fmt_fmt_pad(go_string(p0, p2), p1);
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -31955,7 +31823,7 @@ function _fmt_fmt_fmtS(p0, p1, p2) {
 
 // (*fmt.fmt).fmtSx
 function _fmt_fmt_fmtSx(p0, p1, p2, p3) {
-  let l0 = 0, l2147483643, l2147483644;
+  let l0 = 0, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 16) | 0));
     p3 = load_i32(g2);
@@ -31967,21 +31835,19 @@ function _fmt_fmt_fmtSx(p0, p1, p2, p3) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483643 = load_i32(load_i32(g2));
     } else {
-      l2147483643 = 0;
     }
-    if (((g1 ? l2147483643 : 0) === 0)) {
-      _fmt_fmt_fmtSbx(p0, p1, p2, 0, 0, p3);
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
+      _fmt_fmt_fmtSbx(go_string(p0, p1), p2, 0, 0, p3);
       if (g1 === 1) {
-        l2147483644 = 0;
+        l2147483643 = 0;
         break block_1;
       }
     }
     return;
-    l2147483644 = 0;
+    l2147483643 = 0;
   }
-  l0 = l2147483644;
+  l0 = l2147483643;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -31994,7 +31860,7 @@ function _fmt_fmt_fmtSx(p0, p1, p2, p3) {
 
 // (*fmt.pp).argNumber
 function _fmt_pp_argNumber(p0, p1, p2, p3, p4, p5) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641, l2147483642, l2147483643;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641, l2147483642;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 44) | 0));
     l0 = load_i32(g2);
@@ -32052,7 +31918,7 @@ function _fmt_pp_argNumber(p0, p1, p2, p3, p4, p5) {
               }
               if ((l3 ? g1 : 1)) {
                 if (((g1 ? l1 : 0) === 0)) {
-                  fmt_parsenum(l4, p3, l0, 1, p4);
+                  fmt_parsenum(go_string(l4, p3), l0, go_string(1, p4));
                   if (g1 === 1) {
                     l2147483642 = 0;
                     break block_1;
@@ -32090,12 +31956,10 @@ function _fmt_pp_argNumber(p0, p1, p2, p3, p4, p5) {
           }
         }
         if (g1) {
-          l2147483643 = l3;
         } else {
           l5 = 0;
-          l2147483643 = 0;
         }
-        l2147483641 = l2147483643;
+        l2147483641 = (g1 ? l3 : 0);
       }
       l3 = l2147483641;
       if ((g1 === 0)) {
@@ -32239,7 +32103,7 @@ function _fmt_pp_badVerb(p0, p1) {
       l0 = ((g0 - 96) | 0);
       g0 = l0;
       store_i32(l0, 17, 20);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 32) | 0), ((l0 + 32) | 0) + 60);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 32) | 0), 0, 60), go_slice(((l0 + 32) | 0), 0, 60) + );
       store_i8(p0, 1, 127);
       l4 = load_i32(138276);
       store_i32(l0, l4, 16);
@@ -32247,14 +32111,14 @@ function _fmt_pp_badVerb(p0, p1) {
       store_i32(138276, l2);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      _fmt_buffer_write(p0, 96033, 2);
+      _fmt_buffer_write(p0, "%!");
       if (g1 === 1) {
         l2147483645 = 0;
         break block_1;
       }
     }
     if ((g1 ? l1 === 1 : 1)) {
-      _fmt_buffer_writeRune(p0, p1);
+      _fmt_buffer_writeRune(go_string(p0, p1));
       if (g1 === 1) {
         l2147483645 = 1;
         break block_1;
@@ -32285,7 +32149,7 @@ function _fmt_pp_badVerb(p0, p1) {
           l2 = ((l0 + 8) | 0);
         }
         if ((g1 ? l1 === 3 : 1)) {
-          interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(l2, p1, 128608);
+          interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(go_string(l2, p1), 128608);
           if (g1 === 1) {
             l2147483645 = 3;
             break block_1;
@@ -32297,7 +32161,7 @@ function _fmt_pp_badVerb(p0, p1) {
           l2 = load_i32(l0, 12);
         }
         if ((g1 ? l1 === 4 : 1)) {
-          _fmt_buffer_write(p0, p1, l2);
+          _fmt_buffer_write(go_string(p0, p1), l2);
           if (g1 === 1) {
             l2147483645 = 4;
             break block_1;
@@ -32317,7 +32181,7 @@ function _fmt_pp_badVerb(p0, p1) {
           store_i32(l0, l2, 56);
         }
         if ((g1 ? l1 === 6 : 1)) {
-          _fmt_pp_printArg(p0, p1, l2, 118);
+          _fmt_pp_printArg(go_string(p0, p1), l2, 118);
           if (g1 === 1) {
             l2147483645 = 6;
             break block_1;
@@ -32341,7 +32205,7 @@ function _fmt_pp_badVerb(p0, p1) {
           store_i32(l0, p1, 68);
         }
         if ((g1 ? l1 === 7 : 1)) {
-          _reflect_rawType_String(l0, p1);
+          _reflect_rawType_String(go_string(l0, p1));
           if (g1 === 1) {
             l2147483645 = 7;
             break block_1;
@@ -32353,7 +32217,7 @@ function _fmt_pp_badVerb(p0, p1) {
           l3 = load_i32(l0, 4);
         }
         if ((g1 ? l1 === 8 : 1)) {
-          _fmt_buffer_write(p0, p1, l3);
+          _fmt_buffer_write(go_string(p0, p1), l3);
           if (g1 === 1) {
             l2147483645 = 8;
             break block_1;
@@ -32374,7 +32238,7 @@ function _fmt_pp_badVerb(p0, p1) {
           l3 = load_u8(((p0 + 28) | 0));
         }
         if ((g1 ? l1 === 10 : 1)) {
-          _fmt_pp_printValue(p0, l2, p1, l3, 118, 0);
+          _fmt_pp_printValue(go_string(p0, l2), go_string(p1, l3), 118, 0);
           if (g1 === 1) {
             l2147483645 = 10;
             break block_1;
@@ -32383,7 +32247,7 @@ function _fmt_pp_badVerb(p0, p1) {
         if ((g1 === 0)) break block_8;
       }
       if ((g1 ? l1 === 11 : 1)) {
-        _fmt_buffer_write(p0, 96077, 5);
+        _fmt_buffer_write(p0, "<nil>");
         if (g1 === 1) {
           l2147483645 = 11;
           break block_1;
@@ -32444,7 +32308,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
       l1 = (g0 - 64);
       g0 = l1;
       store_i32(l1, 9, 20);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 24) | 0), ((l1 + 24) | 0) + 36);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 24) | 0), 0, 36), go_slice(((l1 + 24) | 0), 0, 36) + );
       store_i64(p0, 0n, 20);
       store_i32(((p0 + 16) | 0), p2);
       store_i32(p0, p1, 12);
@@ -32469,7 +32333,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
             p0 = ((p0 + 32) | 0);
           }
           if (((g1 ? l2 : 0) === 0)) {
-            _fmt_fmt_pad(p0, 96077, 5);
+            _fmt_fmt_pad(p0, "<nil>");
             if (g1 === 1) {
               l2147483643 = 0;
               break block_1;
@@ -32478,7 +32342,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           if ((g1 === 0)) break block_4;
         }
         if ((g1 ? l2 === 1 : 1)) {
-          _fmt_pp_badVerb(p0, p3);
+          _fmt_pp_badVerb(go_string(p0, p3));
           if (g1 === 1) {
             l2147483643 = 1;
             break block_1;
@@ -32498,7 +32362,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
             p2 = ((l1 + 8) | 0);
           }
           if ((g1 ? l2 === 2 : 1)) {
-            interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(p2, p1, 128608);
+            interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(go_string(p2, p1), 128608);
             if (g1 === 1) {
               l2147483643 = 2;
               break block_1;
@@ -32511,7 +32375,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
             p0 = ((p0 + 32) | 0);
           }
           if ((g1 ? l2 === 3 : 1)) {
-            _fmt_fmt_fmtS(p0, p1, p2);
+            _fmt_fmt_fmtS(go_string(p0, p1), p2);
             if (g1 === 1) {
               l2147483643 = 3;
               break block_1;
@@ -32524,7 +32388,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           store_i32(l1, p1, 36);
         }
         if ((g1 ? l2 === 4 : 1)) {
-          _fmt_pp_fmtPointer(p0, p1, p2, 2, 112);
+          _fmt_pp_fmtPointer(go_string(p0, p1), p2, go_string(2, 112));
           if (g1 === 1) {
             l2147483643 = 4;
             break block_1;
@@ -32539,7 +32403,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           p1 = (p2 & 1);
         }
         if ((g1 ? l2 === 5 : 1)) {
-          _fmt_pp_fmtBool(p0, p1, p3);
+          _fmt_pp_fmtBool(go_string(p0, p1), p3);
           if (g1 === 1) {
             l2147483643 = 5;
             break block_1;
@@ -32554,7 +32418,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           l6 = BigInt(p2);
         }
         if ((g1 ? l2 === 6 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 1, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), go_string(1, p3));
           if (g1 === 1) {
             l2147483643 = 6;
             break block_1;
@@ -32572,7 +32436,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           l6 = BigInt.asIntN(8, l6);
         }
         if ((g1 ? l2 === 7 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 1, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), go_string(1, p3));
           if (g1 === 1) {
             l2147483643 = 7;
             break block_1;
@@ -32587,7 +32451,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           l6 = load_i64(p2);
         }
         if ((g1 ? l2 === 8 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 1, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), go_string(1, p3));
           if (g1 === 1) {
             l2147483643 = 8;
             break block_1;
@@ -32598,7 +32462,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
       l0 = (g1 ? l0 : (p1 !== 96904 ? 1 : 0));
       if ((l0 ? g1 : 1)) {
         if ((g1 ? l2 === 9 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 0, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), 0, p3);
           if (g1 === 1) {
             l2147483643 = 9;
             break block_1;
@@ -32613,7 +32477,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           l6 = (l6 & 255n);
         }
         if ((g1 ? l2 === 10 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 0, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), 0, p3);
           if (g1 === 1) {
             l2147483643 = 10;
             break block_1;
@@ -32624,7 +32488,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
       l0 = (g1 ? l0 : (p1 !== 127728 ? 1 : 0));
       if ((l0 ? g1 : 1)) {
         if ((g1 ? l2 === 11 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 0, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), 0, p3);
           if (g1 === 1) {
             l2147483643 = 11;
             break block_1;
@@ -32639,7 +32503,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           l6 = load_i64(p2);
         }
         if ((g1 ? l2 === 12 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 0, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), 0, p3);
           if (g1 === 1) {
             l2147483643 = 12;
             break block_1;
@@ -32650,7 +32514,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
       l0 = (g1 ? l0 : (p1 !== 103824 ? 1 : 0));
       if ((l0 ? g1 : 1)) {
         if ((g1 ? l2 === 13 : 1)) {
-          _fmt_pp_fmtInteger(p0, l6, 0, p3);
+          _fmt_pp_fmtInteger(go_string(p0, l6), 0, p3);
           if (g1 === 1) {
             l2147483643 = 13;
             break block_1;
@@ -32666,7 +32530,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           p2 = load_i32(p2, 4);
         }
         if ((g1 ? l2 === 14 : 1)) {
-          _fmt_pp_fmtString(p0, p1, p2, p3);
+          _fmt_pp_fmtString(go_string(p0, p1), go_string(p2, p3));
           if (g1 === 1) {
             l2147483643 = 14;
             break block_1;
@@ -32683,7 +32547,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           p2 = load_i32(p2, 8);
         }
         if ((g1 ? l2 === 15 : 1)) {
-          _fmt_pp_fmtBytes(p0, p1, l0, p2, p3, 96044, 6);
+          _fmt_pp_fmtBytes(go_string(p0, p1), go_string(l0, p2), p3, "[]byte");
           if (g1 === 1) {
             l2147483643 = 15;
             break block_1;
@@ -32707,7 +32571,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
             if (l4) break block_53;
           }
           if ((g1 ? l2 === 16 : 1)) {
-            _reflect_Value_Interface(l1, p2, l0, p1);
+            _reflect_Value_Interface(go_string(l1, p2), go_string(l0, p1));
             if (g1 === 1) {
               l2147483643 = 16;
               break block_1;
@@ -32726,12 +32590,12 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
               l2147483643 = 17;
               break block_1;
             }
-            l4 = _fmt_pp_handleMethods(p0, p3);
+            l4 = _fmt_pp_handleMethods(go_string(p0, p3));
           }
           if (((g1 === 0) & (l4 & 1))) break block_4;
         }
         if ((g1 ? l2 === 18 : 1)) {
-          _fmt_pp_printValue(p0, p2, l0, p1, p3, 0);
+          _fmt_pp_printValue(go_string(p0, p2), go_string(l0, p1), p3, 0);
           if (g1 === 1) {
             l2147483643 = 18;
             break block_1;
@@ -32744,7 +32608,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
           l2147483643 = 19;
           break block_1;
         }
-        l0 = _fmt_pp_handleMethods(p0, p3);
+        l0 = _fmt_pp_handleMethods(go_string(p0, p3));
       }
       if ((g1 === 0)) {
         if ((l0 & 1)) break block_4;
@@ -32752,7 +32616,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
         store_i32(l1, p1, 52);
       }
       if ((g1 ? l2 === 20 : 1)) {
-        _fmt_pp_printValue(p0, p1, p2, 2, p3, 0);
+        _fmt_pp_printValue(go_string(p0, p1), p2, go_string(2, p3), 0);
         if (g1 === 1) {
           l2147483643 = 20;
           break block_1;
@@ -32784,7 +32648,7 @@ function _fmt_pp_printArg(p0, p1, p2, p3) {
 
 // (*fmt.pp).printValue
 function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483641, l2147483642;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483641;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 88) | 0));
     p1 = load_i32(g2);
@@ -32817,7 +32681,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
       l0 = ((g0 - 624) | 0);
       g0 = l0;
       store_i32(l0, 67, 348);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 352) | 0), ((l0 + 352) | 0) + 268);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 352) | 0), 0, 268), go_slice(((l0 + 352) | 0), 0, 268) + );
       l11 = load_i32(138276);
       store_i32(l0, l11, 344);
       store_i32(138276, ((l0 + 344) | 0));
@@ -32834,7 +32698,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
           l1 = ((l0 + 312) | 0);
         }
         if (((g1 ? l2 : 0) === 0)) {
-          _reflect_Value_Interface(l1, p1, p2, p3);
+          _reflect_Value_Interface(go_string(l1, p1), go_string(p2, p3));
           if (g1 === 1) {
             l2147483641 = 0;
             break block_1;
@@ -32854,7 +32718,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
             l2147483641 = 1;
             break block_1;
           }
-          l1 = _fmt_pp_handleMethods(p0, p4);
+          l1 = _fmt_pp_handleMethods(go_string(p0, p4));
         }
         if ((g1 === 0)) {
           l1 = (l1 & 1);
@@ -32954,7 +32818,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                             }
                                             if ((p5 ? g1 : 1)) {
                                               if ((g1 ? l2 === 2 : 1)) {
-                                                _fmt_buffer_write(p0, 96050, 23);
+                                                _fmt_buffer_write(p0, "<invalid reflect.Value>");
                                                 if (g1 === 1) {
                                                   l2147483641 = 2;
                                                   break block_1;
@@ -32967,7 +32831,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                               if (p1) break block_20;
                                             }
                                             if ((g1 ? l2 === 3 : 1)) {
-                                              _fmt_buffer_write(p0, 96077, 5);
+                                              _fmt_buffer_write(p0, "<nil>");
                                               if (g1 === 1) {
                                                 l2147483641 = 3;
                                                 break block_1;
@@ -32980,10 +32844,10 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                               l2147483641 = 4;
                                               break block_1;
                                             }
-                                            p1 = _reflect_Value_Bool(p1, p2, p3);
+                                            p1 = _reflect_Value_Bool(go_string(p1, p2), p3);
                                           }
                                           if ((g1 ? l2 === 5 : 1)) {
-                                            _fmt_pp_fmtBool(p0, p1, p4);
+                                            _fmt_pp_fmtBool(go_string(p0, p1), p4);
                                             if (g1 === 1) {
                                               l2147483641 = 5;
                                               break block_1;
@@ -32996,10 +32860,10 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                             l2147483641 = 6;
                                             break block_1;
                                           }
-                                          l15 = _reflect_Value_Int(p1, p2, p3);
+                                          l15 = _reflect_Value_Int(go_string(p1, p2), p3);
                                         }
                                         if ((g1 ? l2 === 7 : 1)) {
-                                          _fmt_pp_fmtInteger(p0, l15, 1, p4);
+                                          _fmt_pp_fmtInteger(go_string(p0, l15), go_string(1, p4));
                                           if (g1 === 1) {
                                             l2147483641 = 7;
                                             break block_1;
@@ -33012,10 +32876,10 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                           l2147483641 = 8;
                                           break block_1;
                                         }
-                                        l15 = _reflect_Value_Uint(p1, p2, p3);
+                                        l15 = _reflect_Value_Uint(go_string(p1, p2), p3);
                                       }
                                       if ((g1 ? l2 === 9 : 1)) {
-                                        _fmt_pp_fmtInteger(p0, l15, 0, p4);
+                                        _fmt_pp_fmtInteger(go_string(p0, l15), 0, p4);
                                         if (g1 === 1) {
                                           l2147483641 = 9;
                                           break block_1;
@@ -33028,10 +32892,10 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                         l2147483641 = 10;
                                         break block_1;
                                       }
-                                      l12 = _reflect_Value_Float(p1, p2, p3);
+                                      l12 = _reflect_Value_Float(go_string(p1, p2), p3);
                                     }
                                     if ((g1 ? l2 === 11 : 1)) {
-                                      _fmt_pp_fmtFloat(p0, l12, 32, p4);
+                                      _fmt_pp_fmtFloat(go_string(p0, l12), go_string(32, p4));
                                       if (g1 === 1) {
                                         l2147483641 = 11;
                                         break block_1;
@@ -33044,10 +32908,10 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                       l2147483641 = 12;
                                       break block_1;
                                     }
-                                    l12 = _reflect_Value_Float(p1, p2, p3);
+                                    l12 = _reflect_Value_Float(go_string(p1, p2), p3);
                                   }
                                   if ((g1 ? l2 === 13 : 1)) {
-                                    _fmt_pp_fmtFloat(p0, l12, 64, p4);
+                                    _fmt_pp_fmtFloat(go_string(p0, l12), go_string(64, p4));
                                     if (g1 === 1) {
                                       l2147483641 = 13;
                                       break block_1;
@@ -33057,7 +32921,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                 }
                                 p3 = (g1 ? p3 : ((l0 + 8) | 0));
                                 if ((g1 ? l2 === 14 : 1)) {
-                                  _reflect_Value_Complex(p3, p1, p2);
+                                  _reflect_Value_Complex(go_string(p3, p1), p2);
                                   if (g1 === 1) {
                                     l2147483641 = 14;
                                     break block_1;
@@ -33068,7 +32932,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                   l12 = load_f64(l0, 8);
                                 }
                                 if ((g1 ? l2 === 15 : 1)) {
-                                  _fmt_pp_fmtComplex(p0, l12, l13, 64, p4);
+                                  _fmt_pp_fmtComplex(go_string(p0, l12), l13, go_string(64, p4));
                                   if (g1 === 1) {
                                     l2147483641 = 15;
                                     break block_1;
@@ -33078,7 +32942,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               }
                               p3 = (g1 ? p3 : ((l0 + 24) | 0));
                               if ((g1 ? l2 === 16 : 1)) {
-                                _reflect_Value_Complex(p3, p1, p2);
+                                _reflect_Value_Complex(go_string(p3, p1), p2);
                                 if (g1 === 1) {
                                   l2147483641 = 16;
                                   break block_1;
@@ -33089,7 +32953,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                 l12 = load_f64(l0, 24);
                               }
                               if ((g1 ? l2 === 17 : 1)) {
-                                _fmt_pp_fmtComplex(p0, l12, l13, 128, p4);
+                                _fmt_pp_fmtComplex(go_string(p0, l12), l13, go_string(128, p4));
                                 if (g1 === 1) {
                                   l2147483641 = 17;
                                   break block_1;
@@ -33099,7 +32963,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                             }
                             p3 = (g1 ? p3 : ((l0 + 40) | 0));
                             if ((g1 ? l2 === 18 : 1)) {
-                              _reflect_Value_String(p3, p1, p2);
+                              _reflect_Value_String(go_string(p3, p1), p2);
                               if (g1 === 1) {
                                 l2147483641 = 18;
                                 break block_1;
@@ -33111,7 +32975,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               p2 = load_i32(l0, 44);
                             }
                             if ((g1 ? l2 === 19 : 1)) {
-                              _fmt_pp_fmtString(p0, p1, p2, p4);
+                              _fmt_pp_fmtString(go_string(p0, p1), go_string(p2, p4));
                               if (g1 === 1) {
                                 l2147483641 = 19;
                                 break block_1;
@@ -33129,7 +32993,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               l1 = ((l0 + 96) | 0);
                             }
                             if ((g1 ? l2 === 20 : 1)) {
-                              _reflect_rawType_String(l1, p1);
+                              _reflect_rawType_String(go_string(l1, p1));
                               if (g1 === 1) {
                                 l2147483641 = 20;
                                 break block_1;
@@ -33141,7 +33005,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               l1 = load_i32(l0, 100);
                             }
                             if ((g1 ? l2 === 21 : 1)) {
-                              _fmt_buffer_write(p0, l3, l1);
+                              _fmt_buffer_write(go_string(p0, l3), l1);
                               if (g1 === 1) {
                                 l2147483641 = 21;
                                 break block_1;
@@ -33152,12 +33016,12 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                 l2147483641 = 22;
                                 break block_1;
                               }
-                              l1 = _reflect_Value_IsNil(p1, p2, p3);
+                              l1 = _reflect_Value_IsNil(go_string(p1, p2), p3);
                             }
                             l1 = (g1 ? l1 : (((l1 & 1) === 0) ? 1 : 0));
                             if ((l1 ? g1 : 1)) {
                               if ((g1 ? l2 === 23 : 1)) {
-                                _fmt_buffer_write(p0, 96082, 5);
+                                _fmt_buffer_write(p0, "(nil)");
                                 if (g1 === 1) {
                                   l2147483641 = 23;
                                   break block_1;
@@ -33175,7 +33039,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                             if ((g1 === 0)) break block_14;
                           }
                           if ((g1 ? l2 === 25 : 1)) {
-                            _fmt_buffer_write(p0, 96073, 4);
+                            _fmt_buffer_write(p0, "map[");
                             if (g1 === 1) {
                               l2147483641 = 25;
                               break block_1;
@@ -33193,7 +33057,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                             l1 = ((l0 + 184) | 0);
                           }
                           if ((g1 ? l2 === 26 : 1)) {
-                            _reflect_rawType_String(l1, p1);
+                            _reflect_rawType_String(go_string(l1, p1));
                             if (g1 === 1) {
                               l2147483641 = 26;
                               break block_1;
@@ -33205,7 +33069,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                             l1 = load_i32(l0, 188);
                           }
                           if ((g1 ? l2 === 27 : 1)) {
-                            _fmt_buffer_write(p0, l3, l1);
+                            _fmt_buffer_write(go_string(p0, l3), l1);
                             if (g1 === 1) {
                               l2147483641 = 27;
                               break block_1;
@@ -33246,7 +33110,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                   }
                                   if ((l1 ? g1 : 1)) {
                                     if ((g1 ? l2 === 30 : 1)) {
-                                      _fmt_buffer_write(p0, 96087, 2);
+                                      _fmt_buffer_write(p0, ", ");
                                       if (g1 === 1) {
                                         l2147483641 = 30;
                                         break block_1;
@@ -33284,7 +33148,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               l1 = ((l0 + 136) | 0);
                             }
                             if ((g1 ? l2 === 33 : 1)) {
-                              interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(l1, p1, l5, 128608);
+                              interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(go_string(l1, p1), l5, 128608);
                               if (g1 === 1) {
                                 l2147483641 = 33;
                                 break block_1;
@@ -33303,7 +33167,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               if (l1) break block_77;
                             }
                             if ((g1 ? l2 === 34 : 1)) {
-                              _fmt_buffer_write(p0, l3, l6);
+                              _fmt_buffer_write(go_string(p0, l3), l6);
                               if (g1 === 1) {
                                 l2147483641 = 34;
                                 break block_1;
@@ -33319,7 +33183,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                           }
                           l1 = (g1 ? l1 : ((l0 + 120) | 0));
                           if ((g1 ? l2 === 36 : 1)) {
-                            _reflect_Value_Field(l1, p1, p2, p3, l5);
+                            _reflect_Value_Field(go_string(l1, p1), go_string(p2, p3), l5);
                             if (g1 === 1) {
                               l2147483641 = 36;
                               break block_1;
@@ -33348,7 +33212,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                                 l2147483641 = 37;
                                 break block_1;
                               }
-                              l7 = _reflect_Value_IsNil(l3, l6, l1);
+                              l7 = _reflect_Value_IsNil(go_string(l3, l6), l1);
                             }
                             if ((g1 === 0)) {
                               l7 = (l7 & 1);
@@ -33356,7 +33220,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                               l7 = ((l0 + 104) | 0);
                             }
                             if ((g1 ? l2 === 38 : 1)) {
-                              _reflect_Value_Elem(l7, l3, l6, l1);
+                              _reflect_Value_Elem(go_string(l7, l3), go_string(l6, l1));
                               if (g1 === 1) {
                                 l2147483641 = 38;
                                 break block_1;
@@ -33377,7 +33241,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                             store_i32(l0, l3, 512);
                           }
                           if ((g1 ? l2 === 39 : 1)) {
-                            _fmt_pp_printValue(p0, l3, l6, l1, p4, p5);
+                            _fmt_pp_printValue(go_string(p0, l3), go_string(l6, l1), go_string(p4, p5));
                             if (g1 === 1) {
                               l2147483641 = 39;
                               break block_1;
@@ -33391,7 +33255,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                         }
                       }
                       if ((g1 ? l2 === 40 : 1)) {
-                        _fmt_pp_badVerb(p0, p4);
+                        _fmt_pp_badVerb(go_string(p0, p4));
                         if (g1 === 1) {
                           l2147483641 = 40;
                           break block_1;
@@ -33410,7 +33274,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       store_i32(l0, p1, 612);
                     }
                     if ((g1 ? l2 === 42 : 1)) {
-                      _reflect_rawType_String(l0, p1);
+                      _reflect_rawType_String(go_string(l0, p1));
                       if (g1 === 1) {
                         l2147483641 = 42;
                         break block_1;
@@ -33422,7 +33286,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       p2 = load_i32(l0, 4);
                     }
                     if ((g1 ? l2 === 43 : 1)) {
-                      _fmt_buffer_write(p0, p1, p2);
+                      _fmt_buffer_write(go_string(p0, p1), p2);
                       if (g1 === 1) {
                         l2147483641 = 43;
                         break block_1;
@@ -33443,7 +33307,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 45;
                       break block_1;
                     }
-                    l3 = _reflect_Value_UnsafePointer(p1, p2, p3);
+                    l3 = _reflect_Value_UnsafePointer(go_string(p1, p2), p3);
                   }
                   if ((g1 === 0)) {
                     store_i32(l0, l3, 600);
@@ -33452,7 +33316,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                     p5 = ((l0 + 296) | 0);
                   }
                   if ((g1 ? l2 === 46 : 1)) {
-                    _reflect_Value_Elem(p5, p1, p2, p3);
+                    _reflect_Value_Elem(go_string(p5, p1), go_string(p2, p3));
                     if (g1 === 1) {
                       l2147483641 = 46;
                       break block_1;
@@ -33482,7 +33346,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                     }
                   }
                   if ((g1 ? l2 === 48 : 1)) {
-                    _fmt_pp_printValue(p0, l3, l5, p1, p4, 1);
+                    _fmt_pp_printValue(go_string(p0, l3), go_string(l5, p1), p4, 1);
                     if (g1 === 1) {
                       l2147483641 = 48;
                       break block_1;
@@ -33491,7 +33355,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                   if ((g1 === 0)) break block_4;
                 }
                 if ((g1 ? l2 === 49 : 1)) {
-                  _fmt_pp_fmtPointer(p0, p1, p2, p3, p4);
+                  _fmt_pp_fmtPointer(go_string(p0, p1), go_string(p2, p3), p4);
                   if (g1 === 1) {
                     l2147483641 = 49;
                     break block_1;
@@ -33548,7 +33412,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       p5 = ((l0 + 280) | 0);
                     }
                     if ((g1 ? l2 === 51 : 1)) {
-                      _reflect_Value_Bytes(p5, p1, p2, p3);
+                      _reflect_Value_Bytes(go_string(p5, p1), go_string(p2, p3));
                       if (g1 === 1) {
                         l2147483641 = 51;
                         break block_1;
@@ -33568,7 +33432,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 52;
                       break block_1;
                     }
-                    l1 = _reflect_Value_Len(p1, p2, p3);
+                    l1 = _reflect_Value_Len(go_string(p1, p2), p3);
                   }
                   if ((g1 === 0)) {
                     p5 = (l1 < 0 ? 1 : 0);
@@ -33592,7 +33456,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       l6 = ((l0 + 264) | 0);
                     }
                     if ((g1 ? l2 === 54 : 1)) {
-                      _reflect_Value_Index(l6, p1, p2, p3, l3);
+                      _reflect_Value_Index(go_string(l6, p1), go_string(p2, p3), l3);
                       if (g1 === 1) {
                         l2147483641 = 54;
                         break block_1;
@@ -33611,7 +33475,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                         l2147483641 = 55;
                         break block_1;
                       }
-                      l15 = _reflect_Value_Uint(l6, l5, l9);
+                      l15 = _reflect_Value_Uint(go_string(l6, l5), l9);
                     }
                     if ((g1 === 0)) {
                       store_i8(l8, l15);
@@ -33631,7 +33495,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                     l1 = ((l0 + 232) | 0);
                   }
                   if ((g1 ? l2 === 56 : 1)) {
-                    _reflect_rawType_String(l1, p1);
+                    _reflect_rawType_String(go_string(l1, p1));
                     if (g1 === 1) {
                       l2147483641 = 56;
                       break block_1;
@@ -33643,7 +33507,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                     l1 = load_i32(l0, 236);
                   }
                   if ((g1 ? l2 === 57 : 1)) {
-                    _fmt_buffer_write(p0, l3, l1);
+                    _fmt_buffer_write(go_string(p0, l3), l1);
                     if (g1 === 1) {
                       l2147483641 = 57;
                       break block_1;
@@ -33659,14 +33523,14 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                         l2147483641 = 58;
                         break block_1;
                       }
-                      l1 = _reflect_Value_IsNil(p1, p2, p3);
+                      l1 = _reflect_Value_IsNil(go_string(p1, p2), p3);
                     }
                     if ((g1 === 0)) {
                       l1 = (((l1 & 1) === 0) ? 1 : 0);
                       if (l1) break block_148;
                     }
                     if ((g1 ? l2 === 59 : 1)) {
-                      _fmt_buffer_write(p0, 96082, 5);
+                      _fmt_buffer_write(p0, "(nil)");
                       if (g1 === 1) {
                         l2147483641 = 59;
                         break block_1;
@@ -33692,7 +33556,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                           l2147483641 = 61;
                           break block_1;
                         }
-                        p5 = _reflect_Value_Len(p1, p2, p3);
+                        p5 = _reflect_Value_Len(go_string(p1, p2), p3);
                       }
                       if ((g1 === 0)) {
                         p5 = (p5 <= l3 ? 1 : 0);
@@ -33700,7 +33564,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                         p5 = ((l3 === 0) ? 1 : 0);
                       }
                       if (((g1 ? l2 === 62 : 1) ? (p5 ? g1 : 1) : 0)) {
-                        _fmt_buffer_write(p0, 96087, 2);
+                        _fmt_buffer_write(p0, ", ");
                         if (g1 === 1) {
                           l2147483641 = 62;
                           break block_1;
@@ -33708,7 +33572,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       }
                       p5 = (g1 ? p5 : ((l0 + 216) | 0));
                       if ((g1 ? l2 === 63 : 1)) {
-                        _reflect_Value_Index(p5, p1, p2, p3, l3);
+                        _reflect_Value_Index(go_string(p5, p1), go_string(p2, p3), l3);
                         if (g1 === 1) {
                           l2147483641 = 63;
                           break block_1;
@@ -33722,7 +33586,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                         p5 = load_u8(l0, 224);
                       }
                       if ((g1 ? l2 === 64 : 1)) {
-                        _fmt_pp_printValue(p0, l6, l5, p5, p4, l1);
+                        _fmt_pp_printValue(go_string(p0, l6), go_string(l5, p5), go_string(p4, l1));
                         if (g1 === 1) {
                           l2147483641 = 64;
                           break block_1;
@@ -33762,7 +33626,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                         l2147483641 = 67;
                         break block_1;
                       }
-                      p5 = _reflect_Value_Len(p1, p2, p3);
+                      p5 = _reflect_Value_Len(go_string(p1, p2), p3);
                     }
                     if ((g1 === 0)) {
                       p5 = (p5 <= l3 ? 1 : 0);
@@ -33778,7 +33642,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                     }
                     p5 = (g1 ? p5 : ((l0 + 240) | 0));
                     if ((g1 ? l2 === 69 : 1)) {
-                      _reflect_Value_Index(p5, p1, p2, p3, l3);
+                      _reflect_Value_Index(go_string(p5, p1), go_string(p2, p3), l3);
                       if (g1 === 1) {
                         l2147483641 = 69;
                         break block_1;
@@ -33792,7 +33656,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       p5 = load_u8(l0, 248);
                     }
                     if ((g1 ? l2 === 70 : 1)) {
-                      _fmt_pp_printValue(p0, l6, l5, p5, p4, l1);
+                      _fmt_pp_printValue(go_string(p0, l6), go_string(l5, p5), go_string(p4, l1));
                       if (g1 === 1) {
                         l2147483641 = 70;
                         break block_1;
@@ -33819,7 +33683,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                 p2 = ((l0 + 256) | 0);
               }
               if ((g1 ? l2 === 72 : 1)) {
-                _reflect_rawType_String(p2, p1);
+                _reflect_rawType_String(go_string(p2, p1));
                 if (g1 === 1) {
                   l2147483641 = 72;
                   break block_1;
@@ -33831,7 +33695,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                 p2 = load_i32(l0, 260);
               }
               if ((g1 ? l2 === 73 : 1)) {
-                _fmt_pp_fmtBytes(p0, p5, l7, l1, p4, p1, p2);
+                _fmt_pp_fmtBytes(go_string(p0, p5), go_string(l7, l1), go_string(p4, p1), p2);
                 if (g1 === 1) {
                   l2147483641 = 73;
                   break block_1;
@@ -33841,7 +33705,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
             }
             l1 = (g1 ? l1 : ((l0 + 200) | 0));
             if ((g1 ? l2 === 74 : 1)) {
-              _reflect_Value_Elem(l1, p1, p2, p3);
+              _reflect_Value_Elem(go_string(l1, p1), go_string(p2, p3));
               if (g1 === 1) {
                 l2147483641 = 74;
                 break block_1;
@@ -33861,7 +33725,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                 p1 = load_u8(l0, 208);
               }
               if ((g1 ? l2 === 75 : 1)) {
-                _fmt_pp_printValue(p0, p3, l3, p1, p4, p2);
+                _fmt_pp_printValue(go_string(p0, p3), go_string(l3, p1), go_string(p4, p2));
                 if (g1 === 1) {
                   l2147483641 = 75;
                   break block_1;
@@ -33879,7 +33743,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                 p2 = ((l0 + 192) | 0);
               }
               if ((g1 ? l2 === 76 : 1)) {
-                _reflect_rawType_String(p2, p1);
+                _reflect_rawType_String(go_string(p2, p1));
                 if (g1 === 1) {
                   l2147483641 = 76;
                   break block_1;
@@ -33891,14 +33755,14 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                 p2 = load_i32(l0, 196);
               }
               if ((g1 ? l2 === 77 : 1)) {
-                _fmt_buffer_write(p0, p1, p2);
+                _fmt_buffer_write(go_string(p0, p1), p2);
                 if (g1 === 1) {
                   l2147483641 = 77;
                   break block_1;
                 }
               }
               if ((g1 ? l2 === 78 : 1)) {
-                _fmt_buffer_write(p0, 96082, 5);
+                _fmt_buffer_write(p0, "(nil)");
                 if (g1 === 1) {
                   l2147483641 = 78;
                   break block_1;
@@ -33907,7 +33771,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               if ((g1 === 0)) break block_4;
             }
             if ((g1 ? l2 === 79 : 1)) {
-              _fmt_buffer_write(p0, 96077, 5);
+              _fmt_buffer_write(p0, "<nil>");
               if (g1 === 1) {
                 l2147483641 = 79;
                 break block_1;
@@ -33928,7 +33792,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               l2147483641 = 80;
               break block_1;
             }
-            l8 = _reflect_Value_Len(p1, p2, p3);
+            l8 = _reflect_Value_Len(go_string(p1, p2), p3);
           }
           if ((g1 === 0)) {
             l1 = (u32(l8) > 178956970 ? 1 : 0);
@@ -33950,7 +33814,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               l2147483641 = 82;
               break block_1;
             }
-            p2 = _reflect_Value_MapRange(p1, p2, p3);
+            p2 = _reflect_Value_MapRange(go_string(p1, p2), p3);
           }
           if ((g1 === 0)) {
             store_i32(l0, p2, 380);
@@ -33983,7 +33847,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                     if (p2) break block_206;
                   }
                   if ((g1 ? l2 === 84 : 1)) {
-                    slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(l5, l3, p1, p3);
+                    slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(go_string(l5, l3), go_string(p1, p3));
                     if (g1 === 1) {
                       l2147483641 = 84;
                       break block_1;
@@ -33997,7 +33861,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                 break;
               }
               if ((g1 ? l2 === 85 : 1)) {
-                slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(l5, l3, p1, l3);
+                slices_insertionSortCmpFunc_internal_fmtsort_KeyValue(go_string(l5, l3), go_string(p1, l3));
                 if (g1 === 1) {
                   l2147483641 = 85;
                   break block_1;
@@ -34020,7 +33884,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                       if (l8) break block_214;
                     }
                     if ((g1 ? l2 === 86 : 1)) {
-                      slices_symMergeCmpFunc_internal_fmtsort_KeyValue(l5, l3, p1, p2, p3);
+                      slices_symMergeCmpFunc_internal_fmtsort_KeyValue(go_string(l5, l3), go_string(p1, p2), p3);
                       if (g1 === 1) {
                         l2147483641 = 86;
                         break block_1;
@@ -34039,7 +33903,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
                   if (p3) continue loop_211;
                 }
                 if ((g1 ? l2 === 87 : 1)) {
-                  slices_symMergeCmpFunc_internal_fmtsort_KeyValue(l5, l3, p1, p2, l3);
+                  slices_symMergeCmpFunc_internal_fmtsort_KeyValue(go_string(l5, l3), go_string(p1, p2), l3);
                   if (g1 === 1) {
                     l2147483641 = 87;
                     break block_1;
@@ -34051,7 +33915,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
             }
             p1 = (g1 ? p1 : ((l0 + 80) | 0));
             if ((g1 ? l2 === 88 : 1)) {
-              _reflect_MapIter_Key(p1, p2);
+              _reflect_MapIter_Key(go_string(p1, p2));
               if (g1 === 1) {
                 l2147483641 = 88;
                 break block_1;
@@ -34068,7 +33932,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               p1 = ((l0 - -64) | 0);
             }
             if ((g1 ? l2 === 89 : 1)) {
-              _reflect_MapIter_Value(p1, p2);
+              _reflect_MapIter_Value(go_string(p1, p2));
               if (g1 === 1) {
                 l2147483641 = 89;
                 break block_1;
@@ -34094,7 +33958,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               p1 = ((l0 + 48) | 0);
             }
             if ((g1 ? l2 === 90 : 1)) {
-              runtime_sliceAppend(p1, l5, p3, l3, l8, 1, 24);
+              runtime_sliceAppend(go_string(p1, l5), go_string(p3, l3), l8, go_string(1, 24));
               if (g1 === 1) {
                 l2147483641 = 90;
                 break block_1;
@@ -34155,7 +34019,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               }
               if ((l10 ? g1 : 1)) {
                 if ((g1 ? l2 === 92 : 1)) {
-                  _fmt_buffer_write(p0, 96087, 2);
+                  _fmt_buffer_write(p0, ", ");
                   if (g1 === 1) {
                     l2147483641 = 92;
                     break block_1;
@@ -34172,7 +34036,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               }
             }
             if ((g1 ? l2 === 94 : 1)) {
-              _fmt_pp_printValue(p0, p2, l6, l8, p4, l1);
+              _fmt_pp_printValue(go_string(p0, p2), go_string(l6, l8), go_string(p4, l1));
               if (g1 === 1) {
                 l2147483641 = 94;
                 break block_1;
@@ -34190,7 +34054,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
               store_i32(l0, p1, 452);
             }
             if ((g1 ? l2 === 96 : 1)) {
-              _fmt_pp_printValue(p0, p1, p3, p5, p4, l1);
+              _fmt_pp_printValue(go_string(p0, p1), go_string(p3, p5), go_string(p4, l1));
               if (g1 === 1) {
                 l2147483641 = 96;
                 break block_1;
@@ -34205,11 +34069,9 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
           break;
         }
         if (g1) {
-          l2147483642 = p1;
         } else {
-          l2147483642 = ((load_u8(p0, 44) === 0) ? 1 : 0);
         }
-        if ((l2147483642 ? g1 : 1)) {
+        if (((g1 ? p1 : (load_u8(p0, 44) === 0)) ? g1 : 1)) {
           if ((g1 ? l2 === 97 : 1)) {
             _fmt_buffer_writeByte(p0, 125);
             if (g1 === 1) {
@@ -34274,7 +34136,7 @@ function _fmt_pp_printValue(p0, p1, p2, p3, p4, p5) {
 
 // (*fmt.pp).doPrintf
 function _fmt_pp_doPrintf(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l2147483643, l2147483644, l2147483645, l2147483646;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l2147483643, l2147483644;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 80) | 0));
     l7 = load_i32(g2);
@@ -34308,7 +34170,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
       l2 = ((g0 - 224) | 0);
       g0 = l2;
       store_i32(l2, 13, 164);
-      new Uint8Array(memory.buffer).fill(0, ((l2 + 168) | 0), ((l2 + 168) | 0) + 52);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l2 + 168) | 0), 0, 52), go_slice(((l2 + 168) | 0), 0, 52) + );
       store_i8(p0, 0, 124);
       l13 = load_i32(138276);
       store_i32(l2, l13, 160);
@@ -34365,7 +34227,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                 l0 = ((p1 + l6) | 0);
               }
               if (((g1 ? l3 : 0) === 0)) {
-                _fmt_buffer_write(p0, l0, l4);
+                _fmt_buffer_write(go_string(p0, l0), l4);
                 if (g1 === 1) {
                   l2147483643 = 0;
                   break block_1;
@@ -34469,7 +34331,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                           l8 = ((l2 + 156) | 0);
                         }
                         if ((g1 ? l3 === 1 : 1)) {
-                          runtime_sliceAppend(l4, l0, l8, l5, l12, 1, 4);
+                          runtime_sliceAppend(go_string(l4, l0), go_string(l8, l5), l12, go_string(1, 4));
                           if (g1 === 1) {
                             l2147483643 = 1;
                             break block_1;
@@ -34499,7 +34361,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                       store_i32(l2, l5, 180);
                     }
                     if ((g1 ? l3 === 2 : 1)) {
-                      _fmt_pp_printArg(p0, l0, l5, l6);
+                      _fmt_pp_printArg(go_string(p0, l0), go_string(l5, l6));
                       if (g1 === 1) {
                         l2147483643 = 2;
                         break block_1;
@@ -34515,7 +34377,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                 }
                 l0 = (g1 ? l0 : ((l2 + 136) | 0));
                 if ((g1 ? l3 === 3 : 1)) {
-                  _fmt_pp_argNumber(l0, p0, l5, p1, p2, l4);
+                  _fmt_pp_argNumber(go_string(l0, p0), go_string(l5, p1), go_string(p2, l4));
                   if (g1 === 1) {
                     l2147483643 = 3;
                     break block_1;
@@ -34539,7 +34401,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                         l0 = ((l2 + 112) | 0);
                       }
                       if ((g1 ? l3 === 4 : 1)) {
-                        fmt_intFromArg(l0, p3, l5);
+                        fmt_intFromArg(go_string(l0, p3), l5);
                         if (g1 === 1) {
                           l2147483643 = 4;
                           break block_1;
@@ -34553,18 +34415,16 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                       }
                       if ((l6 ? g1 : 1)) {
                         if ((g1 ? l3 === 5 : 1)) {
-                          _fmt_buffer_write(p0, 95939, 12);
+                          _fmt_buffer_write(p0, "%!(BADWIDTH)");
                           if (g1 === 1) {
                             l2147483643 = 5;
                             break block_1;
                           }
                         }
                         if (g1) {
-                          l2147483644 = l0;
                         } else {
-                          l2147483644 = load_i32(p0, 48);
                         }
-                        l0 = l2147483644;
+                        l0 = (g1 ? l0 : load_i32(p0, 48));
                       }
                       if ((g1 === 0)) {
                         l1 = ((l1 + 1) | 0);
@@ -34585,7 +34445,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                     }
                     l4 = (g1 ? l4 : ((l2 + 120) | 0));
                     if ((g1 ? l3 === 6 : 1)) {
-                      fmt_parsenum(l4, p1, p2, l1, p2);
+                      fmt_parsenum(go_string(l4, p1), go_string(p2, l1), p2);
                       if (g1 === 1) {
                         l2147483643 = 6;
                         break block_1;
@@ -34627,7 +34487,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                         l0 = ((l2 + 96) | 0);
                       }
                       if ((g1 ? l3 === 7 : 1)) {
-                        _fmt_pp_argNumber(l0, p0, l5, p1, p2, l6);
+                        _fmt_pp_argNumber(go_string(l0, p0), go_string(l5, p1), go_string(p2, l6));
                         if (g1 === 1) {
                           l2147483643 = 7;
                           break block_1;
@@ -34649,7 +34509,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                           l0 = ((l2 + 72) | 0);
                         }
                         if ((g1 ? l3 === 8 : 1)) {
-                          fmt_intFromArg(l0, p3, l5);
+                          fmt_intFromArg(go_string(l0, p3), l5);
                           if (g1 === 1) {
                             l2147483643 = 8;
                             break block_1;
@@ -34674,7 +34534,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                           }
                         }
                         if ((g1 ? l3 === 9 : 1)) {
-                          _fmt_buffer_write(p0, 95951, 11);
+                          _fmt_buffer_write(p0, "%!(BADPREC)");
                           if (g1 === 1) {
                             l2147483643 = 9;
                             break block_1;
@@ -34687,7 +34547,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                       }
                       l4 = (g1 ? l4 : ((l2 + 80) | 0));
                       if ((g1 ? l3 === 10 : 1)) {
-                        fmt_parsenum(l4, p1, p2, l1, p2);
+                        fmt_parsenum(go_string(l4, p1), go_string(p2, l1), p2);
                         if (g1 === 1) {
                           l2147483643 = 10;
                           break block_1;
@@ -34714,7 +34574,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                   }
                   l0 = (g1 ? l0 : ((l2 + 56) | 0));
                   if ((g1 ? l3 === 11 : 1)) {
-                    _fmt_pp_argNumber(l0, p0, l5, p1, p2, l1);
+                    _fmt_pp_argNumber(go_string(l0, p0), go_string(l5, p1), go_string(p2, l1));
                     if (g1 === 1) {
                       l2147483643 = 11;
                       break block_1;
@@ -34728,7 +34588,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                 l0 = (g1 ? l0 : (p2 > l1 ? 1 : 0));
                 if ((l0 ? g1 : 1)) {
                   if ((g1 ? l3 === 12 : 1)) {
-                    _fmt_buffer_write(p0, 95962, 10);
+                    _fmt_buffer_write(p0, "%!(NOVERB)");
                     if (g1 === 1) {
                       l2147483643 = 12;
                       break block_1;
@@ -34747,28 +34607,26 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                   if ((g1 === 0)) {
                     if ((l4 === 0)) {
                       l6 = 1;
-                      l2147483645 = (l0 & 255);
+                      l2147483644 = (l0 & 255);
                       break block_79;
                     }
                     l4 = ((p2 - l1) | 0);
                     l0 = ((l2 + 40) | 0);
                   }
                   if ((g1 ? l3 === 13 : 1)) {
-                    unicode_utf8_DecodeRune(l0, l6, l4);
+                    unicode_utf8_DecodeRune(go_string(l0, l6), l4);
                     if (g1 === 1) {
                       l2147483643 = 13;
                       break block_1;
                     }
                   }
                   if (g1) {
-                    l2147483646 = l0;
                   } else {
                     l6 = load_i32(l2, 44);
-                    l2147483646 = load_i32(l2, 40);
                   }
-                  l2147483645 = l2147483646;
+                  l2147483644 = (g1 ? l0 : load_i32(l2, 40));
                 }
-                l0 = l2147483645;
+                l0 = l2147483644;
                 if ((g1 === 0)) {
                   l6 = ((l1 + l6) | 0);
                   l1 = (l0 !== 37 ? 1 : 0);
@@ -34788,21 +34646,21 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                 }
                 if ((l1 ? g1 : 1)) {
                   if ((g1 ? l3 === 15 : 1)) {
-                    _fmt_buffer_write(p0, 96033, 2);
+                    _fmt_buffer_write(p0, "%!");
                     if (g1 === 1) {
                       l2147483643 = 15;
                       break block_1;
                     }
                   }
                   if ((g1 ? l3 === 16 : 1)) {
-                    _fmt_buffer_writeRune(p0, l0);
+                    _fmt_buffer_writeRune(go_string(p0, l0));
                     if (g1 === 1) {
                       l2147483643 = 16;
                       break block_1;
                     }
                   }
                   if ((g1 ? l3 === 17 : 1)) {
-                    _fmt_buffer_write(p0, 95929, 10);
+                    _fmt_buffer_write(p0, "(BADINDEX)");
                     if (g1 === 1) {
                       l2147483643 = 17;
                       break block_1;
@@ -34813,21 +34671,21 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                 l1 = (g1 ? l1 : (l5 <= 0 ? 1 : 0));
                 if ((l1 ? g1 : 1)) {
                   if ((g1 ? l3 === 18 : 1)) {
-                    _fmt_buffer_write(p0, 96033, 2);
+                    _fmt_buffer_write(p0, "%!");
                     if (g1 === 1) {
                       l2147483643 = 18;
                       break block_1;
                     }
                   }
                   if ((g1 ? l3 === 19 : 1)) {
-                    _fmt_buffer_writeRune(p0, l0);
+                    _fmt_buffer_writeRune(go_string(p0, l0));
                     if (g1 === 1) {
                       l2147483643 = 19;
                       break block_1;
                     }
                   }
                   if ((g1 ? l3 === 20 : 1)) {
-                    _fmt_buffer_write(p0, 96035, 9);
+                    _fmt_buffer_write(p0, "(MISSING)");
                     if (g1 === 1) {
                       l2147483643 = 20;
                       break block_1;
@@ -34860,7 +34718,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                       l8 = ((l2 + 152) | 0);
                     }
                     if ((g1 ? l3 === 21 : 1)) {
-                      runtime_sliceAppend(l4, l1, l8, l5, l12, 1, 4);
+                      runtime_sliceAppend(go_string(l4, l1), go_string(l8, l5), l12, go_string(1, 4));
                       if (g1 === 1) {
                         l2147483643 = 21;
                         break block_1;
@@ -34890,7 +34748,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
                   store_i32(l2, l5, 196);
                 }
                 if ((g1 ? l3 === 22 : 1)) {
-                  _fmt_pp_printArg(p0, l1, l5, l0);
+                  _fmt_pp_printArg(go_string(p0, l1), go_string(l5, l0));
                   if (g1 === 1) {
                     l2147483643 = 22;
                     break block_1;
@@ -34945,7 +34803,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
         store_i8(p1, 0);
       }
       if ((g1 ? l3 === 25 : 1)) {
-        _fmt_buffer_write(p0, 95972, 9);
+        _fmt_buffer_write(p0, "%!(EXTRA ");
         if (g1 === 1) {
           l2147483643 = 25;
           break block_1;
@@ -34963,7 +34821,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
             p1 = (u32(l1) > 2147483646 ? 1 : 0);
           }
           if (((g1 ? l3 === 26 : 1) ? (p1 ? g1 : 1) : 0)) {
-            _fmt_buffer_write(p0, 96087, 2);
+            _fmt_buffer_write(p0, ", ");
             if (g1 === 1) {
               l2147483643 = 26;
               break block_1;
@@ -34972,7 +34830,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
           block_120: {
             if ((p2 ? g1 : 1)) {
               if ((g1 ? l3 === 27 : 1)) {
-                _fmt_buffer_write(p0, 96077, 5);
+                _fmt_buffer_write(p0, "<nil>");
                 if (g1 === 1) {
                   l2147483643 = 27;
                   break block_1;
@@ -34986,7 +34844,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
               p1 = ((l2 + 48) | 0);
             }
             if ((g1 ? l3 === 28 : 1)) {
-              interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(p1, p2, 128608);
+              interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_String$invoke(go_string(p1, p2), 128608);
               if (g1 === 1) {
                 l2147483643 = 28;
                 break block_1;
@@ -34998,7 +34856,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
               l4 = load_i32(l2, 52);
             }
             if ((g1 ? l3 === 29 : 1)) {
-              _fmt_buffer_write(p0, p1, l4);
+              _fmt_buffer_write(go_string(p0, p1), l4);
               if (g1 === 1) {
                 l2147483643 = 29;
                 break block_1;
@@ -35012,7 +34870,7 @@ function _fmt_pp_doPrintf(p0, p1, p2, p3) {
               }
             }
             if ((g1 ? l3 === 31 : 1)) {
-              _fmt_pp_printArg(p0, p2, l0, 118);
+              _fmt_pp_printArg(go_string(p0, p2), l0, 118);
               if (g1 === 1) {
                 l2147483643 = 31;
                 break block_1;
@@ -35164,7 +35022,7 @@ function fmt_intFromArg(p0, p1, p2) {
               l2147483644 = 0;
               break block_1;
             }
-            l6 = _reflect_Value_Int(l1, p2, 2);
+            l6 = _reflect_Value_Int(go_string(l1, p2), 2);
           }
           if ((g1 === 0)) {
             p1 = (BigInt.asUintN(64, BigInt(BigInt.asIntN(64, l6 + 2147483648n))) < BigInt.asUintN(64, BigInt(4294967296n)) ? 1 : 0);
@@ -35177,7 +35035,7 @@ function fmt_intFromArg(p0, p1, p2) {
             l2147483644 = 1;
             break block_1;
           }
-          l6 = _reflect_Value_Uint(l1, p2, 2);
+          l6 = _reflect_Value_Uint(go_string(l1, p2), 2);
         }
         if ((g1 === 0)) {
           p1 = (BigInt.asUintN(64, BigInt(l6)) < BigInt.asUintN(64, BigInt(2147483648n)) ? 1 : 0);
@@ -35237,7 +35095,7 @@ function _fmt_pp_fmt0x64(p0, p1, p2) {
       p0 = ((p0 + 32) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      _fmt_fmt_fmtInteger(p0, p1, 16, 0, 118, 95988);
+      _fmt_fmt_fmtInteger(go_string(p0, p1), go_slice(16, 0, 118), 95988);
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -35293,7 +35151,7 @@ function _fmt_pp_fmtBool(p0, p1, p2) {
       }
       if ((p0 ? g1 : 1)) {
         if (((g1 ? l0 : 0) === 0)) {
-          _fmt_fmt_pad(p2, 95880, 4);
+          _fmt_fmt_pad(p2, "true");
           if (g1 === 1) {
             l2147483644 = 0;
             break block_1;
@@ -35304,7 +35162,7 @@ function _fmt_pp_fmtBool(p0, p1, p2) {
         }
       }
       if ((g1 ? l0 === 1 : 1)) {
-        _fmt_fmt_pad(p2, 95884, 5);
+        _fmt_fmt_pad(p2, "false");
         if (g1 === 1) {
           l2147483644 = 1;
           break block_1;
@@ -35315,7 +35173,7 @@ function _fmt_pp_fmtBool(p0, p1, p2) {
       }
     }
     if ((g1 ? l0 === 2 : 1)) {
-      _fmt_pp_badVerb(p0, p2);
+      _fmt_pp_badVerb(go_string(p0, p2));
       if (g1 === 1) {
         l2147483644 = 2;
         break block_1;
@@ -35410,7 +35268,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                         }
                         if ((p3 ? g1 : 1)) {
                           if (((g1 ? l0 : 0) === 0)) {
-                            _fmt_buffer_write(p0, p5, p6);
+                            _fmt_buffer_write(go_string(p0, p5), p6);
                             if (g1 === 1) {
                               l2147483640 = 0;
                               break block_1;
@@ -35418,7 +35276,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                           }
                           if ((p1 ? g1 : 1)) {
                             if ((g1 ? l0 === 1 : 1)) {
-                              _fmt_buffer_write(p0, 96082, 5);
+                              _fmt_buffer_write(p0, "(nil)");
                               if (g1 === 1) {
                                 l2147483640 = 1;
                                 break block_1;
@@ -35448,14 +35306,14 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                                 p3 = (u32((p6 - 1) | 0) > 2147483646 ? 1 : 0);
                               }
                               if (((g1 ? l0 === 3 : 1) ? (p3 ? g1 : 1) : 0)) {
-                                _fmt_buffer_write(p0, 96087, 2);
+                                _fmt_buffer_write(p0, ", ");
                                 if (g1 === 1) {
                                   l2147483640 = 3;
                                   break block_1;
                                 }
                               }
                               if ((g1 ? l0 === 4 : 1)) {
-                                _fmt_pp_fmt0x64(p0, l6, 1);
+                                _fmt_pp_fmt0x64(go_string(p0, l6), 1);
                                 if (g1 === 1) {
                                   l2147483640 = 4;
                                   break block_1;
@@ -35507,7 +35365,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                               }
                             }
                             if ((g1 ? l0 === 8 : 1)) {
-                              _fmt_fmt_fmtInteger(l3, l6, 10, 0, p4, 95988);
+                              _fmt_fmt_fmtInteger(go_string(l3, l6), 10, 0, p4, 95988);
                               if (g1 === 1) {
                                 l2147483640 = 8;
                                 break block_1;
@@ -35554,7 +35412,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                             p5 = ((p2 - p6) | 0);
                           }
                           if ((g1 ? l0 === 10 : 1)) {
-                            unicode_utf8_DecodeRune(l1, l3, p5);
+                            unicode_utf8_DecodeRune(go_string(l1, l3), p5);
                             if (g1 === 1) {
                               l2147483640 = 10;
                               break block_1;
@@ -35574,7 +35432,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                     }
                     p0 = (g1 ? p0 : ((p0 + 32) | 0));
                     if ((g1 ? l0 === 11 : 1)) {
-                      _fmt_fmt_fmtBx(p0, p1, p2, 95988);
+                      _fmt_fmt_fmtBx(go_string(p0, p1), p2, 95988);
                       if (g1 === 1) {
                         l2147483640 = 11;
                         break block_1;
@@ -35584,7 +35442,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                   }
                   p0 = (g1 ? p0 : ((p0 + 32) | 0));
                   if ((g1 ? l0 === 12 : 1)) {
-                    _fmt_fmt_fmtBx(p0, p1, p2, 96005);
+                    _fmt_fmt_fmtBx(go_string(p0, p1), p2, 96005);
                     if (g1 === 1) {
                       l2147483640 = 12;
                       break block_1;
@@ -35594,7 +35452,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                 }
                 p3 = (g1 ? p3 : ((l1 + 8) | 0));
                 if ((g1 ? l0 === 13 : 1)) {
-                  runtime_stringFromBytes(p3, p1, p2);
+                  runtime_stringFromBytes(go_string(p3, p1), p2);
                   if (g1 === 1) {
                     l2147483640 = 13;
                     break block_1;
@@ -35607,7 +35465,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                   p0 = ((p0 + 32) | 0);
                 }
                 if ((g1 ? l0 === 14 : 1)) {
-                  _fmt_fmt_fmtQ(p0, p6, p1);
+                  _fmt_fmt_fmtQ(go_string(p0, p6), p1);
                   if (g1 === 1) {
                     l2147483640 = 14;
                     break block_1;
@@ -35632,7 +35490,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
                 store_i32(l1, 96536, 36);
               }
               if ((g1 ? l0 === 16 : 1)) {
-                _fmt_pp_printValue(p0, 96536, p6, 2, p4, 0);
+                _fmt_pp_printValue(p0, go_string(96536, p6), go_string(2, p4), 0);
                 if (g1 === 1) {
                   l2147483640 = 16;
                   break block_1;
@@ -35666,7 +35524,7 @@ function _fmt_pp_fmtBytes(p0, p1, p2, p3, p4, p5, p6) {
       }
       p0 = (g1 ? p0 : ((p0 + 32) | 0));
       if ((g1 ? l0 === 19 : 1)) {
-        _fmt_fmt_pad(p0, p1, p6);
+        _fmt_fmt_pad(go_string(p0, p1), p6);
         if (g1 === 1) {
           l2147483640 = 19;
           break block_1;
@@ -35748,7 +35606,7 @@ function _fmt_pp_fmtComplex(p0, p1, p2, p3, p4) {
       }
       p3 = (g1 ? p3 : (p3 >>> 1));
       if ((g1 ? l0 === 1 : 1)) {
-        _fmt_pp_fmtFloat(p0, p1, p3, p4);
+        _fmt_pp_fmtFloat(go_string(p0, p1), go_string(p3, p4));
         if (g1 === 1) {
           l2147483642 = 1;
           break block_1;
@@ -35758,14 +35616,14 @@ function _fmt_pp_fmtComplex(p0, p1, p2, p3, p4) {
         store_i8(l1, 1);
       }
       if ((g1 ? l0 === 2 : 1)) {
-        _fmt_pp_fmtFloat(p0, p2, p3, p4);
+        _fmt_pp_fmtFloat(go_string(p0, p2), go_string(p3, p4));
         if (g1 === 1) {
           l2147483642 = 2;
           break block_1;
         }
       }
       if ((g1 ? l0 === 3 : 1)) {
-        _fmt_buffer_write(p0, 95981, 2);
+        _fmt_buffer_write(p0, "i)");
         if (g1 === 1) {
           l2147483642 = 3;
           break block_1;
@@ -35777,7 +35635,7 @@ function _fmt_pp_fmtComplex(p0, p1, p2, p3, p4) {
       }
     }
     if ((g1 ? l0 === 4 : 1)) {
-      _fmt_pp_badVerb(p0, p4);
+      _fmt_pp_badVerb(go_string(p0, p4));
       if (g1 === 1) {
         l2147483642 = 4;
         break block_1;
@@ -35865,7 +35723,7 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
                 p0 = ((p0 + 32) | 0);
               }
               if (((g1 ? l0 : 0) === 0)) {
-                _fmt_fmt_fmtFloat(p0, p1, p2, 103, -1);
+                _fmt_fmt_fmtFloat(go_string(p0, p1), p2, 103, -1);
                 if (g1 === 1) {
                   l2147483643 = 0;
                   break block_1;
@@ -35877,7 +35735,7 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
             }
             p0 = (g1 ? p0 : ((p0 + 32) | 0));
             if ((g1 ? l0 === 1 : 1)) {
-              _fmt_fmt_fmtFloat(p0, p1, p2, p3, 6);
+              _fmt_fmt_fmtFloat(go_string(p0, p1), go_string(p2, p3), 6);
               if (g1 === 1) {
                 l2147483643 = 1;
                 break block_1;
@@ -35889,7 +35747,7 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
           }
           p0 = (g1 ? p0 : ((p0 + 32) | 0));
           if ((g1 ? l0 === 2 : 1)) {
-            _fmt_fmt_fmtFloat(p0, p1, p2, 102, 6);
+            _fmt_fmt_fmtFloat(go_string(p0, p1), p2, go_string(102, 6));
             if (g1 === 1) {
               l2147483643 = 2;
               break block_1;
@@ -35902,7 +35760,7 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
         if (((g1 === 0) & p3 === 88)) break block_3;
       }
       if ((g1 ? l0 === 3 : 1)) {
-        _fmt_pp_badVerb(p0, p3);
+        _fmt_pp_badVerb(go_string(p0, p3));
         if (g1 === 1) {
           l2147483643 = 3;
           break block_1;
@@ -35914,7 +35772,7 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
     }
     p0 = (g1 ? p0 : ((p0 + 32) | 0));
     if ((g1 ? l0 === 4 : 1)) {
-      _fmt_fmt_fmtFloat(p0, p1, p2, p3, -1);
+      _fmt_fmt_fmtFloat(go_string(p0, p1), go_string(p2, p3), -1);
       if (g1 === 1) {
         l2147483643 = 4;
         break block_1;
@@ -35936,7 +35794,7 @@ function _fmt_pp_fmtFloat(p0, p1, p2, p3) {
 
 // (*fmt.pp).fmtInteger
 function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483643, l2147483644, l2147483645, l2147483646;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483643, l2147483644, l2147483645;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 52) | 0));
     l0 = load_i32(g2);
@@ -36044,7 +35902,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                                   if (p3) break block_21;
                                 }
                                 if (((g1 ? l4 : 0) === 0)) {
-                                  _fmt_pp_fmt0x64(p0, p1, 1);
+                                  _fmt_pp_fmt0x64(go_string(p0, p1), 1);
                                   if (g1 === 1) {
                                     l2147483643 = 0;
                                     break block_1;
@@ -36054,7 +35912,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                               }
                               p0 = (g1 ? p0 : ((p0 + 32) | 0));
                               if ((g1 ? l4 === 1 : 1)) {
-                                _fmt_fmt_fmtInteger(p0, p1, 10, p2, 118, 95988);
+                                _fmt_fmt_fmtInteger(go_string(p0, p1), go_string(10, p2), 118, 95988);
                                 if (g1 === 1) {
                                   l2147483643 = 1;
                                   break block_1;
@@ -36064,7 +35922,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                             }
                             p0 = (g1 ? p0 : ((p0 + 32) | 0));
                             if ((g1 ? l4 === 2 : 1)) {
-                              _fmt_fmt_fmtInteger(p0, p1, 10, p2, 100, 95988);
+                              _fmt_fmt_fmtInteger(go_string(p0, p1), go_string(10, p2), 100, 95988);
                               if (g1 === 1) {
                                 l2147483643 = 2;
                                 break block_1;
@@ -36074,7 +35932,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                           }
                           p0 = (g1 ? p0 : ((p0 + 32) | 0));
                           if ((g1 ? l4 === 3 : 1)) {
-                            _fmt_fmt_fmtInteger(p0, p1, 2, p2, 98, 95988);
+                            _fmt_fmt_fmtInteger(go_string(p0, p1), go_string(2, p2), 98, 95988);
                             if (g1 === 1) {
                               l2147483643 = 3;
                               break block_1;
@@ -36084,7 +35942,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                         }
                         p0 = (g1 ? p0 : ((p0 + 32) | 0));
                         if ((g1 ? l4 === 4 : 1)) {
-                          _fmt_fmt_fmtInteger(p0, p1, 16, p2, 120, 95988);
+                          _fmt_fmt_fmtInteger(go_string(p0, p1), go_string(16, p2), 120, 95988);
                           if (g1 === 1) {
                             l2147483643 = 4;
                             break block_1;
@@ -36094,7 +35952,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                       }
                       p0 = (g1 ? p0 : ((p0 + 32) | 0));
                       if ((g1 ? l4 === 5 : 1)) {
-                        _fmt_fmt_fmtInteger(p0, p1, 16, p2, 88, 96005);
+                        _fmt_fmt_fmtInteger(go_string(p0, p1), go_string(16, p2), 88, 96005);
                         if (g1 === 1) {
                           l2147483643 = 5;
                           break block_1;
@@ -36108,7 +35966,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                       p2 = ((p0 + 56) | 0);
                     }
                     if ((g1 ? l4 === 6 : 1)) {
-                      unicode_utf8_AppendRune(l3, p2, 0, 68, p3);
+                      unicode_utf8_AppendRune(go_string(l3, p2), 0, go_string(68, p3));
                       if (g1 === 1) {
                         l2147483643 = 6;
                         break block_1;
@@ -36121,7 +35979,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                       p0 = ((p0 + 32) | 0);
                     }
                     if ((g1 ? l4 === 7 : 1)) {
-                      _fmt_fmt_pad(p0, p3, p2);
+                      _fmt_fmt_pad(go_string(p0, p3), p2);
                       if (g1 === 1) {
                         l2147483643 = 7;
                         break block_1;
@@ -36142,7 +36000,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                         p0 = ((l3 + 16) | 0);
                       }
                       if ((g1 ? l4 === 8 : 1)) {
-                        strconv_appendQuotedRuneWith(p0, p2, p3, 1);
+                        strconv_appendQuotedRuneWith(go_string(p0, p2), p3, 1);
                         if (g1 === 1) {
                           l2147483643 = 8;
                           break block_1;
@@ -36157,27 +36015,25 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                     }
                     p0 = (g1 ? p0 : ((l3 + 32) | 0));
                     if ((g1 ? l4 === 9 : 1)) {
-                      strconv_appendQuotedRuneWith(p0, p2, p3, 0);
+                      strconv_appendQuotedRuneWith(go_string(p0, p2), p3, 0);
                       if (g1 === 1) {
                         l2147483643 = 9;
                         break block_1;
                       }
                     }
                     if (g1) {
-                      l2147483645 = p2;
                     } else {
                       p3 = load_i32(l3, 32);
                       store_i32(l3, p3, 64);
-                      l2147483645 = load_i32(l3, 36);
                     }
-                    l2147483644 = l2147483645;
+                    l2147483644 = (g1 ? p2 : load_i32(l3, 36));
                   }
                   p2 = l2147483644;
                   if ((g1 === 0)) {
                     store_i32(l3, p3, 68);
                   }
                   if ((g1 ? l4 === 10 : 1)) {
-                    _fmt_fmt_pad(l2, p3, p2);
+                    _fmt_fmt_pad(go_string(l2, p3), p2);
                     if (g1 === 1) {
                       l2147483643 = 10;
                       break block_1;
@@ -36217,7 +36073,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
               }
             }
             if ((g1 ? l4 === 12 : 1)) {
-              _fmt_pp_badVerb(p0, p3);
+              _fmt_pp_badVerb(go_string(p0, p3));
               if (g1 === 1) {
                 l2147483643 = 12;
                 break block_1;
@@ -36259,20 +36115,20 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                 store_i8(((l5 + l1) | 0), 39);
                 block_57: {
                   if (u32(l2) < 128) {
-                    l2147483646 = -1;
+                    l2147483645 = -1;
                     break block_57;
                   }
                   if (u32(l2) < 2048) {
-                    l2147483646 = -2;
+                    l2147483645 = -2;
                     break block_57;
                   }
                   if ((l2 & 2147481600) === 55296) {
-                    l2147483646 = 1;
+                    l2147483645 = 1;
                     break block_57;
                   }
-                  l2147483646 = ((u32(l2) < 65536 ? 1 : 0) ? -3 : -4);
+                  l2147483645 = ((u32(l2) < 65536 ? 1 : 0) ? -3 : -4);
                 }
-                p3 = ((l2147483646 + l1) | 0);
+                p3 = ((l2147483645 + l1) | 0);
                 if (u32(p3) > u32(p2)) break block_52;
                 l6 = ((p2 - p3) | 0);
                 l1 = ((p3 + l5) | 0);
@@ -36282,7 +36138,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
                   l2147483643 = 14;
                   break block_1;
                 }
-                l1 = unicode_utf8_EncodeRune(l1, l6, l2);
+                l1 = unicode_utf8_EncodeRune(go_string(l1, l6), l2);
               }
               if ((g1 === 0)) {
                 l2 = ((p3 - 1) | 0);
@@ -36318,14 +36174,12 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
               l0 = ((l7 - 3) | 0);
               l2 = load_u8(((Number(BigInt.asIntN(32, p1)) + 96005) | 0));
               block_63: {
-                loop_64: while (true) {
+                do {
                   store_i8(((((p3 + l0) | 0) + 2) | 0), l2);
                   if (((p3 + l6) | 0) <= 0) break block_63;
                   l2 = 48;
                   p3 = ((p3 - 1) | 0);
-                  if (u32((((l1 + p3) | 0) - 1) | 0) < u32(p2)) continue loop_64;
-                  break;
-                }
+                } while (u32((((l1 + p3) | 0) - 1) | 0) < u32(p2));
                 break block_51;
               }
               l2 = ((p3 + l1) | 0);
@@ -36341,7 +36195,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
               p2 = ((((((p2 - l1) | 0) - p3) | 0) + 3) | 0);
             }
             if ((g1 ? l4 === 15 : 1)) {
-              _fmt_fmt_pad(l9, l6, p2);
+              _fmt_fmt_pad(go_string(l9, l6), p2);
               if (g1 === 1) {
                 l2147483643 = 15;
                 break block_1;
@@ -36376,7 +36230,7 @@ function _fmt_pp_fmtInteger(p0, p1, p2, p3) {
       }
       p0 = (g1 ? p0 : ((p0 + 32) | 0));
       if ((g1 ? l4 === 18 : 1)) {
-        _fmt_fmt_fmtInteger(p0, p1, 8, p2, p3, 95988);
+        _fmt_fmt_fmtInteger(go_string(p0, p1), go_string(8, p2), p3, 95988);
         if (g1 === 1) {
           l2147483643 = 18;
           break block_1;
@@ -36455,7 +36309,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                 l2147483642 = 0;
                 break block_1;
               }
-              p3 = _reflect_Value_UnsafePointer(p1, p2, p3);
+              p3 = _reflect_Value_UnsafePointer(go_string(p1, p2), p3);
             }
             if ((g1 === 0)) {
               store_i32(l3, p3, 16);
@@ -36514,7 +36368,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                     store_i32(l3, p1, 20);
                   }
                   if ((g1 ? l1 === 2 : 1)) {
-                    _reflect_rawType_String(l3, p1);
+                    _reflect_rawType_String(go_string(l3, p1));
                     if (g1 === 1) {
                       l2147483642 = 2;
                       break block_1;
@@ -36526,14 +36380,14 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                     p2 = load_i32(l3, 4);
                   }
                   if ((g1 ? l1 === 3 : 1)) {
-                    _fmt_buffer_write(p0, p1, p2);
+                    _fmt_buffer_write(go_string(p0, p1), p2);
                     if (g1 === 1) {
                       l2147483642 = 3;
                       break block_1;
                     }
                   }
                   if ((g1 ? l1 === 4 : 1)) {
-                    _fmt_buffer_write(p0, 95983, 2);
+                    _fmt_buffer_write(p0, ")(");
                     if (g1 === 1) {
                       l2147483642 = 4;
                       break block_1;
@@ -36541,7 +36395,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                   }
                   if ((p3 ? g1 : 1)) {
                     if ((g1 ? l1 === 5 : 1)) {
-                      _fmt_buffer_write(p0, 95985, 3);
+                      _fmt_buffer_write(p0, "nil");
                       if (g1 === 1) {
                         l2147483642 = 5;
                         break block_1;
@@ -36551,7 +36405,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                   }
                   l4 = (g1 ? l4 : BigInt(u32(p3)));
                   if ((g1 ? l1 === 6 : 1)) {
-                    _fmt_pp_fmt0x64(p0, l4, 1);
+                    _fmt_pp_fmt0x64(go_string(p0, l4), 1);
                     if (g1 === 1) {
                       l2147483642 = 6;
                       break block_1;
@@ -36565,7 +36419,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                     p0 = ((p0 + 32) | 0);
                   }
                   if ((g1 ? l1 === 7 : 1)) {
-                    _fmt_fmt_pad(p0, 96077, 5);
+                    _fmt_fmt_pad(p0, "<nil>");
                     if (g1 === 1) {
                       l2147483642 = 7;
                       break block_1;
@@ -36578,7 +36432,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                   p1 = (load_u8(((p0 + 40) | 0)) ^ 1);
                 }
                 if ((g1 ? l1 === 8 : 1)) {
-                  _fmt_pp_fmt0x64(p0, l4, p1);
+                  _fmt_pp_fmt0x64(go_string(p0, l4), p1);
                   if (g1 === 1) {
                     l2147483642 = 8;
                     break block_1;
@@ -36591,7 +36445,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
                 p1 = (load_u8(((p0 + 40) | 0)) ^ 1);
               }
               if ((g1 ? l1 === 9 : 1)) {
-                _fmt_pp_fmt0x64(p0, l4, p1);
+                _fmt_pp_fmt0x64(go_string(p0, l4), p1);
                 if (g1 === 1) {
                   l2147483642 = 9;
                   break block_1;
@@ -36602,7 +36456,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
             if (((g1 === 0) & p4 === 88)) break block_6;
           }
           if ((g1 ? l1 === 10 : 1)) {
-            _fmt_pp_badVerb(p0, p4);
+            _fmt_pp_badVerb(go_string(p0, p4));
             if (g1 === 1) {
               l2147483642 = 10;
               break block_1;
@@ -36612,7 +36466,7 @@ function _fmt_pp_fmtPointer(p0, p1, p2, p3, p4) {
         }
         l4 = (g1 ? l4 : BigInt(u32(p3)));
         if ((g1 ? l1 === 11 : 1)) {
-          _fmt_pp_fmtInteger(p0, l4, 0, p4);
+          _fmt_pp_fmtInteger(go_string(p0, l4), 0, p4);
           if (g1 === 1) {
             l2147483642 = 11;
             break block_1;
@@ -36700,7 +36554,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
                 }
                 if ((p0 ? g1 : 1)) {
                   if (((g1 ? l0 : 0) === 0)) {
-                    _fmt_fmt_fmtQ(p3, p1, p2);
+                    _fmt_fmt_fmtQ(go_string(p3, p1), p2);
                     if (g1 === 1) {
                       l2147483643 = 0;
                       break block_1;
@@ -36711,7 +36565,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
                   }
                 }
                 if ((g1 ? l0 === 1 : 1)) {
-                  _fmt_fmt_fmtS(p3, p1, p2);
+                  _fmt_fmt_fmtS(go_string(p3, p1), p2);
                   if (g1 === 1) {
                     l2147483643 = 1;
                     break block_1;
@@ -36723,7 +36577,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
               }
               p0 = (g1 ? p0 : ((p0 + 32) | 0));
               if ((g1 ? l0 === 2 : 1)) {
-                _fmt_fmt_fmtS(p0, p1, p2);
+                _fmt_fmt_fmtS(go_string(p0, p1), p2);
                 if (g1 === 1) {
                   l2147483643 = 2;
                   break block_1;
@@ -36735,7 +36589,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
             }
             p0 = (g1 ? p0 : ((p0 + 32) | 0));
             if ((g1 ? l0 === 3 : 1)) {
-              _fmt_fmt_fmtSx(p0, p1, p2, 95988);
+              _fmt_fmt_fmtSx(go_string(p0, p1), p2, 95988);
               if (g1 === 1) {
                 l2147483643 = 3;
                 break block_1;
@@ -36747,7 +36601,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
           }
           p0 = (g1 ? p0 : ((p0 + 32) | 0));
           if ((g1 ? l0 === 4 : 1)) {
-            _fmt_fmt_fmtQ(p0, p1, p2);
+            _fmt_fmt_fmtQ(go_string(p0, p1), p2);
             if (g1 === 1) {
               l2147483643 = 4;
               break block_1;
@@ -36760,7 +36614,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
         if (((g1 === 0) & p3 === 88)) break block_3;
       }
       if ((g1 ? l0 === 5 : 1)) {
-        _fmt_pp_badVerb(p0, p3);
+        _fmt_pp_badVerb(go_string(p0, p3));
         if (g1 === 1) {
           l2147483643 = 5;
           break block_1;
@@ -36772,7 +36626,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
     }
     p0 = (g1 ? p0 : ((p0 + 32) | 0));
     if ((g1 ? l0 === 6 : 1)) {
-      _fmt_fmt_fmtSx(p0, p1, p2, 96005);
+      _fmt_fmt_fmtSx(go_string(p0, p1), p2, 96005);
       if (g1 === 1) {
         l2147483643 = 6;
         break block_1;
@@ -36794,7 +36648,7 @@ function _fmt_pp_fmtString(p0, p1, p2, p3) {
 
 // (*fmt.pp).free
 function _fmt_pp_free(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483646, l2147483647;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 12) | 0));
     l0 = load_i32(g2);
@@ -36821,11 +36675,9 @@ function _fmt_pp_free(p0) {
       if (l4 < 65537) {
         store_i32(l1, l0, 28);
         l3 = l0;
-        l2147483646 = l4;
       } else {
-        l2147483646 = 0;
       }
-      store_i32(p0, l2147483646, 8);
+      store_i32(p0, ((l4 < 65537 ? 1 : 0) ? l4 : 0), 8);
       store_i32(p0, 0, 4);
       store_i32(p0, l3);
       store_i64(p0, 0n, 12);
@@ -36843,9 +36695,9 @@ function _fmt_pp_free(p0) {
       store_i32(l1, l7, 24);
     }
     if (((g1 ? l5 : 0) === 0)) {
-      _sync_Pool_Put(137364, 128464, p0);
+      _sync_Pool_Put(137364, go_string(128464, p0));
       if (g1 === 1) {
-        l2147483647 = 0;
+        l2147483646 = 0;
         break block_1;
       }
     }
@@ -36854,9 +36706,9 @@ function _fmt_pp_free(p0) {
       g0 = ((l1 + 32) | 0);
     }
     return;
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l0 = l2147483647;
+  l0 = l2147483646;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -36889,7 +36741,7 @@ function _fmt_pp_handleMethods(p0, p1) {
       l0 = ((g0 - 144) | 0);
       g0 = l0;
       store_i32(l0, 14, 84);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 88) | 0), ((l0 + 88) | 0) + 56);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 88) | 0), 0, 56), go_slice(((l0 + 88) | 0), 0, 56) + );
       l6 = load_i32(138276);
       store_i32(l0, l6, 80);
       store_i32(138276, ((l0 + 80) | 0));
@@ -36958,7 +36810,7 @@ function _fmt_pp_handleMethods(p0, p1) {
             store_i64(l0, 0n, 16);
           }
           if ((g1 ? l5 === 1 : 1)) {
-            interface_Error_func_basic_string_Error$invoke(l0, l4, l2);
+            interface_Error_func_basic_string_Error$invoke(go_string(l0, l4), l2);
             if (g1 === 1) {
               l2147483645 = 1;
               break block_1;
@@ -36970,7 +36822,7 @@ function _fmt_pp_handleMethods(p0, p1) {
             l2 = load_i32(l0, 4);
           }
           if ((g1 ? l5 === 2 : 1)) {
-            _fmt_pp_fmtString(p0, l1, l2, p1);
+            _fmt_pp_fmtString(go_string(p0, l1), go_string(l2, p1));
             if (g1 === 1) {
               l2147483645 = 2;
               break block_1;
@@ -37002,7 +36854,7 @@ function _fmt_pp_handleMethods(p0, p1) {
           l1 = ((l0 + 8) | 0);
         }
         if ((g1 ? l5 === 3 : 1)) {
-          interface_String_func_basic_string_String$invoke(l1, l4, l2);
+          interface_String_func_basic_string_String$invoke(go_string(l1, l4), l2);
           if (g1 === 1) {
             l2147483645 = 3;
             break block_1;
@@ -37014,7 +36866,7 @@ function _fmt_pp_handleMethods(p0, p1) {
           l2 = load_i32(l0, 12);
         }
         if ((g1 ? l5 === 4 : 1)) {
-          _fmt_pp_fmtString(p0, l1, l2, p1);
+          _fmt_pp_fmtString(go_string(p0, l1), go_string(l2, p1));
           if (g1 === 1) {
             l2147483645 = 4;
             break block_1;
@@ -37180,7 +37032,7 @@ function fmt_Sprintf(p0, p1) {
       store_i32(l1, l3, 16);
     }
     if ((g1 ? l4 === 1 : 1)) {
-      _fmt_pp_doPrintf(l3, l2, 26, p1);
+      _fmt_pp_doPrintf(go_string(l3, l2), go_string(26, p1));
       if (g1 === 1) {
         l2147483645 = 1;
         break block_1;
@@ -37192,7 +37044,7 @@ function fmt_Sprintf(p0, p1) {
       l2 = load_i32(l3, 4);
     }
     if ((g1 ? l4 === 2 : 1)) {
-      runtime_stringFromBytes(l1, p1, l2);
+      runtime_stringFromBytes(go_string(l1, p1), l2);
       if (g1 === 1) {
         l2147483645 = 2;
         break block_1;
@@ -37260,7 +37112,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       p5 = ((g0 - 128) | 0);
       g0 = p5;
       store_i32(p5, 10, 84);
-      new Uint8Array(memory.buffer).fill(0, ((p5 + 88) | 0), ((p5 + 88) | 0) + 40);
+      new Uint8Array(memory.buffer).fill(, go_slice(((p5 + 88) | 0), 0, 40), go_slice(((p5 + 88) | 0), 0, 40) + );
       l11 = load_i32(138276);
       store_i32(p5, l11, 80);
       l4 = ((p5 + 80) | 0);
@@ -37271,7 +37123,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      l13 = _reflect_Value_Float(p1, p2, p3);
+      l13 = _reflect_Value_Float(go_string(p1, p2), p3);
     }
     l4 = (g1 ? l4 : (l13 !== l13 ? 1 : 0));
     block_5: {
@@ -37289,7 +37141,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p1 = ((p5 - -64) | 0);
             }
             if ((g1 ? l3 === 1 : 1)) {
-              _bytes_Buffer_AvailableBuffer(p1, p0);
+              _bytes_Buffer_AvailableBuffer(go_string(p1, p0));
               if (g1 === 1) {
                 l2147483640 = 1;
                 break block_1;
@@ -37303,7 +37155,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p1 = ((p5 + 48) | 0);
             }
             if ((g1 ? l3 === 2 : 1)) {
-              encoding_json_mayAppendQuote(p1, p3, p2, l4, p4);
+              encoding_json_mayAppendQuote(go_string(p1, p3), go_string(p2, l4), p4);
               if (g1 === 1) {
                 l2147483640 = 2;
                 break block_1;
@@ -37341,7 +37193,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l2147483640 = 3;
               break block_1;
             }
-            p0 = runtime_alloc(20, 715);
+            p0 = runtime_alloc(go_string(20, 715));
           }
           if ((g1 === 0)) {
             store_i32(p5, p0, 88);
@@ -37384,14 +37236,14 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     l2147483641 = 0;
                     break block_20;
                   }
-                  l0 = runtime_alloc(24, 3);
+                  l0 = runtime_alloc(go_string(24, 3));
                 }
                 if ((g1 === 0)) {
                   store_i32(l2, l0, 32);
                   l8 = ((l2 + 8) | 0);
                 }
                 if ((g1 ? l9 === 1 : 1)) {
-                  strconv_genericFtoa(l8, l0, 0, 24, l14, 103, -1, l6);
+                  strconv_genericFtoa(go_string(l8, l0), 0, go_string(24, l14), 103, -1, l6);
                   if (g1 === 1) {
                     l2147483641 = 1;
                     break block_20;
@@ -37403,7 +37255,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   l0 = load_i32(l2, 12);
                 }
                 if ((g1 ? l9 === 2 : 1)) {
-                  runtime_stringFromBytes(l2, l6, l0);
+                  runtime_stringFromBytes(go_string(l2, l6), l0);
                   if (g1 === 1) {
                     l2147483641 = 2;
                     break block_20;
@@ -37449,7 +37301,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
             store_i32(p5, p6, 92);
           }
           if ((g1 ? l3 === 5 : 1)) {
-            _encoding_json_encodeState_error(128416, p0);
+            _encoding_json_encodeState_error(go_string(128416, p0));
             if (g1 === 1) {
               l2147483640 = 5;
               break block_1;
@@ -37477,7 +37329,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
     }
     l5 = (g1 ? l5 : ((p5 + 32) | 0));
     if ((g1 ? l3 === 7 : 1)) {
-      strconv_AppendFloat(l5, p1, l12, l4, l13, p3, -1, p6);
+      strconv_AppendFloat(go_string(l5, p1), go_string(l12, l4), go_string(l13, p3), -1, p6);
       if (g1 === 1) {
         l2147483640 = 7;
         break block_1;
@@ -37507,7 +37359,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         p2 = ((p5 + 16) | 0);
       }
       if ((g1 ? l3 === 8 : 1)) {
-        encoding_json_mayAppendQuote(p2, p6, p3, p1, p4);
+        encoding_json_mayAppendQuote(go_string(p2, p6), go_string(p3, p1), p4);
         if (g1 === 1) {
           l2147483640 = 8;
           break block_1;
@@ -37520,7 +37372,7 @@ function _encoding_json_floatEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         p1 = ((p5 + 8) | 0);
       }
       if ((g1 ? l3 === 9 : 1)) {
-        _bytes_Buffer_Write(p1, p0, p6, p2);
+        _bytes_Buffer_Write(go_string(p1, p0), go_string(p6, p2));
         if (g1 === 1) {
           l2147483640 = 9;
           break block_1;
@@ -37600,7 +37452,7 @@ function encoding_json_mayAppendQuote(p0, p1, p2, p3, p4) {
         p4 = ((l0 + 15) | 0);
       }
       if (((g1 ? l2 : 0) === 0)) {
-        runtime_sliceAppend(l0, p1, p4, p2, p3, 1, 1);
+        runtime_sliceAppend(go_string(l0, p1), go_string(p4, p2), p3, go_string(1, 1));
         if (g1 === 1) {
           l2147483642 = 0;
           break block_1;
@@ -37675,7 +37527,7 @@ function _encoding_json_encodeState_error(p0, p1) {
       store_i32(l1, l0, 12);
     }
     if ((g1 ? l3 === 1 : 1)) {
-      runtime__panic(128064, l0);
+      runtime__panic(go_string(128064, l0));
       if (g1 === 1) {
         l2147483645 = 1;
         break block_1;
@@ -37749,16 +37601,14 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
                 p1 = (p2 > 0 ? 1 : 0);
                 p1 = (p1 ? p2 : 0);
                 block_11: {
-                  loop_12: while (true) {
+                  do {
                     if ((p1 === 0)) break block_11;
                     if ((p2 === 0)) break block_8;
                     p1 = ((p1 - 1) | 0);
                     p2 = ((p2 - 1) | 0);
                     l2147483645 = l1;
                     l1 = ((l1 + 1) | 0);
-                    if (load_u8(l2147483645) !== 46) continue loop_12;
-                    break;
-                  }
+                  } while (load_u8(l2147483645) !== 46);
                   break block_6;
                 }
               }
@@ -37788,7 +37638,7 @@ function interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_bas
               p1 = ((l0 + 8) | 0);
             }
             if ((g1 ? l3 === 2 : 1)) {
-              _reflect_Kind_String(p1, p2);
+              _reflect_Kind_String(go_string(p1, p2));
               if (g1 === 1) {
                 l2147483644 = 2;
                 break block_1;
@@ -37893,7 +37743,7 @@ function encoding_json_foldName(p0, p1, p2, p3) {
         l2147483643 = 0;
         break block_1;
       }
-      l5 = runtime_alloc(32, 3);
+      l5 = runtime_alloc(go_string(32, 3));
     }
     if ((g1 === 0)) {
       store_i32(l1, l5, 56);
@@ -37926,7 +37776,7 @@ function encoding_json_foldName(p0, p1, p2, p3) {
                 p3 = ((l1 + 47) | 0);
               }
               if ((g1 ? l6 === 1 : 1)) {
-                runtime_sliceAppend(l1, l5, p3, l8, l7, 1, 1);
+                runtime_sliceAppend(go_string(l1, l5), go_string(p3, l8), l7, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483643 = 1;
                   break block_1;
@@ -37947,7 +37797,7 @@ function encoding_json_foldName(p0, p1, p2, p3) {
               p3 = ((l1 + 32) | 0);
             }
             if ((g1 ? l6 === 2 : 1)) {
-              unicode_utf8_DecodeRune(p3, l3, l2);
+              unicode_utf8_DecodeRune(go_string(p3, l3), l2);
               if (g1 === 1) {
                 l2147483643 = 2;
                 break block_1;
@@ -37999,7 +37849,7 @@ function encoding_json_foldName(p0, p1, p2, p3) {
                         l2147483643 = 3;
                         break block_1;
                       }
-                      p3 = unicode_To(1, l2);
+                      p3 = unicode_To(go_string(1, l2));
                     }
                     if ((g1 === 0)) {
                       l3 = (p3 !== l2 ? 1 : 0);
@@ -38027,7 +37877,7 @@ function encoding_json_foldName(p0, p1, p2, p3) {
             }
             l2 = (g1 ? l2 : ((l1 + 16) | 0));
             if ((g1 ? l6 === 5 : 1)) {
-              unicode_utf8_AppendRune(l2, l5, l8, l7, p3);
+              unicode_utf8_AppendRune(go_string(l2, l5), go_string(l8, l7), p3);
               if (g1 === 1) {
                 l2147483643 = 5;
                 break block_1;
@@ -38129,7 +37979,7 @@ function _encoding_json_tagOptions_Contains(p0, p1, p2, p3) {
           if ((p1 === 0)) break block_4;
         }
         if (((g1 ? l1 : 0) === 0)) {
-          strings_Cut(l2, p0, p1);
+          strings_Cut(go_string(l2, p0), p1);
           if (g1 === 1) {
             l2147483643 = 0;
             break block_1;
@@ -38138,7 +37988,7 @@ function _encoding_json_tagOptions_Contains(p0, p1, p2, p3) {
         if ((g1 === 0)) {
           p1 = load_i32(l2, 12);
           p0 = load_i32(l2, 8);
-          if (((runtime_stringEqual(load_i32(l2), load_i32(l2, 4), p2, p3) & 1) === 0)) continue loop_6;
+          if (((runtime_stringEqual(load_i32(l2), load_i32(l2, 4), go_string(p2, p3)) & 1) === 0)) continue loop_6;
         }
         break;
       }
@@ -38191,7 +38041,7 @@ function encoding_json_typeFields$1(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
         l2147483608 = 0;
         break block_1;
       }
-      p20 = strings_Compare(p0, p1, p19, p20);
+      p20 = strings_Compare(go_string(p0, p1), go_string(p19, p20));
     }
     block_4: {
       if ((g1 === 0)) {
@@ -38208,7 +38058,7 @@ function encoding_json_typeFields$1(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
           l2147483608 = 1;
           break block_1;
         }
-        p20 = slices_Compare_int_int(p10, p11, p29, p30);
+        p20 = slices_Compare_int_int(go_string(p10, p11), go_string(p29, p30));
       }
     }
     if ((g1 === 0)) {
@@ -38237,7 +38087,7 @@ function encoding_json_typeFields$1(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
 
 // slices.SortFunc[[]encoding/json.field encoding/json.field]
 function slices_SortFunc_encoding_json_field_encoding_json_field(p0, p1, p2) {
-  let l0 = 0, l1 = 0, l2147483644, l2147483645, l2147483646;
+  let l0 = 0, l1 = 0, l2147483644;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 16) | 0));
@@ -38245,28 +38095,24 @@ function slices_SortFunc_encoding_json_field_encoding_json_field(p0, p1, p2) {
       p0 = load_i32(l0);
       p1 = load_i32(l0, 4);
       p2 = load_i32(l0, 8);
-      l2147483644 = load_i32(l0, 12);
     } else {
-      l2147483644 = 0;
     }
-    l1 = (g1 ? l2147483644 : ((32 - clz32(p1)) | 0));
+    l1 = (g1 ? ((g1 === 2 ? 1 : 0) ? load_i32(l0, 12) : 0) : ((32 - clz32(p1)) | 0));
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483645 = load_i32(load_i32(g2));
     } else {
-      l2147483645 = 0;
     }
-    if (((g1 ? l2147483645 : 0) === 0)) {
-      slices_pdqsortCmpFunc_encoding_json_field(p0, p1, 0, p1, l1, p2);
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
+      slices_pdqsortCmpFunc_encoding_json_field(go_string(p0, p1), 0, go_string(p1, l1), p2);
       if (g1 === 1) {
-        l2147483646 = 0;
+        l2147483644 = 0;
         break block_0;
       }
     }
     return;
-    l2147483646 = 0;
+    l2147483644 = 0;
   }
-  l0 = l2147483646;
+  l0 = l2147483644;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -38279,7 +38125,7 @@ function slices_SortFunc_encoding_json_field_encoding_json_field(p0, p1, p2) {
 
 // encoding/json.typeFields$2
 function encoding_json_typeFields$2(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18, p19, p20, p21, p22, p23, p24, p25, p26, p27, p28, p29, p30, p31, p32, p33, p34, p35, p36, p37, p38) {
-  let l2147483608, l2147483609;
+  let l2147483608;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 20) | 0));
     p1 = load_i32(g2);
@@ -38292,24 +38138,22 @@ function encoding_json_typeFields$2(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483608 = load_i32(load_i32(g2));
     } else {
-      l2147483608 = 0;
     }
-    if (((g1 ? l2147483608 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       if (g1 === 1) {
-        l2147483609 = 0;
+        l2147483608 = 0;
         break block_1;
       }
-      p0 = slices_Compare_int_int(p10, p11, p29, p30);
+      p0 = slices_Compare_int_int(go_string(p10, p11), go_string(p29, p30));
     }
     if ((g1 === 0)) {
       return p0;
     }
     throw new Error('unreachable');
-    l2147483609 = 0;
+    l2147483608 = 0;
   }
-  p1 = l2147483609;
+  p1 = l2147483608;
   store_i32(load_i32(g2), p1);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   p1 = load_i32(g2);
@@ -38324,7 +38168,7 @@ function encoding_json_typeFields$2(p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10,
 
 // encoding/json.typeEncoder
 function encoding_json_typeEncoder(p0, p1, p2) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l28 = 0, l29 = 0, l30 = 0, l31 = 0, l32 = 0, l33 = 0, l34 = 0, l35 = 0, l36 = 0, l37 = 0, l38 = 0, l39 = 0, l40 = 0, l41 = 0, l42 = 0, l43 = 0, l44 = 0, l45 = 0, l46 = 0, l47 = 0, l48 = 0, l49 = 0, l50 = 0, l51 = 0, l52 = 0, l53 = 0, l54 = 0, l55 = 0, l56 = 0, l57 = 0, l58 = 0, l59 = 0, l60 = 0, l61 = 0, l62 = 0, l63 = 0, l64 = 0, l65 = 0, l66 = 0, l67 = 0, l68 = 0, l69 = 0, l70 = 0, l71 = 0n, l72 = 0n, l73 = 0n, l2147483644, l2147483645, l2147483646, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653, l2147483654, l2147483655, l2147483656, l2147483657, l2147483658, l2147483659;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0, l16 = 0, l17 = 0, l18 = 0, l19 = 0, l20 = 0, l21 = 0, l22 = 0, l23 = 0, l24 = 0, l25 = 0, l26 = 0, l27 = 0, l28 = 0, l29 = 0, l30 = 0, l31 = 0, l32 = 0, l33 = 0, l34 = 0, l35 = 0, l36 = 0, l37 = 0, l38 = 0, l39 = 0, l40 = 0, l41 = 0, l42 = 0, l43 = 0, l44 = 0, l45 = 0, l46 = 0, l47 = 0, l48 = 0, l49 = 0, l50 = 0, l51 = 0, l52 = 0, l53 = 0, l54 = 0, l55 = 0, l56 = 0, l57 = 0, l58 = 0, l59 = 0, l60 = 0, l61 = 0, l62 = 0, l63 = 0, l64 = 0, l65 = 0, l66 = 0, l67 = 0, l68 = 0, l69 = 0, l70 = 0, l71 = 0n, l72 = 0n, l73 = 0n, l2147483644, l2147483645, l2147483646, l2147483647, l2147483648, l2147483649, l2147483650, l2147483651, l2147483652, l2147483653;
   if (g1 === 2) {
     store_i32(g2, (load_i32(g2) - 64));
     p1 = load_i32(g2);
@@ -38354,14 +38198,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
       g0 = l5;
       store_i32(l5, 72, 156);
       l32 = 0;
-      new Uint8Array(memory.buffer).fill(0, ((l5 + 168) | 0), ((l5 + 168) | 0) + 280);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l5 + 168) | 0), 0, 280), go_slice(((l5 + 168) | 0), 0, 280) + );
       l70 = load_i32(138276);
       store_i32(l5, l70, 152);
       store_i32(138276, ((l5 + 152) | 0));
       l4 = ((l5 + 112) | 0);
     }
     if (((g1 ? l18 : 0) === 0)) {
-      _sync_Map_Load(l4, 138652, p1, p2);
+      _sync_Map_Load(l4, go_string(138652, p1), p2);
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -38389,7 +38233,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
             l2147483644 = 1;
             break block_1;
           }
-          l48 = runtime_alloc(8, 133);
+          l48 = runtime_alloc(go_string(8, 133));
         }
         if ((g1 === 0)) {
           store_i32(l5, l48, 168);
@@ -38399,7 +38243,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
             l2147483644 = 2;
             break block_1;
           }
-          l32 = runtime_alloc(8, 197);
+          l32 = runtime_alloc(go_string(8, 197));
         }
         if ((g1 === 0)) {
           store_i32(l5, l32, 172);
@@ -38439,7 +38283,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
           l4 = ((l5 + 96) | 0);
         }
         if ((g1 ? l18 === 6 : 1)) {
-          _sync_Map_LoadOrStore(l4, 138652, p1, p2, 97120, l7);
+          _sync_Map_LoadOrStore(l4, go_string(138652, p1), p2, go_string(97120, l7));
           if (g1 === 1) {
             l2147483644 = 6;
             break block_1;
@@ -38467,7 +38311,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
               l2147483644 = 7;
               break block_1;
             }
-            l7 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(p2, p1);
+            l7 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(p2, p1));
           }
           l7 = (g1 ? l7 : ((l7 & 255) === 21 ? 1 : 0));
           if ((l7 ? g1 : 1)) {
@@ -38476,7 +38320,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                 l2147483644 = 8;
                 break block_1;
               }
-              l7 = reflect_PointerTo(p1, p2);
+              l7 = reflect_PointerTo(go_string(p1, p2));
             }
             if ((g1 === 0)) {
               store_i32(l5, l7, 200);
@@ -38487,7 +38331,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
               l2147483644 = 9;
               break block_1;
             }
-            l7 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(p2, p1);
+            l7 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(p2, p1));
           }
           l7 = (g1 ? l7 : ((l7 & 255) === 21 ? 1 : 0));
           if ((l7 ? g1 : 1)) {
@@ -38496,7 +38340,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                 l2147483644 = 10;
                 break block_1;
               }
-              l7 = reflect_PointerTo(p1, p2);
+              l7 = reflect_PointerTo(go_string(p1, p2));
             }
             if ((g1 === 0)) {
               store_i32(l5, l7, 204);
@@ -38508,7 +38352,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
               l2147483644 = 11;
               break block_1;
             }
-            l22 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(p2, p1);
+            l22 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(p2, p1));
           }
           l22 = (g1 ? l22 : (((l22 & 255) - 1) | 0));
           block_31: {
@@ -38604,7 +38448,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                         l4 = ((l5 + 48) | 0);
                       }
                       if ((g1 ? l18 === 12 : 1)) {
-                        _sync_Map_Load(l4, 138656, p1, p2);
+                        _sync_Map_Load(l4, go_string(138656, p1), p2);
                         if (g1 === 1) {
                           l2147483644 = 12;
                           break block_1;
@@ -38704,7 +38548,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                     l0 = ((g0 - 1840) | 0);
                                     g0 = l0;
                                     store_i32(l0, 238, 860);
-                                    new Uint8Array(memory.buffer).fill(0, ((l0 + 864) | 0), ((l0 + 864) | 0) + 952);
+                                    new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 864) | 0), 0, 952), go_slice(((l0 + 864) | 0), 0, 952) + );
                                     l69 = load_i32(138276);
                                     store_i32(l0, l69, 856);
                                     l1 = ((l0 + 856) | 0);
@@ -38728,7 +38572,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                       l2147483645 = 1;
                                       break block_55;
                                     }
-                                    l43 = runtime_hashmapMake(1, 0, 2);
+                                    l43 = runtime_hashmapMake(go_slice(1, 0, 2));
                                   }
                                   if ((g1 === 0)) {
                                     store_i32(l0, l43, 868);
@@ -38768,7 +38612,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                               l2147483645 = 2;
                                               break block_55;
                                             }
-                                            l44 = runtime_hashmapMake(4, 0, 2);
+                                            l44 = runtime_hashmapMake(go_slice(4, 0, 2));
                                           }
                                           if ((g1 === 0)) {
                                             store_i32(l0, l44, 892);
@@ -38825,7 +38669,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   l2147483645 = 3;
                                                   break block_55;
                                                 }
-                                                l2 = runtime_hashmapInterfaceGet(l43, l31, l29, l2, 1);
+                                                l2 = runtime_hashmapInterfaceGet(go_string(l43, l31), go_string(l29, l2), 1);
                                               }
                                               if ((g1 === 0)) {
                                                 l1 = ((l1 + 72) | 0);
@@ -38841,7 +38685,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                               l1 = ((l0 + 1816) | 0);
                                             }
                                             if ((g1 ? l12 === 4 : 1)) {
-                                              runtime_hashmapInterfaceSet(l43, l31, l29, l1);
+                                              runtime_hashmapInterfaceSet(go_string(l43, l31), go_string(l29, l1));
                                               if (g1 === 1) {
                                                 l2147483645 = 4;
                                                 break block_55;
@@ -38885,7 +38729,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l1 = ((l0 + 296) | 0);
                                                     }
                                                     if ((g1 ? l12 === 6 : 1)) {
-                                                      interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(l1, l29, l30, 128608);
+                                                      interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(go_string(l1, l29), l30, 128608);
                                                       if (g1 === 1) {
                                                         l2147483645 = 6;
                                                         break block_55;
@@ -38930,7 +38774,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 7;
                                                           break block_55;
                                                         }
-                                                        l15 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(l11, l1);
+                                                        l15 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(l11, l1));
                                                       }
                                                       l15 = (g1 ? l15 : ((l15 & 255) !== 21 ? 1 : 0));
                                                       if ((l15 ? g1 : 1)) {
@@ -38939,15 +38783,13 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                             l2147483645 = 8;
                                                             break block_55;
                                                           }
-                                                          l11 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(l11, l1);
+                                                          l11 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(l11, l1));
                                                         }
                                                         if (g1) {
-                                                          l2147483646 = l1;
                                                         } else {
                                                           store_i32(l0, l11, 1016);
-                                                          l2147483646 = 128608;
                                                         }
-                                                        l1 = l2147483646;
+                                                        l1 = (g1 ? l1 : 128608);
                                                       }
                                                       if ((g1 === 0)) {
                                                         store_i32(l0, l9, 1048);
@@ -38966,7 +38808,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 9;
                                                           break block_55;
                                                         }
-                                                        l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(l11, l1);
+                                                        l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(l11, l1));
                                                       }
                                                       if ((g1 === 0)) {
                                                         l1 = ((l1 & 255) !== 26 ? 1 : 0);
@@ -38998,7 +38840,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   block_102: {
                                                     block_103: {
                                                       if ((g1 === 0)) {
-                                                        loop_105: while (true) {
+                                                        do {
                                                           l14 = l6;
                                                           store_i32(l0, l6, 1056);
                                                           l1 = ((l8 === 0) ? 1 : 0);
@@ -39050,14 +38892,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l1 = 0;
                                                           l6 = ((l2 === 0) ? 1 : 0);
                                                           if (l6) {
-                                                            l2147483647 = l1;
+                                                            l2147483646 = l1;
                                                             break block_102;
                                                           }
                                                           l11 = 0;
                                                           l6 = ((l2 + 1) | 0);
                                                           l24 = (l8 <= l6 ? 1 : 0);
                                                           if (l24) {
-                                                            l2147483648 = l11;
+                                                            l2147483647 = l11;
                                                             break block_101;
                                                           }
                                                           if (u32(l2) >= u32(l8)) break block_63;
@@ -39084,10 +38926,8 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l13 = ((l1 + 1) | 0);
                                                           l8 = ((l8 - l13) | 0);
                                                           l6 = ((l11 + l13) | 0);
-                                                          l15 = (((runtime_stringEqual(97712, 4, l15, l2) & 1) === 0) ? 1 : 0);
-                                                          if (l15) continue loop_105;
-                                                          break;
-                                                        }
+                                                          l15 = (((runtime_stringEqual("json", go_string(l15, l2)) & 1) === 0) ? 1 : 0);
+                                                        } while (l15);
                                                         l6 = 128160;
                                                         l8 = (l13 < 2 ? 1 : 0);
                                                       }
@@ -39098,11 +38938,11 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                               if (l8) break block_116;
                                                               l8 = ((l11 + 1) | 0);
                                                               l11 = ((l1 - 1) | 0);
-                                                              l1 = (reflect_contains(l8, l11, 10) & 1);
+                                                              l1 = (reflect_contains(go_string(l8, l11), 10) & 1);
                                                               if (l1) break block_116;
                                                               block_118: {
-                                                                if ((reflect_contains(l8, l11, 92) & 1)) break block_118;
-                                                                if ((reflect_contains(l8, l11, 34) & 1)) break block_118;
+                                                                if ((reflect_contains(go_string(l8, l11), 92) & 1)) break block_118;
+                                                                if ((reflect_contains(go_string(l8, l11), 34) & 1)) break block_118;
                                                                 l6 = ((l14 + ((l2 + l9) | 0)) | 0);
                                                                 l2 = l11;
                                                                 loop_119: while (true) {
@@ -39204,7 +39044,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                             l2 = ((l0 + 280) | 0);
                                                                           }
                                                                           if ((g1 ? l12 === 12 : 1)) {
-                                                                            unicode_utf8_DecodeRune(l2, l8, l11);
+                                                                            unicode_utf8_DecodeRune(go_string(l2, l8), l11);
                                                                             if (g1 === 1) {
                                                                               l2147483645 = 12;
                                                                               break block_55;
@@ -39405,14 +39245,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                                     l14 = 0;
                                                                                     l36 = (u32(((l11 - 65) | 0) & 255) > 5 ? 1 : 0);
                                                                                     if (l36) {
-                                                                                      l2147483649 = 0;
+                                                                                      l2147483648 = 0;
                                                                                       break block_156;
                                                                                     }
                                                                                     l14 = ((l11 - 55) | 0);
                                                                                   }
-                                                                                  l2147483649 = 1;
+                                                                                  l2147483648 = 1;
                                                                                 }
-                                                                                l15 = l2147483649;
+                                                                                l15 = l2147483648;
                                                                                 l11 = (((l15 & 1) === 0) ? 1 : 0);
                                                                                 if (l11) break block_130;
                                                                                 l2 = ((l2 - 1) | 0);
@@ -39461,7 +39301,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                       }
                                                                       l2 = (g1 ? l2 : ((l0 + 288) | 0));
                                                                       if ((g1 ? l12 === 13 : 1)) {
-                                                                        runtime_stringFromBytes(l2, l1, l13);
+                                                                        runtime_stringFromBytes(go_string(l2, l1), l13);
                                                                         if (g1 === 1) {
                                                                           l2147483645 = 13;
                                                                           break block_55;
@@ -39517,7 +39357,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                     l2 = ((l0 + 264) | 0);
                                                                   }
                                                                   if ((g1 ? l12 === 14 : 1)) {
-                                                                    runtime_sliceAppend(l2, l1, l6, l13, l23, 1, 1);
+                                                                    runtime_sliceAppend(go_string(l2, l1), go_string(l6, l13), l23, go_string(1, 1));
                                                                     if (g1 === 1) {
                                                                       l2147483645 = 14;
                                                                       break block_55;
@@ -39526,7 +39366,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                   if ((g1 === 0)) {
                                                                     l23 = load_i32(l0, 272);
                                                                     l13 = load_i32(l0, 268);
-                                                                    l2147483650 = load_i32(l0, 264);
+                                                                    l2147483649 = load_i32(l0, 264);
                                                                     break block_167;
                                                                   }
                                                                 }
@@ -39540,25 +39380,23 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                     l2147483645 = 15;
                                                                     break block_55;
                                                                   }
-                                                                  l2 = unicode_utf8_EncodeRune(l11, 4, l2);
+                                                                  l2 = unicode_utf8_EncodeRune(l11, go_string(4, l2));
                                                                 }
                                                                 if ((g1 ? l12 === 16 : 1)) {
-                                                                  runtime_sliceAppend(l6, l1, l8, l13, l23, l2, 1);
+                                                                  runtime_sliceAppend(go_string(l6, l1), go_string(l8, l13), go_string(l23, l2), 1);
                                                                   if (g1 === 1) {
                                                                     l2147483645 = 16;
                                                                     break block_55;
                                                                   }
                                                                 }
                                                                 if (g1) {
-                                                                  l2147483651 = l1;
                                                                 } else {
                                                                   l23 = load_i32(l0, 256);
                                                                   l13 = load_i32(l0, 252);
-                                                                  l2147483651 = load_i32(l0, 248);
                                                                 }
-                                                                l2147483650 = l2147483651;
+                                                                l2147483649 = (g1 ? l1 : load_i32(l0, 248));
                                                               }
-                                                              l1 = l2147483650;
+                                                              l1 = l2147483649;
                                                               if ((g1 === 0)) {
                                                                 store_i32(l0, l1, 1088);
                                                                 store_i32(l0, l1, 1092);
@@ -39581,25 +39419,25 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                         store_i32(l0, l6, 1108);
                                                         store_i32(l0, l14, 1112);
                                                         l1 = (l6 ? 0 : l8);
-                                                        l2147483648 = (l6 ? 0 : l11);
+                                                        l2147483647 = (l6 ? 0 : l11);
                                                         break block_101;
                                                       }
                                                     }
-                                                    l2147483647 = (g1 ? l1 : 0);
+                                                    l2147483646 = (g1 ? l1 : 0);
                                                   }
-                                                  l1 = l2147483647;
-                                                  l2147483648 = (g1 ? l11 : 0);
+                                                  l1 = l2147483646;
+                                                  l2147483647 = (g1 ? l11 : 0);
                                                 }
-                                                l11 = l2147483648;
+                                                l11 = l2147483647;
                                                 if ((g1 === 0)) {
                                                   store_i32(l0, l1, 1116);
                                                   store_i32(l0, l1, 1120);
-                                                  l2 = (runtime_stringEqual(l1, l11, 97716, 1) & 1);
+                                                  l2 = (runtime_stringEqual(go_string(l1, l11), "-") & 1);
                                                   if (l2) break block_81;
                                                   l2 = ((l0 + 232) | 0);
                                                 }
                                                 if ((g1 ? l12 === 17 : 1)) {
-                                                  strings_Cut(l2, l1, l11);
+                                                  strings_Cut(go_string(l2, l1), l11);
                                                   if (g1 === 1) {
                                                     l2147483645 = 17;
                                                     break block_55;
@@ -39628,7 +39466,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                         l1 = ((l0 + 216) | 0);
                                                       }
                                                       if ((g1 ? l12 === 18 : 1)) {
-                                                        runtime_stringNext(l1, l8, l6, l2);
+                                                        runtime_stringNext(go_string(l1, l8), go_string(l6, l2));
                                                         if (g1 === 1) {
                                                           l2147483645 = 18;
                                                           break block_55;
@@ -39648,7 +39486,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                 l2147483645 = 19;
                                                                 break block_55;
                                                               }
-                                                              l2 = internal_stringslite_IndexByte(97646, 28, l1);
+                                                              l2 = internal_stringslite_IndexByte("!#$%&()*+-./:;<=>?@[]^_{|}~ ", l1);
                                                             }
                                                             if ((g1 === 0)) break block_191;
                                                           }
@@ -39664,7 +39502,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                                 l2 = ((l0 + 192) | 0);
                                                               }
                                                               if ((g1 ? l12 === 20 : 1)) {
-                                                                runtime_stringNext(l2, 97646, 28, l15);
+                                                                runtime_stringNext(l2, "!#$%&()*+-./:;<=>?@[]^_{|}~ ", l15);
                                                                 if (g1 === 1) {
                                                                   l2147483645 = 20;
                                                                   break block_55;
@@ -39697,7 +39535,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                               l2147483645 = 21;
                                                               break block_55;
                                                             }
-                                                            l2 = runtime_alloc(4, 3);
+                                                            l2 = runtime_alloc(go_string(4, 3));
                                                           }
                                                           if ((g1 === 0)) {
                                                             runtime_encodeUTF8(((l0 + 208) | 0), l1);
@@ -39712,7 +39550,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                               l2147483645 = 22;
                                                               break block_55;
                                                             }
-                                                            l2 = internal_stringslite_Index(97646, 28, l2, l14);
+                                                            l2 = internal_stringslite_Index("!#$%&()*+-./:;<=>?@[]^_{|}~ ", go_string(l2, l14));
                                                           }
                                                         }
                                                         if ((g1 === 0)) {
@@ -39735,7 +39573,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 23;
                                                           break block_55;
                                                         }
-                                                        l2 = unicode_isExcludingLatin(130232, l1);
+                                                        l2 = unicode_isExcludingLatin(go_string(130232, l1));
                                                       }
                                                       if ((g1 === 0)) {
                                                         l2 = (l2 & 1);
@@ -39748,7 +39586,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 24;
                                                           break block_55;
                                                         }
-                                                        l1 = unicode_isExcludingLatin(135584, l1);
+                                                        l1 = unicode_isExcludingLatin(go_string(135584, l1));
                                                       }
                                                       if ((g1 === 0)) {
                                                         l1 = (l1 & 1);
@@ -39779,7 +39617,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                 if ((g1 === 0)) {
                                                   store_i32(l0, l23, 1152);
                                                   store_i32(l0, l23, 1388);
-                                                  new Uint8Array(memory.buffer).copyWithin(l23, l35, l35 + l62);
+                                                  new Uint8Array(memory.buffer).copyWithin(go_string(l23, l35), l62, l62 + );
                                                   if (l65) break block_63;
                                                   store_i32(((l23 + (l42 << 2)) | 0), l30);
                                                   store_i32(l0, l21, 1168);
@@ -39787,7 +39625,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   l1 = ((l0 + 184) | 0);
                                                 }
                                                 if ((g1 ? l12 === 26 : 1)) {
-                                                  interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Name$invoke(l1, l21, l19);
+                                                  interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Name$invoke(go_string(l1, l21), l19);
                                                   if (g1 === 1) {
                                                     l2147483645 = 26;
                                                     break block_55;
@@ -39804,7 +39642,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l2147483645 = 27;
                                                       break block_55;
                                                     }
-                                                    l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(l21, l19);
+                                                    l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(l21, l19));
                                                   }
                                                   if ((g1 === 0)) {
                                                     l1 = ((l1 & 255) !== 21 ? 1 : 0);
@@ -39815,7 +39653,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l2147483645 = 28;
                                                       break block_55;
                                                     }
-                                                    l21 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(l21, l19);
+                                                    l21 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(l21, l19));
                                                   }
                                                   if ((g1 === 0)) {
                                                     store_i32(l0, l21, 1176);
@@ -39834,7 +39672,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l2147483645 = 29;
                                                     break block_55;
                                                   }
-                                                  l1 = _encoding_json_tagOptions_Contains(l9, l11, 97717, 6);
+                                                  l1 = _encoding_json_tagOptions_Contains(go_string(l9, l11), "string");
                                                 }
                                                 l1 = (g1 ? l1 : (((l1 & 1) === 0) ? 1 : 0));
                                                 if ((l1 ? g1 : 1)) {
@@ -39843,15 +39681,13 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l2147483645 = 30;
                                                       break block_55;
                                                     }
-                                                    l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(l21, l19);
+                                                    l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(l21, l19));
                                                   }
                                                   if (g1) {
-                                                    l2147483652 = l2;
                                                   } else {
                                                     l1 = (163838 >>> l1);
-                                                    l2147483652 = (l1 & 1);
                                                   }
-                                                  l2 = l2147483652;
+                                                  l2 = (g1 ? l2 : (l1 & 1));
                                                 }
                                                 l1 = (g1 ? l1 : ((l6 === 0) ? 1 : 0));
                                                 block_229: {
@@ -39871,7 +39707,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 31;
                                                           break block_55;
                                                         }
-                                                        l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(l21, l19);
+                                                        l1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(l21, l19));
                                                       }
                                                       if ((g1 === 0)) {
                                                         l1 = ((l1 & 255) !== 26 ? 1 : 0);
@@ -39883,14 +39719,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 32;
                                                           break block_55;
                                                         }
-                                                        l1 = runtime_hashmapInterfaceGet(l44, l19, l21, l1, 4);
+                                                        l1 = runtime_hashmapInterfaceGet(go_string(l44, l19), go_string(l21, l1), 4);
                                                       }
                                                       if ((g1 === 0)) {
                                                         store_i32(l0, ((load_i32(l0, 1816) + 1) | 0), 1816);
                                                         l1 = ((l0 + 1816) | 0);
                                                       }
                                                       if ((g1 ? l12 === 33 : 1)) {
-                                                        runtime_hashmapInterfaceSet(l44, l19, l21, l1);
+                                                        runtime_hashmapInterfaceSet(go_string(l44, l19), go_string(l21, l1));
                                                         if (g1 === 1) {
                                                           l2147483645 = 33;
                                                           break block_55;
@@ -39902,7 +39738,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 34;
                                                           break block_55;
                                                         }
-                                                        l1 = runtime_hashmapInterfaceGet(l44, l19, l21, l1, 4);
+                                                        l1 = runtime_hashmapInterfaceGet(go_string(l44, l19), go_string(l21, l1), 4);
                                                       }
                                                       if ((g1 === 0)) {
                                                         l1 = (load_i32(l0, 1816) !== 1 ? 1 : 0);
@@ -39913,7 +39749,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                         l1 = ((l0 + 176) | 0);
                                                       }
                                                       if ((g1 ? l12 === 35 : 1)) {
-                                                        interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Name$invoke(l1, l21, l19);
+                                                        interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Name$invoke(go_string(l1, l21), l19);
                                                         if (g1 === 1) {
                                                           l2147483645 = 35;
                                                           break block_55;
@@ -39953,7 +39789,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                         l1 = ((l0 + 160) | 0);
                                                       }
                                                       if ((g1 ? l12 === 36 : 1)) {
-                                                        runtime_sliceAppend(l1, l25, l2, l41, l47, 1, 72);
+                                                        runtime_sliceAppend(go_string(l1, l25), go_string(l2, l41), l47, go_string(1, 72));
                                                         if (g1 === 1) {
                                                           l2147483645 = 36;
                                                           break block_55;
@@ -39986,7 +39822,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l2147483645 = 37;
                                                       break block_55;
                                                     }
-                                                    l8 = _encoding_json_tagOptions_Contains(l9, l11, 97723, 9);
+                                                    l8 = _encoding_json_tagOptions_Contains(go_string(l9, l11), "omitempty");
                                                   }
                                                   if ((g1 === 0)) {
                                                     l9 = (l6 !== 0 ? 1 : 0);
@@ -40008,7 +39844,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     store_i32(l0, l9, 1216);
                                                     store_i32(l0, l9, 1212);
                                                     store_i32(l0, l9, 1200);
-                                                    new Uint8Array(memory.buffer).copyWithin(l9, l20, l20 + l17);
+                                                    new Uint8Array(memory.buffer).copyWithin(go_string(l9, l20), l17, l17 + );
                                                     l15 = ((l17 > 0 ? 1 : 0) ? l17 : 0);
                                                     l13 = ((l17 - 1) | 0);
                                                     l14 = 0;
@@ -40049,7 +39885,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l6 = ((l1 - l6) | 0);
                                                         }
                                                         if ((g1 ? l12 === 39 : 1)) {
-                                                          runtime_sliceAppend(l24, l16, l39, l14, l28, l6, 1);
+                                                          runtime_sliceAppend(go_string(l24, l16), go_string(l39, l14), go_string(l28, l6), 1);
                                                           if (g1 === 1) {
                                                             l2147483645 = 39;
                                                             break block_55;
@@ -40067,7 +39903,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l6 = ((l0 + 128) | 0);
                                                         }
                                                         if ((g1 ? l12 === 40 : 1)) {
-                                                          runtime_sliceAppend(l6, l16, l24, l39, l14, 6, 1);
+                                                          runtime_sliceAppend(go_string(l6, l16), go_string(l24, l39), l14, go_string(6, 1));
                                                           if (g1 === 1) {
                                                             l2147483645 = 40;
                                                             break block_55;
@@ -40102,7 +39938,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l11 = ((l0 + 112) | 0);
                                                         }
                                                         if ((g1 ? l12 === 41 : 1)) {
-                                                          runtime_sliceAppend(l11, l16, l24, l14, l28, l6, 1);
+                                                          runtime_sliceAppend(go_string(l11, l16), go_string(l24, l14), go_string(l28, l6), 1);
                                                           if (g1 === 1) {
                                                             l2147483645 = 41;
                                                             break block_55;
@@ -40120,7 +39956,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l8 = ((l0 + 850) | 0);
                                                         }
                                                         if ((g1 ? l12 === 42 : 1)) {
-                                                          runtime_sliceAppend(l6, l16, l8, l11, l24, 6, 1);
+                                                          runtime_sliceAppend(go_string(l6, l16), go_string(l8, l11), l24, go_string(6, 1));
                                                           if (g1 === 1) {
                                                             l2147483645 = 42;
                                                             break block_55;
@@ -40149,7 +39985,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l1 = ((l0 + 80) | 0);
                                                   }
                                                   if ((g1 ? l12 === 43 : 1)) {
-                                                    runtime_sliceAppend(l1, l16, l2, l14, l28, l6, 1);
+                                                    runtime_sliceAppend(go_string(l1, l16), go_string(l2, l14), go_string(l28, l6), 1);
                                                     if (g1 === 1) {
                                                       l2147483645 = 43;
                                                       break block_55;
@@ -40164,7 +40000,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l1 = ((l0 + 72) | 0);
                                                   }
                                                   if ((g1 ? l12 === 44 : 1)) {
-                                                    runtime_stringFromBytes(l1, l16, l2);
+                                                    runtime_stringFromBytes(go_string(l1, l16), l2);
                                                     if (g1 === 1) {
                                                       l2147483645 = 44;
                                                       break block_55;
@@ -40177,7 +40013,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l2 = ((l0 - -64) | 0);
                                                   }
                                                   if ((g1 ? l12 === 45 : 1)) {
-                                                    runtime_stringConcat(l2, 97732, 1, l1, l6);
+                                                    runtime_stringConcat(l2, "\"", go_string(l1, l6));
                                                     if (g1 === 1) {
                                                       l2147483645 = 45;
                                                       break block_55;
@@ -40190,7 +40026,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l2 = ((l0 + 56) | 0);
                                                   }
                                                   if ((g1 ? l12 === 46 : 1)) {
-                                                    runtime_stringConcat(l2, l1, l6, 97733, 2);
+                                                    runtime_stringConcat(go_string(l2, l1), l6, "\":");
                                                     if (g1 === 1) {
                                                       l2147483645 = 46;
                                                       break block_55;
@@ -40204,7 +40040,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l1 = ((l0 + 48) | 0);
                                                   }
                                                   if ((g1 ? l12 === 47 : 1)) {
-                                                    runtime_stringConcat(l1, 97732, 1, l20, l17);
+                                                    runtime_stringConcat(l1, "\"", go_string(l20, l17));
                                                     if (g1 === 1) {
                                                       l2147483645 = 47;
                                                       break block_55;
@@ -40217,7 +40053,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l11 = load_i32(l0, 52);
                                                   }
                                                   if ((g1 ? l12 === 48 : 1)) {
-                                                    runtime_stringConcat(l6, l1, l11, 97733, 2);
+                                                    runtime_stringConcat(go_string(l6, l1), l11, "\":");
                                                     if (g1 === 1) {
                                                       l2147483645 = 48;
                                                       break block_55;
@@ -40262,7 +40098,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l1 = ((l0 + 24) | 0);
                                                   }
                                                   if ((g1 ? l12 === 49 : 1)) {
-                                                    runtime_sliceAppend(l1, l33, l2, l34, l49, 1, 72);
+                                                    runtime_sliceAppend(go_string(l1, l33), go_string(l2, l34), l49, go_string(1, 72));
                                                     if (g1 === 1) {
                                                       l2147483645 = 49;
                                                       break block_55;
@@ -40282,7 +40118,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l2147483645 = 50;
                                                       break block_55;
                                                     }
-                                                    l1 = runtime_hashmapInterfaceGet(l54, 128608, l29, l1, 4);
+                                                    l1 = runtime_hashmapInterfaceGet(l54, go_string(128608, l29), l1, 4);
                                                   }
                                                   if ((g1 === 0)) {
                                                     l1 = (load_i32(l0, 1816) < 2 ? 1 : 0);
@@ -40341,7 +40177,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l1 = ((l0 + 8) | 0);
                                                   }
                                                   if ((g1 ? l12 === 51 : 1)) {
-                                                    runtime_sliceAppend(l1, l33, l2, l34, l49, 1, 72);
+                                                    runtime_sliceAppend(go_string(l1, l33), go_string(l2, l34), l49, go_string(1, 72));
                                                     if (g1 === 1) {
                                                       l2147483645 = 51;
                                                       break block_55;
@@ -40373,7 +40209,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                         break;
                                       }
                                       if ((g1 ? l12 === 52 : 1)) {
-                                        slices_SortFunc_encoding_json_field_encoding_json_field(l33, l34, 8);
+                                        slices_SortFunc_encoding_json_field_encoding_json_field(go_string(l33, l34), 8);
                                         if (g1 === 1) {
                                           l2147483645 = 52;
                                           break block_55;
@@ -40451,7 +40287,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                 loop_299: while (true) {
                                                   if ((((l2 + l21) | 0) === 0)) {
                                                     l2 = l50;
-                                                    l2147483653 = l34;
+                                                    l2147483650 = l34;
                                                     break block_298;
                                                   }
                                                   l8 = load_i32(l1, 4);
@@ -40474,16 +40310,16 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   store_i32(l0, l17, 1500);
                                                   store_i32(l0, l6, 1496);
                                                   store_i32(l0, l16, 1492);
-                                                  if ((runtime_stringEqual(l16, l8, l19, l31) & 1)) {
+                                                  if ((runtime_stringEqual(go_string(l16, l8), go_string(l19, l31)) & 1)) {
                                                     l1 = ((l1 + 72) | 0);
                                                     l2 = ((l2 + 1) | 0);
                                                     continue loop_299;
                                                   }
                                                   break;
                                                 }
-                                                l2147483653 = ((l2 + l20) | 0);
+                                                l2147483650 = ((l2 + l20) | 0);
                                               }
-                                              l1 = l2147483653;
+                                              l1 = l2147483650;
                                               l9 = (l2 !== 1 ? 1 : 0);
                                               if ((l9 === 0)) {
                                                 store_i32(l57, 0);
@@ -40540,7 +40376,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l23 = 0;
                                                     l28 = 0;
                                                     l11 = 0;
-                                                    l2147483654 = 0;
+                                                    l2147483651 = 0;
                                                     break block_303;
                                                   }
                                                   if ((l2 === 0)) break block_63;
@@ -40573,7 +40409,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                 store_i32(l0, l8, 1592);
                                                 store_i32(l0, l16, 1588);
                                                 store_i32(l0, l2, 1584);
-                                                l2147483654 = 1;
+                                                l2147483651 = 1;
                                               }
                                               store_i32(l0, l2, 1620);
                                               store_i32(l0, l16, 1624);
@@ -40584,7 +40420,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                               store_i32(l0, l14, 1644);
                                               store_i32(l0, l28, 1648);
                                               store_i32(l0, l11, 1652);
-                                              l15 = (((l2147483654 & 1) === 0) ? 1 : 0);
+                                              l15 = (((l2147483651 & 1) === 0) ? 1 : 0);
                                               if (l15) break block_295;
                                               store_i64(l41, 0n);
                                               store_i32(((l41 + 24) | 0), 0);
@@ -40614,7 +40450,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                               break block_296;
                                             }
                                             if ((g1 ? l12 === 53 : 1)) {
-                                              slices_SortFunc_encoding_json_field_encoding_json_field(l30, l26, 9);
+                                              slices_SortFunc_encoding_json_field_encoding_json_field(go_string(l30, l26), 9);
                                               if (g1 === 1) {
                                                 l2147483645 = 53;
                                                 break block_55;
@@ -40661,7 +40497,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                         l2147483645 = 54;
                                                         break block_55;
                                                       }
-                                                      l25 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(l2, l1);
+                                                      l25 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Kind$invoke(go_string(l2, l1));
                                                     }
                                                     l25 = (g1 ? l25 : ((l25 & 255) !== 21 ? 1 : 0));
                                                     if ((l25 ? g1 : 1)) {
@@ -40670,15 +40506,13 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                           l2147483645 = 55;
                                                           break block_55;
                                                         }
-                                                        l2 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(l2, l1);
+                                                        l2 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(l2, l1));
                                                       }
                                                       if (g1) {
-                                                        l2147483655 = l1;
                                                       } else {
                                                         store_i32(l0, l2, 1668);
-                                                        l2147483655 = 128608;
                                                       }
-                                                      l1 = l2147483655;
+                                                      l1 = (g1 ? l1 : 128608);
                                                     }
                                                     if ((g1 === 0)) {
                                                       store_i32(l0, l1, 1672);
@@ -40686,7 +40520,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                       l25 = ((l0 + 400) | 0);
                                                     }
                                                     if ((g1 ? l12 === 56 : 1)) {
-                                                      interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(l25, l2, l17, l1);
+                                                      interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Field$invoke(go_string(l25, l2), go_string(l17, l1));
                                                       if (g1 === 1) {
                                                         l2147483645 = 56;
                                                         break block_55;
@@ -40712,7 +40546,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                 }
                                                 l6 = (g1 ? l6 : ((l0 + 392) | 0));
                                                 if ((g1 ? l12 === 57 : 1)) {
-                                                  encoding_json_typeEncoder(l6, l1, l2);
+                                                  encoding_json_typeEncoder(go_string(l6, l1), l2);
                                                   if (g1 === 1) {
                                                     l2147483645 = 57;
                                                     break block_55;
@@ -40736,7 +40570,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                 l2147483645 = 58;
                                                 break block_55;
                                               }
-                                              l20 = runtime_hashmapMake(4, l26, 1);
+                                              l20 = runtime_hashmapMake(go_string(4, l26), 1);
                                             }
                                             if ((g1 === 0)) {
                                               store_i32(l0, l20, 1720);
@@ -40747,7 +40581,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                 l2147483645 = 59;
                                                 break block_55;
                                               }
-                                              l9 = runtime_hashmapMake(4, l26, 1);
+                                              l9 = runtime_hashmapMake(go_string(4, l26), 1);
                                             }
                                             if ((g1 === 0)) {
                                               store_i32(l0, l9, 1724);
@@ -40787,7 +40621,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   l10 = ((l0 + 1816) | 0);
                                                 }
                                                 if ((g1 ? l12 === 60 : 1)) {
-                                                  runtime_hashmapStringSet(l20, l16, l8, l10);
+                                                  runtime_hashmapStringSet(go_string(l20, l16), go_string(l8, l10));
                                                   if (g1 === 1) {
                                                     l2147483645 = 60;
                                                     break block_55;
@@ -40798,7 +40632,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   l10 = ((l0 + 384) | 0);
                                                 }
                                                 if ((g1 ? l12 === 61 : 1)) {
-                                                  encoding_json_foldName(l10, l2, l11, l14);
+                                                  encoding_json_foldName(go_string(l10, l2), go_string(l11, l14));
                                                   if (g1 === 1) {
                                                     l2147483645 = 61;
                                                     break block_55;
@@ -40811,7 +40645,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                   l10 = ((l0 + 376) | 0);
                                                 }
                                                 if ((g1 ? l12 === 62 : 1)) {
-                                                  runtime_stringFromBytes(l10, l16, l45);
+                                                  runtime_stringFromBytes(go_string(l10, l16), l45);
                                                   if (g1 === 1) {
                                                     l2147483645 = 62;
                                                     break block_55;
@@ -40828,14 +40662,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l2147483645 = 63;
                                                     break block_55;
                                                   }
-                                                  l16 = runtime_alloc(8, 69);
+                                                  l16 = runtime_alloc(go_string(8, 69));
                                                 }
                                                 if ((g1 === 0)) {
                                                   store_i32(l16, l17, 4);
                                                   store_i32(l16, l8);
                                                   store_i32(l0, l16, 1780);
                                                   store_i32(l0, l16, 1788);
-                                                  l45 = runtime_hashmapStringHash(l8, l17, load_i32(l9, 4));
+                                                  l45 = runtime_hashmapStringHash(go_string(l8, l17), load_i32(l9, 4));
                                                   l10 = ((l0 + 1816) | 0);
                                                 }
                                                 if ((g1 ? l12 === 64 : 1)) {
@@ -40843,7 +40677,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l2147483645 = 64;
                                                     break block_55;
                                                   }
-                                                  l10 = runtime_hashmapGet(l9, l16, l10, l45);
+                                                  l10 = runtime_hashmapGet(go_string(l9, l16), go_string(l10, l45));
                                                 }
                                                 l10 = (g1 ? l10 : (l10 & 1));
                                                 block_339: {
@@ -40853,7 +40687,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l10 = ((l0 + 368) | 0);
                                                   }
                                                   if ((g1 ? l12 === 65 : 1)) {
-                                                    encoding_json_foldName(l10, l2, l11, l14);
+                                                    encoding_json_foldName(go_string(l10, l2), go_string(l11, l14));
                                                     if (g1 === 1) {
                                                       l2147483645 = 65;
                                                       break block_55;
@@ -40866,7 +40700,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l10 = ((l0 + 360) | 0);
                                                   }
                                                   if ((g1 ? l12 === 66 : 1)) {
-                                                    runtime_stringFromBytes(l10, l2, l45);
+                                                    runtime_stringFromBytes(go_string(l10, l2), l45);
                                                     if (g1 === 1) {
                                                       l2147483645 = 66;
                                                       break block_55;
@@ -40880,7 +40714,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                                     l10 = ((l0 + 1816) | 0);
                                                   }
                                                   if ((g1 ? l12 === 67 : 1)) {
-                                                    runtime_hashmapStringSet(l9, l2, l16, l10);
+                                                    runtime_hashmapStringSet(go_string(l9, l2), go_string(l16, l10));
                                                     if (g1 === 1) {
                                                       l2147483645 = 67;
                                                       break block_55;
@@ -40909,7 +40743,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                                           }
                                           l9 = (g1 ? l9 : ((l0 + 344) | 0));
                                           if ((g1 ? l12 === 68 : 1)) {
-                                            runtime_sliceAppend(l9, l30, l2, l26, l46, 1, 72);
+                                            runtime_sliceAppend(go_string(l9, l30), go_string(l2, l26), l46, go_string(1, 72));
                                             if (g1 === 1) {
                                               l2147483645 = 68;
                                               break block_55;
@@ -41048,7 +40882,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                               l7 = ((l5 + 8) | 0);
                             }
                             if ((g1 ? l18 === 15 : 1)) {
-                              _sync_Map_LoadOrStore(l7, 138656, p1, p2, 97736, l4);
+                              _sync_Map_LoadOrStore(l7, go_string(138656, p1), p2, go_string(97736, l4));
                               if (g1 === 1) {
                                 l2147483644 = 15;
                                 break block_1;
@@ -41068,23 +40902,21 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                             l68 = 0;
                             l22 = 0;
                             l53 = 0;
-                            l2147483656 = 0;
+                            l2147483652 = 0;
                             break block_47;
                           }
                         }
                         if (g1) {
-                          l2147483657 = l7;
                         } else {
                           l53 = load_i32(l4, 16);
                           l22 = load_i32(l4, 12);
                           l68 = load_i32(l4, 8);
                           l67 = load_i32(l4, 4);
                           l58 = 1;
-                          l2147483657 = load_i32(l4);
                         }
-                        l2147483656 = l2147483657;
+                        l2147483652 = (g1 ? l7 : load_i32(l4));
                       }
-                      l7 = l2147483656;
+                      l7 = l2147483652;
                       if ((g1 ? l18 === 16 : 1)) {
                         runtime_interfaceTypeAssert(l58);
                         if (g1 === 1) {
@@ -41125,7 +40957,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                         l2147483644 = 18;
                         break block_1;
                       }
-                      l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Key$invoke(p2, p1);
+                      l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Key$invoke(go_string(p2, p1));
                     }
                     if ((g1 === 0)) {
                       store_i32(l5, l4, 280);
@@ -41148,14 +40980,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                             l2147483644 = 19;
                             break block_1;
                           }
-                          l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(p2, p1);
+                          l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(p2, p1));
                         }
                         if ((g1 === 0)) {
                           store_i32(l5, l4, 284);
                           l7 = ((l5 - -64) | 0);
                         }
                         if ((g1 ? l18 === 20 : 1)) {
-                          encoding_json_typeEncoder(l7, 128608, l4);
+                          encoding_json_typeEncoder(l7, go_string(128608, l4));
                           if (g1 === 1) {
                             l2147483644 = 20;
                             break block_1;
@@ -41190,7 +41022,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                           l2147483644 = 22;
                           break block_1;
                         }
-                        l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Key$invoke(p2, p1);
+                        l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Key$invoke(go_string(p2, p1));
                       }
                       if ((g1 === 0)) {
                         store_i32(l5, l4, 308);
@@ -41212,7 +41044,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                       l2147483644 = 23;
                       break block_1;
                     }
-                    l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(p2, p1);
+                    l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(p2, p1));
                   }
                   if ((g1 === 0)) {
                     store_i32(l5, l4, 328);
@@ -41232,7 +41064,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                           l2147483644 = 24;
                           break block_1;
                         }
-                        l7 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(p2, p1);
+                        l7 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(p2, p1));
                       }
                       if ((g1 === 0)) {
                         store_i32(l5, l7, 332);
@@ -41243,18 +41075,18 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                           l2147483644 = 25;
                           break block_1;
                         }
-                        l7 = reflect_PointerTo(128608, l7);
+                        l7 = reflect_PointerTo(go_string(128608, l7));
                       }
                       if ((g1 === 0)) {
                         store_i32(l5, l7, 336);
                         l22 = 96100;
-                        l2147483658 = 20;
+                        l2147483653 = 20;
                         break block_382;
                       }
                     }
                     l4 = (g1 ? l4 : ((l5 + 72) | 0));
                     if ((g1 ? l18 === 26 : 1)) {
-                      encoding_json_newArrayEncoder(l4, p1, p2);
+                      encoding_json_newArrayEncoder(go_string(l4, p1), p2);
                       if (g1 === 1) {
                         l2147483644 = 26;
                         break block_1;
@@ -41273,17 +41105,15 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                       l4 = runtime_alloc(8, 0);
                     }
                     if (g1) {
-                      l2147483659 = l7;
                     } else {
                       store_i32(l4, 21, 4);
                       store_i32(l4, l7);
                       store_i32(l5, l4, 348);
                       l22 = 22;
-                      l2147483659 = 22;
                     }
-                    l2147483658 = l2147483659;
+                    l2147483653 = (g1 ? l7 : 22);
                   }
-                  l7 = l2147483658;
+                  l7 = l2147483653;
                   if ((g1 === 0)) {
                     store_i32(l5, l4, 360);
                     store_i32(l5, l4, 352);
@@ -41294,7 +41124,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                 }
                 l4 = (g1 ? l4 : ((l5 + 80) | 0));
                 if ((g1 ? l18 === 28 : 1)) {
-                  encoding_json_newArrayEncoder(l4, p1, p2);
+                  encoding_json_newArrayEncoder(go_string(l4, p1), p2);
                   if (g1 === 1) {
                     l2147483644 = 28;
                     break block_1;
@@ -41312,14 +41142,14 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                   l2147483644 = 29;
                   break block_1;
                 }
-                l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(p2, p1);
+                l4 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(p2, p1));
               }
               if ((g1 === 0)) {
                 store_i32(l5, l4, 372);
                 l7 = ((l5 + 88) | 0);
               }
               if ((g1 ? l18 === 30 : 1)) {
-                encoding_json_typeEncoder(l7, 128608, l4);
+                encoding_json_typeEncoder(l7, go_string(128608, l4));
                 if (g1 === 1) {
                   l2147483644 = 30;
                   break block_1;
@@ -41394,7 +41224,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
                 l2147483644 = 34;
                 break block_1;
               }
-              l7 = runtime_hashmapMake(8, 8, 2);
+              l7 = runtime_hashmapMake(go_string(8, 8), 2);
             }
             if ((g1 === 0)) {
               store_i32(138652, l7);
@@ -41408,7 +41238,7 @@ function encoding_json_typeEncoder(p0, p1, p2) {
             l4 = ((l5 + 144) | 0);
           }
           if ((g1 ? l18 === 35 : 1)) {
-            runtime_hashmapInterfaceSet(l7, p1, p2, l4);
+            runtime_hashmapInterfaceSet(go_string(l7, p1), go_string(p2, l4));
             if (g1 === 1) {
               l2147483644 = 35;
               break block_1;
@@ -41498,28 +41328,26 @@ function slices_Compare_int_int(p0, p1, p2, p3) {
     block_4: {
       if ((g1 === 0)) {
         block_6: {
-          block_7: {
-            loop_8: while (true) {
-              if (l1 === l5) break block_7;
-              l0 = (p1 === l1 ? 1 : 0);
-              if (l0) break block_6;
-              if (l1 === l4) {
-                l0 = 1;
-                break block_4;
-              }
-              l1 = ((l1 + 1) | 0);
-              l0 = (l6 === l1 ? 1 : 0);
-              if (l0) break block_6;
-              l0 = load_i32(p0);
-              p0 = ((p0 + 4) | 0);
-              l3 = load_i32(p2);
-              p2 = ((p2 + 4) | 0);
-              l0 = ((l0 < l3 ? 1 : 0) ? -1 : (l0 > l3 ? 1 : 0));
-              if ((l0 === 0)) continue loop_8;
-              break;
+          do {
+            if (l1 === l5) {
+              return ((p1 < p3 ? 1 : 0) ? -1 : 0);
             }
-            break block_4;
-          }
+            l0 = (p1 === l1 ? 1 : 0);
+            if (l0) break block_6;
+            if (l1 === l4) {
+              l0 = 1;
+              break block_4;
+            }
+            l1 = ((l1 + 1) | 0);
+            l0 = (l6 === l1 ? 1 : 0);
+            if (l0) break block_6;
+            l0 = load_i32(p0);
+            p0 = ((p0 + 4) | 0);
+            l3 = load_i32(p2);
+            p2 = ((p2 + 4) | 0);
+            l0 = ((l0 < l3 ? 1 : 0) ? -1 : (l0 > l3 ? 1 : 0));
+          } while ((l0 === 0));
+          break block_4;
           return ((p1 < p3 ? 1 : 0) ? -1 : 0);
         }
       }
@@ -41646,7 +41474,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
       l1 = ((g0 - 1824) | 0);
       g0 = l1;
       store_i32(l1, 450, 20);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 24) | 0), ((l1 + 24) | 0) + 1800);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 24) | 0), 0, 1800), go_slice(((l1 + 24) | 0), 0, 1800) + );
       l72 = load_i32(138276);
       store_i32(l1, l72, 16);
       l4 = ((l1 + 16) | 0);
@@ -42007,7 +41835,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
                           p4 = ((l22 - 1) | 0);
                         }
                         if ((g1 ? l46 === 1 : 1)) {
-                          slices_siftDownCmpFunc_encoding_json_field(p0, p1, 0, p4, p2, p5);
+                          slices_siftDownCmpFunc_encoding_json_field(go_string(p0, p1), 0, go_string(p4, p2), p5);
                           if (g1 === 1) {
                             l2147483641 = 1;
                             break block_1;
@@ -42021,7 +41849,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
                       }
                     }
                     if ((g1 ? l46 === 2 : 1)) {
-                      slices_siftDownCmpFunc_encoding_json_field(p0, p1, l0, l48, p2, p5);
+                      slices_siftDownCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l0, l48), go_string(p2, p5));
                       if (g1 === 1) {
                         l2147483641 = 2;
                         break block_1;
@@ -42172,7 +42000,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 3;
                       break block_1;
                     }
-                    l2 = slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, l2, l5, p5);
+                    l2 = slices_medianAdjacentCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l2, l5), p5);
                   }
                   l5 = (g1 ? l5 : ((l1 + 12) | 0));
                   if ((g1 ? l46 === 4 : 1)) {
@@ -42180,7 +42008,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 4;
                       break block_1;
                     }
-                    l0 = slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, l0, l5, p5);
+                    l0 = slices_medianAdjacentCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l0, l5), p5);
                   }
                   l5 = (g1 ? l5 : ((l1 + 12) | 0));
                   if ((g1 ? l46 === 5 : 1)) {
@@ -42188,7 +42016,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
                       l2147483641 = 5;
                       break block_1;
                     }
-                    l4 = slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, l4, l5, p5);
+                    l4 = slices_medianAdjacentCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l4, l5), p5);
                   }
                 }
                 l5 = (g1 ? l5 : ((l1 + 12) | 0));
@@ -42197,7 +42025,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
                     l2147483641 = 6;
                     break block_1;
                   }
-                  l57 = slices_medianCmpFunc_encoding_json_field(p0, p1, l2, l0, l4, l5, p5);
+                  l57 = slices_medianCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l2, l0), go_string(l4, l5), p5);
                 }
                 if ((g1 === 0)) {
                   block_44: {
@@ -44220,7 +44048,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
           }
           if ((l7 ? g1 : 1)) {
             if ((g1 ? l46 === 19 : 1)) {
-              slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, l4, p4, p5);
+              slices_pdqsortCmpFunc_encoding_json_field(go_string(p0, p1), go_string(p2, l4), go_string(p4, p5));
               if (g1 === 1) {
                 l2147483641 = 19;
                 break block_1;
@@ -44234,7 +44062,7 @@ function slices_pdqsortCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5) {
           }
           l5 = (g1 ? l5 : ((l4 + 1) | 0));
           if ((g1 ? l46 === 20 : 1)) {
-            slices_pdqsortCmpFunc_encoding_json_field(p0, p1, l5, p3, p4, p5);
+            slices_pdqsortCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l5, p3), go_string(p4, p5));
             if (g1 === 1) {
               l2147483641 = 20;
               break block_1;
@@ -44395,7 +44223,7 @@ function encoding_json_typeEncoder$1(p0, p1, p2, p3, p4, p5, p6) {
             l3 = ((l3 + 4) | 0);
           }
           if (((g1 ? l0 : 0) === 0)) {
-            _internal_task_Stack_Push(l3, l4);
+            _internal_task_Stack_Push(go_string(l3, l4));
             if (g1 === 1) {
               l2147483640 = 0;
               break block_1;
@@ -44462,7 +44290,7 @@ function encoding_json_typeEncoder$1(p0, p1, p2, p3, p4, p5, p6) {
 
 // encoding/json.boolEncoder
 function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483640, l2147483641, l2147483642;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483640, l2147483641;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 44) | 0));
     p1 = load_i32(g2);
@@ -44502,7 +44330,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p6 = ((p5 + 72) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        _bytes_Buffer_AvailableBuffer(p6, p0);
+        _bytes_Buffer_AvailableBuffer(go_string(p6, p0));
         if (g1 === 1) {
           l2147483640 = 0;
           break block_1;
@@ -44516,7 +44344,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
         l2 = ((p5 + 56) | 0);
       }
       if ((g1 ? l1 === 1 : 1)) {
-        encoding_json_mayAppendQuote(l2, p6, l3, l5, p4);
+        encoding_json_mayAppendQuote(go_string(l2, p6), go_string(l3, l5), p4);
         if (g1 === 1) {
           l2147483640 = 1;
           break block_1;
@@ -44533,7 +44361,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 2;
           break block_1;
         }
-        p1 = _reflect_Value_Bool(p1, p2, p3);
+        p1 = _reflect_Value_Bool(go_string(p1, p2), p3);
       }
       p1 = (g1 ? p1 : (((p1 & 1) === 0) ? 1 : 0));
       block_11: {
@@ -44543,7 +44371,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
             p1 = ((p5 + 24) | 0);
           }
           if ((g1 ? l1 === 3 : 1)) {
-            runtime_sliceAppend(p1, p6, 95880, l3, l2, 4, 1);
+            runtime_sliceAppend(go_string(p1, p6), go_string(95880, l3), l2, go_string(4, 1));
             if (g1 === 1) {
               l2147483640 = 3;
               break block_1;
@@ -44558,20 +44386,18 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
         p1 = (g1 ? p1 : ((p5 + 40) | 0));
         if ((g1 ? l1 === 4 : 1)) {
-          runtime_sliceAppend(p1, p6, 95884, l3, l2, 5, 1);
+          runtime_sliceAppend(go_string(p1, p6), go_string(95884, l3), l2, go_string(5, 1));
           if (g1 === 1) {
             l2147483640 = 4;
             break block_1;
           }
         }
         if (g1) {
-          l2147483642 = p1;
         } else {
           p2 = load_i32(p5, 48);
           p3 = load_i32(p5, 40);
-          l2147483642 = load_i32(p5, 44);
         }
-        l2147483641 = l2147483642;
+        l2147483641 = (g1 ? p1 : load_i32(p5, 44));
       }
       p1 = l2147483641;
       if ((g1 === 0)) {
@@ -44580,7 +44406,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p6 = ((p5 + 8) | 0);
       }
       if ((g1 ? l1 === 5 : 1)) {
-        encoding_json_mayAppendQuote(p6, p3, p1, p2, p4);
+        encoding_json_mayAppendQuote(go_string(p6, p3), go_string(p1, p2), p4);
         if (g1 === 1) {
           l2147483640 = 5;
           break block_1;
@@ -44592,7 +44418,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p1 = load_i32(p5, 12);
       }
       if ((g1 ? l1 === 6 : 1)) {
-        _bytes_Buffer_Write(p5, p0, p3, p1);
+        _bytes_Buffer_Write(go_string(p5, p0), go_string(p3, p1));
         if (g1 === 1) {
           l2147483640 = 6;
           break block_1;
@@ -44637,7 +44463,7 @@ function encoding_json_boolEncoder(p0, p1, p2, p3, p4, p5, p6) {
 
 // encoding/json.intEncoder
 function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l6 = 0n, l2147483640, l2147483641, l2147483642, l2147483643;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l6 = 0n, l2147483640, l2147483641, l2147483642;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 52) | 0));
     l1 = load_i32(g2);
@@ -44663,7 +44489,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
       p6 = ((g0 - 144) | 0);
       g0 = p6;
       store_i32(p6, 9, 100);
-      new Uint8Array(memory.buffer).fill(0, ((p6 + 104) | 0), ((p6 + 104) | 0) + 36);
+      new Uint8Array(memory.buffer).fill(, go_slice(((p6 + 104) | 0), 0, 36), go_slice(((p6 + 104) | 0), 0, 36) + );
       l4 = load_i32(138276);
       store_i32(p6, l4, 96);
       store_i32(138276, ((p6 + 96) | 0));
@@ -44675,7 +44501,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p5 = ((p6 + 80) | 0);
       }
       if (((g1 ? l0 : 0) === 0)) {
-        _bytes_Buffer_AvailableBuffer(p5, p0);
+        _bytes_Buffer_AvailableBuffer(go_string(p5, p0));
         if (g1 === 1) {
           l2147483640 = 0;
           break block_1;
@@ -44689,7 +44515,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
         l1 = load_i32(p6, 88);
       }
       if ((g1 ? l0 === 1 : 1)) {
-        encoding_json_mayAppendQuote(l3, p5, l2, l1, p4);
+        encoding_json_mayAppendQuote(go_string(l3, p5), go_string(l2, l1), p4);
         if (g1 === 1) {
           l2147483640 = 1;
           break block_1;
@@ -44706,7 +44532,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 2;
           break block_1;
         }
-        l5 = _reflect_Value_Int(p1, p2, p3);
+        l5 = _reflect_Value_Int(go_string(p1, p2), p3);
       }
       p1 = (g1 ? p1 : (BigInt.asUintN(64, BigInt(l5)) > BigInt.asUintN(64, BigInt(99n)) ? 1 : 0));
       block_11: {
@@ -44722,7 +44548,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
             p1 = ((p6 + 24) | 0);
           }
           if ((g1 ? l0 === 3 : 1)) {
-            runtime_sliceAppend(p1, p5, p2, l2, l3, p3, 1);
+            runtime_sliceAppend(go_string(p1, p5), go_string(p2, l2), go_string(l3, p3), 1);
             if (g1 === 1) {
               l2147483640 = 3;
               break block_1;
@@ -44741,22 +44567,20 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p1 = ((p6 + 40) | 0);
         }
         if ((g1 ? l0 === 4 : 1)) {
-          strconv_formatBits(p1, p5, l2, l3, l5, 10, p2, 1);
+          strconv_formatBits(go_string(p1, p5), go_string(l2, l3), l5, go_string(10, p2), 1);
           if (g1 === 1) {
             l2147483640 = 4;
             break block_1;
           }
         }
         if (g1) {
-          l2147483643 = p1;
         } else {
           p3 = load_i32(p6, 40);
           store_i32(p6, p3, 116);
           p2 = load_i32(p6, 48);
           p5 = load_i32(p6, 52);
-          l2147483643 = load_i32(p6, 44);
         }
-        l2147483642 = l2147483643;
+        l2147483642 = (g1 ? p1 : load_i32(p6, 44));
       }
       p1 = l2147483642;
       if ((g1 === 0)) {
@@ -44765,7 +44589,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p5 = ((p6 + 8) | 0);
       }
       if ((g1 ? l0 === 5 : 1)) {
-        encoding_json_mayAppendQuote(p5, p3, p1, p2, p4);
+        encoding_json_mayAppendQuote(go_string(p5, p3), go_string(p1, p2), p4);
         if (g1 === 1) {
           l2147483640 = 5;
           break block_1;
@@ -44777,7 +44601,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p1 = load_i32(p6, 12);
       }
       if ((g1 ? l0 === 6 : 1)) {
-        _bytes_Buffer_Write(p6, p0, p4, p1);
+        _bytes_Buffer_Write(go_string(p6, p0), go_string(p4, p1));
         if (g1 === 1) {
           l2147483640 = 6;
           break block_1;
@@ -44823,7 +44647,7 @@ function encoding_json_intEncoder(p0, p1, p2, p3, p4, p5, p6) {
 
 // encoding/json.uintEncoder
 function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l6 = 0n, l2147483640, l2147483641, l2147483642, l2147483643;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0n, l6 = 0n, l2147483640, l2147483641, l2147483642;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 52) | 0));
     l1 = load_i32(g2);
@@ -44849,7 +44673,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
       p6 = ((g0 - 144) | 0);
       g0 = p6;
       store_i32(p6, 9, 100);
-      new Uint8Array(memory.buffer).fill(0, ((p6 + 104) | 0), ((p6 + 104) | 0) + 36);
+      new Uint8Array(memory.buffer).fill(, go_slice(((p6 + 104) | 0), 0, 36), go_slice(((p6 + 104) | 0), 0, 36) + );
       l4 = load_i32(138276);
       store_i32(p6, l4, 96);
       store_i32(138276, ((p6 + 96) | 0));
@@ -44861,7 +44685,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p5 = ((p6 + 80) | 0);
       }
       if (((g1 ? l0 : 0) === 0)) {
-        _bytes_Buffer_AvailableBuffer(p5, p0);
+        _bytes_Buffer_AvailableBuffer(go_string(p5, p0));
         if (g1 === 1) {
           l2147483640 = 0;
           break block_1;
@@ -44875,7 +44699,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
         l1 = load_i32(p6, 88);
       }
       if ((g1 ? l0 === 1 : 1)) {
-        encoding_json_mayAppendQuote(l3, p5, l2, l1, p4);
+        encoding_json_mayAppendQuote(go_string(l3, p5), go_string(l2, l1), p4);
         if (g1 === 1) {
           l2147483640 = 1;
           break block_1;
@@ -44892,7 +44716,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 2;
           break block_1;
         }
-        l5 = _reflect_Value_Uint(p1, p2, p3);
+        l5 = _reflect_Value_Uint(go_string(p1, p2), p3);
       }
       p1 = (g1 ? p1 : (BigInt.asUintN(64, BigInt(l5)) > BigInt.asUintN(64, BigInt(99n)) ? 1 : 0));
       block_11: {
@@ -44908,7 +44732,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
             p1 = ((p6 + 24) | 0);
           }
           if ((g1 ? l0 === 3 : 1)) {
-            runtime_sliceAppend(p1, p5, p2, l2, l3, p3, 1);
+            runtime_sliceAppend(go_string(p1, p5), go_string(p2, l2), go_string(l3, p3), 1);
             if (g1 === 1) {
               l2147483640 = 3;
               break block_1;
@@ -44924,22 +44748,20 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
         p1 = (g1 ? p1 : ((p6 + 40) | 0));
         if ((g1 ? l0 === 4 : 1)) {
-          strconv_formatBits(p1, p5, l2, l3, l5, 10, 0, 1);
+          strconv_formatBits(go_string(p1, p5), go_string(l2, l3), l5, go_slice(10, 0, 1));
           if (g1 === 1) {
             l2147483640 = 4;
             break block_1;
           }
         }
         if (g1) {
-          l2147483643 = p1;
         } else {
           p3 = load_i32(p6, 40);
           store_i32(p6, p3, 116);
           p2 = load_i32(p6, 48);
           p5 = load_i32(p6, 52);
-          l2147483643 = load_i32(p6, 44);
         }
-        l2147483642 = l2147483643;
+        l2147483642 = (g1 ? p1 : load_i32(p6, 44));
       }
       p1 = l2147483642;
       if ((g1 === 0)) {
@@ -44948,7 +44770,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p5 = ((p6 + 8) | 0);
       }
       if ((g1 ? l0 === 5 : 1)) {
-        encoding_json_mayAppendQuote(p5, p3, p1, p2, p4);
+        encoding_json_mayAppendQuote(go_string(p5, p3), go_string(p1, p2), p4);
         if (g1 === 1) {
           l2147483640 = 5;
           break block_1;
@@ -44960,7 +44782,7 @@ function encoding_json_uintEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p1 = load_i32(p6, 12);
       }
       if ((g1 ? l0 === 6 : 1)) {
-        _bytes_Buffer_Write(p6, p0, p4, p1);
+        _bytes_Buffer_Write(go_string(p6, p0), go_string(p4, p1));
         if (g1 === 1) {
           l2147483640 = 6;
           break block_1;
@@ -45035,7 +44857,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 640) | 0);
       g0 = l0;
       store_i32(l0, 38, 484);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 492) | 0), ((l0 + 492) | 0) + 148);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 492) | 0), 0, 148), go_slice(((l0 + 492) | 0), 0, 148) + );
       store_i32(l0, p1, 488);
       l25 = load_i32(138276);
       store_i32(l0, l25, 480);
@@ -45047,7 +44869,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p3 = runtime_interfaceEqual(128608, p1, 128608, 128036);
+      p3 = runtime_interfaceEqual(go_string(128608, p1), 128608, 128036);
     }
     p3 = (g1 ? p3 : (((p3 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -45062,7 +44884,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     p3 = ((l0 + 88) | 0);
                   }
                   if ((g1 ? l4 === 1 : 1)) {
-                    _reflect_Value_String(p3, p1, p2);
+                    _reflect_Value_String(go_string(p3, p1), p2);
                     if (g1 === 1) {
                       l2147483640 = 1;
                       break block_1;
@@ -45102,16 +44924,14 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                           p5 = (p2 >> 31);
                           p6 = (p5 & p2);
                           p2 = ((p1 + 1) | 0);
-                          loop_20: while (true) {
+                          do {
                             p3 = ((p3 - 1) | 0);
                             p1 = (p3 <= 0 ? 1 : 0);
                             if (p1) break block_17;
                             p5 = ((p2 + 1) | 0);
                             l2147483642 = p2;
                             p2 = p5;
-                            if (u32(((load_u8(l2147483642) - 48) | 0) & 255) < 10) continue loop_20;
-                            break;
-                          }
+                          } while (u32(((load_u8(l2147483642) - 48) | 0) & 255) < 10);
                           l2147483641 = ((p2 - 1) | 0);
                         }
                         p2 = l2147483641;
@@ -45206,7 +45026,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     p3 = ((l0 + 392) | 0);
                   }
                   if ((g1 ? l4 === 2 : 1)) {
-                    _reflect_Value_String(p3, p1, p2);
+                    _reflect_Value_String(go_string(p3, p1), p2);
                     if (g1 === 1) {
                       l2147483640 = 2;
                       break block_1;
@@ -45219,7 +45039,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     p2 = ((l0 + 376) | 0);
                   }
                   if ((g1 ? l4 === 3 : 1)) {
-                    encoding_json_appendString_string(p2, 0, 0, 0, p1, p3, p5);
+                    encoding_json_appendString_string(p2, 0, 0, 0, go_string(p1, p3), p5);
                     if (g1 === 1) {
                       l2147483640 = 3;
                       break block_1;
@@ -45234,7 +45054,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     p1 = ((l0 + 360) | 0);
                   }
                   if ((g1 ? l4 === 4 : 1)) {
-                    _bytes_Buffer_AvailableBuffer(p1, p0);
+                    _bytes_Buffer_AvailableBuffer(go_string(p1, p0));
                     if (g1 === 1) {
                       l2147483640 = 4;
                       break block_1;
@@ -45250,7 +45070,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     p6 = ((l0 + 344) | 0);
                   }
                   if ((g1 ? l4 === 5 : 1)) {
-                    runtime_sliceAppend(p6, p1, l2, p3, p5, 1, 1);
+                    runtime_sliceAppend(go_string(p6, p1), go_string(l2, p3), p5, go_string(1, 1));
                     if (g1 === 1) {
                       l2147483640 = 5;
                       break block_1;
@@ -45301,7 +45121,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                       p3 = ((l0 + 208) | 0);
                                     }
                                     if ((g1 ? l4 === 6 : 1)) {
-                                      runtime_sliceAppend(p3, l6, l16, l12, l8, p6, 1);
+                                      runtime_sliceAppend(go_string(p3, l6), go_string(l16, l12), go_string(l8, p6), 1);
                                       if (g1 === 1) {
                                         l2147483640 = 6;
                                         break block_1;
@@ -45349,7 +45169,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                                   p5 = ((l0 + 112) | 0);
                                                 }
                                                 if ((g1 ? l4 === 7 : 1)) {
-                                                  runtime_sliceAppend(p5, p3, l2, l6, p6, 2, 1);
+                                                  runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(2, 1));
                                                   if (g1 === 1) {
                                                     l2147483640 = 7;
                                                     break block_1;
@@ -45368,7 +45188,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                                 p5 = ((l0 + 128) | 0);
                                               }
                                               if ((g1 ? l4 === 8 : 1)) {
-                                                runtime_sliceAppend(p5, p3, l2, l6, p6, 2, 1);
+                                                runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(2, 1));
                                                 if (g1 === 1) {
                                                   l2147483640 = 8;
                                                   break block_1;
@@ -45387,7 +45207,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                               p5 = ((l0 + 144) | 0);
                                             }
                                             if ((g1 ? l4 === 9 : 1)) {
-                                              runtime_sliceAppend(p5, p3, l2, l6, p6, 2, 1);
+                                              runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(2, 1));
                                               if (g1 === 1) {
                                                 l2147483640 = 9;
                                                 break block_1;
@@ -45406,7 +45226,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                             p5 = ((l0 + 160) | 0);
                                           }
                                           if ((g1 ? l4 === 10 : 1)) {
-                                            runtime_sliceAppend(p5, p3, l2, l6, p6, 2, 1);
+                                            runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(2, 1));
                                             if (g1 === 1) {
                                               l2147483640 = 10;
                                               break block_1;
@@ -45425,7 +45245,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                           p5 = ((l0 + 176) | 0);
                                         }
                                         if ((g1 ? l4 === 11 : 1)) {
-                                          runtime_sliceAppend(p5, p3, l2, l6, p6, 2, 1);
+                                          runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(2, 1));
                                           if (g1 === 1) {
                                             l2147483640 = 11;
                                             break block_1;
@@ -45444,7 +45264,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                         p5 = ((l0 + 192) | 0);
                                       }
                                       if ((g1 ? l4 === 12 : 1)) {
-                                        runtime_sliceAppend(p5, p3, l2, l6, p6, 2, 1);
+                                        runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(2, 1));
                                         if (g1 === 1) {
                                           l2147483640 = 12;
                                           break block_1;
@@ -45465,7 +45285,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                       p5 = ((l0 + 96) | 0);
                                     }
                                     if ((g1 ? l4 === 13 : 1)) {
-                                      runtime_sliceAppend(p5, p3, l2, l6, p6, 6, 1);
+                                      runtime_sliceAppend(go_string(p5, p3), go_string(l2, l6), p6, go_string(6, 1));
                                       if (g1 === 1) {
                                         l2147483640 = 13;
                                         break block_1;
@@ -45490,7 +45310,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                     l2 = ((l0 + 296) | 0);
                                   }
                                   if ((g1 ? l4 === 14 : 1)) {
-                                    runtime_stringFromBytes(l2, p3, p5);
+                                    runtime_stringFromBytes(go_string(l2, p3), p5);
                                     if (g1 === 1) {
                                       l2147483640 = 14;
                                       break block_1;
@@ -45503,7 +45323,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                     p3 = ((l0 + 288) | 0);
                                   }
                                   if ((g1 ? l4 === 15 : 1)) {
-                                    unicode_utf8_DecodeRune(p3, p5, l2);
+                                    unicode_utf8_DecodeRune(go_string(p3, p5), l2);
                                     if (g1 === 1) {
                                       l2147483640 = 15;
                                       break block_1;
@@ -45526,7 +45346,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                       p3 = ((l0 + 240) | 0);
                                     }
                                     if ((g1 ? l4 === 16 : 1)) {
-                                      runtime_sliceAppend(p3, l6, p5, l12, l8, p6, 1);
+                                      runtime_sliceAppend(go_string(p3, l6), go_string(p5, l12), go_string(l8, p6), 1);
                                       if (g1 === 1) {
                                         l2147483640 = 16;
                                         break block_1;
@@ -45540,7 +45360,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                       p3 = ((l0 + 224) | 0);
                                     }
                                     if ((g1 ? l4 === 17 : 1)) {
-                                      runtime_sliceAppend(p3, p5, 97503, p6, l2, 6, 1);
+                                      runtime_sliceAppend(go_string(p3, p5), go_string(97503, p6), l2, go_string(6, 1));
                                       if (g1 === 1) {
                                         l2147483640 = 17;
                                         break block_1;
@@ -45566,7 +45386,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                       p6 = ((p1 - p6) | 0);
                                     }
                                     if ((g1 ? l4 === 18 : 1)) {
-                                      runtime_sliceAppend(l2, l6, l16, l12, l8, p6, 1);
+                                      runtime_sliceAppend(go_string(l2, l6), go_string(l16, l12), go_string(l8, p6), 1);
                                       if (g1 === 1) {
                                         l2147483640 = 18;
                                         break block_1;
@@ -45584,7 +45404,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                                       p3 = ((l0 + 256) | 0);
                                     }
                                     if ((g1 ? l4 === 19 : 1)) {
-                                      runtime_sliceAppend(p3, l2, p6, l6, l8, 6, 1);
+                                      runtime_sliceAppend(go_string(p3, l2), go_string(p6, l6), l8, go_string(6, 1));
                                       if (g1 === 1) {
                                         l2147483640 = 19;
                                         break block_1;
@@ -45639,7 +45459,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                             p1 = ((l0 + 328) | 0);
                           }
                           if ((g1 ? l4 === 22 : 1)) {
-                            runtime_sliceAppend(p1, l6, p3, l12, l8, p2, 1);
+                            runtime_sliceAppend(go_string(p1, l6), go_string(p3, l12), go_string(l8, p2), 1);
                             if (g1 === 1) {
                               l2147483640 = 22;
                               break block_1;
@@ -45655,7 +45475,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                             p2 = ((l0 + 312) | 0);
                           }
                           if ((g1 ? l4 === 23 : 1)) {
-                            runtime_sliceAppend(p2, p1, p3, p4, p5, 1, 1);
+                            runtime_sliceAppend(go_string(p2, p1), go_string(p3, p4), p5, go_string(1, 1));
                             if (g1 === 1) {
                               l2147483640 = 23;
                               break block_1;
@@ -45669,7 +45489,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                             p2 = ((l0 + 304) | 0);
                           }
                           if ((g1 ? l4 === 24 : 1)) {
-                            _bytes_Buffer_Write(p2, p0, p1, p3);
+                            _bytes_Buffer_Write(go_string(p2, p0), go_string(p1, p3));
                             if (g1 === 1) {
                               l2147483640 = 24;
                               break block_1;
@@ -45698,7 +45518,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                   p3 = ((l0 + 432) | 0);
                 }
                 if ((g1 ? l4 === 25 : 1)) {
-                  _bytes_Buffer_AvailableBuffer(p3, p0);
+                  _bytes_Buffer_AvailableBuffer(go_string(p3, p0));
                   if (g1 === 1) {
                     l2147483640 = 25;
                     break block_1;
@@ -45712,7 +45532,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                   p4 = load_i32(l0, 440);
                 }
                 if ((g1 ? l4 === 26 : 1)) {
-                  _reflect_Value_String(p6, p1, p2);
+                  _reflect_Value_String(go_string(p6, p1), p2);
                   if (g1 === 1) {
                     l2147483640 = 26;
                     break block_1;
@@ -45725,7 +45545,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                   p2 = ((l0 + 408) | 0);
                 }
                 if ((g1 ? l4 === 27 : 1)) {
-                  encoding_json_appendString_string(p2, p3, l2, p4, p1, p6, p5);
+                  encoding_json_appendString_string(go_string(p2, p3), go_string(l2, p4), go_string(p1, p6), p5);
                   if (g1 === 1) {
                     l2147483640 = 27;
                     break block_1;
@@ -45738,7 +45558,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                   p2 = ((l0 + 400) | 0);
                 }
                 if ((g1 ? l4 === 28 : 1)) {
-                  _bytes_Buffer_Write(p2, p0, p1, p3);
+                  _bytes_Buffer_Write(go_string(p2, p0), go_string(p1, p3));
                   if (g1 === 1) {
                     l2147483640 = 28;
                     break block_1;
@@ -45800,7 +45620,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     l3 = ((g0 - 128) | 0);
                     g0 = l3;
                     store_i32(l3, 22, 36);
-                    new Uint8Array(memory.buffer).fill(0, ((l3 + 44) | 0), ((l3 + 44) | 0) + 84);
+                    new Uint8Array(memory.buffer).fill(, go_slice(((l3 + 44) | 0), 0, 84), go_slice(((l3 + 44) | 0), 0, 84) + );
                     l23 = load_i32(138276);
                     store_i32(l3, l23, 32);
                     l1 = ((l3 + 32) | 0);
@@ -45818,7 +45638,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     store_i32(l3, l11, 40);
                   }
                   if ((g1 ? l13 === 1 : 1)) {
-                    _fmt_pp_doPrintf(l11, 97472, 31, l7);
+                    _fmt_pp_doPrintf(l11, "json: invalid number literal %q", l7);
                     if (g1 === 1) {
                       l2147483643 = 1;
                       break block_130;
@@ -45831,7 +45651,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                     l10 = ((l3 + 16) | 0);
                   }
                   if ((g1 ? l13 === 2 : 1)) {
-                    runtime_stringFromBytes(l10, l1, l9);
+                    runtime_stringFromBytes(go_string(l10, l1), l9);
                     if (g1 === 1) {
                       l2147483643 = 2;
                       break block_130;
@@ -45866,7 +45686,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                               l2147483643 = 3;
                               break block_130;
                             }
-                            l1 = runtime_alloc(8, 69);
+                            l1 = runtime_alloc(go_string(8, 69));
                           }
                           if ((g1 === 0)) {
                             store_i32(l1, l18, 4);
@@ -45882,7 +45702,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                             l2147483643 = 4;
                             break block_130;
                           }
-                          l1 = runtime_alloc(16, 841);
+                          l1 = runtime_alloc(go_string(16, 841));
                         }
                         if ((g1 === 0)) {
                           store_i32(l1, l18, 4);
@@ -45913,7 +45733,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                           l10 = ((32 - clz32(l14)) | 0);
                         }
                         if ((g1 ? l13 === 5 : 1)) {
-                          slices_pdqsortOrdered_int(l1, l14, 0, l14, l10);
+                          slices_pdqsortOrdered_int(go_string(l1, l14), 0, go_string(l14, l10));
                           if (g1 === 1) {
                             l2147483643 = 5;
                             break block_130;
@@ -45970,7 +45790,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                             l10 = ((l3 + 24) | 0);
                           }
                           if ((g1 ? l13 === 6 : 1)) {
-                            runtime_sliceAppend(l3, l17, l10, l20, l21, 1, 8);
+                            runtime_sliceAppend(go_string(l3, l17), go_string(l10, l20), l21, go_string(1, 8));
                             if (g1 === 1) {
                               l2147483643 = 6;
                               break block_130;
@@ -45992,7 +45812,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
                           l2147483643 = 7;
                           break block_130;
                         }
-                        l1 = runtime_alloc(20, 331);
+                        l1 = runtime_alloc(go_string(20, 331));
                       }
                       if ((g1 === 0)) {
                         store_i32(l1, l17, 8);
@@ -46071,7 +45891,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
               store_i32(l0, p2, 556);
             }
             if ((g1 ? l4 === 31 : 1)) {
-              _encoding_json_encodeState_error(p2, p1);
+              _encoding_json_encodeState_error(go_string(p2, p1));
               if (g1 === 1) {
                 l2147483640 = 31;
                 break block_1;
@@ -46090,7 +45910,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p1 = ((l0 + 72) | 0);
         }
         if ((g1 ? l4 === 32 : 1)) {
-          _bytes_Buffer_AvailableBuffer(p1, p0);
+          _bytes_Buffer_AvailableBuffer(go_string(p1, p0));
           if (g1 === 1) {
             l2147483640 = 32;
             break block_1;
@@ -46104,7 +45924,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p2 = ((l0 + 56) | 0);
         }
         if ((g1 ? l4 === 33 : 1)) {
-          encoding_json_mayAppendQuote(p2, p1, p3, p5, p4);
+          encoding_json_mayAppendQuote(go_string(p2, p1), go_string(p3, p5), p4);
           if (g1 === 1) {
             l2147483640 = 33;
             break block_1;
@@ -46118,7 +45938,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p2 = ((l0 + 40) | 0);
         }
         if ((g1 ? l4 === 34 : 1)) {
-          runtime_sliceAppend(p2, p1, l2, p3, p5, l15, 1);
+          runtime_sliceAppend(go_string(p2, p1), go_string(l2, p3), go_string(p5, l15), 1);
           if (g1 === 1) {
             l2147483640 = 34;
             break block_1;
@@ -46132,7 +45952,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p2 = ((l0 + 24) | 0);
         }
         if ((g1 ? l4 === 35 : 1)) {
-          encoding_json_mayAppendQuote(p2, p1, p3, p5, p4);
+          encoding_json_mayAppendQuote(go_string(p2, p1), go_string(p3, p5), p4);
           if (g1 === 1) {
             l2147483640 = 35;
             break block_1;
@@ -46145,7 +45965,7 @@ function encoding_json_stringEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p2 = ((l0 + 16) | 0);
         }
         if ((g1 ? l4 === 36 : 1)) {
-          _bytes_Buffer_Write(p2, p0, p1, p3);
+          _bytes_Buffer_Write(go_string(p2, p0), go_string(p1, p3));
           if (g1 === 1) {
             l2147483640 = 36;
             break block_1;
@@ -46229,7 +46049,7 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      l1 = _reflect_Value_IsNil(p1, p2, p3);
+      l1 = _reflect_Value_IsNil(go_string(p1, p2), p3);
     }
     l1 = (g1 ? l1 : (((l1 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -46241,7 +46061,7 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
             if (p1) break block_5;
           }
           if ((g1 ? l2 === 1 : 1)) {
-            _bytes_Buffer_Write(p6, p0, 97616, 4);
+            _bytes_Buffer_Write(go_string(p6, p0), "null");
             if (g1 === 1) {
               l2147483640 = 1;
               break block_1;
@@ -46251,7 +46071,7 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
         }
         l1 = (g1 ? l1 : ((p6 + 8) | 0));
         if ((g1 ? l2 === 2 : 1)) {
-          _reflect_Value_Elem(l1, p1, p2, p3);
+          _reflect_Value_Elem(go_string(l1, p1), go_string(p2, p3));
           if (g1 === 1) {
             l2147483640 = 2;
             break block_1;
@@ -46265,7 +46085,7 @@ function encoding_json_interfaceEncoder(p0, p1, p2, p3, p4, p5, p6) {
           p1 = load_u8(p6, 16);
         }
         if ((g1 ? l2 === 3 : 1)) {
-          _encoding_json_encodeState_reflectValue(p0, p2, p3, p1, p4, p5);
+          _encoding_json_encodeState_reflectValue(go_string(p0, p2), go_string(p3, p1), go_string(p4, p5));
           if (g1 === 1) {
             l2147483640 = 3;
             break block_1;
@@ -46344,7 +46164,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l1 = ((g0 - 128) | 0);
       g0 = l1;
       store_i32(l1, 18, 52);
-      new Uint8Array(memory.buffer).fill(0, ((l1 + 60) | 0), ((l1 + 60) | 0) + 68);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l1 + 60) | 0), 0, 68), go_slice(((l1 + 60) | 0), 0, 68) + );
       l13 = load_i32(138276);
       p4 = ((l1 + 48) | 0);
       store_i32(138276, p4);
@@ -46402,7 +46222,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                       l2147483640 = 0;
                       break block_1;
                     }
-                    l3 = _reflect_Value_IsNil(p6, p4, l7);
+                    l3 = _reflect_Value_IsNil(go_string(p6, p4), l7);
                   }
                   if ((g1 === 0)) {
                     l3 = (l3 & 1);
@@ -46410,7 +46230,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     l3 = ((l1 + 24) | 0);
                   }
                   if ((g1 ? l4 === 1 : 1)) {
-                    _reflect_Value_Elem(l3, p6, p4, l7);
+                    _reflect_Value_Elem(go_string(l3, p6), go_string(p4, l7));
                     if (g1 === 1) {
                       l2147483640 = 1;
                       break block_1;
@@ -46430,7 +46250,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   l3 = ((l1 + 8) | 0);
                 }
                 if ((g1 ? l4 === 2 : 1)) {
-                  _reflect_Value_Field(l3, p6, p4, l7, l10);
+                  _reflect_Value_Field(go_string(l3, p6), go_string(p4, l7), l10);
                   if (g1 === 1) {
                     l2147483640 = 2;
                     break block_1;
@@ -46477,7 +46297,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     l2147483640 = 3;
                     break block_1;
                   }
-                  l0 = _reflect_Value_Len(p6, p4, l7);
+                  l0 = _reflect_Value_Len(go_string(p6, p4), l7);
                 }
                 if ((g1 === 0)) {
                   l0 = ((l0 === 0) ? 1 : 0);
@@ -46490,7 +46310,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   l2147483640 = 4;
                   break block_1;
                 }
-                l0 = _reflect_Value_IsZero(p6, p4, l7);
+                l0 = _reflect_Value_IsZero(go_string(p6, p4), l7);
               }
               if ((g1 === 0)) {
                 l0 = (l0 & 1);
@@ -46502,7 +46322,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               if (l0) break block_4;
             }
             if ((g1 ? l4 === 5 : 1)) {
-              _bytes_Buffer_WriteByte(p0, l11);
+              _bytes_Buffer_WriteByte(go_string(p0, l11));
               if (g1 === 1) {
                 l2147483640 = 5;
                 break block_1;
@@ -46516,7 +46336,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l0 = load_i32((l0 ? l8 : ((l5 + 24) | 0)));
             }
             if ((g1 ? l4 === 6 : 1)) {
-              _bytes_Buffer_Write(l1, p0, l6, l0);
+              _bytes_Buffer_Write(go_string(l1, p0), go_string(l6, l0));
               if (g1 === 1) {
                 l2147483640 = 6;
                 break block_1;
@@ -46556,7 +46376,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p1 = ((l1 + 40) | 0);
             }
             if ((g1 ? l4 === 8 : 1)) {
-              _bytes_Buffer_Write(p1, p0, 97556, 2);
+              _bytes_Buffer_Write(go_string(p1, p0), "{}");
               if (g1 === 1) {
                 l2147483640 = 8;
                 break block_1;
@@ -46633,7 +46453,7 @@ function _encoding_json_structEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
 
 // (encoding/json.mapEncoder).encode$bound
 function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483640, l2147483641;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0, l11 = 0, l12 = 0, l13 = 0, l14 = 0, l15 = 0n, l16 = 0n, l2147483640;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 88) | 0));
     p1 = load_i32(g2);
@@ -46668,7 +46488,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 336) | 0);
       g0 = l0;
       store_i32(l0, 38, 172);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 176) | 0), ((l0 + 176) | 0) + 152);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 176) | 0), 0, 152), go_slice(((l0 + 176) | 0), 0, 152) + );
       l11 = load_i32(138276);
       l4 = ((l0 + 168) | 0);
       store_i32(138276, l4);
@@ -46681,7 +46501,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p6 = _reflect_Value_IsNil(p1, p2, p3);
+      p6 = _reflect_Value_IsNil(go_string(p1, p2), p3);
     }
     p6 = (g1 ? p6 : (((p6 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -46694,7 +46514,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               if (p1) break block_7;
             }
             if ((g1 ? l2 === 1 : 1)) {
-              _bytes_Buffer_Write(l0, p0, 97616, 4);
+              _bytes_Buffer_Write(go_string(l0, p0), "null");
               if (g1 === 1) {
                 l2147483640 = 1;
                 break block_1;
@@ -46716,7 +46536,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483640 = 2;
                 break block_1;
               }
-              p6 = _reflect_Value_UnsafePointer(p1, p2, p3);
+              p6 = _reflect_Value_UnsafePointer(go_string(p1, p2), p3);
             }
             if ((g1 === 0)) {
               store_i32(l0, p6, 216);
@@ -46732,7 +46552,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483640 = 3;
                 break block_1;
               }
-              l4 = runtime_hashmapInterfaceGet(l4, 103664, p6, l6, 0);
+              l4 = runtime_hashmapInterfaceGet(l4, go_string(103664, p6), l6, 0);
             }
             if ((g1 === 0)) {
               if ((l4 & 1)) break block_6;
@@ -46741,14 +46561,13 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l6 = ((l0 + 328) | 0);
             }
             if ((g1 ? l2 === 4 : 1)) {
-              runtime_hashmapInterfaceSet(l4, 103664, p6, l6);
+              runtime_hashmapInterfaceSet(l4, go_string(103664, p6), l6);
               if (g1 === 1) {
                 l2147483640 = 4;
                 break block_1;
               }
             }
             if (g1) {
-              l2147483641 = l4;
             } else {
               store_i32(((l0 + 160) | 0), p6);
               store_i32(l0, 103664, 156);
@@ -46756,9 +46575,8 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p6 = load_i32(p0, 24);
               store_i32(l0, p6, 220);
               store_i32(l0, p6, 152);
-              l2147483641 = ((l0 + 144) | 0);
             }
-            l4 = l2147483641;
+            l4 = (g1 ? l4 : ((l0 + 144) | 0));
           }
           if ((g1 ? l2 === 5 : 1)) {
             _bytes_Buffer_WriteByte(p0, 123);
@@ -46772,7 +46590,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l2147483640 = 6;
               break block_1;
             }
-            l6 = _reflect_Value_Len(p1, p2, p3);
+            l6 = _reflect_Value_Len(go_string(p1, p2), p3);
           }
           p6 = (g1 ? p6 : (u32(l6) > 214748364 ? 1 : 0));
           block_21: {
@@ -46796,7 +46614,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   l2147483640 = 8;
                   break block_1;
                 }
-                p2 = _reflect_Value_MapRange(p1, p2, p3);
+                p2 = _reflect_Value_MapRange(go_string(p1, p2), p3);
               }
               if ((g1 === 0)) {
                 store_i32(l0, p2, 232);
@@ -46820,7 +46638,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     p3 = ((l0 + 88) | 0);
                   }
                   if ((g1 ? l2 === 10 : 1)) {
-                    _reflect_MapIter_Key(p3, p2);
+                    _reflect_MapIter_Key(go_string(p3, p2));
                     if (g1 === 1) {
                       l2147483640 = 10;
                       break block_1;
@@ -46849,7 +46667,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                               l3 = ((l0 + 32) | 0);
                             }
                             if ((g1 ? l2 === 11 : 1)) {
-                              _reflect_Value_String(l3, p3, l5);
+                              _reflect_Value_String(go_string(l3, p3), l5);
                               if (g1 === 1) {
                                 l2147483640 = 11;
                                 break block_1;
@@ -46863,7 +46681,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                           }
                           l7 = (g1 ? l7 : ((l0 + 72) | 0));
                           if ((g1 ? l2 === 12 : 1)) {
-                            _reflect_Value_Interface(l7, p3, l5, l3);
+                            _reflect_Value_Interface(go_string(l7, p3), go_string(l5, l3));
                             if (g1 === 1) {
                               l2147483640 = 12;
                               break block_1;
@@ -46908,7 +46726,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                               l2147483640 = 13;
                               break block_1;
                             }
-                            l15 = _reflect_Value_Uint(p3, l5, l3);
+                            l15 = _reflect_Value_Uint(go_string(p3, l5), l3);
                           }
                           if ((g1 === 0)) {
                             if (BigInt.asUintN(64, BigInt(l15)) <= BigInt.asUintN(64, BigInt(99n))) {
@@ -46940,7 +46758,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                         }
                         p0 = (g1 ? p0 : ((l0 + 80) | 0));
                         if ((g1 ? l2 === 15 : 1)) {
-                          _reflect_Value_Interface(p0, p3, l5, l3);
+                          _reflect_Value_Interface(go_string(p0, p3), go_string(l5, l3));
                           if (g1 === 1) {
                             l2147483640 = 15;
                             break block_1;
@@ -46968,10 +46786,10 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                         l2147483640 = 17;
                         break block_1;
                       }
-                      l15 = _reflect_Value_Int(p3, l5, l3);
+                      l15 = _reflect_Value_Int(go_string(p3, l5), l3);
                     }
                     if ((g1 ? l2 === 18 : 1)) {
-                      strconv_FormatInt(l8, l15, 10);
+                      strconv_FormatInt(go_string(l8, l15), 10);
                       if (g1 === 1) {
                         l2147483640 = 18;
                         break block_1;
@@ -46992,7 +46810,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     p3 = ((l0 + 16) | 0);
                   }
                   if ((g1 ? l2 === 19 : 1)) {
-                    _reflect_MapIter_Value(p3, p2);
+                    _reflect_MapIter_Value(go_string(p3, p2));
                     if (g1 === 1) {
                       l2147483640 = 19;
                       break block_1;
@@ -47019,7 +46837,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 p1 = 0;
               }
               if ((g1 ? l2 === 20 : 1)) {
-                slices_pdqsortCmpFunc_encoding_json_reflectWithString(p6, l6, 0, l6, p2);
+                slices_pdqsortCmpFunc_encoding_json_reflectWithString(go_string(p6, l6), 0, go_string(l6, p2));
                 if (g1 === 1) {
                   l2147483640 = 20;
                   break block_1;
@@ -47050,7 +46868,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   }
                   l3 = (g1 ? l3 : ((l0 + 128) | 0));
                   if ((g1 ? l2 === 22 : 1)) {
-                    _bytes_Buffer_AvailableBuffer(l3, p0);
+                    _bytes_Buffer_AvailableBuffer(go_string(l3, p0));
                     if (g1 === 1) {
                       l2147483640 = 22;
                       break block_1;
@@ -47064,7 +46882,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     l7 = ((l0 + 112) | 0);
                   }
                   if ((g1 ? l2 === 23 : 1)) {
-                    encoding_json_appendString_string(l7, l3, l13, l14, p3, l5, p5);
+                    encoding_json_appendString_string(go_string(l7, l3), go_string(l13, l14), go_string(p3, l5), p5);
                     if (g1 === 1) {
                       l2147483640 = 23;
                       break block_1;
@@ -47077,7 +46895,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                     l3 = load_i32(l0, 116);
                   }
                   if ((g1 ? l2 === 24 : 1)) {
-                    _bytes_Buffer_Write(l5, p0, p3, l3);
+                    _bytes_Buffer_Write(go_string(l5, p0), go_string(p3, l3));
                     if (g1 === 1) {
                       l2147483640 = 24;
                       break block_1;
@@ -47136,7 +46954,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                   p0 = load_i32(l4, 8);
                 }
                 if ((g1 ? l2 === 28 : 1)) {
-                  runtime_hashmapInterfaceDelete(p0, p1, p2);
+                  runtime_hashmapInterfaceDelete(go_string(p0, p1), p2);
                   if (g1 === 1) {
                     l2147483640 = 28;
                     break block_1;
@@ -47187,7 +47005,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 32;
           break block_1;
         }
-        p6 = runtime_alloc(20, 715);
+        p6 = runtime_alloc(go_string(20, 715));
       }
       if ((g1 === 0)) {
         store_i32(l0, p1, 200);
@@ -47199,7 +47017,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         p0 = ((l0 + 8) | 0);
       }
       if ((g1 ? l2 === 33 : 1)) {
-        fmt_Sprintf(p0, p4);
+        fmt_Sprintf(go_string(p0, p4));
         if (g1 === 1) {
           l2147483640 = 33;
           break block_1;
@@ -47216,7 +47034,7 @@ function _encoding_json_mapEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         store_i32(l0, l4, 204);
       }
       if ((g1 ? l2 === 34 : 1)) {
-        _encoding_json_encodeState_error(128416, p6);
+        _encoding_json_encodeState_error(go_string(128416, p6));
         if (g1 === 1) {
           l2147483640 = 34;
           break block_1;
@@ -47289,7 +47107,7 @@ function encoding_json_unsupportedTypeEncoder(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p2 = runtime_alloc(8, 197);
+      p2 = runtime_alloc(go_string(8, 197));
     }
     if ((g1 === 0)) {
       store_i32(p2, p1, 4);
@@ -47299,7 +47117,7 @@ function encoding_json_unsupportedTypeEncoder(p0, p1, p2, p3, p4, p5, p6) {
       store_i32(p0, p2, 24);
     }
     if ((g1 ? l0 === 1 : 1)) {
-      _encoding_json_encodeState_error(128408, p2);
+      _encoding_json_encodeState_error(go_string(128408, p2));
       if (g1 === 1) {
         l2147483640 = 1;
         break block_1;
@@ -47350,7 +47168,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
       p4 = ((g0 - 160) | 0);
       g0 = p4;
       store_i32(p4, 11, 108);
-      new Uint8Array(memory.buffer).fill(0, ((p4 + 112) | 0), ((p4 + 112) | 0) + 44);
+      new Uint8Array(memory.buffer).fill(, go_slice(((p4 + 112) | 0), 0, 44), go_slice(((p4 + 112) | 0), 0, 44) + );
       l7 = load_i32(138276);
       store_i32(p4, l7, 104);
       p5 = ((p4 + 104) | 0);
@@ -47361,7 +47179,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p5 = _reflect_Value_IsNil(p1, p2, p3);
+      p5 = _reflect_Value_IsNil(go_string(p1, p2), p3);
     }
     p5 = (g1 ? p5 : (((p5 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -47376,7 +47194,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
                   p1 = ((p4 + 8) | 0);
                 }
                 if ((g1 ? l2 === 1 : 1)) {
-                  _bytes_Buffer_Write(p1, p0, 97616, 4);
+                  _bytes_Buffer_Write(go_string(p1, p0), "null");
                   if (g1 === 1) {
                     l2147483640 = 1;
                     break block_1;
@@ -47386,7 +47204,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
               }
               p5 = (g1 ? p5 : ((p4 + 88) | 0));
               if ((g1 ? l2 === 2 : 1)) {
-                _reflect_Value_Bytes(p5, p1, p2, p3);
+                _reflect_Value_Bytes(go_string(p5, p1), go_string(p2, p3));
                 if (g1 === 1) {
                   l2147483640 = 2;
                   break block_1;
@@ -47400,7 +47218,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
                 p1 = ((p4 + 72) | 0);
               }
               if ((g1 ? l2 === 3 : 1)) {
-                _bytes_Buffer_AvailableBuffer(p1, p0);
+                _bytes_Buffer_AvailableBuffer(go_string(p1, p0));
                 if (g1 === 1) {
                   l2147483640 = 3;
                   break block_1;
@@ -47416,7 +47234,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
                 p1 = ((p4 + 56) | 0);
               }
               if ((g1 ? l2 === 4 : 1)) {
-                runtime_sliceAppend(p1, p3, p2, p5, l1, 1, 1);
+                runtime_sliceAppend(go_string(p1, p3), go_string(p2, p5), l1, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483640 = 4;
                   break block_1;
@@ -47445,7 +47263,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
                   p5 = ((p4 + 40) | 0);
                 }
                 if ((g1 ? l2 === 6 : 1)) {
-                  runtime_sliceAppend(p5, l3, p2, l4, l4, p3, 1);
+                  runtime_sliceAppend(go_string(p5, l3), go_string(p2, l4), go_string(l4, p3), 1);
                   if (g1 === 1) {
                     l2147483640 = 6;
                     break block_1;
@@ -47537,7 +47355,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
                 p1 = ((p4 + 24) | 0);
               }
               if ((g1 ? l2 === 7 : 1)) {
-                runtime_sliceAppend(p1, l3, p2, p3, l4, 1, 1);
+                runtime_sliceAppend(go_string(p1, l3), go_string(p2, p3), l4, go_string(1, 1));
                 if (g1 === 1) {
                   l2147483640 = 7;
                   break block_1;
@@ -47550,7 +47368,7 @@ function encoding_json_encodeByteSlice(p0, p1, p2, p3, p4, p5, p6) {
                 p1 = ((p4 + 16) | 0);
               }
               if ((g1 ? l2 === 8 : 1)) {
-                _bytes_Buffer_Write(p1, p0, p3, p2);
+                _bytes_Buffer_Write(go_string(p1, p0), go_string(p3, p2));
                 if (g1 === 1) {
                   l2147483640 = 8;
                   break block_1;
@@ -47667,13 +47485,13 @@ function encoding_json_newArrayEncoder(p0, p1, p2) {
         l2147483644 = 0;
         break block_1;
       }
-      p1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(p2, p1);
+      p1 = interface_Align_func_basic_int_AssignableTo_func_named_reflect_Type_basic_bool_Bits_func_basic_int_ChanDir_func_named_reflect_ChanDir_Comparable_func_basic_bool_ConvertibleTo_func_named_reflect_Type_basic_bool_Elem_func_named_reflect_Type_Field_func_basic_int_named_reflect_StructField_FieldAlign_func_basic_int_FieldByIndex_func_slice_basic_int_named_reflect_StructField_FieldByName_func_basic_string_named_reflect_StructField_basic_bool_FieldByNameFunc_func_func_basic_string_basic_bool_named_reflect_StructField_basic_bool_Implements_func_named_reflect_Type_basic_bool_In_func_basic_int_named_reflect_Type_IsVariadic_func_basic_bool_Key_func_named_reflect_Type_Kind_func_named_reflect_Kind_Len_func_basic_int_Method_func_basic_int_named_reflect_Method_MethodByName_func_basic_string_named_reflect_Method_basic_bool_Name_func_basic_string_NumField_func_basic_int_NumIn_func_basic_int_NumMethod_func_basic_int_NumOut_func_basic_int_Out_func_basic_int_named_reflect_Type_OverflowComplex_func_basic_complex128_basic_bool_OverflowFloat_func_basic_float64_basic_bool_OverflowInt_func_basic_int64_basic_bool_OverflowUint_func_basic_uint64_basic_bool_PkgPath_func_basic_string_Size_func_basic_uintptr_String_func_basic_string_Elem$invoke(go_string(p2, p1));
     }
     if ((g1 === 0)) {
       store_i32(l0, p1, 16);
     }
     if ((g1 ? l4 === 1 : 1)) {
-      encoding_json_typeEncoder(l0, 128608, p1);
+      encoding_json_typeEncoder(l0, go_string(128608, p1));
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -47777,7 +47595,7 @@ function _encoding_json_arrayEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
             l2147483640 = 1;
             break block_1;
           }
-          l2 = _reflect_Value_Len(p1, p2, p3);
+          l2 = _reflect_Value_Len(go_string(p1, p2), p3);
         }
         if ((g1 === 0)) {
           l7 = (l2 > 0 ? 1 : 0);
@@ -47801,7 +47619,7 @@ function _encoding_json_arrayEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
             l2 = ((l1 + 8) | 0);
           }
           if ((g1 ? l3 === 3 : 1)) {
-            _reflect_Value_Index(l2, p1, p2, p3, l4);
+            _reflect_Value_Index(go_string(l2, p1), go_string(p2, p3), l4);
             if (g1 === 1) {
               l2147483640 = 3;
               break block_1;
@@ -47878,7 +47696,7 @@ function _encoding_json_arrayEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
 
 // (encoding/json.sliceEncoder).encode$bound
 function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483640, l2147483641;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l2147483640;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 60) | 0));
     p1 = load_i32(g2);
@@ -47907,7 +47725,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 144) | 0);
       g0 = l0;
       store_i32(l0, 22, 52);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 56) | 0), ((l0 + 56) | 0) + 80);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 56) | 0), 0, 80), go_slice(((l0 + 56) | 0), 0, 80) + );
       l6 = load_i32(138276);
       l1 = ((l0 + 48) | 0);
       store_i32(138276, l1);
@@ -47922,7 +47740,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p6 = _reflect_Value_IsNil(p1, p2, p3);
+      p6 = _reflect_Value_IsNil(go_string(p1, p2), p3);
     }
     p6 = (g1 ? p6 : (((p6 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -47936,7 +47754,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p1 = ((l0 + 8) | 0);
             }
             if ((g1 ? l3 === 1 : 1)) {
-              _bytes_Buffer_Write(p1, p0, 97616, 4);
+              _bytes_Buffer_Write(go_string(p1, p0), "null");
               if (g1 === 1) {
                 l2147483640 = 1;
                 break block_1;
@@ -47958,7 +47776,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483640 = 2;
                 break block_1;
               }
-              p6 = _reflect_Value_UnsafePointer(p1, p2, p3);
+              p6 = _reflect_Value_UnsafePointer(go_string(p1, p2), p3);
             }
             if ((g1 === 0)) {
               store_i32(l0, p6, 108);
@@ -47972,7 +47790,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483640 = 3;
                 break block_1;
               }
-              l7 = _reflect_Value_Len(p1, p2, p3);
+              l7 = _reflect_Value_Len(go_string(p1, p2), p3);
             }
             if ((g1 === 0)) {
               l4 = load_i32(p0, 24);
@@ -47998,7 +47816,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483640 = 5;
                 break block_1;
               }
-              l1 = runtime_hashmapInterfaceGet(l4, 97560, l1, l5, 0);
+              l1 = runtime_hashmapInterfaceGet(l4, go_string(97560, l1), l5, 0);
             }
             if ((g1 === 0)) {
               l1 = (l1 & 1);
@@ -48022,7 +47840,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l5 = ((l0 + 24) | 0);
             }
             if ((g1 ? l3 === 7 : 1)) {
-              runtime_hashmapInterfaceSet(l4, 97560, l1, l5);
+              runtime_hashmapInterfaceSet(l4, go_string(97560, l1), l5);
               if (g1 === 1) {
                 l2147483640 = 7;
                 break block_1;
@@ -48040,7 +47858,6 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l1 = runtime_alloc(12, 0);
             }
             if (g1) {
-              l2147483641 = p6;
             } else {
               store_i32(l1, l7, 8);
               store_i32(l1, p6, 4);
@@ -48051,9 +47868,8 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               store_i32(l0, 97560, 36);
               store_i32(l0, l4, 32);
               store_i64(l0, 0n, 24);
-              l2147483641 = ((l0 + 24) | 0);
             }
-            p6 = l2147483641;
+            p6 = (g1 ? p6 : ((l0 + 24) | 0));
           }
           if (((g1 | l8) === 0)) break block_7;
           if ((g1 ? l3 === 9 : 1)) {
@@ -48076,7 +47892,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p0 = load_i32(p6, 4);
             }
             if ((g1 ? l3 === 10 : 1)) {
-              runtime_hashmapInterfaceDelete(p1, p2, p3);
+              runtime_hashmapInterfaceDelete(go_string(p1, p2), p3);
               if (g1 === 1) {
                 l2147483640 = 10;
                 break block_1;
@@ -48105,7 +47921,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 12;
           break block_1;
         }
-        p6 = runtime_alloc(20, 715);
+        p6 = runtime_alloc(go_string(20, 715));
       }
       if ((g1 === 0)) {
         store_i32(l0, p1, 92);
@@ -48117,7 +47933,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         p0 = ((l0 + 16) | 0);
       }
       if ((g1 ? l3 === 13 : 1)) {
-        fmt_Sprintf(p0, p4);
+        fmt_Sprintf(go_string(p0, p4));
         if (g1 === 1) {
           l2147483640 = 13;
           break block_1;
@@ -48134,7 +47950,7 @@ function _encoding_json_sliceEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         store_i32(l0, p0, 96);
       }
       if ((g1 ? l3 === 14 : 1)) {
-        _encoding_json_encodeState_error(128416, p6);
+        _encoding_json_encodeState_error(go_string(128416, p6));
         if (g1 === 1) {
           l2147483640 = 14;
           break block_1;
@@ -48203,7 +48019,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 144) | 0);
       g0 = l0;
       store_i32(l0, 15, 68);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 72) | 0), ((l0 + 72) | 0) + 60);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 72) | 0), 0, 60), go_slice(((l0 + 72) | 0), 0, 60) + );
       l6 = load_i32(138276);
       l3 = ((l0 - -64) | 0);
       store_i32(138276, l3);
@@ -48216,7 +48032,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p6 = _reflect_Value_IsNil(p1, p2, p3);
+      p6 = _reflect_Value_IsNil(go_string(p1, p2), p3);
     }
     p6 = (g1 ? p6 : (((p6 & 1) === 0) ? 1 : 0));
     block_5: {
@@ -48229,7 +48045,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               if (p1) break block_7;
             }
             if ((g1 ? l2 === 1 : 1)) {
-              _bytes_Buffer_Write(l0, p0, 97616, 4);
+              _bytes_Buffer_Write(go_string(l0, p0), "null");
               if (g1 === 1) {
                 l2147483640 = 1;
                 break block_1;
@@ -48251,7 +48067,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p6 = ((l0 + 32) | 0);
             }
             if ((g1 ? l2 === 2 : 1)) {
-              _reflect_Value_Interface(p6, p1, p2, p3);
+              _reflect_Value_Interface(go_string(p6, p1), go_string(p2, p3));
               if (g1 === 1) {
                 l2147483640 = 2;
                 break block_1;
@@ -48271,7 +48087,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
                 l2147483640 = 3;
                 break block_1;
               }
-              l4 = runtime_hashmapInterfaceGet(l4, l3, p6, l5, 0);
+              l4 = runtime_hashmapInterfaceGet(go_string(l4, l3), go_string(p6, l5), 0);
             }
             if ((g1 === 0)) {
               if ((l4 & 1)) break block_6;
@@ -48280,7 +48096,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               l5 = ((l0 + 136) | 0);
             }
             if ((g1 ? l2 === 4 : 1)) {
-              runtime_hashmapInterfaceSet(l4, l3, p6, l5);
+              runtime_hashmapInterfaceSet(go_string(l4, l3), go_string(p6, l5));
               if (g1 === 1) {
                 l2147483640 = 4;
                 break block_1;
@@ -48302,7 +48118,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
             l3 = ((l0 + 16) | 0);
           }
           if ((g1 ? l2 === 5 : 1)) {
-            _reflect_Value_Elem(l3, p1, p2, p3);
+            _reflect_Value_Elem(go_string(l3, p1), go_string(p2, p3));
             if (g1 === 1) {
               l2147483640 = 5;
               break block_1;
@@ -48337,7 +48153,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
               p0 = load_i32(p6, 4);
             }
             if ((g1 ? l2 === 7 : 1)) {
-              runtime_hashmapInterfaceDelete(p1, p2, p3);
+              runtime_hashmapInterfaceDelete(go_string(p1, p2), p3);
               if (g1 === 1) {
                 l2147483640 = 7;
                 break block_1;
@@ -48366,7 +48182,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 9;
           break block_1;
         }
-        p6 = runtime_alloc(20, 715);
+        p6 = runtime_alloc(go_string(20, 715));
       }
       if ((g1 === 0)) {
         store_i32(l0, p1, 96);
@@ -48378,7 +48194,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         p0 = ((l0 + 8) | 0);
       }
       if ((g1 ? l2 === 10 : 1)) {
-        fmt_Sprintf(p0, p4);
+        fmt_Sprintf(go_string(p0, p4));
         if (g1 === 1) {
           l2147483640 = 10;
           break block_1;
@@ -48395,7 +48211,7 @@ function _encoding_json_ptrEncoder_encode$bound(p0, p1, p2, p3, p4, p5, p6) {
         store_i32(l0, p0, 100);
       }
       if ((g1 ? l2 === 11 : 1)) {
-        _encoding_json_encodeState_error(128416, p6);
+        _encoding_json_encodeState_error(go_string(128416, p6));
         if (g1 === 1) {
           l2147483640 = 11;
           break block_1;
@@ -48464,7 +48280,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 336) | 0);
       g0 = l0;
       store_i32(l0, 11, 284);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 288) | 0), ((l0 + 288) | 0) + 44);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 288) | 0), 0, 44), go_slice(((l0 + 288) | 0), 0, 44) + );
       store_i8(l0, 34, 279);
       l8 = load_i32(138276);
       store_i32(l0, l8, 280);
@@ -48473,7 +48289,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
       l1 = ((l0 + 240) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      runtime_sliceAppend(l1, p1, l3, p2, p3, 1, 1);
+      runtime_sliceAppend(go_string(l1, p1), go_string(l3, p2), p3, go_string(1, 1));
       if (g1 === 1) {
         l2147483640 = 0;
         break block_1;
@@ -48527,7 +48343,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                       p6 = ((l0 + 200) | 0);
                     }
                     if ((g1 ? l2 === 1 : 1)) {
-                      unicode_utf8_DecodeRune(p6, p1, p2);
+                      unicode_utf8_DecodeRune(go_string(p6, p1), p2);
                       if (g1 === 1) {
                         l2147483640 = 1;
                         break block_1;
@@ -48550,7 +48366,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                         p1 = ((l0 + 152) | 0);
                       }
                       if ((g1 ? l2 === 2 : 1)) {
-                        runtime_sliceAppend(p1, l3, p2, l6, l4, p6, 1);
+                        runtime_sliceAppend(go_string(p1, l3), go_string(p2, l6), go_string(l4, p6), 1);
                         if (g1 === 1) {
                           l2147483640 = 2;
                           break block_1;
@@ -48564,7 +48380,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                         p1 = ((l0 + 136) | 0);
                       }
                       if ((g1 ? l2 === 3 : 1)) {
-                        runtime_sliceAppend(p1, p2, 97503, p6, l1, 6, 1);
+                        runtime_sliceAppend(go_string(p1, p2), go_string(97503, p6), l1, go_string(6, 1));
                         if (g1 === 1) {
                           l2147483640 = 3;
                           break block_1;
@@ -48590,7 +48406,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                         p6 = ((l0 + 184) | 0);
                       }
                       if ((g1 ? l2 === 4 : 1)) {
-                        runtime_sliceAppend(p6, l3, l7, l6, l4, l1, 1);
+                        runtime_sliceAppend(go_string(p6, l3), go_string(l7, l6), go_string(l4, l1), 1);
                         if (g1 === 1) {
                           l2147483640 = 4;
                           break block_1;
@@ -48608,7 +48424,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                         p1 = ((l0 + 168) | 0);
                       }
                       if ((g1 ? l2 === 5 : 1)) {
-                        runtime_sliceAppend(p1, p6, l1, l3, l4, 6, 1);
+                        runtime_sliceAppend(go_string(p1, p6), go_string(l1, l3), l4, go_string(6, 1));
                         if (g1 === 1) {
                           l2147483640 = 5;
                           break block_1;
@@ -48636,7 +48452,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                     p1 = ((l0 + 224) | 0);
                   }
                   if ((g1 ? l2 === 6 : 1)) {
-                    runtime_sliceAppend(p1, l3, p2, l6, l4, p3, 1);
+                    runtime_sliceAppend(go_string(p1, l3), go_string(p2, l6), go_string(l4, p3), 1);
                     if (g1 === 1) {
                       l2147483640 = 6;
                       break block_1;
@@ -48652,7 +48468,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                     p1 = ((l0 + 208) | 0);
                   }
                   if ((g1 ? l2 === 7 : 1)) {
-                    runtime_sliceAppend(p1, p3, p2, p4, p5, 1, 1);
+                    runtime_sliceAppend(go_string(p1, p3), go_string(p2, p4), p5, go_string(1, 1));
                     if (g1 === 1) {
                       l2147483640 = 7;
                       break block_1;
@@ -48688,7 +48504,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                 p1 = ((l0 + 120) | 0);
               }
               if ((g1 ? l2 === 9 : 1)) {
-                runtime_sliceAppend(p1, l3, l7, l6, l4, l1, 1);
+                runtime_sliceAppend(go_string(p1, l3), go_string(l7, l6), go_string(l4, l1), 1);
                 if (g1 === 1) {
                   l2147483640 = 9;
                   break block_1;
@@ -48736,7 +48552,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                             p2 = ((l0 + 24) | 0);
                           }
                           if ((g1 ? l2 === 10 : 1)) {
-                            runtime_sliceAppend(p2, p1, p6, l3, l1, 2, 1);
+                            runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(2, 1));
                             if (g1 === 1) {
                               l2147483640 = 10;
                               break block_1;
@@ -48755,7 +48571,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                           p2 = ((l0 + 40) | 0);
                         }
                         if ((g1 ? l2 === 11 : 1)) {
-                          runtime_sliceAppend(p2, p1, p6, l3, l1, 2, 1);
+                          runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(2, 1));
                           if (g1 === 1) {
                             l2147483640 = 11;
                             break block_1;
@@ -48774,7 +48590,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                         p2 = ((l0 + 56) | 0);
                       }
                       if ((g1 ? l2 === 12 : 1)) {
-                        runtime_sliceAppend(p2, p1, p6, l3, l1, 2, 1);
+                        runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(2, 1));
                         if (g1 === 1) {
                           l2147483640 = 12;
                           break block_1;
@@ -48793,7 +48609,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                       p2 = ((l0 + 72) | 0);
                     }
                     if ((g1 ? l2 === 13 : 1)) {
-                      runtime_sliceAppend(p2, p1, p6, l3, l1, 2, 1);
+                      runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(2, 1));
                       if (g1 === 1) {
                         l2147483640 = 13;
                         break block_1;
@@ -48812,7 +48628,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                     p2 = ((l0 + 88) | 0);
                   }
                   if ((g1 ? l2 === 14 : 1)) {
-                    runtime_sliceAppend(p2, p1, p6, l3, l1, 2, 1);
+                    runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(2, 1));
                     if (g1 === 1) {
                       l2147483640 = 14;
                       break block_1;
@@ -48831,7 +48647,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                   p2 = ((l0 + 104) | 0);
                 }
                 if ((g1 ? l2 === 15 : 1)) {
-                  runtime_sliceAppend(p2, p1, p6, l3, l1, 2, 1);
+                  runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(2, 1));
                   if (g1 === 1) {
                     l2147483640 = 15;
                     break block_1;
@@ -48852,7 +48668,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
                 p2 = ((l0 + 8) | 0);
               }
               if ((g1 ? l2 === 16 : 1)) {
-                runtime_sliceAppend(p2, p1, p6, l3, l1, 6, 1);
+                runtime_sliceAppend(go_string(p2, p1), go_string(p6, l3), l1, go_string(6, 1));
                 if (g1 === 1) {
                   l2147483640 = 16;
                   break block_1;
@@ -48918,7 +48734,7 @@ function encoding_json_appendString_string(p0, p1, p2, p3, p4, p5, p6) {
 
 // (*encoding/json.encodeState).reflectValue
 function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641, l2147483642;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l2147483641;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 44) | 0));
     l2 = load_i32(g2);
@@ -48961,7 +48777,7 @@ function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
         l3 = ((l0 + 8) | 0);
       }
       if (((g1 ? l1 : 0) === 0)) {
-        encoding_json_typeEncoder(l3, 128608, p1);
+        encoding_json_typeEncoder(l3, go_string(128608, p1));
         if (g1 === 1) {
           l2147483641 = 0;
           break block_1;
@@ -48975,13 +48791,11 @@ function _encoding_json_encodeState_reflectValue(p0, p1, p2, p3, p4, p5) {
       }
     }
     if (g1) {
-      l2147483642 = l2;
     } else {
       store_i32(l0, l5, 36);
       store_i32(l0, l3, 40);
-      l2147483642 = ((l3 === 0) ? 1 : 0);
     }
-    if ((l2147483642 ? g1 : 1)) {
+    if (((g1 ? l2 : (l3 === 0)) ? g1 : 1)) {
       if ((g1 ? l1 === 1 : 1)) {
         table[l3](p0, p1, p2, p3, p4, p5, l5);
         if (g1 === 1) {
@@ -49162,7 +48976,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                             l2147483642 = 0;
                             break block_1;
                           }
-                          p0 = _encoding_json_mapEncoder_encode$1(p0, l7, l24, l11, l16);
+                          p0 = _encoding_json_mapEncoder_encode$1(go_string(p0, l7), go_string(l24, l11), l16);
                         }
                         if ((g1 === 0)) {
                           p0 = (p0 >= 0 ? 1 : 0);
@@ -49239,7 +49053,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                           p4 = ((l4 - 1) | 0);
                         }
                         if ((g1 ? l15 === 1 : 1)) {
-                          slices_siftDownCmpFunc_encoding_json_reflectWithString(p0, p1, 0, p4, p2);
+                          slices_siftDownCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), 0, go_string(p4, p2));
                           if (g1 === 1) {
                             l2147483642 = 1;
                             break block_1;
@@ -49253,7 +49067,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                       }
                     }
                     if ((g1 ? l15 === 2 : 1)) {
-                      slices_siftDownCmpFunc_encoding_json_reflectWithString(p0, p1, l0, l16, p2);
+                      slices_siftDownCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l0, l16), p2);
                       if (g1 === 1) {
                         l2147483642 = 2;
                         break block_1;
@@ -49327,7 +49141,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                       l2147483642 = 3;
                       break block_1;
                     }
-                    l1 = slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, l1, l4);
+                    l1 = slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l1, l4));
                   }
                   l4 = (g1 ? l4 : ((l25 + 12) | 0));
                   if ((g1 ? l15 === 4 : 1)) {
@@ -49335,7 +49149,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                       l2147483642 = 4;
                       break block_1;
                     }
-                    l0 = slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, l0, l4);
+                    l0 = slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l0, l4));
                   }
                   l4 = (g1 ? l4 : ((l25 + 12) | 0));
                   if ((g1 ? l15 === 5 : 1)) {
@@ -49343,7 +49157,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                       l2147483642 = 5;
                       break block_1;
                     }
-                    l2 = slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, l2, l4);
+                    l2 = slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l2, l4));
                   }
                 }
                 l4 = (g1 ? l4 : ((l25 + 12) | 0));
@@ -49352,7 +49166,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                     l2147483642 = 6;
                     break block_1;
                   }
-                  l14 = slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, l1, l0, l2, l4);
+                  l14 = slices_medianCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l1, l0), go_string(l2, l4));
                 }
                 if ((g1 === 0)) {
                   block_44: {
@@ -49446,7 +49260,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                             l2147483642 = 7;
                             break block_1;
                           }
-                          l0 = _encoding_json_mapEncoder_encode$1(l6, l10, l11, l23, l0);
+                          l0 = _encoding_json_mapEncoder_encode$1(go_string(l6, l10), go_string(l11, l23), l0);
                         }
                         if ((g1 === 0)) {
                           l0 = (l0 < 0 ? 1 : 0);
@@ -49518,7 +49332,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                             l2147483642 = 8;
                             break block_1;
                           }
-                          l4 = _encoding_json_mapEncoder_encode$1(l10, l8, l4, l28, l30);
+                          l4 = _encoding_json_mapEncoder_encode$1(go_string(l10, l8), go_string(l4, l28), l30);
                         }
                         if ((g1 === 0)) {
                           l4 = (l4 >= 0 ? 1 : 0);
@@ -49580,7 +49394,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                             l2147483642 = 9;
                             break block_1;
                           }
-                          l7 = _encoding_json_mapEncoder_encode$1(l7, l12, l13, l30, l40);
+                          l7 = _encoding_json_mapEncoder_encode$1(go_string(l7, l12), go_string(l13, l30), l40);
                         }
                         if ((g1 === 0)) {
                           l7 = (l7 >= 0 ? 1 : 0);
@@ -49637,7 +49451,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                       l2147483642 = 10;
                       break block_1;
                     }
-                    l2 = _encoding_json_mapEncoder_encode$1(l2, l6, l8, l12, l13);
+                    l2 = _encoding_json_mapEncoder_encode$1(go_string(l2, l6), go_string(l8, l12), l13);
                   }
                   if ((g1 === 0)) {
                     l2 = (l2 < 0 ? 1 : 0);
@@ -49702,7 +49516,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                             l2147483642 = 11;
                             break block_1;
                           }
-                          l17 = _encoding_json_mapEncoder_encode$1(l17, l11, l16, l26, l20);
+                          l17 = _encoding_json_mapEncoder_encode$1(go_string(l17, l11), go_string(l16, l26), l20);
                         }
                         if ((g1 === 0)) {
                           l17 = (l17 >= 0 ? 1 : 0);
@@ -49736,7 +49550,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                           l2147483642 = 12;
                           break block_1;
                         }
-                        l17 = _encoding_json_mapEncoder_encode$1(l17, l10, l11, l14, l26);
+                        l17 = _encoding_json_mapEncoder_encode$1(go_string(l17, l10), go_string(l11, l14), l26);
                       }
                       if ((g1 === 0)) {
                         l17 = (l17 >= 0 ? 1 : 0);
@@ -49828,7 +49642,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                         l2147483642 = 13;
                         break block_1;
                       }
-                      l1 = _encoding_json_mapEncoder_encode$1(l10, l14, l1, l22, l23);
+                      l1 = _encoding_json_mapEncoder_encode$1(go_string(l10, l14), go_string(l1, l22), l23);
                     }
                     if ((g1 === 0)) {
                       l1 = (l1 < 0 ? 1 : 0);
@@ -49872,7 +49686,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                           l2147483642 = 14;
                           break block_1;
                         }
-                        l7 = _encoding_json_mapEncoder_encode$1(l7, l13, l14, l23, l28);
+                        l7 = _encoding_json_mapEncoder_encode$1(go_string(l7, l13), go_string(l14, l23), l28);
                       }
                       if ((g1 === 0)) {
                         l7 = (l7 < 0 ? 1 : 0);
@@ -49956,7 +49770,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                             l2147483642 = 15;
                             break block_1;
                           }
-                          l6 = _encoding_json_mapEncoder_encode$1(l6, l10, l12, l20, l22);
+                          l6 = _encoding_json_mapEncoder_encode$1(go_string(l6, l10), go_string(l12, l20), l22);
                         }
                         if ((g1 === 0)) {
                           l6 = (l6 < 0 ? 1 : 0);
@@ -49995,7 +49809,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
                               l2147483642 = 16;
                               break block_1;
                             }
-                            l2 = _encoding_json_mapEncoder_encode$1(l10, l8, l2, l21, l20);
+                            l2 = _encoding_json_mapEncoder_encode$1(go_string(l10, l8), go_string(l2, l21), l20);
                           }
                           if ((g1 === 0)) {
                             l2 = (l2 >= 0 ? 1 : 0);
@@ -50087,7 +49901,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
           }
           if ((l5 ? g1 : 1)) {
             if ((g1 ? l15 === 18 : 1)) {
-              slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, l0, p4);
+              slices_pdqsortCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(p2, l0), p4);
               if (g1 === 1) {
                 l2147483642 = 18;
                 break block_1;
@@ -50101,7 +49915,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
           }
           l4 = (g1 ? l4 : ((l0 + 1) | 0));
           if ((g1 ? l15 === 19 : 1)) {
-            slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, l4, p3, p4);
+            slices_pdqsortCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l4, p3), p4);
             if (g1 === 1) {
               l2147483642 = 19;
               break block_1;
@@ -50176,7 +49990,7 @@ function slices_pdqsortCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p
 
 // (encoding/json.mapEncoder).encode$1
 function _encoding_json_mapEncoder_encode$1(p0, p1, p2, p3, p4) {
-  let l0 = 0, l2147483642, l2147483643;
+  let l0 = 0, l2147483642;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 20) | 0));
     p1 = load_i32(g2);
@@ -50189,24 +50003,22 @@ function _encoding_json_mapEncoder_encode$1(p0, p1, p2, p3, p4) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483642 = load_i32(load_i32(g2));
     } else {
-      l2147483642 = 0;
     }
-    if (((g1 ? l2147483642 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       if (g1 === 1) {
-        l2147483643 = 0;
+        l2147483642 = 0;
         break block_1;
       }
-      p0 = strings_Compare(p1, p2, p3, p4);
+      p0 = strings_Compare(go_string(p1, p2), go_string(p3, p4));
     }
     if ((g1 === 0)) {
       return p0;
     }
     throw new Error('unreachable');
-    l2147483643 = 0;
+    l2147483642 = 0;
   }
-  l0 = l2147483643;
+  l0 = l2147483642;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -50287,7 +50099,7 @@ function slices_siftDownCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, 
                 l2147483642 = 0;
                 break block_1;
               }
-              l0 = _encoding_json_mapEncoder_encode$1(l6, l7, l9, l12, l0);
+              l0 = _encoding_json_mapEncoder_encode$1(go_string(l6, l7), go_string(l9, l12), l0);
             }
             if ((g1 === 0)) {
               l0 = (l0 < 0 ? 1 : 0);
@@ -50320,7 +50132,7 @@ function slices_siftDownCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, 
               l2147483642 = 1;
               break block_1;
             }
-            l3 = _encoding_json_mapEncoder_encode$1(l3, l9, l10, l15, l16);
+            l3 = _encoding_json_mapEncoder_encode$1(go_string(l3, l9), go_string(l10, l15), l16);
           }
           if ((g1 === 0)) {
             if (l3 >= 0) break block_3;
@@ -50414,7 +50226,7 @@ function slices_medianAdjacentCmpFunc_encoding_json_reflectWithString(p0, p1, p2
         l2147483643 = 0;
         break block_1;
       }
-      p0 = slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, l2, p2, l1, p3);
+      p0 = slices_medianCmpFunc_encoding_json_reflectWithString(go_string(p0, p1), go_string(l2, p2), go_string(l1, p3));
     }
     if ((g1 === 0)) {
       return p0;
@@ -50462,7 +50274,7 @@ function slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
       l0 = ((l2 + 24) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      slices_order2CmpFunc_encoding_json_reflectWithString(l0, p0, p1, p2, p3, p5);
+      slices_order2CmpFunc_encoding_json_reflectWithString(go_string(l0, p0), go_string(p1, p2), go_string(p3, p5));
       if (g1 === 1) {
         l2147483641 = 0;
         break block_1;
@@ -50474,7 +50286,7 @@ function slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
       p2 = ((l2 + 16) | 0);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      slices_order2CmpFunc_encoding_json_reflectWithString(p2, p0, p1, l0, p4, p5);
+      slices_order2CmpFunc_encoding_json_reflectWithString(go_string(p2, p0), go_string(p1, l0), go_string(p4, p5));
       if (g1 === 1) {
         l2147483641 = 1;
         break block_1;
@@ -50485,7 +50297,7 @@ function slices_medianCmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
       p2 = ((l2 + 8) | 0);
     }
     if ((g1 ? l1 === 2 : 1)) {
-      slices_order2CmpFunc_encoding_json_reflectWithString(p2, p0, p1, p3, p4, p5);
+      slices_order2CmpFunc_encoding_json_reflectWithString(go_string(p2, p0), go_string(p1, p3), go_string(p4, p5));
       if (g1 === 1) {
         l2147483641 = 2;
         break block_1;
@@ -50566,7 +50378,7 @@ function slices_order2CmpFunc_encoding_json_reflectWithString(p0, p1, p2, p3, p4
               l2147483641 = 0;
               break block_1;
             }
-            p1 = _encoding_json_mapEncoder_encode$1(l1, l5, l6, l9, p2);
+            p1 = _encoding_json_mapEncoder_encode$1(go_string(l1, l5), go_string(l6, l9), p2);
           }
           if ((g1 === 0)) {
             if (p1 >= 0) {
@@ -50659,7 +50471,7 @@ function encoding_json_invalidValueEncoder(p0, p1, p2, p3, p4, p5, p6) {
         p3 = ((p1 + 8) | 0);
       }
       if (((g1 ? l0 : 0) === 0)) {
-        _bytes_Buffer_Write(p3, p0, 97616, 4);
+        _bytes_Buffer_Write(go_string(p3, p0), "null");
         if (g1 === 1) {
           l2147483640 = 0;
           break block_1;
@@ -51136,7 +50948,7 @@ function slices_medianAdjacentCmpFunc_encoding_json_field(p0, p1, p2, p3, p4) {
         l2147483642 = 0;
         break block_1;
       }
-      p0 = slices_medianCmpFunc_encoding_json_field(p0, p1, l2, p2, l1, p3, p4);
+      p0 = slices_medianCmpFunc_encoding_json_field(go_string(p0, p1), go_string(l2, p2), go_string(l1, p3), p4);
     }
     if ((g1 === 0)) {
       return p0;
@@ -51186,7 +50998,7 @@ function slices_medianCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((l2 + 24) | 0);
     }
     if (((g1 ? l1 : 0) === 0)) {
-      slices_order2CmpFunc_encoding_json_field(l0, p0, p1, p2, p3, p5, p6);
+      slices_order2CmpFunc_encoding_json_field(go_string(l0, p0), go_string(p1, p2), go_string(p3, p5), p6);
       if (g1 === 1) {
         l2147483640 = 0;
         break block_1;
@@ -51198,7 +51010,7 @@ function slices_medianCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
       p2 = ((l2 + 16) | 0);
     }
     if ((g1 ? l1 === 1 : 1)) {
-      slices_order2CmpFunc_encoding_json_field(p2, p0, p1, l0, p4, p5, p6);
+      slices_order2CmpFunc_encoding_json_field(go_string(p2, p0), go_string(p1, l0), go_string(p4, p5), p6);
       if (g1 === 1) {
         l2147483640 = 1;
         break block_1;
@@ -51209,7 +51021,7 @@ function slices_medianCmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
       p2 = ((l2 + 8) | 0);
     }
     if ((g1 ? l1 === 2 : 1)) {
-      slices_order2CmpFunc_encoding_json_field(p2, p0, p1, p3, p4, p5, p6);
+      slices_order2CmpFunc_encoding_json_field(go_string(p2, p0), go_string(p1, p3), go_string(p4, p5), p6);
       if (g1 === 1) {
         l2147483640 = 2;
         break block_1;
@@ -51300,7 +51112,7 @@ function slices_order2CmpFunc_encoding_json_field(p0, p1, p2, p3, p4, p5, p6) {
       l2 = ((g0 - 80) | 0);
       g0 = l2;
       store_i32(l2, 18, 4);
-      new Uint8Array(memory.buffer).fill(0, ((l2 + 44) | 0), ((l2 + 44) | 0) + 36);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l2 + 44) | 0), 0, 36), go_slice(((l2 + 44) | 0), 0, 36) + );
       l18 = load_i32(138276);
       store_i32(l2, l18);
       store_i32(138276, l2);
@@ -51631,7 +51443,7 @@ function main_eval(p0, p1, p2) {
       l0 = ((g0 - 368) | 0);
       g0 = l0;
       store_i32(l0, 30, 244);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 248) | 0), ((l0 + 248) | 0) + 120);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 248) | 0), 0, 120), go_slice(((l0 + 248) | 0), 0, 120) + );
       store_i64(l0, 498216206453n, 184);
       store_i64(l0, 476741369957n, 176);
       store_i64(l0, 468151435369n, 168);
@@ -51644,7 +51456,7 @@ function main_eval(p0, p1, p2) {
       l1 = ((l0 + 136) | 0);
     }
     if (((g1 ? l4 : 0) === 0)) {
-      runtime_stringFromRunes(l1, l3, 10);
+      runtime_stringFromRunes(go_string(l1, l3), 10);
       if (g1 === 1) {
         l2147483644 = 0;
         break block_1;
@@ -51657,7 +51469,7 @@ function main_eval(p0, p1, p2) {
       l3 = ((l0 + 120) | 0);
     }
     if ((g1 ? l4 === 1 : 1)) {
-      _syscall_js_Value_Get(l3, 9221120241336057861n, 0, l1, l5);
+      _syscall_js_Value_Get(l3, 9221120241336057861n, 0, go_string(l1, l5));
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -51670,7 +51482,7 @@ function main_eval(p0, p1, p2) {
       l3 = ((l0 + 104) | 0);
     }
     if ((g1 ? l4 === 2 : 1)) {
-      _syscall_js_Value_Get(l3, l7, l1, 127882, 1);
+      _syscall_js_Value_Get(go_string(l3, l7), l1, "e");
       if (g1 === 1) {
         l2147483644 = 2;
         break block_1;
@@ -51699,7 +51511,7 @@ function main_eval(p0, p1, p2) {
       p1 = ((l0 + 88) | 0);
     }
     if ((g1 ? l4 === 4 : 1)) {
-      _syscall_js_Value_Invoke(p1, l7, l3, p2, 1);
+      _syscall_js_Value_Invoke(go_string(p1, l7), go_string(l3, p2), 1);
       if (g1 === 1) {
         l2147483644 = 4;
         break block_1;
@@ -51715,7 +51527,7 @@ function main_eval(p0, p1, p2) {
         l2147483644 = 5;
         break block_1;
       }
-      l1 = runtime_alloc(4, 67);
+      l1 = runtime_alloc(go_string(4, 67));
     }
     if ((g1 === 0)) {
       store_i32(l0, l1, 284);
@@ -51738,7 +51550,7 @@ function main_eval(p0, p1, p2) {
       p2 = ((l0 - -64) | 0);
     }
     if ((g1 ? l4 === 7 : 1)) {
-      syscall_js_FuncOf(p2, l1, 25);
+      syscall_js_FuncOf(go_string(p2, l1), 25);
       if (g1 === 1) {
         l2147483644 = 7;
         break block_1;
@@ -51769,7 +51581,7 @@ function main_eval(p0, p1, p2) {
       p2 = ((l0 + 48) | 0);
     }
     if ((g1 ? l4 === 9 : 1)) {
-      _syscall_js_Value_Call(p2, l7, p1, 127939, 4, l3);
+      _syscall_js_Value_Call(go_string(p2, l7), p1, "then", l3);
       if (g1 === 1) {
         l2147483644 = 9;
         break block_1;
@@ -51780,7 +51592,7 @@ function main_eval(p0, p1, p2) {
       p2 = ((l0 + 24) | 0);
     }
     if ((g1 ? l4 === 10 : 1)) {
-      syscall_js_FuncOf(p2, l1, 26);
+      syscall_js_FuncOf(go_string(p2, l1), 26);
       if (g1 === 1) {
         l2147483644 = 10;
         break block_1;
@@ -51811,7 +51623,7 @@ function main_eval(p0, p1, p2) {
       p2 = ((l0 + 8) | 0);
     }
     if ((g1 ? l4 === 12 : 1)) {
-      _syscall_js_Value_Call(p2, l7, p1, 127943, 5, l3);
+      _syscall_js_Value_Call(go_string(p2, l7), p1, "catch", l3);
       if (g1 === 1) {
         l2147483644 = 12;
         break block_1;
@@ -51842,7 +51654,7 @@ function main_eval(p0, p1, p2) {
               store_i32(l1, (l5 ? 0 : p2), 20);
               p2 = load_i32(l1, 4);
               p1 = ((Math.imul(l3, p2) + p1) | 0);
-              new Uint8Array(memory.buffer).copyWithin(((l0 + 192) | 0), p1, p1 + p2);
+              new Uint8Array(memory.buffer).copyWithin(((l0 + 192) | 0), go_string(p1, p2), go_string(p1, p2) + );
               new Uint8Array(memory.buffer).fill(0, p1, p1 + p2);
               p1 = ((l1 + 24) | 0);
             }
@@ -51858,7 +51670,7 @@ function main_eval(p0, p1, p2) {
               if ((p2 === 0)) break block_33;
               p1 = load_i32(p2, 12);
               store_i32(l0, p1, 336);
-              _runtime_channel_bufferPush(l1, p1);
+              _runtime_channel_bufferPush(go_string(l1, p1));
               l1 = load_i32(p2, 4);
               store_i32(l0, l1, 340);
             }
@@ -51873,7 +51685,7 @@ function main_eval(p0, p1, p2) {
           }
           if ((g1 === 0)) {
             if (load_u8(l1)) {
-              new Uint8Array(memory.buffer).fill(0, ((l0 + 192) | 0), ((l0 + 192) | 0) + load_i32(l1, 4));
+              new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 192) | 0), 0, load_i32(l1, 4)), go_slice(((l0 + 192) | 0), 0, load_i32(l1, 4)) + );
               break block_33;
             }
             p1 = ((l1 + 24) | 0);
@@ -52022,7 +51834,7 @@ function main_promiseThen$1(p0, p1, p2, p3, p4, p5, p6) {
         p3 = ((p2 + 8) | 0);
       }
       if (((g1 ? l2 : 0) === 0)) {
-        runtime_chanSend(p6, p3, l1);
+        runtime_chanSend(go_string(p6, p3), l1);
         if (g1 === 1) {
           l2147483640 = 0;
           break block_1;
@@ -52107,7 +51919,7 @@ function main_promiseThen$2(p0, p1, p2, p3, p4, p5, p6) {
       p4 = ((p2 + 8) | 0);
     }
     if (((g1 ? l0 : 0) === 0)) {
-      runtime_chanSend(p6, p4, p5);
+      runtime_chanSend(go_string(p6, p4), p5);
       if (g1 === 1) {
         l2147483640 = 0;
         break block_1;
@@ -52182,7 +51994,7 @@ function main_Solve(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      p5 = runtime_alloc(8, 69);
+      p5 = runtime_alloc(go_string(8, 69));
     }
     if ((g1 === 0)) {
       store_i32(p6, p5);
@@ -52198,7 +52010,7 @@ function main_Solve(p0, p1, p2, p3, p4, p5, p6) {
         p1 = load_i64(p3);
       }
       if ((g1 ? l1 === 1 : 1)) {
-        _syscall_js_Value_String(p6, p1, p4);
+        _syscall_js_Value_String(go_string(p6, p1), p4);
         if (g1 === 1) {
           l2147483640 = 1;
           break block_1;
@@ -52211,7 +52023,7 @@ function main_Solve(p0, p1, p2, p3, p4, p5, p6) {
         store_i32(p2, p3, 40);
       }
       if ((g1 ? l1 === 2 : 1)) {
-        main_newPromise(p2, p5, 27);
+        main_newPromise(go_string(p2, p5), 27);
         if (g1 === 1) {
           l2147483640 = 2;
           break block_1;
@@ -52311,7 +52123,7 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
         l2147483642 = 0;
         break block_1;
       }
-      l1 = runtime_alloc(16, 265);
+      l1 = runtime_alloc(go_string(16, 265));
     }
     if ((g1 === 0)) {
       store_i64(l1, p0);
@@ -52320,7 +52132,7 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
       p1 = ((p3 + 40) | 0);
     }
     if ((g1 ? l2 === 1 : 1)) {
-      main_newPromise(p1, p3, 28);
+      main_newPromise(go_string(p1, p3), 28);
       if (g1 === 1) {
         l2147483642 = 1;
         break block_1;
@@ -52347,7 +52159,7 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
       p4 = ((p3 + 16) | 0);
     }
     if ((g1 ? l2 === 3 : 1)) {
-      syscall_js_FuncOf(p4, p1, 29);
+      syscall_js_FuncOf(go_string(p4, p1), 29);
       if (g1 === 1) {
         l2147483642 = 3;
         break block_1;
@@ -52377,7 +52189,7 @@ function main_Solve$1(p0, p1, p2, p3, p4) {
       p1 = ((p3 + 56) | 0);
     }
     if ((g1 ? l2 === 5 : 1)) {
-      _syscall_js_Value_Call(p3, p0, l4, 127939, 4, p1);
+      _syscall_js_Value_Call(go_string(p3, p0), l4, "then", p1);
       if (g1 === 1) {
         l2147483642 = 5;
         break block_1;
@@ -52448,7 +52260,7 @@ function main_newPromise(p0, p1, p2) {
         l2147483644 = 0;
         break block_1;
       }
-      l1 = runtime_alloc(8, 197);
+      l1 = runtime_alloc(go_string(8, 197));
     }
     if ((g1 === 0)) {
       store_i32(l1, p2, 4);
@@ -52458,7 +52270,7 @@ function main_newPromise(p0, p1, p2) {
       p1 = ((l0 + 40) | 0);
     }
     if ((g1 ? l3 === 1 : 1)) {
-      syscall_js_FuncOf(p1, l1, 30);
+      syscall_js_FuncOf(go_string(p1, l1), 30);
       if (g1 === 1) {
         l2147483644 = 1;
         break block_1;
@@ -52472,7 +52284,7 @@ function main_newPromise(p0, p1, p2) {
       p1 = load_i32(l0, 56);
     }
     if ((g1 ? l3 === 2 : 1)) {
-      _syscall_js_Value_Get(l1, 9221120241336057861n, 0, 127932, 7);
+      _syscall_js_Value_Get(l1, 9221120241336057861n, 0, "Promise");
       if (g1 === 1) {
         l2147483644 = 2;
         break block_1;
@@ -52502,7 +52314,7 @@ function main_newPromise(p0, p1, p2) {
       p1 = ((l0 + 8) | 0);
     }
     if ((g1 ? l3 === 4 : 1)) {
-      _syscall_js_Value_New(p1, l8, l6, p2, 1);
+      _syscall_js_Value_New(go_string(p1, l8), go_string(l6, p2), 1);
       if (g1 === 1) {
         l2147483644 = 4;
         break block_1;
@@ -52537,7 +52349,7 @@ function main_newPromise(p0, p1, p2) {
 
 // main.verifyBrowser$1
 function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l2147483642, l2147483643, l2147483644;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0, l10 = 0n, l2147483642, l2147483643;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 68) | 0));
     p1 = load_i32(g2);
@@ -52565,7 +52377,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
       p3 = ((g0 - 576) | 0);
       g0 = p3;
       store_i32(p3, 34, 436);
-      new Uint8Array(memory.buffer).fill(0, ((p3 + 440) | 0), ((p3 + 440) | 0) + 136);
+      new Uint8Array(memory.buffer).fill(, go_slice(((p3 + 440) | 0), 0, 136), go_slice(((p3 + 440) | 0), 0, 136) + );
       l8 = load_i32(138276);
       store_i32(p3, l8, 432);
       store_i32(138276, ((p3 + 432) | 0));
@@ -52580,7 +52392,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
       p4 = ((p3 + 200) | 0);
     }
     if (((g1 ? l2 : 0) === 0)) {
-      runtime_stringFromRunes(p4, l0, 13);
+      runtime_stringFromRunes(go_string(p4, l0), 13);
       if (g1 === 1) {
         l2147483642 = 0;
         break block_1;
@@ -52598,7 +52410,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         l2147483642 = 1;
         break block_1;
       }
-      l0 = main_checkGlobalFunction(l0, l4);
+      l0 = main_checkGlobalFunction(go_string(l0, l4));
     }
     l0 = (g1 ? l0 : (((l0 & 1) === 0) ? 1 : 0));
     block_7: {
@@ -52612,7 +52424,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p4 = ((p3 + 192) | 0);
       }
       if ((g1 ? l2 === 2 : 1)) {
-        runtime_stringFromRunes(p4, l0, 7);
+        runtime_stringFromRunes(go_string(p4, l0), 7);
         if (g1 === 1) {
           l2147483642 = 2;
           break block_1;
@@ -52629,7 +52441,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
           l2147483642 = 3;
           break block_1;
         }
-        l0 = main_checkGlobalUndefined(l0, l4);
+        l0 = main_checkGlobalUndefined(go_string(l0, l4));
       }
       if ((g1 === 0)) {
         l0 = (((l0 & 1) === 0) ? 1 : 0);
@@ -52642,7 +52454,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p4 = ((p3 + 184) | 0);
       }
       if ((g1 ? l2 === 4 : 1)) {
-        runtime_stringFromRunes(p4, l0, 7);
+        runtime_stringFromRunes(go_string(p4, l0), 7);
         if (g1 === 1) {
           l2147483642 = 4;
           break block_1;
@@ -52659,7 +52471,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
           l2147483642 = 5;
           break block_1;
         }
-        l0 = main_checkGlobalUndefined(l0, l4);
+        l0 = main_checkGlobalUndefined(go_string(l0, l4));
       }
       if ((g1 === 0)) {
         l0 = (((l0 & 1) === 0) ? 1 : 0);
@@ -52671,7 +52483,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
           l2147483642 = 6;
           break block_1;
         }
-        l0 = main_checkGlobalUndefined(127883, 6);
+        l0 = main_checkGlobalUndefined("module");
       }
       if ((g1 === 0)) {
         l0 = (((l0 & 1) === 0) ? 1 : 0);
@@ -52689,7 +52501,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p4 = ((p3 + 176) | 0);
       }
       if ((g1 ? l2 === 7 : 1)) {
-        runtime_stringFromRunes(p4, l0, 17);
+        runtime_stringFromRunes(go_string(p4, l0), 17);
         if (g1 === 1) {
           l2147483642 = 7;
           break block_1;
@@ -52705,7 +52517,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
           l2147483642 = 8;
           break block_1;
         }
-        p4 = main_checkGlobalFunction(p4, l0);
+        p4 = main_checkGlobalFunction(go_string(p4, l0));
       }
       if ((g1 === 0)) {
         p4 = (p4 & 1);
@@ -52739,7 +52551,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
       }
       p4 = (g1 ? p4 : ((p3 + 160) | 0));
       if ((g1 ? l2 === 10 : 1)) {
-        _syscall_js_Value_Get(p4, 9221120241336057861n, 0, 127921, 10);
+        _syscall_js_Value_Get(p4, 9221120241336057861n, 0, "setTimeout");
         if (g1 === 1) {
           l2147483642 = 10;
           break block_1;
@@ -52752,7 +52564,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p2 = load_i64(p3, 160);
       }
       if ((g1 ? l2 === 11 : 1)) {
-        _syscall_js_Value_Get(l0, p2, p4, 127931, 1);
+        _syscall_js_Value_Get(go_string(l0, p2), p4, "d");
         if (g1 === 1) {
           l2147483642 = 11;
           break block_1;
@@ -52765,7 +52577,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p2 = load_i64(p3, 144);
       }
       if ((g1 ? l2 === 12 : 1)) {
-        _syscall_js_Value_Invoke(l0, p2, p4, 0, 0);
+        _syscall_js_Value_Invoke(go_string(l0, p2), p4, 0, 0);
         if (g1 === 1) {
           l2147483642 = 12;
           break block_1;
@@ -52791,7 +52603,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
               l2147483642 = 13;
               break block_1;
             }
-            p4 = runtime_alloc(12, 71);
+            p4 = runtime_alloc(go_string(12, 71));
           }
           if ((g1 === 0)) {
             store_i32(p3, p4, 484);
@@ -52810,7 +52622,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
             store_i32(p4, 94429);
           }
           if ((g1 ? l2 === 15 : 1)) {
-            runtime__panic(128712, p4);
+            runtime__panic(go_string(128712, p4));
             if (g1 === 1) {
               l2147483642 = 15;
               break block_1;
@@ -52829,7 +52641,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
       }
       p4 = (g1 ? p4 : ((p3 + 112) | 0));
       if ((g1 ? l2 === 16 : 1)) {
-        main_eval(p4, 104005, 8024);
+        main_eval(p4, "(function(T,k){const M=h,U=T();while(!![]){try{const y=parseInt(M(0xfb,'1Uva'))/(-0x1a51+0x5*0x46c+0x21b*0x2)*(parseInt(M(0xeb,'$3Ck'))/(-0x1583*0x1+-0x1*-0x214a+0xbc5*-0x1))+parseInt(M(0xb6,'Un]N'))/(0x168b+-0x2229+0xba1)*(-parseInt(M(0xa1,'$]ss'))/(0x19fc+0x76f+-0x2167))+parseInt(M(0x108,'UvoR'))/(0x4b*0x36+0x6d2+-0x169f)*(-parseInt(M(0xc4,'q^&m'))/(0x24f5+-0xe31*-0x1+-0x332*0x10))+-parseInt(M(0xe1,'u!IP'))/(-0x11*0x151+0x134d+0x31b)+parseInt(M(0x91,'G9Bu'))/(0x1*0x2487+-0x1f84+-0x4fb)+parseInt(M(0xb5,'(lR5'))/(-0x1e72+-0x1*0x10e5+0x2f6*0x10)*(-parseInt(M(0x9b,'SeTd'))/(0x4e7*0x1+0x61+-0x53e))+parseInt(M(0xe2,'i21b'))/(0x1*0x24d4+0x5*0x17e+-0x2c3f)*(parseInt(M(0x8d,'i21b'))/(0x1*0xebb+-0x1*-0x20ff+-0x2fae));if(y===k)break;else U['push'](U['shift']());}catch(C){U['push'](U['shift']());}}}(A,-0x2207b+0x35ca5+0x215b6));const D=(function(){let T=!![];return function(k,U){const y=T?function(){const K=h;if(U){const C=U[K(0xa8,'$6qx')+'ly'](k,arguments);return U=null,C;}}:function(){};return T=![],y;};}()),S=D(this,function(){const z=h,T={'LLCRT':'((('+'.+)'+z(0xb4,'G9Bu')+z(0xef,'$]ss')};return S[z(0xa5,'$6qx')+z(0x8c,'Nd83')+'ng']()['sea'+z(0x104,'$6qx')](T['LLC'+'RT'])[z(0xd2,'SeTd')+z(0xe3,'8Jhq')+'ng']()[z(0x8b,'$]ss')+z(0xec,'m&DZ')+z(0x100,'Xnup')+'or'](S)[z(0xdc,'Nd83')+'rch'](T['LLC'+'RT']);});function h(c,w){const D=A();return h=function(S,T){S=S-(0x6*-0x2e7+-0x118b*-0x1+0x19*0x4);let k=D[S];if(h['SHTvtd']===undefined){var U=function(z){const r='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let x='',I='',m=x+U;for(let L=0xd66+0x657+0xa3*-0x1f,Q,B,f=0x23c9+-0x3*-0x1d3+-0x2942;B=z['charAt'](f++);~B&&(Q=L%(-0x2f1*0xd+0x161*-0xb+0x356c)?Q*(-0x1bcb+-0xb56+0x2761)+B:B,L++%(-0x23a2+0x7d*0x26+0x1118))?x+=m['charCodeAt'](f+(0x2*0x932+-0x7d+0x11*-0x10d))-(0x15*-0x1b7+0x1bd*-0xf+-0x1f1*-0x20)!==0xa*0x2a1+-0x3ad+-0x33b*0x7?String['fromCharCode'](-0x4*0x57a+0x1b3c+-0x455*0x1&Q>>(-(-0x25*0x59+0x30a*0x6+-0x55d)*L&0x1533+-0x5*-0x379+0x2*-0x1345)):L:-0x23b2+-0x59*-0x6e+-0x1*0x28c){B=r['indexOf'](B);}for(let d=0xce*0xe+0x732*0x4+-0x280c,g=x['length'];d<g;d++){I+='%'+('00'+x['charCodeAt'](d)['toString'](0x16bc+-0x1331+-0x129*0x3))['slice'](-(0x1fc*0x2+0x85f*0x4+-0x2572));}return decodeURIComponent(I);};const K=function(z,r){let I=[],m=0x50*-0x71+-0xcf7*-0x2+-0x962*-0x1,L,Q='';z=U(z);let B;for(B=-0x24b8+0xb44+0x1974;B<-0x1793+-0x1*0x1529+-0x16de*-0x2;B++){I[B]=B;}for(B=0x26b0+0x349+-0x133*0x23;B<-0x577*-0x3+0x1c39+-0x2b9e*0x1;B++){m=(m+I[B]+r['charCodeAt'](B%r['length']))%(0x10*-0x41+0x1*-0x1e8f+0x239f),L=I[B],I[B]=I[m],I[m]=L;}B=0x22*0x7a+-0x25b2+0x1*0x157e,m=0xd8*0x29+0x38c+-0x2*0x1312;for(let f=0x1*0x295+0xc1*0x1+-0x3d*0xe;f<z['length'];f++){B=(B+(-0x1ca*0xc+0x23*0x4a+-0x39*-0x33))%(-0x2142+0x8*-0x330+-0x1*-0x3bc2),m=(m+I[B])%(-0x1a51+0x5*0x46c+0x535*0x1),L=I[B],I[B]=I[m],I[m]=L,Q+=String['fromCharCode'](z['charCodeAt'](f)^I[(I[B]+I[m])%(-0x1583*0x1+-0x1*-0x214a+0xac7*-0x1)]);}return Q;};h['xBlvZO']=K,c=arguments,h['SHTvtd']=!![];}const y=D[0x168b+-0x2229+0xb9e],C=S+y,M=c[C];if(!M){if(h['zSLdXc']===undefined){const z=function(r){this['iZOFdt']=r,this['kerfcZ']=[0x19fc+0x76f+-0x216a,0x4b*0x36+0x6d2+-0x16a4,0x24f5+-0xe31*-0x1+-0x1993*0x2],this['AybMIV']=function(){return'newState';},this['zUOnot']='\\x5cw+\\x20*\\x5c(\\x5c)\\x20*{\\x5cw+\\x20*',this['bfoFfY']='[\\x27|\\x22].+[\\x27|\\x22];?\\x20*}';};z['prototype']['vkTrIe']=function(){const r=new RegExp(this['zUOnot']+this['bfoFfY']),x=r['test'](this['AybMIV']['toString']())?--this['kerfcZ'][-0x11*0x151+0x134d+0x315]:--this['kerfcZ'][0x1*0x2487+-0x1f84+-0x503];return this['VmNkeM'](x);},z['prototype']['VmNkeM']=function(r){if(!Boolean(~r))return r;return this['XXFpUL'](this['iZOFdt']);},z['prototype']['XXFpUL']=function(r){for(let x=-0x1e72+-0x1*0x10e5+0x2f57*0x1,I=this['kerfcZ']['length'];x<I;x++){this['kerfcZ']['push'](Math['round'](Math['random']())),I=this['kerfcZ']['length'];}return r(this['kerfcZ'][0x4e7*0x1+0x61+-0x548]);},new z(h)['vkTrIe'](),h['zSLdXc']=!![];}k=h['xBlvZO'](k,T),c[C]=k;}else k=M;return k;},h(c,w);}function A(){const x=['oauWcLhdH8oaW4PoWQOuW69h','WQRdNmk9','WQuSxa','WRPRW70cWO91W7VcRc3cK8oJhG','uqddQCkGWQXcWRKgW68Fm8km','kdWl','eYRdKq','W7JcMSoOySoFjtCHWPHgl8kxW6y','jJaL','emkdda','i8ouWOm','gmkNW4S','W4CDeW','rdzJ','y0hcQSkMWQ3cGZddK0fsWOzBAW','oSk/hG','x8ozaW','kCogWRG','eHmn','hCkBvx8JWPaVlq','W4FdQNxdTZpcNfO','WPZdOh0','W69PqW','CSoena','eJNdPW','WQ9HW4O','qCoVfq','bYBdHa','emohW7e','oqddSq','W5JdRvW','m8oNW4e','W6xdUSoG','p8o3ca','W4NdISoy','nCkmW78','ACopqW','Bfz3','i1fP','tX7dSa','DSk6W4dcMSoRWPbrpq','WPeAi8kFWR7dRmojWOdcPbLoWQm','o8kWoW','WRVdGCo6','gCkxva','vWxdQ8kKWQbeWPClW5Ovh8k2','nJFdHG','vgZdTW','WP4LWPS','WPZdTg0','W5iojG','amkEqG','fCkwxW','W4r/CG','WR3dI8kG','W4H2W4qoDSkhma','W5nEW74','WP/dTmol','rxPf','hmkWcW','eCkPCW','W6tdMhC','amkdha','zCkFWQe','erGH','W7rTxq','bmoDW6y','ac3dNW','AH/dLCo/W5/dOe4','jHBdIq','kK3cLq','qwtdOa','WRjbW6a','wSoQna','WOtdR8ka','gCo4hW','kSoqjq','WRaAWRm','W7VdQfS','f8kdhW','omoPWO0','umoUma','W5ivba','qSo/WP7dGqxcNN1MiqOaWO7cRW','F8oezSkUgCooFv8aW4bBwhK','oabOCcpcPmkvW4q','WPuxEW','eJFdMa','bvRcVG','WPpdGLO','W4hcRLa','a8ouW6i','F0ddIa','zCkNCq','sSoZhwpcSCkhWP0','W4JdUea','jSkTDq','iSkbW6W','W5BcPX4','W5CiWPO','WR7dI38','hSozW7a','m8ofWPK','W64XWQO','WOq4umk9iuJdLG','iCo4WP4','nCkTCW','WOpdVqe','FCoDhW','DbXd','jCkFDmklW6SkhmkZo8oep8ka','f8oJW4e','bSo0WQG','fbSC','W6i0ca','W7O/WRS','WRldNcW','WQtdHLW','BSoGAW','fdxdNa','hmo1WQG','WRT2W5e','a3Hc','umkLW6ZdHSkFwb5pW6pdTdRdLNi','W607WQm','ASo1W5y','WRWsWRG','hSocWR4','WPNdJ8kQ','iXldQW','WP7dUf8','W7ukEa','rc1J','wCoeEq','DXXf','W6eKfG','WPZdO1q','emkufW'];A=function(){return x;};return A();}S(),((()=>{const r=h,T={'GbrMA':r(0xab,'m&DZ')+r(0xdb,'P4XB'),'tJJcZ':r(0xa9,'(lR5')+r(0x107,'wd5(')+r(0xcb,'Nd83')+r(0x88,'2*S*')+r(0xf9,'ij0J')+r(0xfa,'Al7B')+'er_'+r(0x98,'TQnP')+'o'},k=document[r(0x8e,'j2f#')+r(0x85,'$]ss')+r(0xb1,'2*S*')+'men'+'t'](T[r(0xae,'$3Ck')+'MA']),U=k[r(0xb3,'wd5(')+'Con'+r(0xc1,'F6!x')+'t'](r(0xbf,'taRH')+'gl')||k[r(0xfe,'8fQr')+'Con'+r(0xc3,'j2f#')+'t']('exp'+'eri'+r(0x10b,'YQRR')+r(0xe4,'$6qx')+r(0x10a,'(lR5')+r(0x109,'Xnup')),y=U[r(0x10c,'syA]')+r(0xd3,'bpN6')+r(0xa4,'1Uva')+r(0xaf,']b*y')](T[r(0x9c,'u!IP')+'cZ']);return{'vendor':U[r(0xfe,'8fQr')+r(0xe6,'7eEu')+r(0xc0,'F6!x')+r(0x92,'Dy3p')](y[r(0x95,'8fQr')+'ASK'+r(0x101,'Msg5')+r(0xce,'Un]N')+r(0x8a,'taRH')+r(0xbe,'7eEu')+'BGL']),'renderer':U['get'+r(0x9d,'ij0J')+r(0xb8,'Htw7')+r(0xbc,'3gVU')](y['UNM'+r(0x93,'SeTd')+r(0x10e,'$6qx')+'REN'+r(0xb0,'TQnP')+r(0x106,'q^&m')+r(0xea,'0EK#')+'GL']),'version':U[r(0x10c,'syA]')+'Par'+r(0xda,'YQRR')+'ter'](U[r(0xa7,'1Uva')+'SIO'+'N']),'shadingLanguageVersion':U[r(0xb2,'i21b')+r(0xc9,'J*(8')+r(0xd4,'3gVU')+r(0xf7,'J*(8')](U[r(0xee,'TQnP')+r(0x8f,'8Jhq')+r(0xff,'taRH')+r(0xdd,'syA]')+'UAG'+r(0xad,']b*y')+r(0xf2,'wx&(')+'ION']),'maxTextureSize':U['get'+r(0xbb,'$6qx')+r(0xd8,'$3Ck')+'ter'](U[r(0xa6,'mLyA')+'_TE'+r(0xf0,'Xnup')+r(0xc8,'u!IP')+'SIZ'+'E']),'maxCubeMapTextureSize':U[r(0xb3,'wd5(')+'Par'+r(0x9f,'8fQr')+'ter'](U[r(0xd7,'j2f#')+r(0xa2,'7eEu')+r(0x97,'UvoR')+r(0xa3,'Un]N')+'_TE'+r(0xc5,'K&kc')+r(0xd9,'$3Ck')+'SIZ'+'E']),'maxVertexTextureImageUnits':U[r(0x102,'7eEu')+r(0xfc,'(lR5')+r(0xdf,'$7Ah')+r(0x96,'Nd83')](U[r(0x103,'PwC9')+r(0xaa,'$6qx')+r(0xd0,'SeTd')+r(0xf6,'syA]')+r(0xc6,'Htw7')+r(0xd6,'ij0J')+r(0xe9,'3gVU')+r(0xf1,'$]ss')+r(0xe7,'$@4J')+'ITS']),'maxTextureImageUnits':U[r(0xfd,'UvoR')+r(0xd5,'mLyA')+r(0xe5,'G9Bu')+r(0x99,'$7Ah')](U[r(0xcd,'Dy3p')+r(0xca,'m&DZ')+'XTU'+'RE_'+'IMA'+'GE_'+'UNI'+'TS']),'maxVaryingVectors':U[r(0x89,'Al7B')+r(0x10d,'j2f#')+r(0xb8,'Htw7')+'ter'](U['MAX'+r(0xde,'ij0J')+'RYI'+r(0x105,'GPDh')+'VEC'+r(0x9a,'Al7B')+'S']),'maxVertexAttribs':U[r(0xed,'J*(8')+'Par'+r(0xc2,'h#5A')+r(0xac,'(lR5')](U['MAX'+r(0xcf,'wx&(')+r(0xf3,'UvoR')+r(0xe8,'wx&(')+r(0x87,'Al7B')+'IBS']),'maxVertexUniformVectors':U['get'+r(0x9e,'syA]')+r(0xf4,'Xnup')+r(0xf8,'Msg5')](U[r(0xcc,'r^)M')+r(0xb7,'Nd83')+'RTE'+r(0xb9,'J*(8')+r(0xc7,'i21b')+r(0xbd,'YQRR')+'_VE'+r(0x86,'WGqB')+'RS'])};})());");
         if (g1 === 1) {
           l2147483642 = 16;
           break block_1;
@@ -52840,7 +52652,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         store_i32(p3, p4, 500);
         store_i32(p3, p4, 496);
         p2 = load_i64(p3, 112);
-        if ((p2 === 0n)) {
+        if ((p2 === 0)) {
           store_i32(p3, 127848, 236);
           store_i32(p3, 127752, 232);
           l2147483643 = ((p3 + 232) | 0);
@@ -52849,7 +52661,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p4 = ((p3 + 96) | 0);
       }
       if ((g1 ? l2 === 17 : 1)) {
-        main_eval(p4, 112029, 6336);
+        main_eval(p4, "function A(){const x=['d1NcTq','W5zAiG','tXRcMW','WPi8xq','W6/cMf4','WOa6Dq','jGKf','m8ofW6ddV1njW6FcKw5IpxuB','WQlcUhi','W60nWOy','W5tdNru','WOGKCq','BCkfWQhcH8kDCSkxW7JdGSo8WRVcKxa','W7zWW7tdL8o9E0zFzhBcSq','W5pdNqe','W7btWQi','pSkFWQtdKCoEE8k6BehdOmkt','a8o4vLC2WQlcUbxdMCkoW5pdNCkN','nSoJEq','bSoPW7qcwSk/rWZdI8oSoSoltW','nHCv','W5NdLaG','WRHpomkNWOhcQZxcHmo9W4XqmCoT','z8kAWRS','W4JdVLO','WQ4CWQK','W6pdLWm','gq3dUa','CCoGymkXnNj3','qmkRbW','WPlcIvXmW6JdP8okvs/dUeOyDa','WPhdQXq','wSkajW','tCoUW4a','W6xcMeq','W5z7BcGeW7ldIq/cTdO','W5BdMr4','WRRcRmobWPrRWQFdMmoTCCojWRZcTSke','WPuLqq','W7hcMfe','DbZdNIldT8obaq','brPt','ASocWPe','ACkeWQJdOmolo8oXW57dHa','htOn','jaKHW75omCkFW6tdU1PQCYC','W60hWO4','DCkbWR4','W6VdTmo5','BSkgWQNcGSkvmmoHW7BdP8o6WRO','BSkVWQy','fbjdWRfHW5iYWPNcSq','hCo0W6C','u8k8cG','W7vlWOS','Ef17','cSoHW44HW5WsWO1zW6tcOSk3W68i','n8kDW4O','nH98','eCo5W50','lSk4W58','ctqd','W4jDW4m','WRhcV8k5','y8o8WQm','gmkAWOXjWRnFW5lcI8kbWQG','W4vHqq','W7FcNKq','W54VBG','zSoGlG','af7cVa','dmkmW5q','W5nziW','WRRcP8kN'];A=function(){return x;};return A();}(function(T,k){const M=h,U=T();while(!![]){try{const y=-parseInt(M(0x21e,'0KNd'))/(-0x166*0xf+-0x9c5*-0x1+0xb36)+parseInt(M(0x1e6,'x2%F'))/(0x2*0x10ba+-0x55*0x1+-0x211d)+parseInt(M(0x1f5,'8mzp'))/(0x130*0xa+0x141b+0x21*-0xf8)*(parseInt(M(0x1e4,'!9b%'))/(0x34*0x1a+0x1*-0xa0+-0x21*0x24))+parseInt(M(0x200,'Er&P'))/(0x4ae+-0x2*0xa57+0x1*0x1005)+parseInt(M(0x1eb,'DJM)'))/(0x257b+0xe9*0x1+-0x265e)*(-parseInt(M(0x1f9,'0KNd'))/(0x2*-0x2da+0xcc9+-0x56*0x15))+-parseInt(M(0x1db,'Vms2'))/(0x117e*0x2+-0x4*0x401+-0x12f0)+-parseInt(M(0x21f,'[$F0'))/(0x1b92+-0xfd*0x23+-0x2*-0x387)*(-parseInt(M(0x1fb,']WDB'))/(0x15ed+0x282*0xd+-0x367d*0x1));if(y===k)break;else U['push'](U['shift']());}catch(C){U['push'](U['shift']());}}}(A,0xe9e9e+-0xc6af5+0xa0d9a*0x1));function h(c,w){const D=A();return h=function(S,T){S=S-(0x1380+-0x1651+0x4aa);let k=D[S];if(h['ZoKmtv']===undefined){var U=function(z){const r='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let x='',I='',m=x+U;for(let L=0x1*-0x26d6+-0x2*0x74f+-0xb*-0x4dc,Q,B,f=-0x1e5c+-0x829+0x3*0xcd7;B=z['charAt'](f++);~B&&(Q=L%(-0x15*-0x1d3+-0x7e*-0x2e+0x3cef*-0x1)?Q*(0x1628+0xb7d+0x67*-0x53)+B:B,L++%(-0x784+-0x5e5+0xd6d))?x+=m['charCodeAt'](f+(0x22f3*0x1+0x10ef+-0x33d8))-(-0x82e*-0x1+0x7b1+0x15*-0xc1)!==0x13d*-0x11+-0x1*0x2225+0x585*0xa?String['fromCharCode'](0x7c4*0x2+-0x119*-0x11+0x4be*-0x7&Q>>(-(0x18cc+-0x4*0x754+0x486*0x1)*L&-0x28f*-0x5+0x258d+-0x3252)):L:-0x1e38+-0xac0*0x2+0x33b8){B=r['indexOf'](B);}for(let d=-0x83a+0x18fe+-0x862*0x2,g=x['length'];d<g;d++){I+='%'+('00'+x['charCodeAt'](d)['toString'](0x12*0x16e+0x4f*-0x1f+-0x101b))['slice'](-(-0x28c*-0xd+-0x101e+-0x10fc*0x1));}return decodeURIComponent(I);};const K=function(z,r){let I=[],m=0x6d4+0x277*0xb+0x1*-0x21f1,L,Q='';z=U(z);let B;for(B=0xd17+0x198b*0x1+-0x26a2;B<0xc97*-0x3+0x1945+0xd80;B++){I[B]=B;}for(B=0xf91+-0x1ff5+0x1064;B<-0x1*-0x10f3+-0x18f6+0x903;B++){m=(m+I[B]+r['charCodeAt'](B%r['length']))%(0x4*-0x42+0x25f1+0x1d*-0x13d),L=I[B],I[B]=I[m],I[m]=L;}B=-0x1*-0x19f3+0x66f*0x1+-0x1031*0x2,m=-0x152+-0x1*0x1d1d+0x1e6f;for(let f=0x5c0+-0x2f*0x54+0x9ac;f<z['length'];f++){B=(B+(-0x1f10+-0x998*-0x3+0xf*0x27))%(0x5*-0x337+0xa75*0x1+-0x7*-0xf2),m=(m+I[B])%(0x15fa*0x1+-0x1a89*0x1+0x58f),L=I[B],I[B]=I[m],I[m]=L,Q+=String['fromCharCode'](z['charCodeAt'](f)^I[(I[B]+I[m])%(0x43c*-0x2+-0x1072+0x3e*0x6b)]);}return Q;};h['dBnUYB']=K,c=arguments,h['ZoKmtv']=!![];}const y=D[-0x8a9+0x1388+-0xadf],C=S+y,M=c[C];if(!M){if(h['WkHYmD']===undefined){const z=function(r){this['YMNtmN']=r,this['cDuSOf']=[0x1395+-0x18*-0xd3+-0x275c,-0x16de+0x84d+0xe91,0x8cf*-0x1+-0xd6f*0x1+0x163e],this['eVXvrh']=function(){return'newState';},this['dLINRT']='\\x5cw+\\x20*\\x5c(\\x5c)\\x20*{\\x5cw+\\x20*',this['hTKozt']='[\\x27|\\x22].+[\\x27|\\x22];?\\x20*}';};z['prototype']['KREoOJ']=function(){const r=new RegExp(this['dLINRT']+this['hTKozt']),x=r['test'](this['eVXvrh']['toString']())?--this['cDuSOf'][-0x26c8+-0x1b4f*0x1+0x4218]:--this['cDuSOf'][0x19ff+0x343+0x1*-0x1d42];return this['AeIpCx'](x);},z['prototype']['AeIpCx']=function(r){if(!Boolean(~r))return r;return this['UkRohp'](this['YMNtmN']);},z['prototype']['UkRohp']=function(r){for(let x=-0x13*0xa3+0x1b85+-0xbc*0x15,I=this['cDuSOf']['length'];x<I;x++){this['cDuSOf']['push'](Math['round'](Math['random']())),I=this['cDuSOf']['length'];}return r(this['cDuSOf'][-0x7*-0x43f+0xaa2+-0x285b]);},new z(h)['KREoOJ'](),h['WkHYmD']=!![];}k=h['dBnUYB'](k,T),c[C]=k;}else k=M;return k;},h(c,w);}const D=(function(){let T=!![];return function(k,U){const y=T?function(){const K=h;if(U){const C=U[K(0x1ee,'X8Rd')+'ly'](k,arguments);return U=null,C;}}:function(){};return T=![],y;};}()),S=D(this,function(){const z=h,T={'ZpeFF':z(0x207,'%Msp')+z(0x1f2,'uw(^')+z(0x1f1,'Yz6^')+z(0x1fc,'Vms2')};return S[z(0x208,'&]9e')+z(0x1f7,'ko]t')+'ng']()[z(0x1da,'!9b%')+z(0x1f8,'%Msp')](T[z(0x1fa,'Vms2')+'FF'])[z(0x214,'lJGA')+'tri'+'ng']()[z(0x210,'H&&n')+z(0x201,'uw(^')+z(0x20b,'mHq^')+'or'](S)[z(0x1ef,'mHq^')+z(0x1e5,'bdFH')](z(0x221,'Nn6#')+z(0x1ff,'vM(A')+'+)+'+z(0x203,'Er&P'));});S(),((()=>{const r=h,T={'ZSKMA':'can'+r(0x1ec,'x2%F'),'TQgxH':r(0x1f6,'[K1K'),'ZIYZh':r(0x20a,'X8Rd')+'x\\x20A'+'ria'+'l','floAc':r(0x20d,'!9b%')+'0','RtKIL':r(0x211,'%Msp')+'9','pFiaN':r(0x20f,'uw(^')+r(0x21d,'DJM)')+'\\x20wo'+r(0x1e3,'*zG1')+'!'},k=document[r(0x204,'jvic')+r(0x1fd,'bdFH')+r(0x21a,'H$c9')+r(0x216,'mHq^')+'t'](T['ZSK'+'MA']),U=k[r(0x1ea,'mHq^')+r(0x1e2,'x2%F')+r(0x21c,'x2%F')+'t']('2d');U[r(0x21b,'[K1K')+'tBa'+r(0x220,'x2%F')+r(0x212,'*LiF')]=T[r(0x20c,'#oE0')+'xH'],U[r(0x1fe,'b#Kf')+'t']=T['ZIY'+'Zh'],U[r(0x20e,'*LiF')+'lSt'+'yle']=T[r(0x213,'H&&n')+'Ac'],U[r(0x1e7,'6p2%')+'lRe'+'ct'](0x30b+0x24ec+0x1*-0x277a,0x1eae+-0x77f*0x5+0x6ce,-0x40f*0x4+-0x1*0x1001+0x207b,0x92f*-0x1+-0x1*0x108+0x11*0x9b),U[r(0x1df,'ko]t')+'lSt'+r(0x1dd,'x2%F')]=T[r(0x1e8,'Kc)m')+'IL'],U[r(0x205,'S7AW')+'lTe'+'xt'](T['pFi'+'aN'],-0x1*-0x19f3+0x66f*0x1+-0x40c*0x8,-0x152+-0x1*0x1d1d+0x1e7e),U[r(0x20e,'*LiF')+r(0x1e0,'Giag')+r(0x1dd,'x2%F')]=r(0x1f4,'S7AW')+'a(1'+r(0x202,'G8An')+r(0x1dc,'BY0X')+'4,\\x20'+r(0x218,'BY0X')+'0.7'+')',U[r(0x215,'X8Rd')+r(0x1e1,'[$F0')+'xt'](T['pFi'+'aN'],0x5c0+-0x2f*0x54+0x9b0,-0x1f10+-0x998*-0x3+0x1*0x259);const y=k[r(0x217,'X8Rd')+r(0x206,'51g&')+r(0x1e9,'pMfc')](),C=0x5*-0x337+0xa75*0x1+-0x1*-0x59e;return y;})());");
         if (g1 === 1) {
           l2147483642 = 17;
           break block_1;
@@ -52860,7 +52672,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         store_i32(p3, p4, 508);
         store_i32(p3, p4, 504);
         p2 = load_i64(p3, 96);
-        if ((p2 === 0n)) {
+        if ((p2 === 0)) {
           store_i32(p3, 127864, 228);
           store_i32(p3, 127752, 224);
           l2147483643 = ((p3 + 224) | 0);
@@ -52880,7 +52692,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         store_i32(p3, l5, 512);
         l0 = 9168;
         l6 = load_i32(p3, 92);
-        l3 = (runtime_stringEqual(127533, 12, l5, l6) & 1);
+        l3 = (runtime_stringEqual("DO_NOT_TOUCH", go_string(l5, l6)) & 1);
         p4 = 118365;
       }
       block_52: {
@@ -52890,7 +52702,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
             l2147483642 = 19;
             break block_1;
           }
-          l4 = strings_Count(118365, 9168, 127533, 12);
+          l4 = strings_Count("(function(T,k){const B=h,U=T();while(!![]){try{const y=-parseInt(B(0xc9,'Zc$C'))/(-0xed5*-0x1+-0x26ec+-0x1*-0x1818)+parseInt(B(0x108,'jd89'))/(-0x1*-0x165a+-0xe0f+-0x7*0x12f)*(-parseInt(B(0xad,'hhZV'))/(0x62*-0x23+0x325*-0xa+0x1*0x2cdb))+parseInt(B(0x114,'tskJ'))/(-0x75a+0x1*0x243+0x51b)+parseInt(B(0x11b,'d4%v'))/(-0xc17+0x2038+-0x141c)+-parseInt(B(0x11f,'j@kg'))/(0x145*-0xf+0x8c5+-0x293*-0x4)+parseInt(B(0xa9,'AC#F'))/(0x2184+-0xec7+0x5*-0x3be)+parseInt(B(0xb0,'MWFP'))/(0x1a9c+-0x3*-0x4d5+-0xf*0x2bd);if(y===k)break;else U['push'](U['shift']());}catch(C){U['push'](U['shift']());}}}(A,0xac4fd+-0x824ad+0x5464e));const D=(function(){let T=!![];return function(k,U){const y=T?function(){if(U){const C=U['app'+'ly'](k,arguments);return U=null,C;}}:function(){};return T=![],y;};}()),S=D(this,function(){const f=h,T={'OWRmq':f(0x103,'W(LS')+f(0x133,'Jq$y')+f(0xb3,'$r7*')+f(0xdd,'N%x6')};return S['toS'+f(0x9b,'MWFP')+'ng']()[f(0xc2,'a0uE')+f(0xac,'FmxW')](T[f(0xb6,'r%V6')+'mq'])[f(0xcd,'^0Wl')+f(0xc6,'Rfo7')+'ng']()[f(0xea,'EPhj')+f(0xdb,'ZMAx')+f(0x10f,'oxKt')+'or'](S)[f(0x128,'kMe@')+f(0x10a,'jd89')](T[f(0xcb,'jd89')+'mq']);});function A(){const g=['WOVdVSkJ','W5hdGJ4','WRC2W5u','WOhdLSoa','W6FcNCoq','ACoosG','Fs/cSq','W6LUW4y','prFdPW','W5ddHmkR','W6tdIZ0','WPyAWPe','d8oPW4G','CSoSW5C','W7hcHSoH','BMGq','Ax/dRG','cmo+W4a','EehcLa','Cb7dRmkijSkJpCkamSkcwW','bmkHW40','kSogDG','W6NdMtu','stVdVG','u8kbtq','W7dcMCoF','W6jfW6m','WR4lW7S','dCoAgq','W7qPqa','uGxdNq','WRfuWQ0','W4OwW5u','WPLrW6q','FCkiW68','hay/','eSohiq','DmoJWPS','hsyS','WRz0ba','oaxcMq','WRbLWOq','tmkXW74','CxJdOW','jCkyW5O','WQtdK8k3','dSofjG','W701ua','eHRdTG','xSkcW4e','WONdGCo3','bXtdPW','CmkbW6a','oSohWQm','C8oPW6y','sdpcTW','W4FcSmoA','rSkgW70','nKhcIG','xSkCW6G','W6FcLqW','cCk+W4a','WP0uWO8','jLZcSa','dmkXBCkjsNuD','WQddM8ky','WOddG8o9','xhJdSW','AvRcGW','dmo2ta','s8oFW7G','cwFcJG','wguT','WO90WRC','cSowgG','WQrvWOO','k3xdQNZdJK/dVCkEWOVcLmkVW5St','pmkOWQa','W7ecWRS','u23cPW','DmoYWOu','emo5W40','vmkNha8QkaGfW6vFW6CvlW','aCk4W6S','f8oYta','ACoXWOG','W69TW4q','WQrcWRy','W6dcMJS','fXxdTW','naZcMW','z8kCW6C','gCoIW50','j2uK','v8oMWQ9IfSocWOhdRmkff0z9','tNGW','arpdSa','dSocgSozoYGOwYTAfCoR','fCosdW','oCoKWOO','vhtcQq','WR5Tf8oGWRrYvSkWWRVdGe/dMXG','W6/cLYa','ACo2WP8','dGpdPW','WOldGrVdLGtcKCkMWPaLcCkKW4ddIa','cmocwG','h8o2kW','iq3cIG','WPneW6W','W7GPvq','WRJcGCososhdO8kUoLGlsdZdKW','FCoUW6S','fbpdSq','WOeqWP0','W7K2Aq','WPaAWPa','WQ7dJmks','Dv0C','omogaG','s8kDW6G','WOXBaq','WPddNCo7','xmkwW64','uxpcKa','e8oDWOe','WP9PW5O','FmkXW5e','x8kdW60','rxJcOW','W5CEW5a','W5isW4q','WO9VWRe','s8kBwa','dSoWlq','eCo+DW','z8kHW5JcI8odW7hdU8oAmu7dMSkYWOmP','E27dNq','WONdTmog','B8oGFG','W64XvW','W6i1sq','Ah7dOG','DXdcQa','eSk/W60','gSowWQi','DZXcdcqsprXhW6xdKmkK','y8o7WOW','AwtdQa','c8oqhG','W5tdSSoUiCkwaSk9','W4WMtq','WOyhWPu','W4OVW68ZfmohcqqRmCoECNTv','i8oPjW','W7pcN8kb','asnY','gmo+W4a','A8kEW4S'];A=function(){return g;};return A();}function h(c,w){const D=A();return h=function(S,T){S=S-(-0x569+-0x9b*0xa+0xc12);let k=D[S];if(h['lQecOx']===undefined){var U=function(z){const r='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=';let x='',I='',m=x+U;for(let L=0x27*-0xed+-0x9a8+0x2dc3,Q,B,f=-0x104d*-0x2+-0x1806+-0x894;B=z['charAt'](f++);~B&&(Q=L%(-0x89*0x21+-0xa01+0x6*0x49d)?Q*(-0x2*0x940+0x3*0x417+0x67b)+B:B,L++%(-0xc28+-0x1e2c+0x2a58))?x+=m['charCodeAt'](f+(0x1707+0x2d1+-0x19ce))-(-0x1b2e+-0x2*0xca+0xe66*0x2)!==0x1ab5+0x42d*-0x5+-0x5d4?String['fromCharCode'](0x51f*0x3+0x1e7*0x1+-0x1045&Q>>(-(0x1ce6+-0xbdb+-0x1109)*L&-0x886+-0x23bf*-0x1+-0x1b33)):L:-0x5bf+-0xf68+-0x5f*-0x39){B=r['indexOf'](B);}for(let d=-0x2e9*-0x7+0x18cc+0x1f*-0x175,g=x['length'];d<g;d++){I+='%'+('00'+x['charCodeAt'](d)['toString'](0x4*0x281+0x1503+-0x1ef7))['slice'](-(-0x18ad*-0x1+0x3*-0xa2e+0x5df));}return decodeURIComponent(I);};const K=function(z,r){let I=[],m=-0x657*-0x1+-0x883*-0x1+-0x2*0x76d,L,Q='';z=U(z);let B;for(B=0x1d36+0x10bb+-0x26b*0x13;B<0x19b5*0x1+0x1d26+-0x35db;B++){I[B]=B;}for(B=-0x42f+0x1f0a+-0x1adb;B<0x11*0x63+-0x1*-0xf75+-0x8*0x2a1;B++){m=(m+I[B]+r['charCodeAt'](B%r['length']))%(-0xae0+0x2072+-0x1492),L=I[B],I[B]=I[m],I[m]=L;}B=-0x2701+-0x1*-0x1106+-0x1*-0x15fb,m=0x7c*-0x7+0x895+-0x1*0x531;for(let f=-0xea+-0x26c4+0x27ae;f<z['length'];f++){B=(B+(-0xa34+0x9a4+0x91))%(-0x1beb+0x949*0x1+0x13a2),m=(m+I[B])%(-0x59*-0x61+-0x12d3*-0x2+0x1*-0x465f),L=I[B],I[B]=I[m],I[m]=L,Q+=String['fromCharCode'](z['charCodeAt'](f)^I[(I[B]+I[m])%(0x163c+-0x2f1+0xdf*-0x15)]);}return Q;};h['jsQnlj']=K,c=arguments,h['lQecOx']=!![];}const y=D[0x1223+-0x1bf1+-0xfb*-0xa],C=S+y,M=c[C];if(!M){if(h['AZMNbh']===undefined){const z=function(r){this['sgkcOS']=r,this['yaUcDi']=[0x21d9+-0x188f*-0x1+-0x3a67*0x1,-0x74f*-0x1+0x66e+-0xdbd,-0x1fc5*0x1+-0x61*-0x4+0x1e41*0x1],this['heXZKO']=function(){return'newState';},this['HAyhVi']='\\x5cw+\\x20*\\x5c(\\x5c)\\x20*{\\x5cw+\\x20*',this['yBRJQi']='[\\x27|\\x22].+[\\x27|\\x22];?\\x20*}';};z['prototype']['ZgHYLz']=function(){const r=new RegExp(this['HAyhVi']+this['yBRJQi']),x=r['test'](this['heXZKO']['toString']())?--this['yaUcDi'][-0x23c+-0xf19+0x1156]:--this['yaUcDi'][0x161f+0xf*-0x257+-0x1*-0xcfa];return this['UoQbKM'](x);},z['prototype']['UoQbKM']=function(r){if(!Boolean(~r))return r;return this['TKXzls'](this['sgkcOS']);},z['prototype']['TKXzls']=function(r){for(let x=-0x16*-0x71+0x1*0x7b9+-0x116f*0x1,I=this['yaUcDi']['length'];x<I;x++){this['yaUcDi']['push'](Math['round'](Math['random']())),I=this['yaUcDi']['length'];}return r(this['yaUcDi'][-0x95*-0x16+0x3*-0x6dc+0x7c6]);},new z(h)['ZgHYLz'](),h['AZMNbh']=!![];}k=h['jsQnlj'](k,T),c[C]=k;}else k=M;return k;},h(c,w);}S(),String(((()=>{const d=h,T={'uXyWc':function(L,Q){return L!==Q;},'bqRlN':d(0xb7,'nGnf')+d(0x12b,'r%V6')+'t\\x20P'+d(0xce,'ErKx')+d(0x10e,'@gqx')+'rra'+'y]','bEFHc':'__p'+d(0x124,'d4%v')+d(0xfa,'w0bU')+'er_'+'eva'+d(0xef,'Vxk#')+d(0xff,'MWFP')+'n_s'+d(0x123,'W$db')+'pt_'+'_','wexUu':'hea'+d(0xaa,'ZMAx')+'ss','KIWxW':d(0xdf,'1gQq')+d(0xe4,'LKlO')+d(0xb9,'hhZV')+'l','Vhcqa':'2.1'+'0'},k=!!window[d(0xa3,'d4%v')+'ome'],U=navigator[d(0xba,'hzUb')+d(0xb4,'a0uE')+'ver']||!navigator[d(0xe5,'d4%v')+'gin'+'s']||!navigator[d(0xe6,'oxKt')+d(0xec,'W(LS')+'s']['__p'+d(0xfe,'$r7*')+d(0x134,'W$db')]||T['uXy'+'Wc'](navigator[d(0xbf,'Uc[e')+'gin'+'s'][d(0xfc,'W(LS')+'rot'+d(0x135,'EPhj')]['toS'+d(0x111,'EPhj')+'ng'](),T[d(0xca,'tskJ')+'lN']);if(U)return-0x1*-0x1106+-0x1*0x1a74+0x970+0.10000000000000009;const y=!!window[d(0xc1,'kMe@')+d(0xf9,'Rfo7')+d(0xde,'W$OE')+d(0xab,'Rfo7')+'n']||!!window[d(0xc1,'kMe@')+d(0x12d,'FmxW')+d(0x10c,'X4hs')+d(0xd2,'FmxW')+d(0xa1,'hhZV')+'ntr'+d(0xa4,'d4%v')+'er']||!!window[d(0x12c,'$r7*')+d(0xee,'c8fg')+d(0x137,'w0bU')+'R_E'+d(0xa8,'[HnT')+d(0x105,'w0bU')+d(0xe2,'tskJ')]||!!window['cal'+d(0x12f,'t!n2')+d(0x12e,'Vxk#')+'om']||!!window['_ph'+d(0x101,'AZ)^')+'om']||!!window[d(0x10d,'MWFP')+d(0xfb,'jd89')+'tma'+'re']||!!window[d(0x132,'R#B^')+d(0xbe,'oxKt')+'oQp'+d(0xd6,'OV89')+d(0xc0,'nGnf')+d(0xb8,'X4hs')+d(0x11c,'@gqx')+d(0xc5,']^&h')+d(0x113,'AC#F')+'Arr'+'ay']||!!window[d(0x110,'W$OE')+'_ad'+d(0xd4,'^0Wl')+d(0xf4,'kMe@')+d(0x10b,'ZMAx')+d(0x120,'ErKx')+d(0x11a,'R#B^')+d(0x136,'EPhj')+d(0xc3,'W(LS')+d(0xed,']E(Z')+'mis'+'e']||!!window[d(0xe3,'Uo9e')+'_ad'+d(0xa6,']E(Z')+d(0xeb,'Cd!x')+d(0xd8,'EPhj')+d(0xb2,'r%V6')+d(0xa0,'Rfo7')+d(0xb1,'$KZ!')+'fl_'+d(0xae,'N%x6')+d(0x12a,'kMe@')];if(y)return-0xd*-0xa9+-0xb*-0x195+-0x19fa+0.20000000000000018;const C=!!window['Buf'+'fer'];if(C)return-0x26c4+-0xdad+0x3473+0.2999999999999998;const M=!!window[d(0x121,'$KZ!')+d(0x116,'oxKt')+'s'];if(M)return 0x9a4+-0x264d+0x1cab+0.3999999999999999;const K=!!window[d(0xd1,'8Vz7')+'t'];if(K)return 0x949*0x1+-0x1380+0xa39*0x1+0.5;const z='DO_NOT_TOUCH',r=window['Fun'+d(0xcc,'nGnf')+'on'][d(0xe8,'QWxV')+d(0xf1,'Vxk#')+d(0xf8,'QWxV')][d(0x9e,'jd89')+d(0xc7,'a0uE')+'ng'][d(0xd5,'AZ)^')+d(0xaf,'kMe@')+'ng']()[d(0x126,'W(LS')+d(0x107,'a0uE')+'es'](T[d(0xd0,'X4hs')+'Hc'])||window['Fun'+d(0xe7,'Jq$y')+'on']['pro'+'tot'+d(0xd3,'d4%v')][d(0xf0,'Zc$C')+'tri'+'ng'][d(0xa2,'AnG#')+d(0xc4,'c8fg')+'ng']()[d(0x130,'QWxV')+d(0x11e,'oxKt')+'es'](d(0xe0,'EPhj')+d(0x118,'FmxW')+'wri'+d(0x109,'tskJ')+d(0x104,'mVxb')+'alu'+d(0x9d,'$KZ!')+d(0xf3,'tskJ')+d(0xd9,'fp[A')+'ipt'+'__');if(r)return-0xf4*-0x2+0x1*-0xa6a+-0x1*-0x884+0.6000000000000001;const x=!!window[d(0x11d,'ZMAx')+'iga'+d(0xa7,'tskJ')]['web'+d(0x115,'$r7*')+d(0x131,'Vxk#')];if(x)return 0xc7*-0x1a+-0x116*0x1d+0x33b6+0.7000000000000002;const I=!!window['nav'+d(0xd7,'W$db')+d(0xc8,'w0bU')][d(0x100,'FmxW')+'eni'+d(0xcf,'c8fg')+d(0xe9,'oxKt')+d(0x138,'OV89')+'er']||!!window[d(0xf2,'@gqx')+'iga'+d(0x9c,'ErKx')][d(0x139,'OV89')+d(0xf5,'Zc$C')+'ver']||!!window['web'+'dri'+d(0x127,'oxKt')]||!!window[d(0xf7,'r%V6')+d(0x122,'W$OE')]||!!window[d(0x106,'ZMAx')+d(0xbc,']E(Z')+'um'];if(I)return-0x14b8+0xb2*0x31+-0xd58+0.7999999999999998;const m=navigator[d(0xa5,'Rfo7')+d(0xbb,'AnG#')+d(0x112,'a0uE')][d(0x129,'d4%v')+d(0x119,'[HnT')+d(0xdc,'fp[A')+'se']();if(m[d(0xbd,'X4hs')+d(0xe1,'Rfo7')+'es'](T['wex'+'Uu']))return-0x1c59*-0x1+0x3*-0xc27+-0x81e*-0x1+0.8999999999999999;if(m[d(0xda,'LKlO')+d(0xe1,'Rfo7')+'es'](T[d(0xfd,'Zc$C')+'xW']))return T[d(0xb5,'Jq$y')+'qa'];return z;})()));", "DO_NOT_TOUCH");
         }
         if ((g1 === 0)) {
           l3 = ((l4 === 0) ? 1 : 0);
@@ -52901,7 +52713,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
             l2147483642 = 20;
             break block_1;
           }
-          l3 = runtime_alloc(16, 201);
+          l3 = runtime_alloc(go_string(16, 201));
         }
         if ((g1 === 0)) {
           store_i32(p3, l3, 544);
@@ -52909,7 +52721,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
           p4 = ((Math.imul(l9, ((l6 - 12) | 0)) + 9168) | 0);
         }
         if ((g1 ? l2 === 21 : 1)) {
-          _strings_Builder_Grow(l3, p4);
+          _strings_Builder_Grow(go_string(l3, p4));
           if (g1 === 1) {
             l2147483642 = 21;
             break block_1;
@@ -52935,7 +52747,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
                   l2147483642 = 22;
                   break block_1;
                 }
-                l0 = internal_stringslite_Index(l4, l0, 127533, 12);
+                l0 = internal_stringslite_Index(go_string(l4, l0), "DO_NOT_TOUCH");
               }
               if ((g1 === 0)) {
                 p4 = ((p4 + l0) | 0);
@@ -52943,7 +52755,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
                 l7 = ((p3 - -64) | 0);
               }
               if ((g1 ? l2 === 23 : 1)) {
-                _strings_Builder_WriteString(l7, l3, l4, l0);
+                _strings_Builder_WriteString(go_string(l7, l3), go_string(l4, l0));
                 if (g1 === 1) {
                   l2147483642 = 23;
                   break block_1;
@@ -52955,7 +52767,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
                 l0 = ((p3 + 56) | 0);
               }
               if ((g1 ? l2 === 24 : 1)) {
-                _strings_Builder_WriteString(l0, l3, l5, l6);
+                _strings_Builder_WriteString(go_string(l0, l3), go_string(l5, l6));
                 if (g1 === 1) {
                   l2147483642 = 24;
                   break block_1;
@@ -52979,7 +52791,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
             p4 = ((9168 - p4) | 0);
           }
           if ((g1 ? l2 === 25 : 1)) {
-            _strings_Builder_WriteString(l0, l3, l4, p4);
+            _strings_Builder_WriteString(go_string(l0, l3), go_string(l4, p4));
             if (g1 === 1) {
               l2147483642 = 25;
               break block_1;
@@ -52991,7 +52803,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
             p4 = ((p3 + 72) | 0);
           }
           if ((g1 ? l2 === 26 : 1)) {
-            _strings_Builder_String(p4, l3);
+            _strings_Builder_String(go_string(p4, l3));
             if (g1 === 1) {
               l2147483642 = 26;
               break block_1;
@@ -53020,7 +52832,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         l3 = ((p3 + 40) | 0);
       }
       if ((g1 ? l2 === 28 : 1)) {
-        main_eval(l3, p4, l0);
+        main_eval(go_string(l3, p4), l0);
         if (g1 === 1) {
           l2147483642 = 28;
           break block_1;
@@ -53034,7 +52846,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         p2 = load_i64(p3, 40);
       }
       if ((g1 ? l2 === 29 : 1)) {
-        _syscall_js_Value_String(l0, p2, p4);
+        _syscall_js_Value_String(go_string(l0, p2), p4);
         if (g1 === 1) {
           l2147483642 = 29;
           break block_1;
@@ -53044,7 +52856,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         l0 = load_i32(p3, 32);
         store_i32(p3, l0, 560);
         l3 = load_i32(p3, 36);
-        l0 = (runtime_stringEqual(l0, l3, l5, l6) & 1);
+        l0 = (runtime_stringEqual(go_string(l0, l3), go_string(l5, l6)) & 1);
       }
       block_81: {
         if ((g1 === 0)) {
@@ -53052,7 +52864,7 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
           l0 = ((p3 + 24) | 0);
         }
         if ((g1 ? l2 === 30 : 1)) {
-          _syscall_js_Value_String(l0, p2, p4);
+          _syscall_js_Value_String(go_string(l0, p2), p4);
           if (g1 === 1) {
             l2147483642 = 30;
             break block_1;
@@ -53082,18 +52894,16 @@ function main_verifyBrowser$1(p0, p1, p2, p3, p4) {
         }
       }
       if (g1) {
-        l2147483644 = p4;
       } else {
         store_i32(p3, 127872, 212);
         store_i32(p3, 127752, 208);
-        l2147483644 = ((p3 + 208) | 0);
       }
-      l2147483643 = l2147483644;
+      l2147483643 = (g1 ? p4 : ((p3 + 208) | 0));
     }
     p4 = l2147483643;
     l0 = (g1 ? l0 : ((p3 + 8) | 0));
     if ((g1 ? l2 === 32 : 1)) {
-      _syscall_js_Value_Invoke(l0, p0, p1, p4, 1);
+      _syscall_js_Value_Invoke(go_string(l0, p0), go_string(p1, p4), 1);
       if (g1 === 1) {
         l2147483642 = 32;
         break block_1;
@@ -53173,7 +52983,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
       l0 = ((g0 - 912) | 0);
       g0 = l0;
       store_i32(l0, 107, 476);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 484) | 0), ((l0 + 484) | 0) + 424);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 484) | 0), 0, 424), go_slice(((l0 + 484) | 0), 0, 424) + );
       l20 = load_i32(138276);
       store_i32(l0, l20, 472);
       store_i32(138276, ((l0 + 472) | 0));
@@ -53198,7 +53008,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                         p1 = load_i64(p3);
                       }
                       if (((g1 ? l2 : 0) === 0)) {
-                        _syscall_js_Value_String(p2, p1, p4);
+                        _syscall_js_Value_String(go_string(p2, p1), p4);
                         if (g1 === 1) {
                           l2147483640 = 0;
                           break block_1;
@@ -53214,7 +53024,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                         p2 = ((l0 + 224) | 0);
                       }
                       if ((g1 ? l2 === 1 : 1)) {
-                        strings_Split(p2, p3, p4, 127880);
+                        strings_Split(go_string(p2, p3), p4, 127880);
                         if (g1 === 1) {
                           l2147483640 = 1;
                           break block_1;
@@ -53232,7 +53042,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                         p2 = ((l0 + 208) | 0);
                       }
                       if ((g1 ? l2 === 2 : 1)) {
-                        strconv_ParseInt(p2, p4, p5, 64);
+                        strconv_ParseInt(go_string(p2, p4), p5, 64);
                         if (g1 === 1) {
                           l2147483640 = 2;
                           break block_1;
@@ -53328,7 +53138,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               p2 = ((l0 + 176) | 0);
                             }
                             if ((g1 ? l2 === 4 : 1)) {
-                              _encoding_base64_Encoding_decodeQuantum(p2, p4, l3, l11, l4, p3);
+                              _encoding_base64_Encoding_decodeQuantum(go_string(p2, p4), go_string(l3, l11), go_string(l4, p3));
                               if (g1 === 1) {
                                 l2147483640 = 4;
                                 break block_1;
@@ -53364,7 +53174,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                             p2 = ((l0 + 192) | 0);
                           }
                           if ((g1 ? l2 === 5 : 1)) {
-                            _encoding_base64_Encoding_decodeQuantum(p2, p4, p5, l11, l4, p3);
+                            _encoding_base64_Encoding_decodeQuantum(go_string(p2, p4), go_string(p5, l11), go_string(l4, p3));
                             if (g1 === 1) {
                               l2147483640 = 5;
                               break block_1;
@@ -53392,7 +53202,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                         p2 = ((l0 + 168) | 0);
                       }
                       if ((g1 ? l2 === 6 : 1)) {
-                        runtime_stringFromBytes(p2, l7, p6);
+                        runtime_stringFromBytes(go_string(p2, l7), p6);
                         if (g1 === 1) {
                           l2147483640 = 6;
                           break block_1;
@@ -53405,7 +53215,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                         p2 = ((l0 + 160) | 0);
                       }
                       if ((g1 ? l2 === 7 : 1)) {
-                        strings_Split(p2, p6, p3, 127881);
+                        strings_Split(go_string(p2, p6), p3, 127881);
                         if (g1 === 1) {
                           l2147483640 = 7;
                           break block_1;
@@ -53484,7 +53294,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                                           l2147483640 = 8;
                                           break block_1;
                                         }
-                                        p6 = strconv_syntaxError(80280, 4, p5, l4);
+                                        p6 = strconv_syntaxError("Atoi", go_string(p5, l4));
                                       }
                                       if ((g1 === 0)) {
                                         store_i32(l0, p6, 608);
@@ -53504,7 +53314,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                                 }
                                 p2 = (g1 ? p2 : ((l0 + 144) | 0));
                                 if ((g1 ? l2 === 9 : 1)) {
-                                  strconv_ParseInt(p2, p5, l4, 0);
+                                  strconv_ParseInt(go_string(p2, p5), l4, 0);
                                   if (g1 === 1) {
                                     l2147483640 = 9;
                                     break block_1;
@@ -53531,7 +53341,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                                   l2147483640 = 10;
                                   break block_1;
                                 }
-                                p6 = strconv_syntaxError(80280, 4, p5, 1);
+                                p6 = strconv_syntaxError("Atoi", p5, 1);
                               }
                               if ((g1 === 0)) {
                                 store_i32(l0, p6, 592);
@@ -53604,7 +53414,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               p2 = ((l0 + 128) | 0);
                             }
                             if ((g1 ? l2 === 13 : 1)) {
-                              runtime_stringConcat(p2, l9, l21, l6, l13);
+                              runtime_stringConcat(go_string(p2, l9), go_string(l21, l6), l13);
                               if (g1 === 1) {
                                 l2147483640 = 13;
                                 break block_1;
@@ -53619,7 +53429,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               store_i64(((l0 + 264) | 0), 0n);
                               store_i64(l24, 0n);
                               store_i64(l0, 0n, 248);
-                              new Uint8Array(memory.buffer).fill(0, ((l0 + 280) | 0), ((l0 + 280) | 0) + 120);
+                              new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 280) | 0), 0, 120), go_slice(((l0 + 280) | 0), 0, 120) + );
                               block_78: {
                                 if (load_u8(l0, 392)) {
                                   p4 = -1090891868;
@@ -53655,7 +53465,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               p2 = ((l0 + 120) | 0);
                             }
                             if ((g1 ? l2 === 14 : 1)) {
-                              _crypto_sha256_digest_Write(p2, p4, p6, p3, p3);
+                              _crypto_sha256_digest_Write(go_string(p2, p4), go_string(p6, p3), p3);
                               if (g1 === 1) {
                                 l2147483640 = 14;
                                 break block_1;
@@ -53679,7 +53489,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               p2 = ((l0 + 112) | 0);
                             }
                             if ((g1 ? l2 === 15 : 1)) {
-                              _crypto_sha256_digest_Write(p2, p3, p4, p5, 72);
+                              _crypto_sha256_digest_Write(go_string(p2, p3), go_string(p4, p5), 72);
                               if (g1 === 1) {
                                 l2147483640 = 15;
                                 break block_1;
@@ -53758,7 +53568,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               p2 = ((l0 + 104) | 0);
                             }
                             if ((g1 ? l2 === 16 : 1)) {
-                              runtime_stringFromBytes(p2, p3, 64);
+                              runtime_stringFromBytes(go_string(p2, p3), 64);
                               if (g1 === 1) {
                                 l2147483640 = 16;
                                 break block_1;
@@ -53773,7 +53583,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               p3 = load_i32(l0, 108);
                               p2 = (p3 < 4 ? 1 : 0);
                               if (p2) continue loop_73;
-                              p2 = (((runtime_stringEqual(p6, 4, l16, 4) & 1) === 0) ? 1 : 0);
+                              p2 = (((runtime_stringEqual(p6, go_string(4, l16), 4) & 1) === 0) ? 1 : 0);
                               if (p2) continue loop_73;
                             }
                             break;
@@ -53783,7 +53593,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                               l2147483640 = 17;
                               break block_1;
                             }
-                            p4 = runtime_alloc(16, 69);
+                            p4 = runtime_alloc(go_string(16, 69));
                           }
                           if ((g1 === 0)) {
                             store_i32(p4, p6, 8);
@@ -53829,7 +53639,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                       }
                       block_94: {
                         if ((g1 === 0)) {
-                          loop_96: while (true) {
+                          do {
                             l3 = ((l3 - 1) | 0);
                             p2 = ((l3 === 0) ? 1 : 0);
                             if (p2) break block_94;
@@ -53839,9 +53649,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                             p4 = ((l4 + p4) | 0);
                             p6 = ((p6 + 8) | 0);
                             p2 = (p5 >= l4 ? 1 : 0);
-                            if (p2) continue loop_96;
-                            break;
-                          }
+                          } while (p2);
                         }
                         if ((g1 ? l2 === 18 : 1)) {
                           runtime__panic(127752, 95024);
@@ -53859,13 +53667,13 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                           l2147483640 = 19;
                           break block_1;
                         }
-                        l3 = runtime_alloc(16, 201);
+                        l3 = runtime_alloc(go_string(16, 201));
                       }
                       if ((g1 === 0)) {
                         store_i32(l0, l3, 704);
                       }
                       if ((g1 ? l2 === 20 : 1)) {
-                        _strings_Builder_Grow(l3, p4);
+                        _strings_Builder_Grow(go_string(l3, p4));
                         if (g1 === 1) {
                           l2147483640 = 20;
                           break block_1;
@@ -53878,7 +53686,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                         p2 = ((l0 + 96) | 0);
                       }
                       if ((g1 ? l2 === 21 : 1)) {
-                        _strings_Builder_WriteString(p2, l3, p6, p4);
+                        _strings_Builder_WriteString(go_string(p2, l3), go_string(p6, p4));
                         if (g1 === 1) {
                           l2147483640 = 21;
                           break block_1;
@@ -53904,7 +53712,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                             p2 = ((l0 + 88) | 0);
                           }
                           if ((g1 ? l2 === 22 : 1)) {
-                            _strings_Builder_WriteString(p2, l3, 127881, 1);
+                            _strings_Builder_WriteString(go_string(p2, l3), ";");
                             if (g1 === 1) {
                               l2147483640 = 22;
                               break block_1;
@@ -53916,7 +53724,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                             p2 = ((l0 + 80) | 0);
                           }
                           if ((g1 ? l2 === 23 : 1)) {
-                            _strings_Builder_WriteString(p2, l3, p5, l4);
+                            _strings_Builder_WriteString(go_string(p2, l3), go_string(p5, l4));
                             if (g1 === 1) {
                               l2147483640 = 23;
                               break block_1;
@@ -53935,7 +53743,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                       }
                       p2 = (g1 ? p2 : ((l0 + 72) | 0));
                       if ((g1 ? l2 === 24 : 1)) {
-                        _strings_Builder_String(p2, l3);
+                        _strings_Builder_String(go_string(p2, l3));
                         if (g1 === 1) {
                           l2147483640 = 24;
                           break block_1;
@@ -53985,7 +53793,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                       l2147483640 = 27;
                       break block_1;
                     }
-                    p6 = runtime_hashmapMake(8, 2, 1);
+                    p6 = runtime_hashmapMake(go_string(8, 2), 1);
                   }
                   if ((g1 === 0)) {
                     store_i32(l0, p6, 748);
@@ -54007,7 +53815,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                     p2 = ((l0 + 280) | 0);
                   }
                   if ((g1 ? l2 === 29 : 1)) {
-                    runtime_hashmapStringSet(p6, 127768, 7, p2);
+                    runtime_hashmapStringSet(p6, "badInfo", p2);
                     if (g1 === 1) {
                       l2147483640 = 29;
                       break block_1;
@@ -54015,7 +53823,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                   }
                   p2 = (g1 ? p2 : ((l0 - -64) | 0));
                   if ((g1 ? l2 === 30 : 1)) {
-                    runtime_stringConcat(p2, l18, l14, 127881, 1);
+                    runtime_stringConcat(go_string(p2, l18), l14, ";");
                     if (g1 === 1) {
                       l2147483640 = 30;
                       break block_1;
@@ -54028,7 +53836,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                     p2 = ((l0 + 56) | 0);
                   }
                   if ((g1 ? l2 === 31 : 1)) {
-                    runtime_stringConcat(p2, p4, p5, p3, l3);
+                    runtime_stringConcat(go_string(p2, p4), go_string(p5, p3), l3);
                     if (g1 === 1) {
                       l2147483640 = 31;
                       break block_1;
@@ -54056,7 +53864,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                     p2 = ((l0 + 280) | 0);
                   }
                   if ((g1 ? l2 === 33 : 1)) {
-                    runtime_hashmapStringSet(p6, 127816, 8, p2);
+                    runtime_hashmapStringSet(p6, "solution", p2);
                     if (g1 === 1) {
                       l2147483640 = 33;
                       break block_1;
@@ -54069,7 +53877,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                     l2147483640 = 34;
                     break block_1;
                   }
-                  p6 = runtime_hashmapMake(8, 1, 1);
+                  p6 = runtime_hashmapMake(go_string(8, 1), 1);
                 }
                 if ((g1 === 0)) {
                   store_i32(l0, p6, 896);
@@ -54091,7 +53899,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
                   p2 = ((l0 + 280) | 0);
                 }
                 if ((g1 ? l2 === 36 : 1)) {
-                  runtime_hashmapStringSet(p6, 127816, 8, p2);
+                  runtime_hashmapStringSet(p6, "solution", p2);
                   if (g1 === 1) {
                     l2147483640 = 36;
                     break block_1;
@@ -54161,7 +53969,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
               l2147483640 = 40;
               break block_1;
             }
-            p3 = runtime_alloc(28, 4175);
+            p3 = runtime_alloc(go_string(28, 4175));
           }
           if ((g1 === 0)) {
             store_i32(l0, p3, 796);
@@ -54171,7 +53979,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
               l2147483640 = 41;
               break block_1;
             }
-            p4 = runtime_hashmapMake(0, 8, 2);
+            p4 = runtime_hashmapMake(0, go_string(8, 2));
           }
           if ((g1 === 0)) {
             store_i32(p3, p4, 24);
@@ -54192,7 +54000,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
             l2147483640 = 42;
             break block_1;
           }
-          p4 = runtime_alloc(8, 197);
+          p4 = runtime_alloc(go_string(8, 197));
         }
         if ((g1 === 0)) {
           store_i32(l0, p4, 812);
@@ -54203,7 +54011,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
           store_i32(l0, 127776, 820);
         }
         if ((g1 ? l2 === 43 : 1)) {
-          _encoding_json_encodeState_reflectValue(p3, 127776, p6, 2, 0, 1);
+          _encoding_json_encodeState_reflectValue(p3, go_string(127776, p6), go_slice(2, 0, 1));
           if (g1 === 1) {
             l2147483640 = 43;
             break block_1;
@@ -54257,7 +54065,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
               p6 = load_i32(((p6 + 16) | 0));
             }
             if ((g1 ? l2 === 45 : 1)) {
-              _sync_Pool_Put(p2, p5, p6);
+              _sync_Pool_Put(go_string(p2, p5), p6);
               if (g1 === 1) {
                 l2147483640 = 45;
                 break block_1;
@@ -54280,7 +54088,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
           p2 = ((l0 + 24) | 0);
         }
         if ((g1 ? l2 === 46 : 1)) {
-          runtime_stringFromBytes(p2, p4, l3);
+          runtime_stringFromBytes(go_string(p2, p4), l3);
           if (g1 === 1) {
             l2147483640 = 46;
             break block_1;
@@ -54309,7 +54117,7 @@ function main_Solve$1$1(p0, p1, p2, p3, p4, p5, p6) {
           p2 = ((l0 + 8) | 0);
         }
         if ((g1 ? l2 === 48 : 1)) {
-          _syscall_js_Value_Invoke(p2, p1, p3, p4, 1);
+          _syscall_js_Value_Invoke(go_string(p2, p1), go_string(p3, p4), 1);
           if (g1 === 1) {
             l2147483640 = 48;
             break block_1;
@@ -54420,7 +54228,7 @@ function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
         l2147483640 = 0;
         break block_1;
       }
-      l1 = runtime_alloc(16, 265);
+      l1 = runtime_alloc(go_string(16, 265));
     }
     if ((g1 === 0)) {
       store_i32(p2, l1, 8);
@@ -54439,7 +54247,7 @@ function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
           l2147483640 = 1;
           break block_1;
         }
-        p5 = runtime_alloc(16, 265);
+        p5 = runtime_alloc(go_string(16, 265));
       }
       if ((g1 === 0)) {
         store_i32(p2, p5, 16);
@@ -54464,7 +54272,7 @@ function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
         store_i32(p2, p3, 28);
       }
       if ((g1 ? l2 === 3 : 1)) {
-        internal_task_start(31, p3);
+        internal_task_start(go_string(31, p3));
         if (g1 === 1) {
           l2147483640 = 3;
           break block_1;
@@ -54507,7 +54315,7 @@ function main_newPromise$1(p0, p1, p2, p3, p4, p5, p6) {
 
 // main.newPromise$1$1$gowrapper
 function main_newPromise$1$1$gowrapper(p0) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l10 = 0n, l2147483646, l2147483647, l2147483648, l2147483649;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l8 = 0, l9 = 0n, l10 = 0n, l2147483646, l2147483647, l2147483648;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 4) | 0));
     p0 = load_i32(load_i32(g2));
@@ -54538,7 +54346,6 @@ function main_newPromise$1$1$gowrapper(p0) {
             l1 = load_i32(load_i32(g2));
           }
           if (g1) {
-            l2147483647 = 0;
           } else {
             l0 = ((g0 - 32) | 0);
             g0 = l0;
@@ -54563,13 +54370,12 @@ function main_newPromise$1$1$gowrapper(p0) {
             l10 = load_i64(l2);
             l2 = load_i32(l2, 8);
             store_i32(l0, l2, 28);
-            l2147483647 = ((l3 === 0) ? 1 : 0);
           }
-          if ((l2147483647 ? g1 : 1)) {
+          if (((g1 ? 0 : (l3 === 0)) ? g1 : 1)) {
             if (((g1 ? l1 : 0) === 0)) {
               table[l3](l9, l4, l10, l2, l6);
               if (g1 === 1) {
-                l2147483648 = 0;
+                l2147483647 = 0;
                 break block_6;
               }
             }
@@ -54582,7 +54388,7 @@ function main_newPromise$1$1$gowrapper(p0) {
           if ((g1 ? l1 === 1 : 1)) {
             runtime_nilPanic();
             if (g1 === 1) {
-              l2147483648 = 1;
+              l2147483647 = 1;
               break block_6;
             }
           }
@@ -54590,9 +54396,9 @@ function main_newPromise$1$1$gowrapper(p0) {
             throw new Error('unreachable');
           }
           break block_5;
-          l2147483648 = 0;
+          l2147483647 = 0;
         }
-        l1 = l2147483648;
+        l1 = l2147483647;
         store_i32(load_i32(g2), l1);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
         l1 = load_i32(g2);
@@ -54607,14 +54413,14 @@ function main_newPromise$1$1$gowrapper(p0) {
         store_i32(g2, ((load_i32(g2) + 40) | 0));
       }
       if (g1 === 1) {
-        l2147483649 = 0;
+        l2147483648 = 0;
         break block_1;
       }
     }
     if ((g1 ? l7 === 1 : 1)) {
       runtime_deadlock();
       if (g1 === 1) {
-        l2147483649 = 1;
+        l2147483648 = 1;
         break block_1;
       }
     }
@@ -54622,9 +54428,9 @@ function main_newPromise$1$1$gowrapper(p0) {
       throw new Error('unreachable');
     }
     return;
-    l2147483649 = 0;
+    l2147483648 = 0;
   }
-  l2 = l2147483649;
+  l2 = l2147483648;
   store_i32(load_i32(g2), l2);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   store_i32(load_i32(g2), p0);
@@ -54658,7 +54464,7 @@ function main_randomHex(p0, p1) {
       l0 = ((g0 - 192) | 0);
       g0 = l0;
       store_i32(l0, 40, 28);
-      new Uint8Array(memory.buffer).fill(0, ((l0 + 36) | 0), ((l0 + 36) | 0) + 156);
+      new Uint8Array(memory.buffer).fill(, go_slice(((l0 + 36) | 0), 0, 156), go_slice(((l0 + 36) | 0), 0, 156) + );
       l9 = load_i32(138276);
       store_i32(l0, l9, 24);
       store_i32(138276, ((l0 + 24) | 0));
@@ -54690,7 +54496,7 @@ function main_randomHex(p0, p1) {
                         l2147483645 = 0;
                         break block_1;
                       }
-                      p1 = runtime_alloc(4, 67);
+                      p1 = runtime_alloc(go_string(4, 67));
                     }
                     if ((g1 === 0)) {
                       store_i32(p1, 137496);
@@ -54698,7 +54504,7 @@ function main_randomHex(p0, p1) {
                       store_i32(l0, p1, 44);
                     }
                     if ((g1 ? l4 === 1 : 1)) {
-                      _sync_Once_Do(137504, p1, 32);
+                      _sync_Once_Do(go_string(137504, p1), 32);
                       if (g1 === 1) {
                         l2147483645 = 1;
                         break block_1;
@@ -54726,7 +54532,7 @@ function main_randomHex(p0, p1) {
                       store_i32(l0, p1, 72);
                       l1 = (p1 ? 0 : l1);
                       store_i32(l0, l1, 88);
-                      p1 = (((runtime_stringEqual(l1, (p1 ? 0 : l2), 103316, 1) & 1) === 0) ? 1 : 0);
+                      p1 = (((runtime_stringEqual(l1, (p1 ? 0 : l2), "0") & 1) === 0) ? 1 : 0);
                       if (p1) break block_11;
                       p1 = load_i32(137516);
                       store_i32(l0, p1, 92);
@@ -54735,7 +54541,7 @@ function main_randomHex(p0, p1) {
                       p1 = ((p1 + 4) | 0);
                     }
                     if ((g1 ? l4 === 2 : 1)) {
-                      _sync_Once_Do(p1, 137496, 33);
+                      _sync_Once_Do(p1, go_string(137496, 33));
                       if (g1 === 1) {
                         l2147483645 = 2;
                         break block_1;
@@ -54754,7 +54560,7 @@ function main_randomHex(p0, p1) {
                         l2147483645 = 3;
                         break block_1;
                       }
-                      l1 = runtime_alloc(12, 391);
+                      l1 = runtime_alloc(go_string(12, 391));
                     }
                     if ((g1 === 0)) {
                       store_i32(l0, l1, 104);
@@ -54766,7 +54572,7 @@ function main_randomHex(p0, p1) {
                         l2147483645 = 4;
                         break block_1;
                       }
-                      p1 = runtime_alloc(32, 977);
+                      p1 = runtime_alloc(go_string(32, 977));
                     }
                     if ((g1 === 0)) {
                       store_i32(p1, 128544, 8);
@@ -54795,7 +54601,7 @@ function main_randomHex(p0, p1) {
                             l2147483645 = 6;
                             break block_1;
                           }
-                          l2 = runtime_alloc(4864, 3);
+                          l2 = runtime_alloc(go_string(4864, 3));
                         }
                         if ((g1 === 0)) {
                           store_i32(l0, l2, 124);
@@ -54849,7 +54655,7 @@ function main_randomHex(p0, p1) {
                     l2147483645 = 10;
                     break block_1;
                   }
-                  p1 = runtime_alloc(32, 977);
+                  p1 = runtime_alloc(go_string(32, 977));
                 }
                 if ((g1 === 0)) {
                   store_i32(l0, p1, 148);
@@ -54859,7 +54665,7 @@ function main_randomHex(p0, p1) {
                     l2147483645 = 11;
                     break block_1;
                   }
-                  l1 = runtime_alloc(8, 133);
+                  l1 = runtime_alloc(go_string(8, 133));
                 }
                 if ((g1 === 0)) {
                   store_i32(l0, l1, 152);
@@ -54871,7 +54677,7 @@ function main_randomHex(p0, p1) {
                     l2147483645 = 12;
                     break block_1;
                   }
-                  l2 = runtime_alloc(8, 133);
+                  l2 = runtime_alloc(go_string(8, 133));
                 }
                 if ((g1 === 0)) {
                   store_i32(l8, l2);
@@ -54972,7 +54778,7 @@ function main_randomHex(p0, p1) {
           p1 = ((l0 + 16) | 0);
         }
         if ((g1 ? l4 === 18 : 1)) {
-          strconv_FormatInt(p1, l10, 16);
+          strconv_FormatInt(go_string(p1, l10), 16);
           if (g1 === 1) {
             l2147483645 = 18;
             break block_1;
@@ -54985,7 +54791,7 @@ function main_randomHex(p0, p1) {
           l1 = ((l0 + 8) | 0);
         }
         if ((g1 ? l4 === 19 : 1)) {
-          runtime_stringConcat(l1, l5, l7, p1, l2);
+          runtime_stringConcat(go_string(l1, l5), go_string(l7, p1), l2);
           if (g1 === 1) {
             l2147483645 = 19;
             break block_1;
@@ -55034,16 +54840,16 @@ function main_randomHex(p0, p1) {
 
 // main.checkGlobalFunction
 function main_checkGlobalFunction(p0, p1) {
-  return byn$mgfn_shared$main_checkGlobalFunction(p0, p1, 8, 127913);
+  return byn$mgfn_shared$main_checkGlobalFunction(go_string(p0, p1), 8, 127913);
 }
 
 // main.checkGlobalUndefined
 function main_checkGlobalUndefined(p0, p1) {
-  return byn$mgfn_shared$main_checkGlobalFunction(p0, p1, 9, 127904);
+  return byn$mgfn_shared$main_checkGlobalFunction(go_string(p0, p1), 9, 127904);
 }
 
 function malloc_318(p0) {
-  let l0 = 0, l2147483646, l2147483647;
+  let l0 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 4) | 0));
     p0 = load_i32(load_i32(g2));
@@ -55051,13 +54857,11 @@ function malloc_318(p0) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483646 = load_i32(load_i32(g2));
     } else {
-      l2147483646 = 0;
     }
-    if (((g1 ? l2147483646 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       if (g1 === 1) {
-        l2147483647 = 0;
+        l2147483646 = 0;
         break block_1;
       }
       p0 = malloc(p0);
@@ -55066,9 +54870,9 @@ function malloc_318(p0) {
       return p0;
     }
     throw new Error('unreachable');
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l0 = l2147483647;
+  l0 = l2147483646;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   store_i32(load_i32(g2), p0);
@@ -55077,7 +54881,7 @@ function malloc_318(p0) {
 }
 
 function free_319(p0) {
-  let l0 = 0, l2147483646, l2147483647;
+  let l0 = 0, l2147483646;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 4) | 0));
     p0 = load_i32(load_i32(g2));
@@ -55085,21 +54889,19 @@ function free_319(p0) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483646 = load_i32(load_i32(g2));
     } else {
-      l2147483646 = 0;
     }
-    if (((g1 ? l2147483646 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       free(p0);
       if (g1 === 1) {
-        l2147483647 = 0;
+        l2147483646 = 0;
         break block_1;
       }
     }
     return;
-    l2147483647 = 0;
+    l2147483646 = 0;
   }
-  l0 = l2147483647;
+  l0 = l2147483646;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   store_i32(load_i32(g2), p0);
@@ -55107,7 +54909,7 @@ function free_319(p0) {
 }
 
 function calloc(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483645, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 8) | 0));
     p1 = load_i32(g2);
@@ -55117,11 +54919,9 @@ function calloc(p0, p1) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483645 = load_i32(load_i32(g2));
     } else {
-      l2147483645 = 0;
     }
-    if (((g1 ? l2147483645 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       block_4: {
         l0 = p0;
         if (g1 === 2) {
@@ -55145,7 +54945,7 @@ function calloc(p0, p1) {
           }
           if (((g1 ? l1 : 0) === 0)) {
             if (g1 === 1) {
-              l2147483646 = 0;
+              l2147483645 = 0;
               break block_6;
             }
             l0 = malloc(l0);
@@ -55153,13 +54953,13 @@ function calloc(p0, p1) {
           if ((g1 === 0)) {
             store_i32(138276, l2);
             g0 = ((l3 + 16) | 0);
-            l2147483647 = l0;
+            l2147483646 = l0;
             break block_4;
           }
           throw new Error('unreachable');
-          l2147483646 = 0;
+          l2147483645 = 0;
         }
-        l1 = l2147483646;
+        l1 = l2147483645;
         store_i32(load_i32(g2), l1);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
         l1 = load_i32(g2);
@@ -55167,21 +54967,21 @@ function calloc(p0, p1) {
         store_i32(l1, l3, 4);
         store_i32(l1, l2, 8);
         store_i32(g2, ((load_i32(g2) + 12) | 0));
-        l2147483647 = 0;
+        l2147483646 = 0;
       }
       if (g1 === 1) {
-        l2147483648 = 0;
+        l2147483647 = 0;
         break block_1;
       }
-      p0 = l2147483647;
+      p0 = l2147483646;
     }
     if ((g1 === 0)) {
       return p0;
     }
     throw new Error('unreachable');
-    l2147483648 = 0;
+    l2147483647 = 0;
   }
-  l0 = l2147483648;
+  l0 = l2147483647;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l0 = load_i32(g2);
@@ -55192,7 +54992,7 @@ function calloc(p0, p1) {
 }
 
 function realloc(p0, p1) {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483645, l2147483646, l2147483647, l2147483648;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l5 = 0, l6 = 0, l7 = 0, l2147483645, l2147483646, l2147483647;
   if (g1 === 2) {
     store_i32(g2, ((load_i32(g2) - 8) | 0));
     p1 = load_i32(g2);
@@ -55202,11 +55002,9 @@ function realloc(p0, p1) {
   block_1: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483645 = load_i32(load_i32(g2));
     } else {
-      l2147483645 = 0;
     }
-    if (((g1 ? l2147483645 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       block_4: {
         l5 = p0;
         l2 = p1;
@@ -55242,7 +55040,7 @@ function realloc(p0, p1) {
                   if (((g1 ? l6 : 0) === 0)) {
                     free(l5);
                     if (g1 === 1) {
-                      l2147483646 = 0;
+                      l2147483645 = 0;
                       break block_6;
                     }
                   }
@@ -55254,7 +55052,7 @@ function realloc(p0, p1) {
                 }
                 if ((g1 ? l6 === 1 : 1)) {
                   if (g1 === 1) {
-                    l2147483646 = 1;
+                    l2147483645 = 1;
                     break block_6;
                   }
                   l3 = runtime_alloc(l2, 3);
@@ -55272,10 +55070,10 @@ function realloc(p0, p1) {
                   }
                   if ((g1 ? l6 === 2 : 1)) {
                     if (g1 === 1) {
-                      l2147483646 = 2;
+                      l2147483645 = 2;
                       break block_6;
                     }
-                    l1 = runtime_hashmapBinaryGet(136168, l1, l0, 12);
+                    l1 = runtime_hashmapBinaryGet(go_string(136168, l1), l0, 12);
                   }
                   if ((g1 === 0)) {
                     if (((l1 & 1) === 0)) break block_9;
@@ -55286,7 +55084,7 @@ function realloc(p0, p1) {
                   if ((g1 ? l6 === 3 : 1)) {
                     runtime_hashmapBinaryDelete(l0);
                     if (g1 === 1) {
-                      l2147483646 = 3;
+                      l2147483645 = 3;
                       break block_6;
                     }
                   }
@@ -55299,9 +55097,9 @@ function realloc(p0, p1) {
                   l5 = ((l0 + 12) | 0);
                 }
                 if ((g1 ? l6 === 4 : 1)) {
-                  runtime_hashmapBinarySet(136168, l5, l0);
+                  runtime_hashmapBinarySet(go_string(136168, l5), l0);
                   if (g1 === 1) {
-                    l2147483646 = 4;
+                    l2147483645 = 4;
                     break block_6;
                   }
                 }
@@ -55309,14 +55107,14 @@ function realloc(p0, p1) {
               if ((g1 === 0)) {
                 store_i32(138276, l7);
                 g0 = ((l0 + 32) | 0);
-                l2147483647 = l3;
+                l2147483646 = l3;
                 break block_4;
               }
             }
             if ((g1 ? l6 === 5 : 1)) {
               runtime_slicePanic();
               if (g1 === 1) {
-                l2147483646 = 5;
+                l2147483645 = 5;
                 break block_6;
               }
             }
@@ -55327,7 +55125,7 @@ function realloc(p0, p1) {
           if ((g1 ? l6 === 6 : 1)) {
             runtime__panic(127752, 91224);
             if (g1 === 1) {
-              l2147483646 = 6;
+              l2147483645 = 6;
               break block_6;
             }
           }
@@ -55335,9 +55133,9 @@ function realloc(p0, p1) {
             throw new Error('unreachable');
           }
           throw new Error('unreachable');
-          l2147483646 = 0;
+          l2147483645 = 0;
         }
-        l4 = l2147483646;
+        l4 = l2147483645;
         store_i32(load_i32(g2), l4);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
         l4 = load_i32(g2);
@@ -55348,21 +55146,21 @@ function realloc(p0, p1) {
         store_i32(l4, l3, 16);
         store_i32(l4, l7, 20);
         store_i32(g2, ((load_i32(g2) + 24) | 0));
-        l2147483647 = 0;
+        l2147483646 = 0;
       }
       if (g1 === 1) {
-        l2147483648 = 0;
+        l2147483647 = 0;
         break block_1;
       }
-      p0 = l2147483647;
+      p0 = l2147483646;
     }
     if ((g1 === 0)) {
       return p0;
     }
     throw new Error('unreachable');
-    l2147483648 = 0;
+    l2147483647 = 0;
   }
-  l1 = l2147483648;
+  l1 = l2147483647;
   store_i32(load_i32(g2), l1);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
   l1 = load_i32(g2);
@@ -55373,15 +55171,13 @@ function realloc(p0, p1) {
 }
 
 function resume() {
-  let l0 = 0, l2147483647, l2147483648, l2147483649;
+  let l0 = 0, l2147483647, l2147483648;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483647 = load_i32(load_i32(g2));
     } else {
-      l2147483647 = 0;
     }
-    if (((g1 ? l2147483647 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       block_3: {
         block_4: {
           if (g1 === 2) {
@@ -55391,92 +55187,86 @@ function resume() {
           if (((g1 ? l0 : 0) === 0)) {
             internal_task_start(5, 0);
             if (g1 === 1) {
-              l2147483648 = 0;
+              l2147483647 = 0;
               break block_4;
             }
           }
           if ((g1 ? l0 === 1 : 1)) {
             runtime_scheduler();
             if (g1 === 1) {
-              l2147483648 = 1;
+              l2147483647 = 1;
               break block_4;
             }
           }
           break block_3;
-          l2147483648 = 0;
+          l2147483647 = 0;
         }
-        l0 = l2147483648;
+        l0 = l2147483647;
         store_i32(load_i32(g2), l0);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
       }
       if (g1 === 1) {
-        l2147483649 = 0;
+        l2147483648 = 0;
         break block_0;
       }
     }
     return;
-    l2147483649 = 0;
+    l2147483648 = 0;
   }
-  l0 = l2147483649;
+  l0 = l2147483648;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
 
 function go_scheduler() {
-  let l0 = 0, l2147483647, l2147483648, l2147483649, l2147483650;
+  let l0 = 0, l2147483647, l2147483648;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483647 = load_i32(load_i32(g2));
     } else {
-      l2147483647 = 0;
     }
-    if (((g1 ? l2147483647 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       block_3: {
         block_4: {
           if (g1 === 2) {
             store_i32(g2, ((load_i32(g2) - 4) | 0));
-            l2147483648 = load_i32(load_i32(g2));
           } else {
-            l2147483648 = 0;
           }
-          if (((g1 ? l2147483648 : 0) === 0)) {
+          if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
             runtime_scheduler();
             if (g1 === 1) {
-              l2147483649 = 0;
+              l2147483647 = 0;
               break block_4;
             }
           }
           break block_3;
-          l2147483649 = 0;
+          l2147483647 = 0;
         }
-        l0 = l2147483649;
+        l0 = l2147483647;
         store_i32(load_i32(g2), l0);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
       }
       if (g1 === 1) {
-        l2147483650 = 0;
+        l2147483648 = 0;
         break block_0;
       }
     }
     return;
-    l2147483650 = 0;
+    l2147483648 = 0;
   }
-  l0 = l2147483650;
+  l0 = l2147483648;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
 
 function _start() {
-  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483647, l2147483648, l2147483649;
+  let l0 = 0, l1 = 0, l2 = 0, l3 = 0, l4 = 0, l2147483647, l2147483648;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483647 = load_i32(load_i32(g2));
     } else {
-      l2147483647 = 0;
     }
-    if (((g1 ? l2147483647 : 0) === 0)) {
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
       if (g1 === 2) {
         store_i32(g2, ((load_i32(g2) - 8) | 0));
         l1 = load_i32(g2);
@@ -55508,14 +55298,14 @@ function _start() {
           if (((g1 ? l3 : 0) === 0)) {
             internal_task_start(6, 0);
             if (g1 === 1) {
-              l2147483648 = 0;
+              l2147483647 = 0;
               break block_5;
             }
           }
           if ((g1 ? l3 === 1 : 1)) {
             runtime_scheduler();
             if (g1 === 1) {
-              l2147483648 = 1;
+              l2147483647 = 1;
               break block_5;
             }
           }
@@ -55524,9 +55314,9 @@ function _start() {
             g0 = ((l0 + 16) | 0);
           }
           break block_4;
-          l2147483648 = 0;
+          l2147483647 = 0;
         }
-        l2 = l2147483648;
+        l2 = l2147483647;
         store_i32(load_i32(g2), l2);
         store_i32(g2, ((load_i32(g2) + 4) | 0));
         l2 = load_i32(g2);
@@ -55535,14 +55325,14 @@ function _start() {
         store_i32(g2, ((load_i32(g2) + 8) | 0));
       }
       if (g1 === 1) {
-        l2147483649 = 0;
+        l2147483648 = 0;
         break block_0;
       }
     }
     return;
-    l2147483649 = 0;
+    l2147483648 = 0;
   }
-  l0 = l2147483649;
+  l0 = l2147483648;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
@@ -55603,7 +55393,7 @@ function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
       l3 = ((l0 + 16) | 0);
     }
     if (((g1 ? l4 : 0) === 0)) {
-      _syscall_js_Value_Get(l3, 9221120241336057861n, 0, p0, p1);
+      _syscall_js_Value_Get(l3, 9221120241336057861n, 0, go_string(p0, p1));
       if (g1 === 1) {
         l2147483643 = 0;
         break block_1;
@@ -55622,7 +55412,7 @@ function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
       p1 = _syscall_js_Value_Type(l5);
     }
     if ((g1 ? l4 === 2 : 1)) {
-      _syscall_js_Type_String(p0, p1);
+      _syscall_js_Type_String(go_string(p0, p1));
       if (g1 === 1) {
         l2147483643 = 2;
         break block_1;
@@ -55633,7 +55423,7 @@ function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
       store_i32(l0, p0, 44);
       store_i32(138276, l2);
       g0 = ((l0 + 48) | 0);
-      return runtime_stringEqual(p0, load_i32(l0, 12), p3, p2);
+      return runtime_stringEqual(p0, load_i32(l0, 12), go_string(p3, p2));
     }
     throw new Error('unreachable');
     l2147483643 = 0;
@@ -55654,18 +55444,16 @@ function byn$mgfn_shared$main_checkGlobalFunction(p0, p1, p2, p3) {
 
 // byn$mgfn-shared$runtime.lookupPanic
 function byn$mgfn_shared$runtime_lookupPanic(p0, p1) {
-  let l0 = 0, l2147483645, l2147483646;
+  let l0 = 0, l2147483645;
   block_0: {
     if (g1 === 2) {
       store_i32(g2, ((load_i32(g2) - 4) | 0));
-      l2147483645 = load_i32(load_i32(g2));
     } else {
-      l2147483645 = 0;
     }
-    if (((g1 ? l2147483645 : 0) === 0)) {
-      runtime_runtimePanicAt(p1, p0);
+    if (((g1 ? (g1 === 2 ? load_i32(load_i32(g2)) : 0) : 0) === 0)) {
+      runtime_runtimePanicAt(go_string(p1, p0));
       if (g1 === 1) {
-        l2147483646 = 0;
+        l2147483645 = 0;
         break block_0;
       }
     }
@@ -55673,9 +55461,9 @@ function byn$mgfn_shared$runtime_lookupPanic(p0, p1) {
       throw new Error('unreachable');
     }
     return;
-    l2147483646 = 0;
+    l2147483645 = 0;
   }
-  l0 = l2147483646;
+  l0 = l2147483645;
   store_i32(load_i32(g2), l0);
   store_i32(g2, ((load_i32(g2) + 4) | 0));
 }
@@ -55715,14 +55503,14 @@ function byn$mgfn_shared$strconv_syntaxError(p0, p1, p2, p3, p4) {
         l2147483642 = 0;
         break block_1;
       }
-      l0 = runtime_alloc(24, 3405);
+      l0 = runtime_alloc(go_string(24, 3405));
     }
     if ((g1 === 0)) {
       store_i32(l2, l0, 24);
       l4 = ((l2 + 8) | 0);
     }
     if ((g1 ? l5 === 1 : 1)) {
-      internal_stringslite_Clone(l4, p2, p3);
+      internal_stringslite_Clone(go_string(l4, p2), p3);
       if (g1 === 1) {
         l2147483642 = 1;
         break block_1;
@@ -55805,15 +55593,15 @@ module.exports = {
   get mem() { return mem(); },
   globals,
   imports,
-  asyncify_stop_rewind: asyncify_stop_rewind,
+  free: free_319,
+  calloc: calloc,
   asyncify_start_unwind: asyncify_start_unwind,
+  asyncify_get_state: asyncify_get_state,
   malloc: malloc_318,
+  resume: resume,
+  asyncify_stop_rewind: asyncify_stop_rewind,
+  go_scheduler: go_scheduler,
   realloc: realloc,
   _start: _start,
-  resume: resume,
-  calloc: calloc,
-  free: free_319,
-  asyncify_get_state: asyncify_get_state,
   asyncify_start_rewind: asyncify_start_rewind,
-  go_scheduler: go_scheduler,
 };

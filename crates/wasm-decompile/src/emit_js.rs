@@ -162,7 +162,10 @@ impl JsEmitter {
         self.emit_line("// @ts-nocheck");
         self.emit_line("// Runtime");
         let pages = self.module.as_ref().map(|m| m.memory_pages).unwrap_or(256);
-        self.emit_line(&format!("const memory = new WebAssembly.Memory({{ initial: {} }});", pages));
+        self.emit_line(&format!(
+            "const memory = new WebAssembly.Memory({{ initial: {} }});",
+            pages
+        ));
         self.emit_line("let _mem_buf = memory.buffer, _mem_dv = new DataView(_mem_buf);");
         self.emit_line("function mem() { if (_mem_buf !== memory.buffer) { _mem_buf = memory.buffer; _mem_dv = new DataView(_mem_buf); } return _mem_dv; }");
         self.emit_line("");
@@ -179,7 +182,9 @@ impl JsEmitter {
         self.emit_line(
             "function load_f64(addr, offset = 0) { return mem().getFloat64(addr + offset, true); }",
         );
-        self.emit_line("function load_i8(addr, offset = 0) { return mem().getInt8(addr + offset); }");
+        self.emit_line(
+            "function load_i8(addr, offset = 0) { return mem().getInt8(addr + offset); }",
+        );
         self.emit_line(
             "function load_u8(addr, offset = 0) { return mem().getUint8(addr + offset); }",
         );
@@ -295,7 +300,18 @@ impl JsEmitter {
 
         // Declare locals
         let num_locals = func.locals.len();
-        let mut local_decls: Vec<String> = (0..num_locals).map(|i| format!("l{}", i)).collect();
+        let mut local_decls: Vec<String> = func
+            .locals
+            .iter()
+            .enumerate()
+            .map(|(i, ty)| {
+                let init = match ty {
+                    ValType::I64 => " = 0n",
+                    _ => " = 0",
+                };
+                format!("l{}{}", i, init)
+            })
+            .collect();
 
         // Also declare any temp locals introduced by the lifter (for saving locals before reassignment)
         let temp_locals = Self::collect_temp_locals(&func.body);
@@ -660,14 +676,20 @@ impl JsEmitter {
                     let dest = args.get(0).map(|a| self.emit_expr(a)).unwrap_or_default();
                     let value = args.get(1).map(|a| self.emit_expr(a)).unwrap_or_default();
                     let len = args.get(2).map(|a| self.emit_expr(a)).unwrap_or_default();
-                    return format!("new Uint8Array(memory.buffer).fill({}, {}, {} + {})", value, dest, dest, len);
+                    return format!(
+                        "new Uint8Array(memory.buffer).fill({}, {}, {} + {})",
+                        value, dest, dest, len
+                    );
                 }
                 if *func == u32::MAX - 3 {
                     // memory.copy(dest, src, len)
                     let dest = args.get(0).map(|a| self.emit_expr(a)).unwrap_or_default();
                     let src = args.get(1).map(|a| self.emit_expr(a)).unwrap_or_default();
                     let len = args.get(2).map(|a| self.emit_expr(a)).unwrap_or_default();
-                    return format!("new Uint8Array(memory.buffer).copyWithin({}, {}, {} + {})", dest, src, src, len);
+                    return format!(
+                        "new Uint8Array(memory.buffer).copyWithin({}, {}, {} + {})",
+                        dest, src, src, len
+                    );
                 }
 
                 let name = self.get_func_name(*func);
@@ -760,7 +782,10 @@ impl JsEmitter {
             }
             BinOp::DivU => {
                 if is_i64 {
-                    format!("(BigInt.asUintN(64, BigInt({})) / BigInt.asUintN(64, BigInt({})))", a, b)
+                    format!(
+                        "(BigInt.asUintN(64, BigInt({})) / BigInt.asUintN(64, BigInt({})))",
+                        a, b
+                    )
                 } else {
                     format!("(u32({}) / u32({})) | 0", a, b)
                 }
@@ -768,7 +793,10 @@ impl JsEmitter {
             BinOp::RemS => format!("({} % {})", a, b),
             BinOp::RemU => {
                 if is_i64 {
-                    format!("(BigInt.asUintN(64, BigInt({})) % BigInt.asUintN(64, BigInt({})))", a, b)
+                    format!(
+                        "(BigInt.asUintN(64, BigInt({})) % BigInt.asUintN(64, BigInt({})))",
+                        a, b
+                    )
                 } else {
                     format!("(u32({}) % u32({}))", a, b)
                 }
@@ -786,7 +814,10 @@ impl JsEmitter {
             BinOp::ShrS => format!("({} >> {})", a, b),
             BinOp::ShrU => {
                 if is_i64 {
-                    format!("BigInt.asIntN(64, BigInt.asUintN(64, BigInt({})) >> {})", a, b)
+                    format!(
+                        "BigInt.asIntN(64, BigInt.asUintN(64, BigInt({})) >> {})",
+                        a, b
+                    )
                 } else {
                     format!("({} >>> {})", a, b)
                 }
@@ -868,7 +899,10 @@ impl JsEmitter {
             CmpOp::LtS | CmpOp::FLt => format!("{} < {}", a, b),
             CmpOp::LtU => {
                 if is_i64 {
-                    format!("BigInt.asUintN(64, BigInt({})) < BigInt.asUintN(64, BigInt({}))", a, b)
+                    format!(
+                        "BigInt.asUintN(64, BigInt({})) < BigInt.asUintN(64, BigInt({}))",
+                        a, b
+                    )
                 } else {
                     format!("{} < {}", self.as_u32(a), self.as_u32(b))
                 }
@@ -876,7 +910,10 @@ impl JsEmitter {
             CmpOp::GtS | CmpOp::FGt => format!("{} > {}", a, b),
             CmpOp::GtU => {
                 if is_i64 {
-                    format!("BigInt.asUintN(64, BigInt({})) > BigInt.asUintN(64, BigInt({}))", a, b)
+                    format!(
+                        "BigInt.asUintN(64, BigInt({})) > BigInt.asUintN(64, BigInt({}))",
+                        a, b
+                    )
                 } else {
                     format!("{} > {}", self.as_u32(a), self.as_u32(b))
                 }
@@ -884,7 +921,10 @@ impl JsEmitter {
             CmpOp::LeS | CmpOp::FLe => format!("{} <= {}", a, b),
             CmpOp::LeU => {
                 if is_i64 {
-                    format!("BigInt.asUintN(64, BigInt({})) <= BigInt.asUintN(64, BigInt({}))", a, b)
+                    format!(
+                        "BigInt.asUintN(64, BigInt({})) <= BigInt.asUintN(64, BigInt({}))",
+                        a, b
+                    )
                 } else {
                     format!("{} <= {}", self.as_u32(a), self.as_u32(b))
                 }
@@ -892,7 +932,10 @@ impl JsEmitter {
             CmpOp::GeS | CmpOp::FGe => format!("{} >= {}", a, b),
             CmpOp::GeU => {
                 if is_i64 {
-                    format!("BigInt.asUintN(64, BigInt({})) >= BigInt.asUintN(64, BigInt({}))", a, b)
+                    format!(
+                        "BigInt.asUintN(64, BigInt({})) >= BigInt.asUintN(64, BigInt({}))",
+                        a, b
+                    )
                 } else {
                     format!("{} >= {}", self.as_u32(a), self.as_u32(b))
                 }
@@ -939,10 +982,10 @@ impl JsEmitter {
             | ConvertOp::F64ConvertI32S
             | ConvertOp::F32ConvertI64S
             | ConvertOp::F64ConvertI64S => format!("Number({})", e),
-            ConvertOp::F32ConvertI32U
-            | ConvertOp::F64ConvertI32U => format!("Number(u32({}))", e),
-            ConvertOp::F32ConvertI64U
-            | ConvertOp::F64ConvertI64U => format!("Number(BigInt.asUintN(64, BigInt({})))", e),
+            ConvertOp::F32ConvertI32U | ConvertOp::F64ConvertI32U => format!("Number(u32({}))", e),
+            ConvertOp::F32ConvertI64U | ConvertOp::F64ConvertI64U => {
+                format!("Number(BigInt.asUintN(64, BigInt({})))", e)
+            }
             ConvertOp::F32DemoteF64 => format!("Math.fround({})", e),
             ConvertOp::F64PromoteF32 => e.to_string(),
             ConvertOp::I32ReinterpretF32 => {
@@ -1003,7 +1046,11 @@ impl JsEmitter {
                 Stmt::LocalSet { local, .. } if *local >= TEMP_BASE => {
                     temps.insert(*local);
                 }
-                Stmt::If { then_block, else_block, .. } => {
+                Stmt::If {
+                    then_block,
+                    else_block,
+                    ..
+                } => {
                     Self::collect_temp_locals_inner(&then_block.stmts, temps);
                     if let Some(eb) = else_block {
                         Self::collect_temp_locals_inner(&eb.stmts, temps);
